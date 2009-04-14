@@ -210,6 +210,8 @@ TikZ]
 \tikzset{timing table/.style={timing}}
 \tikzset{timing name/.style={font=\sffamily}}
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
+\tikzset{timing d background/.style={fill=gray}}
+\tikzset{timing d/.style={}}
 \tikzset{timing z/.style={blue}}
 \tikzset{timing x/.style={red}}
 \tikzset{timing table grid/.style={timing grid}}
@@ -674,6 +676,8 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztiming@internaldefs{%
   \def\draw{\noexpand\draw}%
+  \def\path{\noexpand\path}%
+  \def\fill{\noexpand\fill}%
   \def\width{\noexpand\timingwidth}%
   \def\fwidth{\noexpand\timingwidth}%
   \def\height{\noexpand\timingheight}%
@@ -864,15 +868,41 @@ TikZ]
   node (timing@save) at ++(0,0) {}; \draw [timing x] (timing@save) ++(0,0)
   -- ++(#1,0)
 }
+
 \tikztimingchar{D}{++(0,0)}{
-  -- ++(#1,0) ++($ -1*(#1,0) + (0,\height) $)
+  node (timing@save) {}; \path [timing d background] (timing@save) ++(0,0)
+  -- +(#1,0)
+  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
+  -- +(#1,\height)
+  -- +(0,\height)
+  -- cycle;
+  \draw [timing d] (timing@save) ++(0,0)
+  --  +(#1,0) ++(0,+\height)
   -- ++(#1,0) ++(0,-\height)
+}
+\tikztiming@namelet{temp}{DD}
+
+\def\tikztiming@trans@D@fill#1#2{%
+  node (timing@save) {}; \path [timing d background] (timing@save) ++(0,0)
+  -- +(0.5*\dslope,-0.5*\height)
+  -- ++($ (#1,-0.5*\height) - (#2,0) $)
+  -- +(0.5*\dslope,0.5*\height)
+  -- +(0,\height)
+  -- ++($ (#2,\height) - (#1,0) + (0.5*\dslope,0) $)
+  -- cycle;
+  \draw [timing d] (timing@save) ++(0,0)
 }
 
 \tikztimingdef{DD}{
-  -- ++(\dslope,+\height) -- ++($ (#1,0) - (\dslope,0) $)
-     ++($ -1*(#1,0) $)
-  -- ++(\dslope,-\height) -- ++($ (#1,0) - (\dslope,0) $)
+  node (timing@save) {}; \path [timing d background] (timing@save) ++(0,0)
+  -- +(0,\height) -- +(\dslope,0)
+  -- +(#1,0)
+  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
+  -- +(#1,\height)
+  -- +(\dslope,\height) -- cycle;
+  \draw [timing d] (timing@save) ++(0,0)
+  --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
+  --  +(\dslope,-\height) -- ++(#1,-\height)
 }
 \tikztiming@namelet{D@edge@@start}{D@start}
 \tikztiming@namelet{d@edge@@start}{d@start}
@@ -880,10 +910,8 @@ TikZ]
 \tikztiming@namelet{d@edge@D}{DD}
 \tikztiming@namelet{D@edge@d}{Dd}
 \tikztiming@namelet{d@edge@d}{Dd}
-\tikztimingdef{DD}{
-  -- ++(#1,0) ++($ -1*(#1,0) + (0,\height) $)
-  -- ++(#1,0) ++(0,-\height)
-}
+
+\tikztiming@namelet{DD}{temp}
 
 \tikztimingdef{HH}{-- ++(#1,0)}
 \tikztimingdef{LL}{-- ++(#1,0)}
@@ -908,7 +936,7 @@ TikZ]
 }
 
 \tikztimingdef{ZD}{
-  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  \tikztiming@trans@D@fill{#1}{0}%
   -- ++(\dslope/2.,\height/2.)  -- ++($ (#1,0) - (\dslope/2.,0) $)
      ++($ -1*(#1,0) + (0,-\height/2.) $)
   -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope/2.,0) $)
@@ -935,7 +963,10 @@ TikZ]
 \tikztimingdef{DX}{\tikztiminguse{DZ}{\width}}
 
 \tikztimingdef{LD}{
-  -- ++(\dslope,\height)        -- ++($ (#1,0) - (\dslope,0) $)
+  -- ++(0.5*\dslope,0.5*\height)
+  \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
+  -- ++(0.5*\dslope,0.5*\height)
+  -- ++($ (#1,0) - (\dslope,0) $)
      ++($ -1*(#1,0) + (0,-\height) $)          ++(\dslope/2.,+\height/2.)
   -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope,0) $)
 }
@@ -947,7 +978,9 @@ TikZ]
 }
 
 \tikztimingdef{HD}{
-  -- ++(\dslope,-\height)
+  -- ++(0.5*\dslope,-0.5*\height)
+  \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
+  -- ++(0.5*\dslope,-0.5*\height)
   -- ++($ (#1,0) - (\dslope,0) $)
      ++($ -1*(#1,0) + (0,+\height) $)          ++(\dslope/2.,-\height/2.)
   -- ++(\dslope/2.,+\height/2.) -- ++($ (#1,0) - (\dslope,0) $)
@@ -961,10 +994,6 @@ TikZ]
   -- ++(+\dslope,+\height)       -- ++($ (#1,0) - (\dslope,0) $)
 }
 
-\tikztimingdef{DD}{
-  -- ++(#1,0)     ++($ -1*(#1,0) + (0,+\height) $)
-  -- ++(#1,0) ++(0,-\height)
-}
 
 \tikztimingalias{M}{Z}
 \tikztimingchar{M}{++(0,\height/2.)}{
@@ -1160,7 +1189,9 @@ TikZ]
   node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   node {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
   \addtocounter{tikztimingtranspos}{-1}}
-  -- ++(\dslope,+1*\value{tikztimingtrans} * \height)
+  -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
+  \tikztiming@trans@D@fill{#1}{0}%
+  -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
   -- ++($ (#1,0) - (\dslope,0) $)
      ++($ -1*(#1,\value{tikztimingtrans}*\height) $)
      ++(\dslope/2.,+1*\value{tikztimingtrans}*\height/2.)
@@ -1171,9 +1202,7 @@ TikZ]
 
 \tikztimingdef{DT}{
   node {\setcounter{tikztimingtrans}{-1}}
-  -- ++( \dslope/2.,+\height/2.)
-     ++(-\dslope/2.,+\height/2.)
-  -- ++(\dslope,-\height)        -- ++($ (#1,0) - (\dslope,0) $)
+  \tikztiminguse{DL}{#1}%
 }
 
 \tikztimingdef{MT}{%
