@@ -7,7 +7,7 @@
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
 
-\def\tikztiming@prefix{tikztiming@}
+\def\tikztiming@prefix{tikztiming@trans@}
 
 
 \tikzset{timing/.style={line width=0.15ex,x=1.6ex,y=1.6ex}}
@@ -28,9 +28,11 @@
   \begingroup
     \def\lastchar{}%
     \setcounter{tikztimingchars}{0}%
+    \setcounter{tikztimingtrans}{-1}%
     \let\currentchar\empty
     \let\tikztiming@str\empty
     \texttiming@#1\relax
+    %\message{^^J\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle %
       (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
@@ -64,6 +66,7 @@
   \begingroup
     \def\lastchar{}%
     \setcounter{tikztimingchars}{0}%
+    \setcounter{tikztimingtrans}{-1}%
     \let\currentchar\empty
     \let\tikztiming@str\empty
     \texttiming@#3\relax
@@ -414,6 +417,86 @@
 \tikztiminglet{Xm}{Dm}
 \tikztiminglet{mX}{mD}
 \tikztiminglet{xm}{dm}
+
+\newcounter{tikztimingtrans}
+\newcounter{tikztimingtranspos}
+
+\tikztimingalias{T}{Z}
+\tikztimingchar{T}{++(0,0)}{
+  -- ++(\width,0)
+}
+
+\tikztimingdef{HT}{%
+  node {\setcounter{tikztimingtrans}{-1}}
+  -- ++(\slope,\value{tikztimingtrans}*\height) -- ++(\width-\slope,0)
+}
+
+\tikztimingdef{LT}{%
+  node {\setcounter{tikztimingtrans}{+1}}
+  -- ++(\slope,\value{tikztimingtrans}*\height) -- ++(\width-\slope,0)
+}
+
+\tikztimingdef{TL}{%
+  node {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+  \addtocounter{tikztimingtranspos}{+1}}
+  -- ++(\slope, -0.5*\value{tikztimingtranspos}*\height) -- ++(\width-\slope,0)
+}
+
+\tikztimingdef{TH}{%
+  node {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+  \addtocounter{tikztimingtranspos}{-1}}
+  -- ++(\slope, -0.5*\value{tikztimingtranspos}*\height) -- ++(\width-\slope,0)
+}
+
+\tikztimingdef{TZ}{%
+  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\slope,\value{tikztimingtrans}*\height/2.) -- ++(\width-\slope,0)
+}
+
+\tikztimingdef{ZT}{%
+  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\slope,\value{tikztimingtrans}*\height/2.) -- ++(\width-\slope,0)
+}
+
+\tikztimingdef{TT}{%
+  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\slope,\value{tikztimingtrans}*\height) -- ++(\width-\slope,0)
+}
+
+\tikztimingdef{TD}{
+  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  node {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+  \addtocounter{tikztimingtranspos}{-1}}
+  -- ++(\dslope,+1*\value{tikztimingtrans} * \height) -- ++(\width-\dslope,0)
+  ++(-\width,-1*\value{tikztimingtrans}*\height) 
+  ++(\dslope/2.,+1*\value{tikztimingtrans}*\height/2.)
+  -- ++(\dslope/2.,-1*\value{tikztimingtrans}*\height/2.) -- 
+  ++(\width-\dslope,0)
+  ++(0,\value{tikztimingtranspos}*\height/2.)
+}
+
+\tikztiminglet{TX}{TD}
+\tikztimingdef{DT}{
+  node {\setcounter{tikztimingtrans}{-1}}
+               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+            -- ++( \dslope/2.,+\height/2.)
+               ++(-\dslope/2.,+\height/2.)
+               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+            -- ++(\dslope,-\height)     -- ++(\width-\dslope,0)
+}
+
+\tikztimingalias{C}{T}
+\tikztimingchar{C}{++(0,0)}{
+  -- ++(\width,0)
+}
+\tikztimingdef{CC}{%
+  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(0,\value{tikztimingtrans}*\height) -- ++(\width,0)
+}
+\tikztiminglet{XC}{DT}
+\tikztiminglet{XT}{DT}
+\tikztiminglet{CX}{TX}
+\tikztiminglet{TC}{TT}
 
 
 %\usetikzlibrary{backgrounds}
