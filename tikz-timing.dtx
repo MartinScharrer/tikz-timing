@@ -470,11 +470,15 @@ TikZ]
 % \begin{macro}{\tikztiming@handletext@}
 %    \begin{macrocode}
 \def\tikztiming@handletext@[#1]#2\relax{%
-  \tikztiming@addtostr{%
-    node [
-      shift={(-\the\tikztiming@dlength/4.+\timingdslope/2., \timingheight/2.)},
-      timing d text, #1%
-    ] {#2}%
+  \tikztiming@eaddtostr{%
+    node [%]
+      shift={(-\the\tikztiming@dlength/4.+\noexpand\timingdslope/2., 
+      \noexpand\timingheight/2.)},%
+      timing d text,%
+  }%
+  \tikztiming@addtostr{%[
+      #1%
+      ] {#2}%
   }%
   \tikztiming@dlength=0\relax
   \tikztiminglet{DD}{SD}%
