@@ -97,6 +97,22 @@
   \tikztiming@testfornum
 }
 
+\def\tikztiming@eaddtostr#1{%
+  \begingroup
+    \@temptokena\expandafter{\tikztiming@str}%
+    \xdef\tikztiming@str{%
+      \the\@temptokena
+      #1%
+    }
+    \def\@tempa{#1}%
+    \message{^^JADD: \meaning\tikztiming@str}
+  \endgroup
+}
+
+\def\tikztiming@addtostr{%
+  \g@addto@macro\tikztiming@str
+}
+
 \def\tikztiming@@#1{%
   \ifx\relax#1\empty
   \else
@@ -104,8 +120,7 @@
       {\addtocounter{tikztimingchars}{+1}}%
       {\addtocounter{tikztimingchars}{+2}}%
     \def\currentchar{#1}%
-    \edef\tikztiming@str{%
-        \tikztiming@str
+    \tikztiming@eaddtostr{%
         \csname\tikztiming@prefix\lastchar\currentchar\endcsname
     }%
     \@ifundefined{tikztiming@aftercode@\currentchar}%
@@ -113,7 +128,7 @@
       {\@nameuse{tikztiming@aftercode@\currentchar}}%
     \let\lastchar\currentchar
     \expandafter
-    \tikztiming@
+    \tikztiming@testfortext
   \fi
 }
 
@@ -133,12 +148,13 @@
   #1\relax
 }
 \def\tikztiming@handletext@[#1]#2\relax{%
-  \edef\tikztiming@str{%
-    \tikztiming@str
+  \tikztiming@eaddtostr{%
     node [
       shift={(-\the\tikztiming@dlength/4.+\dslope/2., \height/2.)},
-      timing d text, #1
-    ] {#2}
+      timing d text,
+  }
+  \tikztiming@addtostr{%
+    #1 ] {#2}
   }%
   \tikztiming@dlength=0\relax
   \tikztiming@
@@ -155,11 +171,12 @@
 
 \def\tikztiming@numloop{%
   \ifnum\tikztiming@count>0%
-    \edef\tikztiming@numchars{%
-      \tikztiming@numchars
+    \toks@\expandafter{\tikztiming@numchars}%
+    \xdef\tikztiming@numchars{%
+      \the\toks@
       \the\@temptokena
     }%
-    \advance\tikztiming@count by -1\relax
+    \global\advance\tikztiming@count by -1\relax
     \expandafter\tikztiming@numloop
   \fi
 }
@@ -173,9 +190,11 @@
 }
 
 \def\tikztiming@testfornum@@#1{%
-  \message{^^JDEBUG: '\string #1'}%
-  \@temptokena{#1}%
-  \tikztiming@numloop%
+  \begingroup
+    \@temptokena{#1}%
+    \tikztiming@numloop%
+  \endgroup
+  \message{^^JDEBUG: '\meaning\tikztiming@numchars'}%
   \expandafter\tikztiming@@\tikztiming@numchars
 }
 
