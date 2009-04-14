@@ -9,7 +9,6 @@
 
 \def\tikztiming@prefix{tikztiming@trans@}
 
-
 \tikzset{timing/.style={line width=0.15ex,x=1.6ex,y=1.6ex}}
 \tikzset{timing grid/.style={timing,help lines}}
 \tikzset{texttiming/.style={timing}}
@@ -92,8 +91,33 @@
     }%
     \let\lastchar\currentchar
     \expandafter
-    \texttiming@
+    \tikztiming@testfornum
   \fi
+}
+
+\newcount\tikztiming@count
+
+\def\tikztiming@testfornum{%
+  \let\tikztiming@numchars\empty
+  \afterassignment
+  \tikztiming@testfornum@
+  \tikztiming@count0%
+}
+
+\def\tikztiming@numloop{%
+  \ifnum\tikztiming@count>1%
+    \edef\tikztiming@numchars{%
+      \tikztiming@numchars
+      \currentchar
+    }%
+    \advance\tikztiming@count by -1\relax
+    \expandafter\tikztiming@numloop
+  \fi
+}
+
+\def\tikztiming@testfornum@{%
+  \tikztiming@numloop%
+  \expandafter\texttiming@\tikztiming@numchars
 }
 
 
