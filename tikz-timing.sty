@@ -10,12 +10,14 @@
 
 \def\tikztiming@prefix{tikztiming@trans@}
 
-\tikzset{timing/.style={line width=0.15ex,x=1.6ex,y=1.6ex}}
+\tikzset{timing/.style={line width=0.15ex,line cap=round,
+                        line join=round,x=1.6ex,y=1.6ex}}
 \tikzset{timing grid/.style={timing,help lines}}
 \tikzset{texttiming/.style={timing}}
 \tikzset{timing table/.style={timing}}
 \tikzset{timing name/.style={font=\sffamily}}
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
+\tikzset{timing z/.style={blue}}
 \tikzset{timing table grid/.style={timing grid}}
 
 \def\texttimingbefore{}
@@ -34,7 +36,7 @@
     \def\lastchar{#1}%
     \tikztiming@eaddtostr{\csname \tikztiming@prefix\lastchar @start\endcsname}%
     \tikztiming@#2\relax
-    %\message{^^J\meaning\tikztiming@str^^J}%
+    \message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle %
       (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
@@ -220,6 +222,7 @@
 \def\timingwidth{1}%
 \def\timingheight{1}%
 
+\def\draw{\noexpand\draw}
 \def\width{\noexpand\timingwidth}
 \def\fwidth{\noexpand\timingwidth}
 \def\width{\noexpand\timingwidth}
@@ -342,7 +345,10 @@
 
 \tikztimingchar{H}{++(0,\height)}{-- ++(\width,0) }
 \tikztimingchar{L}{++(0,0)}{-- ++(\width,0) }
-\tikztimingchar{Z}{++(0,\height/2.)}{-- ++(\width,0) }
+\tikztimingchar{Z}{++(0,\height/2.)}{%
+  node (timing@save) at ++(0,0) {};
+  \draw [timing z] (timing@save) ++(0,0) -- ++(\width,0)
+}
 \tikztimingchar{D}{++(0,0)}{
                 -- ++(+\width,0) ++(-\width,+\height)
                 -- ++(+\width,0) ++(0,-\height) }
@@ -353,10 +359,10 @@
 \tikztimingchar{S}{++(0,0)}{}
 \tikztiminglet{DS}{DD}
 \tikztimingdef{SD}{
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
+               %++(-\width/100.,0) -- ++(+\width/100.,0)
             -- ++(\dslope,+\height) -- ++(\width-\dslope,0)
                ++(-\width,0)
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
+               %++(-\width/100.,0) -- ++(+\width/100.,0)
             -- ++(\dslope,-\height) -- ++(\width-\dslope,0) }
 
 \tikztimingdef{HH}{-- ++(\width,0) }
@@ -365,32 +371,53 @@
 \tikztimingdef{LH}{-- ++(\slope, \height) -- ++(\width-\slope,0) }
 
 \tikztimingdef{ZZ}{-- ++(\width,0) }
-\tikztimingdef{LZ}{-- ++(\zslope,+\height/2.) -- ++(\width-\zslope,0) }
-\tikztimingdef{HZ}{-- ++(\zslope,-\height/2.) -- ++(\width-\zslope,0) }
-\tikztimingdef{ZH}{-- ++(\zslope,+\height/2.) -- ++(\width-\zslope,0) }
-\tikztimingdef{ZL}{-- ++(\zslope,-\height/2.) -- ++(\width-\zslope,0) }
+\tikztimingdef{LZ}{
+  -- ++(\zslope/2.,+\height/4.) node (timing@save) at ++(0,0) {};
+  \draw [timing z] (timing@save) ++(0,0) -- ++(\zslope/2.,+\height/4.) --
+  ++(\width-\zslope,0)
+}
+\tikztimingdef{HZ}{%
+  -- ++(\zslope/2.,-\height/4.) node (timing@save) at ++(0,0) {};
+  \draw [timing z] (timing@save) ++(0,0)
+  -- ++(\zslope/2.,-\height/4.) -- ++(\width-\zslope,0)
+}
+\tikztimingdef{ZH}{
+  -- ++(\zslope/2.,+\height/4.) node (timing@save) at ++(0,0) {};
+  \draw (timing@save) ++(0,0) -- ++(\zslope/2.,+\height/4.) --
+  ++(\width-\zslope,0)
+}
+\tikztimingdef{ZL}{%
+  -- ++(\zslope/2.,-\height/4.) node (timing@save) at ++(0,0) {};
+  \draw (timing@save) ++(0,0) -- ++(\zslope/2.,-\height/4.) --
+  ++(\width-\zslope,0)
+}
 
-\tikztimingdef{DZ}{}
 \tikztimingdef{ZD}{
+  node (timing@save) at ++(0,0) {};
+  \draw (timing@save) ++(0,0)
+               %++(-\width/100.,0) -- ++(\width/100.,0)
             -- ++(\dslope/2.,\height/2.)   -- ++(\width-\dslope/2.,0)
                ++(-\width,-\height/2.)
-            -- ++(\dslope/2.,-\height/2.)  -- ++(\width-\dslope/2.,0) }
+  -- ++(\dslope/2.,-\height/2.)
+            -- ++(\width-\dslope/2.,0)
+}
 \tikztimingdef{DZ}{
-               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+               %++(-\width/100.,0)        -- ++(+\width/100.,0)
             -- ++( \dslope/2.,+\height/2.)
                ++(-\dslope/2.,+\height/2.)
-               ++(-\width/10.,0)        -- ++(+\width/10.,0)
-            -- ++( \dslope/2.,-\height/2.) -- ++(\width-\dslope/2.,0) }
+               %++(-\width/100.,0)        -- ++(+\width/100.,0)
+            -- ++( \dslope/2.,-\height/2.) node (timing@save) {};
+            \draw [timing z] (timing@save) ++(0,0) -- ++(\width-\dslope/2.,0) }
 
 \tikztimingdef{LD}{
             -- ++(\dslope,\height)       -- ++(\width-\dslope,0)
                ++(-\width,-\height)        ++(\dslope/2.,+\height/2.)
             -- ++(\dslope/2.,-\height/2.)  -- ++(\width-\dslope,0) }
 \tikztimingdef{DL}{
-               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+               %++(-\width/100.,0)        -- ++(+\width/100.,0)
             -- ++( \dslope/2.,+\height/2.)
                ++(-\dslope/2.,+\height/2.)
-               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+               %++(-\width/100.,0)        -- ++(+\width/100.,0)
             -- ++(\dslope,-\height)      -- ++(\width-\dslope,0) }
 \tikztimingdef{HD}{-- ++(\dslope,-\height)
             -- ++(\width-\dslope,0)
@@ -398,10 +425,10 @@
             -- ++(\dslope/2.,+\height/2.) -- ++(\width-\dslope,0)
                ++(0,-\height) }
 \tikztimingdef{DH}{   ++(0,+\height)
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
+               %++(-\width/100.,0) -- ++(+\width/100.,0)
             -- ++(\dslope/2.,-\height/2.)
                ++(-\dslope/2.,-\height/2.)
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
+               %++(-\width/100.,0) -- ++(+\width/100.,0)
             -- ++(\dslope,+\height) -- ++(\width-\dslope,0) }
 \tikztimingdef{DD}{-- ++(+\width,0) ++(-\width*1.1,+\height) 
 %++(-\width/2.,+\height/2.) node [scale=0.75] {A} ++(-\width/2.+1,+\height/2.)
@@ -409,10 +436,10 @@
 
 \tikztimingalias{X}{D}
 \tikztimingdef{XX}{
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
+               %++(-\width/100.,0) -- ++(+\width/100.,0)
             -- ++(\dslope,+\height) -- ++(\width-\dslope,0)
                ++(-\width,0)
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
+               %++(-\width/100.,0) -- ++(+\width/100.,0)
             -- ++(\dslope,-\height) -- ++(\width-\dslope,0) }
 \tikztiminglet{DX}{XX}
 
@@ -429,6 +456,11 @@
   -- ++(\width/16.,+\height*.225)
 }
 
+\tikztimingdef{MZ}{
+  node (timing@save) at ++(0,0) {};
+  \draw [timing z] (timing@save) ++(0,0) -- ++(\width,0)
+}
+
 \tikztimingdef{m}{
      ++(0,+\height/2.)
   -- ++(\width/8.,+\height*.225)
@@ -439,6 +471,7 @@
 }
 
 \tikztimingdef{ZM}{
+  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
   -- ++(\width/16.,+\height*.075)
   -- ++(\width/8.,-\height*.20)
   -- ++(\width/8.,+\height*.25)
@@ -451,6 +484,7 @@
 }
 
 \tikztimingdef{Zm}{
+  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
   -- ++(\width/8.,+\height*.075)
   -- ++(\width/4.,-\height*.20)
   -- ++(\width/4.,+\height*.25)
@@ -574,12 +608,18 @@
 
 \tikztimingdef{TZ}{%
   node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++(\slope,\value{tikztimingtrans}*\height/2.) -- ++(\width-\slope,0)
+  -- ++(\slope/2.,\value{tikztimingtrans}*\height/4.)
+  node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
+  -- ++(\slope/2.,\value{tikztimingtrans}*\height/4.)
+  -- ++(\width-\slope,0)
 }
 
 \tikztimingdef{ZT}{%
   node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++(\slope,\value{tikztimingtrans}*\height/2.) -- ++(\width-\slope,0)
+  -- ++(\slope/2.,\value{tikztimingtrans}*\height/4.)
+  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  -- ++(\slope/2.,\value{tikztimingtrans}*\height/4.)
+  -- ++(\width-\slope,0)
 }
 
 \tikztimingdef{TT}{%
@@ -602,12 +642,40 @@
 \tikztiminglet{TX}{TD}
 \tikztimingdef{DT}{
   node {\setcounter{tikztimingtrans}{-1}}
-               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+    %           ++(-\width/100.,0)        -- ++(+\width/100.,0)
             -- ++( \dslope/2.,+\height/2.)
                ++(-\dslope/2.,+\height/2.)
-               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+    %           ++(-\width/100.,0)        -- ++(+\width/100.,0)
             -- ++(\dslope,-\height)     -- ++(\width-\dslope,0)
 }
+
+\tikztimingdef{MT}{%
+  -- ++(\slope,\value{tikztimingtrans}*\height/2.) -- ++(\width-\slope,0)
+}
+
+\tikztimingdef{TM}{%
+  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\width/16.,\value{tikztimingtrans}*\height*.50+\height*.10)
+  -- ++(\width/8.,-\height*.20)
+  -- ++(\width/8.,+\height*.25)
+  -- ++(\width/8.,-\height*.30)
+  -- ++(\width/8.,+\height*.35)
+  -- ++(\width/8.,-\height*.40)
+  -- ++(\width/8.,+\height*.45)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/16.,+\height*.20)
+}
+
+
+\tikztimingdef{Tm}{%
+  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\width/8.,\value{tikztimingtrans}*\height*.50+\height*.075)
+  -- ++(\width/4.,-\height*.20)
+  -- ++(\width/4.,+\height*.25)
+  -- ++(\width/4.,-\height*.30)
+  -- ++(\width/8.,+\height*.175)
+}
+\tikztiminglet{tm}{Tm}%
 
 \tikztimingalias{C}{T}
 \tikztimingchar{C}{++(0,0)}{
