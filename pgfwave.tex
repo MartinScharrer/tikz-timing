@@ -70,26 +70,48 @@
 }
 
 \def\pgfwavedef@#1#2\relax#3{%
+  \begingroup
   \def\@tempa{#2}%
   \uppercase{\def\@tempb{#2}}%
   \ifx\@tempa\@tempb
+    \endgroup
     \def\width{\csname wavewidth\endcsname}%
   \else
+    \endgroup
     \def\width{\csname wavewidth\endcsname/2.}%
   \fi
   \expandafter\edef\csname path#1#2\endcsname{#3}%
+  \begingroup
   \def\@tempa{#1#2}%
   \uppercase{\def\@tempb{#1#2}}%
   \ifx\@tempa\@tempb
+    \endgroup
     \uppercase{\lowercase{\pgfwavedef@{#1}}{#2}}\relax{#3}%
     \lowercase{\uppercase{\pgfwavedef@{#1}}{#2}}\relax{#3}%
     \lowercase{\pgfwavedef@{#1}{#2}}\relax{#3}%
+  \else
+    \endgroup
   \fi
 }
 
 \def\pgfwavelet#1#2{%
+  \pgfwavelet@#1\relax#2\relax
+}
+
+\def\pgfwavelet@#1#2\relax#3#4\relax{%
   \expandafter
-  \let\csname path#1\expandafter\endcsname\csname path#2\endcsname
+  \let\csname path#1#2\expandafter\endcsname\csname path#3#4\endcsname
+  \begingroup
+  \def\@tempa{#1#2}%
+  \uppercase{\def\@tempb{#1#2}}%
+  \ifx\@tempa\@tempb
+    \endgroup
+    \uppercase{\lowercase{\pgfwavelet@{#1}}{#2}}\relax{#3}{#4}\relax%
+    \lowercase{\uppercase{\pgfwavelet@{#1}}{#2}}\relax{#3}{#4}\relax%
+    \lowercase{\pgfwavelet@{#1}{#2}}\relax{#3}{#4}\relax%
+  \else
+    \endgroup
+  \fi
 }
 \AtBeginDocument{%
   \def\wavewidth{100}%
@@ -116,7 +138,6 @@
 \pgfwavedefstart{X}{(0,0) }
 
 \pgfwavedef{HH}{-- ++(\width,0) }
-\pgfwavedef{HH}{-- ++(\width,0) }
 \pgfwavedef{LL}{-- ++(\width,0) }
 \pgfwavedef{HL}{-- ++(\slope,-\height) -- ++(\width-\slope,0) }
 \pgfwavedef{LH}{-- ++(\slope, \height) -- ++(\width-\slope,0) }
@@ -132,73 +153,34 @@
 \pgfwavedef{DZ}{}
 \pgfwavedef{XZ}{}
 
-\pgfwavedef{LD}{-- ++(\slope,\height)     -- ++(\width-\slope,0)
-               ++(-\width,-\height) ++(\zslope,+\height/2.)
+\pgfwavedef{LD}{
+            -- ++(\slope,\height)       -- ++(\width-\slope,0)
+               ++(-\width,-\height)        ++(\zslope,+\height/2.)
             -- ++(\zslope,-\height/2.) -- ++(\width-\slope,0) }
-\pgfwavelet{lD}{LD}
-\pgfwavedef{Ld}{-- ++(\slope,\height)     -- ++(\width/2.-\slope,0)
-               ++(-\width/2.,-\height) ++(\zslope,+\height/2.)
-            -- ++(\zslope,-\height/2.) -- ++(\width/2.-\slope,0) }
-\pgfwavelet{ld}{Ld}
 \pgfwavedef{DL}{   ++(-\width/10.,0) -- ++(+\width/10.,0)
             -- ++( \zslope,+\height/2.)
                ++(-\zslope,+\height/2.)
                ++(-\width/10.,0) -- ++(+\width/10.,0)
             -- ++(\slope,-\height) -- ++(\width-\slope,0) }
-\pgfwavelet{dL}{dL}
-\pgfwavedef{Dl}{   ++(-\width/10.,0) -- ++(+\width/10.,0)
-            -- ++(\zslope,+\height/2.)
-               ++(-\zslope,+\height/2.)
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
-            -- ++(\slope,-\height) -- ++(\width/2.-\slope,0) }
-\pgfwavelet{dl}{Dl}
 \pgfwavedef{HD}{-- ++(\slope,-\height)
             -- ++(\width-\slope,0)
                ++(-\width,+\height) ++(\zslope,-\height/2.)
             -- ++(\zslope,+\height/2.) -- ++(\width-\slope,0)
                ++(0,-\height) }
-\pgfwavelet{hD}{HD}
-\pgfwavedef{Hd}{-- ++(\slope,-\height)
-            -- ++(\width/2.-\slope,0)
-               ++(-\width/2.,+\height) ++(\zslope,-\height/2.)
-            -- ++(\zslope,+\height/2.) -- ++(\width/2.-\slope,0)
-               ++(0,-\height) }
-\pgfwavelet{hd}{Hd}
 \pgfwavedef{DH}{   ++(0,+\height)
                ++(-\width/10.,0) -- ++(+\width/10.,0)
             -- ++(\zslope,-\height/2.)
                ++(-\zslope,-\height/2.)
                ++(-\width/10.,0) -- ++(+\width/10.,0)
             -- ++(\slope,+\height) -- ++(\width-\slope,0) }
-\pgfwavelet{dH}{DH}
-\pgfwavedef{Dh}{   ++(0,+\height)
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
-            -- ++(\zslope,-\height/2.)
-               ++(-\zslope,-\height/2.)
-               ++(-\width/10.,0) -- ++(+\width/10.,0)
-            -- ++(\slope,+\height) -- ++(\width/2.-\slope,0) }
-\pgfwavelet{dh}{Dh}
-\pgfwavedef{DD}{-- ++(+\width,0) ++(-\width*1.1,+\height) %++(-\width/2.,+\height/2.) node [scale=0.75] {A} ++(-\width/2.+1,+\height/2.)
+\pgfwavedef{DD}{-- ++(+\width,0) ++(-\width*1.1,+\height) 
+%++(-\width/2.,+\height/2.) node [scale=0.75] {A} ++(-\width/2.+1,+\height/2.)
             -- ++(+\width*1.1,0) ++(0,-\height) }
-\pgfwavelet{dD}{DD}
-\pgfwavedef{Dd}{-- ++(+\width/2.,0) ++(-\width*0.6,+\height)
-            -- ++(+\width*0.6,0) ++(0,-\height) }
-\pgfwavelet{dd}{Dd}
 
-\pgfwavelet{LX}{LD}
-\pgfwavelet{Lx}{Ld}
-\pgfwavelet{lx}{ld}
 \pgfwavelet{HX}{HD}
-\pgfwavelet{Hx}{Hd}
-\pgfwavelet{XL}{DL}
+\pgfwavelet{LX}{LD}
 \pgfwavelet{XH}{DH}
-\pgfwavelet{lX}{LD}
-\pgfwavelet{hX}{HD}
-\pgfwavelet{hx}{Hd}
-\pgfwavelet{xL}{DL}
-\pgfwavelet{Xl}{Dl}
-\pgfwavelet{xH}{DH}
-\pgfwavelet{Xh}{Dh}
+\pgfwavelet{XL}{DL}
 \pgfwavedef{XX}{
                ++(-\width/10.,0) -- ++(+\width/10.,0)
             -- ++(\slope,+\height) -- ++(\width-\slope,0)
@@ -210,22 +192,12 @@
                ++(-\width/2.,0)
                ++(-\width/10.,0) -- ++(+\width/10.,0)
             -- ++(\slope,-\height) -- ++(\width/2.-\slope,0) }
-\pgfwavelet{xX}{XX}
 \pgfwavelet{DX}{XX}
 \pgfwavelet{XD}{XX}
-\pgfwavelet{dX}{XX}
-\pgfwavelet{xD}{XX}
-\pgfwavelet{xx}{Xx}
-\pgfwavelet{Dx}{Xx}
-\pgfwavelet{Xd}{Xx}
-\pgfwavelet{dx}{Xx}
-\pgfwavelet{xd}{Xx}
-\pgfwavelet{xZ}{dZ}
-\pgfwavelet{xz}{dz}
-\pgfwavelet{xH}{dH}
-\pgfwavelet{xh}{dh}
-\pgfwavelet{xL}{dL}
-\pgfwavelet{xl}{dl}
+\pgfwavelet{XH}{DH}
+\pgfwavelet{XL}{DL}
+\pgfwavelet{XX}{XX}
+\pgfwavelet{XZ}{DZ}
 
 \def\textwaveA#1{%
   \ifx\relax#1\empty
