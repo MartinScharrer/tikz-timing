@@ -19,6 +19,13 @@
 \def\sigH{H}
 \def\sigL{L}
 
+\def\slope{0.2}
+\def\nslope{0.8}
+\def\hnslope{0.3}
+\def\zslope{0.1}
+\def\nzslope{0.9}
+\def\nhzslope{0.4}
+
 \def\pathH{-- ++(1,0) }
 \def\pathL{-- ++(1,0) }
 \def\pathHH{-- ++(1,0) }
@@ -29,14 +36,53 @@
 \def\pathLl{-- ++(0.5,0) }
 \def\pathlL{-- ++(1,0) }
 \def\pathll{-- ++(0.5,0) }
-\def\pathLH{-- ++(0.1,1)  -- ++(0.9,0) }
-\def\pathHL{-- ++(0.1,-1) -- ++(0.9,0) }
-\def\pathLh{-- ++(0,1)  -- ++(0.5,0) }
-\def\pathlh{-- ++(0,1)  -- ++(0.5,0) }
-\def\pathlH{-- ++(0,1)  -- ++(1,0) }
-\def\pathHl{-- ++(0,-1) -- ++(0.5,0) }
-\def\pathhL{-- ++(0,-1) -- ++(0.5,0) }
-\def\pathhl{-- ++(0,-1) -- ++(0.5,0) }
+\def\pathLH{-- ++(\slope,1)  -- ++(\nslope,0) }
+\def\pathHL{-- ++(\slope,-1) -- ++(\nslope,0) }
+\def\pathLh{-- ++(\slope,1)  -- ++(\hnslope,0) }
+\def\pathlh{-- ++(\slope,1)  -- ++(\hnslope,0) }
+\def\pathlH{-- ++(\slope,1)  -- ++(\nslope,0) }
+\def\pathHl{-- ++(\slope,-1) -- ++(\hnslope,0) }
+\def\pathhL{-- ++(\slope,-1) -- ++(\hnslope,0) }
+\def\pathhl{-- ++(\slope,-1) -- ++(\hnslope,0) }
+
+\def\pathZZ{-- ++(1,0) }
+\def\pathLZ{-- ++(\zslope,+0.5) -- ++(\nzslope,0) }
+\def\pathHZ{-- ++(\zslope,-0.5) -- ++(\nzslope,0) }
+\def\pathZL{-- ++(\zslope,-0.5) -- ++(\nzslope,0) }
+\def\pathZH{-- ++(\zslope,+0.5) -- ++(\nzslope,0) }
+\def\pathlZ{-- ++(\zslope,+0.5) -- ++(\nzslope,0) }
+\def\pathhZ{-- ++(\zslope,-0.5) -- ++(\nzslope,0) }
+\def\pathZl{-- ++(\zslope,-0.5) -- ++(\nzslope,0) }
+\def\pathZh{-- ++(\zslope,+0.5) -- ++(\nzslope,0) }
+\def\pathzz{-- ++(1,0) }
+\def\pathLz{-- ++(\zslope,+0.5) -- ++(\nhzslope,0) }
+\def\pathHz{-- ++(\zslope,-0.5) -- ++(\nhzslope,0) }
+\def\pathzL{-- ++(\zslope,-0.5) -- ++(\nhzslope,0) }
+\def\pathzH{-- ++(\zslope,+0.5) -- ++(\nhzslope,0) }
+\def\pathlz{-- ++(\zslope,+0.5) -- ++(\nhzslope,0) }
+\def\pathhz{-- ++(\zslope,-0.5) -- ++(\nhzslope,0) }
+\def\pathzl{-- ++(\zslope,-0.5) -- ++(\nhzslope,0) }
+\def\pathzh{-- ++(\zslope,+0.5) -- ++(\nhzslope,0) }
+
+\def\pathLD{-- ++(\slope,1)     -- ++(\nslope,0)
+               ++(-1,-1) ++(\zslope,+0.5)
+            -- ++(\zslope,-0.5) -- ++(\nslope,0) }
+\def\pathDL{-- ++(\zslope,+0.5)
+               ++(-\zslope,+0.5)
+            -- ++(\slope,-1) -- ++(\nslope,0) }
+\def\pathHD{
+            -- ++(\slope,-1)
+            -- ++(\nslope,0)
+               ++(-1,+1) ++(\zslope,-0.5)
+            -- ++(\zslope,+0.5) -- ++(\nslope,0)
+               ++(0.0,-1) }
+\def\pathDH{   ++(0.0,+1)
+            -- ++(\zslope,-0.5)
+               ++(-\zslope,-0.5)
+            -- ++(\slope,+1) -- ++(\nslope,0) }
+\def\pathDD{-- ++(\slope,+1.0) -- ++(\nslope,0)
+               ++(-1,0)
+            -- ++(\slope,-1.0) -- ++(\nslope,0) }
 
 \def\textwaveX#1{%
   \ifx\relax#1\empty
@@ -58,11 +104,15 @@
  Test A & \textwave{HLHLHLHLHLHLHLHLHLHLHLHL} \\
  Test B & \textwave{LLHHHHHHHHHHLLLLLLLLLLLL} \\
  Test C & \textwave{LLLLLLLLLHHHHHLHLHLHLLHH} \\
+ Test C & \textwave{LLLLLLLLzHHHHHLHLHLHLLHH} \\
  Test C & \textwave{LLLLLLLLLlhHHHHLHLHLHLLHH} \\
+ Test C & \textwave{LHLZZLZHZZLH} \\
+ Test C & \textwave{lhlzzlzhzzlh} \\
  Test C & \textwave{LH} \\
  Test C & \textwave{lh} \\
  Test C & \textwave{Lh} \\
  Test C & \textwave{lH} \\
+ Test C & \textwave{LDDDLHDDDDH} \\
 \end{tabular}
 
 \end{document}
