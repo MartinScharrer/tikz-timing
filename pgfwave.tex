@@ -1,0 +1,70 @@
+%&pdflatex
+\documentclass{article}
+
+\usepackage{tikz}
+
+
+\def\textwave#1{%
+  \begingroup
+    \def\lastchar{L}%
+    \let\currentchar\empty
+    \let\str\empty
+    \textwaveX#1\relax
+    \begin{tikzpicture}[x=1.75ex,y=1.75ex,line width=0.75pt]
+      \draw (0,0) \str;
+    \end{tikzpicture}
+  \endgroup
+}
+
+\def\sigH{H}
+\def\sigL{L}
+
+\def\pathH{-- ++(1,0) }
+\def\pathL{-- ++(1,0) }
+\def\pathHH{-- ++(1,0) }
+\def\pathHh{-- ++(0.5,0) }
+\def\pathhh{-- ++(0.5,0) }
+\def\pathhH{-- ++(1,0) }
+\def\pathLL{-- ++(1,0) }
+\def\pathLl{-- ++(0.5,0) }
+\def\pathlL{-- ++(1,0) }
+\def\pathll{-- ++(0.5,0) }
+\def\pathLH{-- ++(0.1,1)  -- ++(0.9,0) }
+\def\pathHL{-- ++(0.1,-1) -- ++(0.9,0) }
+\def\pathLh{-- ++(0,1)  -- ++(0.5,0) }
+\def\pathlh{-- ++(0,1)  -- ++(0.5,0) }
+\def\pathlH{-- ++(0,1)  -- ++(1,0) }
+\def\pathHl{-- ++(0,-1) -- ++(0.5,0) }
+\def\pathhL{-- ++(0,-1) -- ++(0.5,0) }
+\def\pathhl{-- ++(0,-1) -- ++(0.5,0) }
+
+\def\textwaveX#1{%
+  \ifx\relax#1\empty
+  \else
+    \def\currentchar{#1}%
+    \edef\str{\str\csname path\lastchar\currentchar\endcsname}%
+    \let\lastchar\currentchar
+    \expandafter
+    \textwaveX
+  \fi
+}
+
+\begin{document}
+
+\noindent
+\sffamily
+\begin{tabular}{ll}
+ Test A & \textwave{hlhlhlhlhlhlhlhlhlhlhlhl} \\
+ Test A & \textwave{HLHLHLHLHLHLHLHLHLHLHLHL} \\
+ Test B & \textwave{LLHHHHHHHHHHLLLLLLLLLLLL} \\
+ Test C & \textwave{LLLLLLLLLHHHHHLHLHLHLLHH} \\
+ Test C & \textwave{LLLLLLLLLlhHHHHLHLHLHLLHH} \\
+ Test C & \textwave{LH} \\
+ Test C & \textwave{lh} \\
+ Test C & \textwave{Lh} \\
+ Test C & \textwave{lH} \\
+\end{tabular}
+
+\end{document}
+
+
