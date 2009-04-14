@@ -861,24 +861,20 @@ TikZ]
 
 \tikztimingdef{ZZ}{-- ++(#1,0)}
 \tikztimingdef{LZ}{
-  -- ++(\zslope/2.,+\height/4.)
   node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
-  -- ++(\zslope/2.,+\height/4.) -- ++($ (#1,0) - (\zslope,0) $)
+  -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{HZ}{%
-  -- ++(\zslope/2.,-\height/4.)
   node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
-  -- ++(\zslope/2.,-\height/4.) -- ++($ (#1,0) - (\zslope,0) $)
+  -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{ZH}{
-  -- ++(\zslope/2.,+\height/4.)
   node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
-  -- ++(\zslope/2.,+\height/4.) -- ++($ (#1,0) - (\zslope,0) $)
+  -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{ZL}{%
-  -- ++(\zslope/2.,-\height/4.)
   node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
-  -- ++(\zslope/2.,-\height/4.) -- ++($ (#1,0) - (\zslope,0) $)
+  -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 \tikztimingdef{ZD}{
