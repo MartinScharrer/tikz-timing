@@ -4,7 +4,7 @@
 \ProvidesPackage{pgfwave}[2009/04/06 v0.1a Draw Digital Wave Diagrams]
 \RequirePackage{tikz}
 
-\def\dwprefix{path@}
+\def\path{path@}
 
 \def\textwave#1{%
   \begingroup
@@ -14,52 +14,15 @@
     \let\str\empty
     \textwaveX#1\relax
     %\message{^^J\meaning\str}%
-    \begin{tikzpicture}[x=1.75ex,y=1.75ex,thick]
-      %\draw[step=50,very thin,color=gray] (0,0) grid (50*\value{pgfwavechars},100);
-      \draw (0,0) \str;%
+    \begin{tikzpicture}[x=.0175ex,y=.0175ex,line width=0.5pt]%
+      \draw[step=50,very thin,color=gray] (0,0) grid (50*\value{pgfwavechars},100);
+      \draw (0,0) \str;
     \end{tikzpicture}
-    \ifnum\c@maxpgfwavechars<\c@pgfwavechars
-      \global\c@maxpgfwavechars=\c@pgfwavechars
-    \fi
   \endgroup
-}
-
-\def\wave{
-  \@ifnextchar{[}%
-    {\wave@}%
-    {\wave@[]}%
-}
-
-\def\wave@[#1]{%
-  \@ifnextchar{+}%
-    {\wave@@{#1}}%
-    {\@ifnextchar{(}%
-      {\wave@@{#1}}%
-      {\wave@@{#1}(0,0)}%
-    }%
-}
-
-\def\wave@@#1#2(#3){%
-  \wave@@@{#1}{#2(#3)}%
-}
-
-\def\wave@@@#1#2#3{%
-  \begingroup
-    \def\lastchar{}%
-    \setcounter{pgfwavechars}{0}%
-    \let\currentchar\empty
-    \let\str\empty
-    \textwaveX#3\relax
-    \draw [x=1.75ex,y=1.75ex,thick,#1] #2 \str;%
-    \ifnum\c@maxpgfwavechars<\c@pgfwavechars
-      \global\c@maxpgfwavechars=\c@pgfwavechars
-    \fi
-  \endgroup
-  \@ifnextchar{;}{\@gobble}{}%
 }
 
 \newcounter{pgfwavechars}
-\newcounter{maxpgfwavechars}
+
 
 \def\textwaveX#1{%
   \ifx\relax#1\empty
@@ -68,7 +31,7 @@
       {\addtocounter{pgfwavechars}{+1}}%
       {\addtocounter{pgfwavechars}{+2}}%
     \def\currentchar{#1}%
-    \edef\str{\str\csname \dwprefix\lastchar\currentchar\endcsname}%
+    \edef\str{\str\csname \path\lastchar\currentchar\endcsname}%
     \let\lastchar\currentchar
     \expandafter
     \textwaveX
@@ -80,7 +43,6 @@
 
 \def\slope{\csname waveslope\endcsname}%
 \def\zslope{\csname wavezslope\endcsname}%
-\def\dslope{\csname wavedslope\endcsname}%
 
 \makeatletter
 
@@ -100,9 +62,10 @@
 
 
 \def\pgfwavesetslope#1{%
-  \edef\waveslope{#1/100.0*\width}%
-  \edef\wavezslope{#1/200.0*\width}%
-  \edef\wavedslope{#1/25.0*\width}%
+  \@tempcnta=#1\relax
+  \edef\waveslope{\the\@tempcnta}%
+  \divide\@tempcnta by 2\relax
+  \edef\wavezslope{\the\@tempcnta}%
 }
 \AtBeginDocument{%
   \pgfwavesetslope{10}%
@@ -122,12 +85,12 @@
     \pgfwave@iflower{#1}%
       {\def\width{\csname wavewidth\endcsname/2.}}%
       {\def\width{\csname wavewidth\endcsname}}%
-    \expandafter\edef\csname \dwprefix#1\endcsname{#3}%
+    \expandafter\edef\csname \path#1\endcsname{#3}%
   \else
     \pgfwave@iflower{#2}%
       {\def\width{\csname wavewidth\endcsname/2.}}%
       {\def\width{\csname wavewidth\endcsname}}%
-    \expandafter\edef\csname \dwprefix#1#2\endcsname{#3}%
+    \expandafter\edef\csname \path#1#2\endcsname{#3}%
     \pgfwave@iflower{#2}{}%
       {\pgfwave@iflower{#1}{}%
         {%
@@ -145,7 +108,7 @@
 
 \def\pgfwavelet@#1#2\relax#3#4\relax{%
   \expandafter
-  \let\csname \dwprefix#1#2\expandafter\endcsname\csname \dwprefix#3#4\endcsname
+  \let\csname \path#1#2\expandafter\endcsname\csname \path#3#4\endcsname
   \pgfwave@iflower{#1}{}%
     {\pgfwave@iflower{#2}{}%
       {%
@@ -158,8 +121,8 @@
     }%
 }
 \AtBeginDocument{%
-  \def\wavewidth{1}%
-  \def\waveheight{1}%
+  \def\wavewidth{100}%
+  \def\waveheight{100}%
 }
 \def\width{\csname wavewidth\endcsname}
 \def\fwidth{\csname wavewidth\endcsname}
@@ -177,9 +140,9 @@
 
 \def\pgfwavechar@#1#2#3{%
   \def\width{\csname wavewidth\endcsname}%
-  \@nameedef{\dwprefix#1}{#2#3}%
+  \@nameedef{\path#1}{#2#3}%
   \def\width{\csname wavewidth\endcsname/2.}%
-  \lowercase{\@nameedef{\dwprefix#1}}{#2#3}%
+  \lowercase{\@nameedef{\path#1}}{#2#3}%
   \pgfwavedef{#1#1}{#3}%
 }
 
@@ -189,12 +152,12 @@
 
 \def\pgfwavealias@#1#2{%
   \expandafter
-  \let\csname \dwprefix#1\expandafter\endcsname
-  \csname \dwprefix#2\endcsname
+  \let\csname \path#1\expandafter\endcsname
+  \csname \path#2\endcsname
   \lowercase{%
   \expandafter
-  \let\csname \dwprefix#1\expandafter\endcsname
-  \csname \dwprefix#2\endcsname
+  \let\csname \path#1\expandafter\endcsname
+  \csname \path#2\endcsname
   }%
   \uppercase{\pgfwavelet{#1#1}{#2#2}}%
   \uppercase{%
@@ -210,10 +173,10 @@
   \pgfwavelet{#2#1}{#3#1}%
 }
 
-\pgfwavechar{H}{++(0,\height)}{-- ++(\width,0) }
-\pgfwavechar{L}{++(0,0)}{-- ++(\width,0) }
-\pgfwavechar{Z}{++(0,\height/2.)}{-- ++(\width,0) }
-\pgfwavechar{D}{++(0,0)}{-- ++(+\width,0) ++(-\width*1.1,+\height)
+\pgfwavechar{H}{(0,\height)}{-- ++(\width,0) }
+\pgfwavechar{L}{(0,0)}{-- ++(\width,0) }
+\pgfwavechar{Z}{(0,\height/2.)}{-- ++(\width,0) }
+\pgfwavechar{D}{(0,0)}{-- ++(+\width,0) ++(-\width*1.1,+\height)
                 -- ++(+\width*1.1,0) ++(0,-\height) }
 
 \pgfwavedef{HH}{-- ++(\width,0) }
@@ -229,37 +192,37 @@
 
 \pgfwavedef{DZ}{}
 \pgfwavedef{ZD}{
-            -- ++(\dslope/2.,\height/2.)   -- ++(\width-\dslope/2.,0)
+            -- ++(\zslope,\height/2.)   -- ++(\width-\zslope,0)
                ++(-\width,-\height/2.)
-            -- ++(\dslope/2.,-\height/2.)  -- ++(\width-\dslope/2.,0) }
+            -- ++(\zslope,-\height/2.)  -- ++(\width-\zslope,0) }
 \pgfwavedef{DZ}{
                ++(-\width/10.,0)        -- ++(+\width/10.,0)
-            -- ++( \dslope/2.,+\height/2.)
-               ++(-\dslope/2.,+\height/2.)
+            -- ++( \zslope,+\height/2.)
+               ++(-\zslope,+\height/2.)
                ++(-\width/10.,0)        -- ++(+\width/10.,0)
-            -- ++( \dslope/2.,-\height/2.) -- ++(\width-\dslope/2.,0) }
+            -- ++( \zslope,-\height/2.) -- ++(\width-\zslope,0) }
 
 \pgfwavedef{LD}{
-            -- ++(\dslope,\height)       -- ++(\width-\dslope,0)
-               ++(-\width,-\height)        ++(\dslope/2.,+\height/2.)
-            -- ++(\dslope/2.,-\height/2.)  -- ++(\width-\dslope,0) }
+            -- ++(\slope,\height)       -- ++(\width-\slope,0)
+               ++(-\width,-\height)        ++(\zslope,+\height/2.)
+            -- ++(\zslope,-\height/2.)  -- ++(\width-\slope,0) }
 \pgfwavedef{DL}{
                ++(-\width/10.,0)        -- ++(+\width/10.,0)
-            -- ++( \dslope/2.,+\height/2.)
-               ++(-\dslope/2.,+\height/2.)
+            -- ++( \zslope,+\height/2.)
+               ++(-\zslope,+\height/2.)
                ++(-\width/10.,0)        -- ++(+\width/10.,0)
-            -- ++(\dslope,-\height)      -- ++(\width-\dslope,0) }
-\pgfwavedef{HD}{-- ++(\dslope,-\height)
-            -- ++(\width-\dslope,0)
-               ++(-\width,+\height) ++(\dslope/2.,-\height/2.)
-            -- ++(\dslope/2.,+\height/2.) -- ++(\width-\dslope,0)
+            -- ++(\slope,-\height)      -- ++(\width-\slope,0) }
+\pgfwavedef{HD}{-- ++(\slope,-\height)
+            -- ++(\width-\slope,0)
+               ++(-\width,+\height) ++(\zslope,-\height/2.)
+            -- ++(\zslope,+\height/2.) -- ++(\width-\slope,0)
                ++(0,-\height) }
 \pgfwavedef{DH}{   ++(0,+\height)
                ++(-\width/10.,0) -- ++(+\width/10.,0)
-            -- ++(\dslope/2.,-\height/2.)
-               ++(-\dslope/2.,-\height/2.)
+            -- ++(\zslope,-\height/2.)
+               ++(-\zslope,-\height/2.)
                ++(-\width/10.,0) -- ++(+\width/10.,0)
-            -- ++(\dslope,+\height) -- ++(\width-\dslope,0) }
+            -- ++(\slope,+\height) -- ++(\width-\slope,0) }
 \pgfwavedef{DD}{-- ++(+\width,0) ++(-\width*1.1,+\height) 
 %++(-\width/2.,+\height/2.) node [scale=0.75] {A} ++(-\width/2.+1,+\height/2.)
             -- ++(+\width*1.1,0) ++(0,-\height) }
@@ -267,14 +230,14 @@
 \pgfwavealias{X}{D}
 \pgfwavedef{XX}{
                ++(-\width/10.,0) -- ++(+\width/10.,0)
-            -- ++(\dslope,+\height) -- ++(\width-\dslope,0)
+            -- ++(\slope,+\height) -- ++(\width-\slope,0)
                ++(-\width,0)
                ++(-\width/10.,0) -- ++(+\width/10.,0)
-            -- ++(\dslope,-\height) -- ++(\width-\dslope,0) }
+            -- ++(\slope,-\height) -- ++(\width-\slope,0) }
 \pgfwavelet{DX}{XX}
 
 \pgfwavealias{M}{Z}
-\pgfwavechar{M}{++(0,\height/2.)}{
+\pgfwavechar{M}{(0,\height/2.)}{
   -- ++(\width/16.,+\height*.225)
   -- ++(\width/8.,-\height*.45)
   -- ++(\width/8.,+\height*.45)
