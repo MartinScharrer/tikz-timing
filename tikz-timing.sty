@@ -86,7 +86,10 @@
       {\addtocounter{tikztimingchars}{+1}}%
       {\addtocounter{tikztimingchars}{+2}}%
     \def\currentchar{#1}%
-    \edef\tikztiming@str{\tikztiming@str\csname \tikztiming@prefix\lastchar\currentchar\endcsname}%
+    \edef\tikztiming@str{%
+        \tikztiming@str
+        \csname\tikztiming@prefix\lastchar\currentchar\endcsname
+    }%
     \let\lastchar\currentchar
     \expandafter
     \texttiming@
