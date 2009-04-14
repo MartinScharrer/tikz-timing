@@ -1,0 +1,57 @@
+%&pdflatex
+\documentclass{article}
+
+\usepackage{tikz-timing}
+\usetikzlibrary{backgrounds}
+\usepackage{environ}
+
+\NewEnviron{tikztiming}{%
+  \begin{tikzpicture}[x=1.75ex,y=1.75ex]%
+  \def\extracode{\@gobble{EXTRACODE}}%
+  \setcounter{maxtikztimingchars}{0}%
+  \setcounter{tikztiming}{+2}%
+  \expandafter\tikztimingX\BODY\endtikztimingX
+}[\end{tikzpicture}]
+
+
+\makeatletter
+
+\def\endtikztimingX{\@gobble{ENDTIKSTIMING}}
+\long\def\tikztimingextracode#1\endtikztimingX{#1}
+
+\newcounter{tikztiming}
+
+\def\tikztimingX#1&#2\\{%
+  \addtocounter{tikztiming}{-2}%
+  \path (-1,\value{tikztiming}) node [anchor=base east,font=\sffamily] {#1};
+  \timing (+0,\value{tikztiming}) {#2};
+  \@ifnextchar\extracode
+    {\tikztimingextracode}%
+    {%
+      \@ifnextchar\endtikztimingX
+        {\@gobble}{\tikztimingX}%
+    }%
+}
+\makeatother
+
+\begin{document}
+
+\begin{tikztiming}
+  Clock   & HLHLHLHLHLHLH \\
+  Date    & HLLLLHHHLHLLLLHMDLL \\
+  Enable  & ZDDDZDDDZZZZZ \\
+  Enable  & zdddzdddzzzzz hlhlMlhldlhzz \\
+\extracode
+ \begin{pgfonlayer}{background}
+   \begin{scope}[shift={(0,\value{tikztiming})}]
+    \draw[step=.5,ultra thin,gray]
+    (0,0) grid +(0.5*\value{maxtikztimingchars},-1*\value{tikztiming}+1);
+    \draw (0,0) circle (0.1pt);
+  \end{scope}
+ \end{pgfonlayer}
+\end{tikztiming}
+
+
+\end{document}
+
+
