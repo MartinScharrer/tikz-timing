@@ -251,10 +251,7 @@ TikZ]
     \@ifundefined{\tikztiming@prefix\lastchar @start}%
       {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
       is not defined and will be ignored!}{}{}{}}%
-      {%
-        \tikztiming@eaddtostr{\csname\tikztiming@prefix\lastchar 
-        @start\endcsname}%
-      }%
+      {\tikztiming@nameaddtostr{\lastchar @start}}%
     \tikztiming@#2\relax
     \message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
@@ -393,6 +390,16 @@ TikZ]
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@nameaddtostr}
+%    \begin{macrocode}
+\def\tikztiming@nameaddtostr#1{%
+  \expandafter\g@addto@macro
+  \expandafter\tikztiming@str
+  \expandafter{\csname\tikztiming@prefix#1\endcsname}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@nameedef}
 %    \begin{macrocode}
 \newcommand\tikztiming@nameedef[3][A]{%
@@ -433,11 +440,7 @@ TikZ]
     \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
       {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' is
        not defined and will be ignored!}{}{}{}}%
-      {%
-        \tikztiming@eaddtostr{%
-          \csname\tikztiming@prefix\lastchar\currentchar\endcsname
-        }%
-      }%
+      {\tikztiming@nameaddtostr{\lastchar\currentchar}}%
     \@ifundefined{tikztiming@aftercode@\currentchar}%
       {\tikztiming@dlength=0\relax}%
       {\@nameuse{tikztiming@aftercode@\currentchar}}%
