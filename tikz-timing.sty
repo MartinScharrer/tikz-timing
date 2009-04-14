@@ -9,9 +9,20 @@
 
 \def\tikztiming@prefix{tikztiming@}
 
-\def\tikztimingx{1.75ex}
-\def\tikztimingy{1.75ex}
-\def\tikztimingoptions{thick}
+
+\tikzset{timing/.style={line width=0.15ex,x=1.6ex,y=1.6ex}}
+\tikzset{timing grid/.style={timing,help lines}}
+\tikzset{texttiming/.style={timing}}
+\tikzset{timing table/.style={timing}}
+\tikzset{timing name/.style={font=\sffamily}}
+
+\def\texttimingbefore{}
+\def\texttimingafter{}
+
+\def\texttiminggrid{%
+  \draw[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing grid] (0,0) grid 
+  (\timingwidth*\value{tikztimingchars}/2.,\timingheight);
+}
 
 \def\texttiming#1{%
   \begingroup
@@ -20,11 +31,13 @@
     \let\currentchar\empty
     \let\tikztiming@str\empty
     \texttiming@#1\relax
-    \begin{tikzpicture}
-      [x=\tikztimingx,y=\tikztimingy,\tikztimingoptions]
-      %\draw[step=50,very thin,color=gray] (0,0) grid (50*\value{tikztimingchars},100);
+    \begin{tikzpicture}[texttiming]%
+      \path[use as bounding box] (0,0) rectangle %
+      (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
+      \texttimingbefore
       \draw (0,0) \tikztiming@str;%
-    \end{tikzpicture}
+      \texttimingafter
+    \end{tikzpicture}%
   \endgroup
 }
 
@@ -54,7 +67,7 @@
     \let\currentchar\empty
     \let\tikztiming@str\empty
     \texttiming@#3\relax
-    \draw [x=\tikztimingx,y=\tikztimingy,\tikztimingoptions,#1] #2 \tikztiming@str;%
+    \draw [timing,#1] #2 \tikztiming@str;%
     \ifnum\c@maxtikztimingchars<\c@tikztimingchars
       \global\c@maxtikztimingchars=\c@tikztimingchars
     \fi
@@ -107,7 +120,7 @@
 \def\tikztimingsetslope#1{%
   \edef\timingslope{#1/100.0*\width}%
   \edef\timingzslope{#1/200.0*\width}%
-  \edef\timingdslope{#1/200.0*\width}%
+  \edef\timingdslope{#1/50.0*\width}%
 }
 
 \def\tikztimingsetdslope#1{%
@@ -403,4 +416,44 @@
 \tikztiminglet{xm}{dm}
 
 
+%\usetikzlibrary{backgrounds}
+\RequirePackage{environ}
+\newcounter{tikztimingrows}
+\def\tikztimingrowdist{2}
+\def\tikztimingrowpos{-\tikztimingrowdist*\value{tikztimingrows}}
+\def\tikztiming@extracode{\@gobble{EXTRACODE}}%
+
+\NewEnviron{tikztimingtable}{%
+  \begin{tikzpicture}[timing table]%
+  \let\extracode\tikztiming@extracode
+  \let\tablegrid\tikztiming@tablegrid
+  \setcounter{maxtikztimingchars}{0}%
+  \setcounter{tikztimingrows}{-1}%
+  \expandafter\tikztimingtable@\BODY\endtikztimingtable@
+}[\end{tikzpicture}]
+
+\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
+\long\def\tikztimingextracode#1\endtikztimingtable@{#1}
+
+\def\tikztimingtable@#1&#2\\{%
+  \addtocounter{tikztimingrows}{1}%
+  \path (-1,\tikztimingrowpos) node [anchor=base east,timing name] {#1};
+  \timing (+0,\tikztimingrowpos) {#2};
+  \@ifnextchar\extracode
+    {\tikztimingextracode}%
+    {%
+      \@ifnextchar\endtikztimingtable@
+        {\@gobble}{\tikztimingtable@}%
+    }%
+}
+
+\tikzset{timing table grid/.style={timing grid}}
+
+\def\tikztiming@tablegrid{%
+ \begin{pgfonlayer}{background}
+    \draw[timing table grid]
+    (0,\tikztimingrowpos) grid 
+    +(0.5*\value{maxtikztimingchars},-1*\tikztimingrowpos+1);
+ \end{pgfonlayer}
+}
 
