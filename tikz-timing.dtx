@@ -85,7 +85,7 @@
 % \DoNotIndex{\ProvidesPackage,\providecommand,\RequirePackage,\empty,\begin,\end}
 % \DoNotIndex{\begingroup,\bgroup,\egroup,\endgroup,\csname,\endcsname,\@tempa}
 % \DoNotIndex{\ignorespaces,\lccode,\sffamily,\@gobble,\@ifundefined,\@for}
-% \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameedef,\@nameuse,\@secondoftwo}
+% \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameuse,\@secondoftwo}
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
 %
 % \title{The \textsf{tikz-timing} package\thanks{This document
@@ -389,6 +389,32 @@ TikZ]
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@nameedef}
+%    \begin{macrocode}
+\newcommand\tikztiming@nameedef[3][A]{%
+  \begingroup
+    \tikztiming@internaldefs
+    \tikztiming@iflower{#1}%
+      {\def\width{\noexpand\timingwidth/2.}}%
+      {\def\width{\noexpand\timingwidth}}%
+    \xdef\@gtempa{#3}%
+  \endgroup
+  \expandafter\let\csname\tikztiming@prefix#2\endcsname\@gtempa
+  \let\@gtempa\empty
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@namelet}
+%    \begin{macrocode}
+\newcommand\tikztiming@namelet[2]{%
+  \expandafter\let
+  \csname\tikztiming@prefix#1\expandafter\endcsname
+  \csname\tikztiming@prefix#2\endcsname
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@@}
 %    \begin{macrocode}
 \def\tikztiming@@#1{%
@@ -436,13 +462,11 @@ TikZ]
 % \begin{macro}{\tikztiming@handletext@}
 %    \begin{macrocode}
 \def\tikztiming@handletext@[#1]#2\relax{%
-  \tikztiming@eaddtostr{%
-    node [%]
-      shift={(-\the\tikztiming@dlength/4.+\dslope/2., \height/2.)},
-      timing d text,
-  }%
-  \tikztiming@addtostr{%[
-    #1 ] {#2}%
+  \tikztiming@addtostr{%
+    node [
+      shift={(-\the\tikztiming@dlength/4.+\timingdslope/2., \timingheight/2.)},
+      timing d text, #1%
+    ] {#2}%
   }%
   \tikztiming@dlength=0\relax
   \tikztiminglet{DD}{SD}%
@@ -603,43 +627,25 @@ TikZ]
 % \end{macro}
 %
 % \begin{macro}{\timingwidth}
+% \begin{macro}{\timingheight}
 %    \begin{macrocode}
 \def\timingwidth{1}%
 \def\timingheight{1}%
-
-\def\draw{\noexpand\draw}
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{macro}{\width}
-%    \begin{macrocode}
-\def\width{\noexpand\timingwidth}
-%    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\fwidth}
+% \begin{macro}{\tikztiming@internaldefs}
 %    \begin{macrocode}
-\def\fwidth{\noexpand\timingwidth}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\width}
-%    \begin{macrocode}
-\def\width{\noexpand\timingwidth}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\height}
-%    \begin{macrocode}
-\def\height{\noexpand\timingheight}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\slope}
-%    \begin{macrocode}
-\def\slope{\noexpand\timingslope}%
-\def\zslope{\noexpand\timingzslope}%
-\def\dslope{\noexpand\timingdslope}%
+\def\tikztiming@internaldefs{%
+  \def\draw{\noexpand\draw}%
+  \def\width{\noexpand\timingwidth}%
+  \def\fwidth{\noexpand\timingwidth}%
+  \def\height{\noexpand\timingheight}%
+  \def\slope{\noexpand\timingslope}%
+  \def\zslope{\noexpand\timingzslope}%
+  \def\dslope{\noexpand\timingdslope}%
+}
 %    \end{macrocode}
 % \end{macro}
 
@@ -670,11 +676,6 @@ TikZ]
 % \end{macro}
 %    \begin{macrocode}
 \tikztimingsetslope{10}%
-
-\providecommand*\@nameedef[1]{%
-  \expandafter\edef
-  \csname #1\endcsname
-}
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztimingdef}
@@ -689,15 +690,9 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztimingdef@#1#2\relax#3{%
   \ifx\relax#2\relax
-    \tikztiming@iflower{#1}%
-      {\def\width{\noexpand\timingwidth/2.}}%
-      {\def\width{\noexpand\timingwidth}}%
-    \expandafter\edef\csname\tikztiming@prefix#1\endcsname{#3}%
+    \tikztiming@nameedef[#1]{#1}{#3}%
   \else
-    \tikztiming@iflower{#2}%
-      {\def\width{\noexpand\timingwidth/2.}}%
-      {\def\width{\noexpand\timingwidth}}%
-    \expandafter\edef\csname\tikztiming@prefix#1#2\endcsname{#3}%
+    \tikztiming@nameedef[#2]{#1#2}{#3}%
     \tikztiming@iflower{#2}{}%
       {\tikztiming@iflower{#1}{}%
         {%
@@ -722,9 +717,7 @@ TikZ]
 % \begin{macro}{\tikztiminglet@}
 %    \begin{macrocode}
 \def\tikztiminglet@#1#2\relax#3#4\relax{%
-  \expandafter
-  \let\csname\tikztiming@prefix#1#2\expandafter\endcsname
-  \csname\tikztiming@prefix#3#4\endcsname
+  \tikztiming@namelet{#1#2}{#3#4}%
   \tikztiming@iflower{#1}{}%
     {\tikztiming@iflower{#2}{}%
       {%
@@ -764,12 +757,10 @@ TikZ]
 % \begin{macro}{\tikztimingchar@}
 %    \begin{macrocode}
 \def\tikztimingchar@#1#2#3{%
-  \def\width{\noexpand\timingwidth}%
-  \@nameedef{\tikztiming@prefix#1@start}{#2}%
-  \lowercase{\@nameedef{\tikztiming@prefix#1@start}}{#2}%
-  \@nameedef{\tikztiming@prefix#1}{#2#3}%
-  \def\width{\noexpand\timingwidth/2.}%
-  \lowercase{\@nameedef{\tikztiming@prefix#1}}{#2#3}%
+  \tikztiming@nameedef[#1]{#1@start}{#2}%
+  \lowercase{\tikztiming@nameedef[#1]{#1@start}}{#2}%
+  \tikztiming@nameedef[#1]{#1}{#2#3}%
+  \lowercase{\tikztiming@nameedef[#1]{#1}}{#2#3}%
   \tikztimingdef{#1#1}{#3}%
 }
 %    \end{macrocode}
@@ -786,19 +777,11 @@ TikZ]
 % \begin{macro}{\tikztimingalias@}
 %    \begin{macrocode}
 \def\tikztimingalias@#1#2{%
-  \expandafter
-  \let\csname\tikztiming@prefix#1\expandafter\endcsname
-  \csname\tikztiming@prefix#2\endcsname
-  \expandafter
-  \let\csname\tikztiming@prefix#1@start\expandafter\endcsname
-  \csname\tikztiming@prefix#2@start\endcsname
+  \tikztiming@namelet{#1}{#2}%
+  \tikztiming@namelet{#1@start}{#2@start}%
   \lowercase{%
-  \expandafter
-  \let\csname\tikztiming@prefix#1\expandafter\endcsname
-  \csname\tikztiming@prefix#2\endcsname
-  \expandafter
-  \let\csname\tikztiming@prefix#1@start\expandafter\endcsname
-  \csname\tikztiming@prefix#2@start\endcsname
+  \tikztiming@namelet{#1}{#2}%
+  \tikztiming@namelet{#1@start}{#2@start}%
   }%
   \uppercase{\tikztiminglet{#1#1}{#2#2}}%
   \uppercase{%
