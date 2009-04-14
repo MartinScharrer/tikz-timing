@@ -249,12 +249,15 @@ TikZ]
   \begingroup
     \tikztiming@init
     \def\lastchar{#1}%
+    \@ifundefined{tikztiming@initcode@\lastchar}%
+      {}%
+      {\@nameuse{tikztiming@initcode@\lastchar}}%
     \@ifundefined{\tikztiming@prefix\lastchar @start}%
       {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
       is not defined and will be ignored!}{}{}{}}%
       {\tikztiming@nameaddtostr{\lastchar @start}}%
     \tikztiming@#2\relax
-    \message{^^J\meaning\tikztiming@str^^J}%
+    %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle
       (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
@@ -330,7 +333,6 @@ TikZ]
 % \begin{macro}{\tikztiming@aftercode@D}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@D{%
-  \tikztiminglet{DD}{DS}%
   \advance\tikztiming@dlength by +2\relax
 }
 %    \end{macrocode}
@@ -339,24 +341,39 @@ TikZ]
 % \begin{macro}{\tikztiming@aftercode@d}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@d{%
-  \tikztiminglet{DD}{DS}%
   \advance\tikztiming@dlength by +1\relax
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@aftercode@X}
+% \begin{macro}{\tikztiming@beforecode@D@edge@}
 %    \begin{macrocode}
-\def\tikztiming@aftercode@X{%
-  \tikztiming@dlength=2\relax
+\def\tikztiming@beforecode@D@edge@{%
+  \def\currentchar{D}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@aftercode@x}
+% \begin{macro}{\tikztiming@beforecode@d@edge@}
 %    \begin{macrocode}
-\def\tikztiming@aftercode@x{%
-  \tikztiming@dlength=1\relax
+\def\tikztiming@before@d@edge@{%
+  \def\currentchar{d}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@initcode@D}
+%    \begin{macrocode}
+\def\tikztiming@initcode@D{%
+  \def\lastchar{D@edge@}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@initcode@d}
+%    \begin{macrocode}
+\def\tikztiming@initcode@D{%
+  \def\lastchar{d@edge@}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -438,14 +455,17 @@ TikZ]
       {\addtocounter{tikztimingchars}{+1}}%
       {\addtocounter{tikztimingchars}{+2}}%
     \def\currentchar{#1}%
+    \@ifundefined{tikztiming@before@\currentchar}%
+      {}%
+      {\@nameuse{tikztiming@before@\currentchar}}%
     \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
       {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' is
        not defined and will be ignored!}{}{}{}}%
       {\tikztiming@nameaddtostr{\lastchar\currentchar}}%
+    \let\lastchar\currentchar
     \@ifundefined{tikztiming@aftercode@\currentchar}%
       {\tikztiming@dlength=0\relax}%
       {\@nameuse{tikztiming@aftercode@\currentchar}}%
-    \let\lastchar\currentchar
     \expandafter
     \tikztiming@testfortext
   \fi
@@ -488,7 +508,7 @@ TikZ]
       ] {#2}%
   }%
   \tikztiming@dlength=0\relax
-  \tikztiminglet{DD}{SD}%
+  \def\lastchar{D@edge@}%
   \tikztiming@
 }
 %    \end{macrocode}
@@ -848,17 +868,22 @@ TikZ]
   -- ++(#1,0) ++($ -1*(#1,0) + (0,\height) $)
   -- ++(#1,0) ++(0,-\height)
 }
+
 \tikztimingdef{DD}{
-  -- ++(#1,0) ++($ -1*(#1,0) + (0,\height) $)
-  -- ++(#1,0) ++(0,-\height)
-}
-\tikztiminglet{DS}{DD}
-\tikztimingdef{SD}{
   -- ++(\dslope,+\height) -- ++($ (#1,0) - (\dslope,0) $)
      ++($ -1*(#1,0) $)
   -- ++(\dslope,-\height) -- ++($ (#1,0) - (\dslope,0) $)
 }
-\AtEndOfPackage{\tikztiminglet{DD}{SD}}
+\tikztiming@namelet{D@edge@@start}{D@start}
+\tikztiming@namelet{d@edge@@start}{d@start}
+\tikztiming@namelet{D@edge@D}{DD}
+\tikztiming@namelet{d@edge@D}{DD}
+\tikztiming@namelet{D@edge@d}{Dd}
+\tikztiming@namelet{d@edge@d}{Dd}
+\tikztimingdef{DD}{
+  -- ++(#1,0) ++($ -1*(#1,0) + (0,\height) $)
+  -- ++(#1,0) ++(0,-\height)
+}
 
 \tikztimingdef{HH}{-- ++(#1,0)}
 \tikztimingdef{LL}{-- ++(#1,0)}
