@@ -27,8 +27,7 @@
 \def\nzslope{0.9}
 \def\nhzslope{0.4}
 
-\def\pathH{-- ++(1,0) }
-\def\pathL{-- ++(1,0) }
+
 \def\pathHH{-- ++(1,0) }
 \def\pathHh{-- ++(0.5,0) }
 \def\pathhh{-- ++(0.5,0) }
@@ -111,7 +110,7 @@
                ++(-0.1,0) -- ++(+0.1,0)
             -- ++(\slope,+1) -- ++(\hnslope,0) }
 \let\pathdh\pathDh
-\def\pathDD{-- ++(+1,0) ++(-1.1,+1)
+\def\pathDD{-- ++(+1,0) ++(-0.5,+0.5) node {A} ++(-0.6,+0.5)
             -- ++(+1.1,0) ++(0,-1) }
 \let\pathdD\pathDD
 \def\pathDd{-- ++(+0.5,0) ++(-0.6,+1)
@@ -147,16 +146,23 @@
 \let\pathdx\pathXx
 \let\pathxd\pathXx
 
+\makeatletter
 \def\textwaveX#1{%
   \ifx\relax#1\empty
   \else
     \def\currentchar{#1}%
-    \edef\str{\str\csname path\lastchar\currentchar\endcsname}%
-    \let\lastchar\currentchar
+    \@ifundefined{path\currentchar}{%
+      \edef\str{\str\csname path\lastchar\currentchar\endcsname}%
+      \let\lastchar\currentchar
+    }{%
+      \edef\str{\str\csname path\currentchar\endcsname}%
+    }
     \expandafter
     \textwaveX
   \fi
 }
+
+\makeatother
 
 \begin{document}
 
