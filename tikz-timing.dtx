@@ -573,11 +573,11 @@ TikZ]
 % \begin{macro}{\tikztiming@tablegrid}
 %    \begin{macrocode}
 \def\tikztiming@tablegrid{%
- \begin{pgfonlayer}{background}
+  \begin{pgfonlayer}{background}
     \draw[timing table grid]
     (0,\tikztimingrowpos) grid 
     +(0.5*\value{maxtikztimingchars},-1*\tikztimingrowpos+1);
- \end{pgfonlayer}
+  \end{pgfonlayer}
 }
 %    \end{macrocode}
 % \end{macro}
@@ -646,9 +646,9 @@ TikZ]
 % \begin{macro}{\tikztimingsetslope}
 %    \begin{macrocode}
 \def\tikztimingsetslope#1{%
-  \edef\timingslope{#1/100.0*\width}%
-  \edef\timingzslope{#1/200.0*\width}%
-  \edef\timingdslope{#1/50.0*\width}%
+  \edef\timingslope{#1/100.0*\noexpand\timingwidth}%
+  \edef\timingzslope{#1/200.0*\noexpand\timingwidth}%
+  \edef\timingdslope{#1/50.0*\noexpand\timingwidth}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -656,7 +656,7 @@ TikZ]
 % \begin{macro}{\tikztimingsetdslope}
 %    \begin{macrocode}
 \def\tikztimingsetdslope#1{%
-  \edef\timingzslope{#1/200.0*\width}%
+  \edef\timingzslope{#1/100.0*\noexpand\timingwidth}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -664,7 +664,7 @@ TikZ]
 % \begin{macro}{\tikztimingsetizslope}
 %    \begin{macrocode}
 \def\tikztimingsetizslope#1{%
-  \edef\timingdslope{#1/200.0*\width}%
+  \edef\timingdslope{#1/100.0*\noexpand\timingwidth}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -836,7 +836,6 @@ TikZ]
   -- ++(+\width,0) ++(-\width*1.05,+\height)
   -- ++(+\width*1.05,0) ++(0,-\height)
 }
-\tikztimingchar{S}{++(0,0)}{}
 \tikztiminglet{DS}{DD}
 \tikztimingdef{SD}{
     %++(-\width/100.,0)   -- ++(+\width/100.,0)
