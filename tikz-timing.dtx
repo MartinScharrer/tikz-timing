@@ -193,6 +193,7 @@ TikZ]
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
 \newcount\tikztiming@dlength
+\newcount\tikztiming@count
 
 \def\tikztiming@prefix{tikztiming@trans@}
 %    \end{macrocode}
@@ -240,9 +241,6 @@ TikZ]
 %    \end{macrocode}
 % \end{macro}
 
-%    \begin{macrocode}
-\@namedef{\tikztiming@prefix @start}{}
-%    \end{macrocode}
 %
 % \begin{macro}{\texttiming}
 %    \begin{macrocode}
@@ -475,10 +473,6 @@ TikZ]
 %    \end{macrocode}
 % \end{macro}
 %
-
-%    \begin{macrocode}
-\newcount\tikztiming@count
-%    \end{macrocode}
 
 % \begin{macro}{\tikztiming@testfornum}
 %    \begin{macrocode}
@@ -753,6 +747,10 @@ TikZ]
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%    \begin{macrocode}
+\@namedef{\tikztiming@prefix @start}{}
+%    \end{macrocode}
 %
 % \begin{macro}{\tikztimingchar@}
 %    \begin{macrocode}
