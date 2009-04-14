@@ -1,0 +1,100 @@
+\documentclass{article}
+
+\usepackage{tikz-timing}
+\usepackage{array}
+
+\newcolumntype{T}{>{\texttiming\bgroup}{l}<{\egroup}}
+
+\usepackage{fmtcount}
+\padzeroes[2]
+%\let\texttimingbefore\texttiminggrid
+
+\begin{document}
+
+
+\noindent
+This is a text with a timing MX\texttiming{HLHLHLZLHMD}XM diagram.\\
+This is a text with a timing MX\texttiming[L]{HLHLHLZ}XM diagram.
+
+\tikzset{small/.style={scale=.7}}
+
+\newcounter{mycount}
+\def\testmycount{\Hexadecimal{mycount}\addtocounter{mycount}{+1}}
+\def\gobble#1{}
+
+\texttt\bgroup XX\egroup
+
+\DeclareRobustCommand\testtt[1]{\texttt{#1}}
+\testtt\bgroup XX\egroup
+
+\noindent
+\begin{tabular}{lll}
+ 10C & \texttiming{10C} \\
+ DD\{\}DD & \texttiming{DD{}DD} \\
+ 10H2T5L5X & \texttiming{10H2T5L5X} \\
+ Clock & \texttiming[c]{20{cc}c} \\
+ Counter & 
+ \texttiming[d]{20{xd{[small,blue]\Hexadecimal{mycount}\addtocounter{mycount}{+1}}}x} 
+ \\
+ Counter & 
+ \texttiming[S]{20{D{[small,blue]\Hexadecimal{mycount}\addtocounter{mycount}{+1}}}x} 
+ \\
+ D10\{Text\} & 
+ \texttiming{5{X{[red,scale=.7]FF}}X{[green,scale=.7]AB}X{[small]AA}X{[small]DD}x} 
+ \\
+ D10\{Text\} & \texttiming{X{}X10D{Text}X10D{TESS}X} \\
+ CLCLCCLCC & \texttiming{CLCLCCLCC} \\
+ CHCHCCHCC & \texttiming{CHCHCCHCC} \\
+ CDCDCCDCC & \texttiming{CDCDCCDCC} \\
+ CXCXCCXCC & \texttiming{CXCXCCXCC} \\
+ CZCZCCZCC & \texttiming{CZCZCCZCC} \\
+ CMCMCCMCC & \texttiming{CMCMCCMCC} \\
+\end{tabular}
+
+\begin{tabular}{lll}
+ Test A & \texttiming{hlhlhlhlhlhlhlhlhlhlhlhl} \\
+ Test A & \texttiming{HLHLHLHLHLHLHLHLHLHLHLHL} \\
+ Test B & \texttiming{LLHHHHHHHHHHLLLLLLLLLLLL} \\
+ Test C & \texttiming{LLLLLLLLLHHHHHLHLHLHLLHH} \\
+ Test C & \texttiming{LLLLLLLLzHHHHHLHLHLHLLHH} \\
+ Test C & \texttiming{LLLLLLLLLlhHHHHLHLHLHLLHH} \\
+ Test C & \texttiming{LHLZZLZHZZLH} \\
+ Test C & \texttiming{lhlzzlzhzzlh} \\
+ Test C & \texttiming{LH} \\
+ Test C & \texttiming{lh} \\
+ Test C & \texttiming{Lh} \\
+ Test C & \texttiming{lH} \\
+ Test C & \texttiming{LDDXDDLHDDDDHDHDLDLHHDHH} \\
+ Test C & \texttiming{lddxddlhddddhdhdldlhhdhh} \\
+ Test C & \texttiming{ZZDZDzdzdZdZDzDz} \\
+ Test C & \texttiming{LMLHMHDMDZMMZZMMMMMMMMMZ} \\
+ test c & \texttiming{lmlhmhdmdzmmzzmmmmmmmmmz} \\
+ test c & \texttiming{zmmzZMMZzMMzZmmZ} \\
+ Test D & \texttiming{MM} \\
+ Test D & \texttiming{Mm} \\
+ Test D & \texttiming{mM} \\
+ Test D & \texttiming{mm} \\
+ Test D & \texttiming{mzmzmzmzmzmzmzmzmzmzmzmzmzm} \\
+ Test D & \texttiming{MZMZMZMZMZMZMZMZMZMZMZMZMZM} \\
+ Test D & \texttiming{mlmlmlmlmlmlmlmlmlmlmlmlmlm} \\
+ Test D & \texttiming{MLMLMLMLMLMLMLMLMLMLMLMLMLM} \\
+ Test D & \texttiming{mhmhmhmhmhmhmhmhmhmhmhmhmhm} \\
+ Test D & \texttiming{MHMHMHMHMHMHMHMHMHMHMHMHMHM} \\
+ Test D & \texttiming{mdmdmdmdmdmdmdmdmdmdmdmdmdm} \\
+ Test D & \texttiming{MDMDMDMDMDMDMDMDMDMDMDMDMDM} \\
+ Clock test & \texttiming{LCLCLCLCLCLCHCHCHCHCHCHC}\\
+ Clock test & \texttiming{CCHCLCLCZCDCMCTCCC}\\
+            & {CCHCLCLCZCDCMCTCCC} \\
+ Trans. test & \texttiming{TTHTLTLTZTDTMTCTTT} \\
+\end{tabular}
+
+\bigskip
+
+\makebox[\textwidth][c]{%
+  \small
+  \input{table}
+}
+
+\end{document}
+
+
