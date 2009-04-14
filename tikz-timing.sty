@@ -33,8 +33,8 @@
     \def\lastchar{#1}%
     \let\currentchar\empty
     \edef\tikztiming@str{\csname \tikztiming@prefix\lastchar @start\endcsname}%
-    \texttiming@#2\relax
-    %\message{^^J\tikztiming@str^^J}%
+    \tikztiming@#2\relax\relax
+    \message{^^J\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle %
       (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
@@ -71,7 +71,7 @@
     \setcounter{tikztimingtrans}{-1}%
     \let\currentchar\empty
     \let\tikztiming@str\empty
-    \texttiming@#3\relax
+    \tikztiming@#3\relax
     \draw [timing,#1] #2 \tikztiming@str;%
     \ifnum\c@maxtikztimingchars<\c@tikztimingchars
       \global\c@maxtikztimingchars=\c@tikztimingchars
@@ -93,8 +93,11 @@
   \tikztiming@dlength=1\relax
 }
 
+\def\tikztiming@{%
+  \tikztiming@testfornum
+}
 
-\def\texttiming@#1{%
+\def\tikztiming@@#1{%
   \ifx\relax#1\empty
   \else
     \tikztiming@iflower{#1}%
@@ -110,14 +113,14 @@
       {\@nameuse{tikztiming@aftercode@\currentchar}}%
     \let\lastchar\currentchar
     \expandafter
-    \tikztiming@testfortext
+    \tikztiming@
   \fi
 }
 
 \def\tikztiming@testfortext{%
   \@ifnextchar\bgroup
     {\tikztiming@handletext}%
-    {\tikztiming@testfornum}%
+    {\tikztiming@}%
 }
 
 
@@ -138,7 +141,7 @@
     ] {#2}
   }%
   \tikztiming@dlength=0\relax
-  \tikztiming@testfornum
+  \tikztiming@
 }
 
 \newcount\tikztiming@count
@@ -151,10 +154,10 @@
 }
 
 \def\tikztiming@numloop{%
-  \ifnum\tikztiming@count>1%
+  \ifnum\tikztiming@count>0%
     \edef\tikztiming@numchars{%
       \tikztiming@numchars
-      \currentchar
+      \the\@temptokena
     }%
     \advance\tikztiming@count by -1\relax
     \expandafter\tikztiming@numloop
@@ -162,8 +165,18 @@
 }
 
 \def\tikztiming@testfornum@{%
+  \ifnum0<\tikztiming@count
+    \expandafter\tikztiming@testfornum@@
+  \else
+    \expandafter\tikztiming@@
+  \fi
+}
+
+\def\tikztiming@testfornum@@#1{%
+  \message{^^JDEBUG: '\string #1'}%
+  \@temptokena{#1}%
   \tikztiming@numloop%
-  \expandafter\texttiming@\tikztiming@numchars
+  \expandafter\tikztiming@@\tikztiming@numchars
 }
 
 
