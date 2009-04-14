@@ -29,6 +29,7 @@
   [\filedate\space\fileversion\space Timing Diagrams]
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\filedate]
+\usepackage{booktabs}
 \usepackage{ifpdf}
 \ifpdf
 \usepackage{hyperref}
@@ -84,6 +85,59 @@
 % \section{Usage}
 %
 % \DescribeMacro{\texttiming}
+% \begingroup
+% \let\texttimingbefore\texttiminggrid
+% \noindent{\sffamily
+% \begin{tabular}{clll}
+%   \toprule
+%   Character & Description & Alone & Transition \\
+%   \midrule
+% \texttt{H} & High & \texttiming{H} & \texttiming[L]{H} \\
+% \texttt{h} & & \texttiming{h} & \texttiming[L]{h} \\
+% \texttt{L} & Low & \texttiming{L} & \texttiming[H]{L} \\
+% \texttt{l} & & \texttiming{l} & \texttiming[H]{l} \\
+% \texttt{D} & Double / Data & \texttiming{D} & \texttiming[L]{D{}D} \\
+% \texttt{d} & & \texttiming{d} & \texttiming[L]{d{}d} \\
+% \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming[L]{Z} \\
+% \texttt{z} & & \texttiming{z} & \texttiming[L]{z} \\
+% \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{TTTT} \\
+% \texttt{t} &        & \texttiming{l} or \texttiming{h} & \texttiming{tttt} \\
+% \texttt{C} & Clock (no slope) & \texttiming{C} or \texttiming{H} & 
+% \texttiming{CCCC} \\
+% \texttt{c} &       & \texttiming{c} or \texttiming{h} & \texttiming{cccc} \\
+% \bottomrule
+% \end{tabular}}\medskip
+%
+% \noindent{\sffamily
+% \begin{tabular}{lllllllll}
+%   \toprule
+%   Character & \texttt{H} & \texttt{h} & \texttt{L} & \texttt{l} & \texttt{D} & 
+%   \texttt{d} & \texttt{Z} & \texttt{z} \\\midrule
+%   Alone & \texttiming{H} & \texttiming{h} & \texttiming{L} & \texttiming{l} & 
+%   \texttiming{D} & \texttiming{d} & \texttiming{Z} & \texttiming{z} \\
+%   Transition & \texttiming[L]{H} & \texttiming[L]{h} & \texttiming[H]{L} & 
+%   \texttiming[H]{l} & \texttiming[L]{D} & \texttiming[L]{d} & 
+%   \texttiming[L]{Z} & \texttiming[L]{z}\\\bottomrule
+% \end{tabular}}\medskip
+%
+% \noindent{\sffamily\small
+% \begin{tabular}{ll@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l}
+%   \toprule
+%   \cs{texttiming} & \texttt{\{DD\}} & \texttt{\{2D\}} & \texttt{\{D\{\}D\}} & 
+%   \texttt{\{2D\{[blue]ABC\}\}} &
+%   \texttt{\{d\{\}2D\{ABC\}d\}} &
+%   \texttt{\{D\{A\}D\{B\}D\{C\}\}}
+%    & \texttt{[D]\{D\}}\\ \midrule
+%   Result & \texttiming{DD} & \texttiming{2D} & \texttiming{D{}D} & 
+%   \texttiming{2D{[blue]ABC}} &
+%   \texttiming{d{}2D{ABC}d} &
+%   \texttiming{D{A}D{B}D{C}} & \texttiming[D]{D} \\
+%   \bottomrule
+% \end{tabular}}\medskip
+%
+% Example: |\texttiming{HLZDZLH}| gives \texttiming{HLZDZLH}
+% \endgroup
+% or, without grid, \texttiming{HLZDZLH}.
 %
 % \DescribeEnv{tikztimingtable}
 %
@@ -158,9 +212,9 @@ TikZ]
     \def\lastchar{#1}%
     \tikztiming@eaddtostr{\csname\tikztiming@prefix\lastchar @start\endcsname}%
     \tikztiming@#2\relax
-    \message{^^J\meaning\tikztiming@str^^J}%
+    %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
-      \path[use as bounding box] (0,0) rectangle %
+      \path[use as bounding box] (0,0) rectangle
       (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
       \texttimingbefore
       \tikztiming@str;%
@@ -617,6 +671,9 @@ TikZ]
   \expandafter
   \let\csname \tikztiming@prefix#1\expandafter\endcsname
   \csname \tikztiming@prefix#2\endcsname
+  \expandafter
+  \let\csname \tikztiming@prefix#1@start\expandafter\endcsname
+  \csname \tikztiming@prefix#2@start\endcsname
   \lowercase{%
   \expandafter
   \let\csname \tikztiming@prefix#1\expandafter\endcsname
@@ -664,7 +721,9 @@ TikZ]
             -- ++(\dslope,+\height) -- ++(\width-\dslope,0)
                ++(-\width,0)
                %++(-\width/100.,0) -- ++(+\width/100.,0)
-            -- ++(\dslope,-\height) -- ++(\width-\dslope,0) }
+            -- ++(\dslope,-\height) -- ++(\width-\dslope,0)
+}
+\AtEndOfPackage{\tikztiminglet{DD}{SD}}
 
 \tikztimingdef{HH}{-- ++(\width,0) }
 \tikztimingdef{LL}{-- ++(\width,0) }
