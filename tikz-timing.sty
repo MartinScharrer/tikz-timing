@@ -24,14 +24,14 @@
   (\timingwidth*\value{tikztimingchars}/2.,\timingheight);
 }
 
-\def\texttiming#1{%
+\newcommand*\texttiming[2][]{%
   \begingroup
-    \def\lastchar{}%
+    \def\lastchar{#1}%
     \setcounter{tikztimingchars}{0}%
     \setcounter{tikztimingtrans}{-1}%
     \let\currentchar\empty
     \let\tikztiming@str\empty
-    \texttiming@#1\relax
+    \texttiming@#2\relax
     %\message{^^J\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle %
