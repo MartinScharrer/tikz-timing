@@ -210,7 +210,7 @@ TikZ]
 \tikzset{timing table/.style={timing}}
 \tikzset{timing name/.style={font=\sffamily}}
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
-\tikzset{timing z/.style={}}
+\tikzset{timing z/.style={blue}}
 \tikzset{timing table grid/.style={timing grid}}
 %    \end{macrocode}
 %
@@ -835,7 +835,7 @@ TikZ]
 
 \tikztimingchar{L}{++(0,0)}{-- ++(#1,0)}
 \tikztimingchar{Z}{++(0,\height/2.)}{%
-  %node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
   -- ++(#1,0)
 }
 \tikztimingchar{D}{++(0,0)}{
@@ -857,32 +857,32 @@ TikZ]
 \tikztimingdef{HH}{-- ++(#1,0)}
 \tikztimingdef{LL}{-- ++(#1,0)}
 \tikztimingdef{HL}{-- ++(\slope,-\height) \tikztiminguse{HH}{#1-\slope}}
-\tikztimingdef{LH}{-- ++(\slope, \height) -- ++($ (#1,0) - (\slope,0) $)}
+\tikztimingdef{LH}{-- ++(\slope, \height) \tikztiminguse{LL}{#1-\slope}}
 
 \tikztimingdef{ZZ}{-- ++(#1,0)}
 \tikztimingdef{LZ}{
   -- ++(\zslope/2.,+\height/4.)
-  %node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
   -- ++(\zslope/2.,+\height/4.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{HZ}{%
   -- ++(\zslope/2.,-\height/4.)
-  %node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
   -- ++(\zslope/2.,-\height/4.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{ZH}{
   -- ++(\zslope/2.,+\height/4.)
-  %node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
   -- ++(\zslope/2.,+\height/4.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{ZL}{%
   -- ++(\zslope/2.,-\height/4.)
-  %node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
   -- ++(\zslope/2.,-\height/4.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 \tikztimingdef{ZD}{
-  %node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
   -- ++(\dslope/2.,\height/2.)  -- ++($ (#1,0) - (\dslope/2.,0) $)
      ++($ -1*(#1,0) + (0,-\height/2.) $)
   -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope/2.,0) $)
@@ -892,7 +892,7 @@ TikZ]
   -- ++( \dslope/2.,+\height/2.)
      ++(-\dslope/2.,+\height/2.)
   -- ++( \dslope/2.,-\height/2.)
-  %node (timing@save) {}; \draw [timing z] (timing@save) ++(0,0)
+  node (timing@save) {}; \draw [timing z] (timing@save) ++(0,0)
   -- ++($ (#1,0) - (\dslope/2.,0) $)
 }
 
@@ -950,7 +950,7 @@ TikZ]
 }
 
 \tikztimingdef{MZ}{
-  %node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
   -- ++(#1,0)
 }
 
@@ -964,7 +964,7 @@ TikZ]
 }
 
 \tikztimingdef{ZM}{
-  %node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
   -- ++($ 1/16.*(#1,0) + (0,+\height*.075) $)
   -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
@@ -977,7 +977,7 @@ TikZ]
 }
 
 \tikztimingdef{Zm}{
-  %node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.075) $)
   -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
@@ -1100,17 +1100,17 @@ TikZ]
 }
 
 \tikztimingdef{TZ}{%
-  node %(timing@save)
+  node (timing@save)
   at ++(0,0) {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  %; \draw [timing z] (timing@save) ++(0,0)
+  ; \draw [timing z] (timing@save) ++(0,0)
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
 }
 
 \tikztimingdef{ZT}{%
-  node %(timing@save) at ++(0,0) 
+  node (timing@save) at ++(0,0) 
   {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  %; \draw (timing@save) ++(0,0)
+  ; \draw (timing@save) ++(0,0)
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
 }
