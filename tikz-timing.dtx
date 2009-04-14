@@ -1,7 +1,98 @@
-% Copyright (c) 2009 Martin Scharrer <martin@scharrer-online.de>
-% This file is under the LPPL v1.3c (or later) licence.
+% \iffalse meta-comment
+%
+% Copyright (C) 2009 by Martin Scharrer <martin@scharrer-online.de>
+% -----------------------------------------------------------------
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in:
+%
+%    http://www.latex-project.org/lppl.txt
+%
+% and version 1.2 or later is part of all distributions of LaTeX
+% version 1999/12/01 or later.
+%
+% \fi
+%
+% \iffalse
+\def\filedate{2009/04/13}
+\def\fileversion{v1.0}
 
-\ProvidesPackage{tikz-timing}[2009/04/09 v0.1a Digital Timing Diagrams using TikZ]
+%<*driver>
+\ProvidesFile{tikz-timing.dtx}
+  [\filedate\space\fileversion\space Timing Diagrams]
+\documentclass{ltxdoc}
+\usepackage{tikz-timing}[\filedate]
+\usepackage{ifpdf}
+\ifpdf
+\usepackage{hyperref}
+\else
+\let\url=\texttt
+\fi
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{tikz-timing.dtx}
+  \PrintChanges
+  \PrintIndex
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v1.0}{2009/04/13}{Initial version}
+%
+% \GetFileInfo{tikz-timing.dtx}
+%
+% \DoNotIndex{\newcommand,\newenvironment}
+%
+% \title{The \textsf{tikz-timing} package\thanks{This document
+%   corresponds to \textsf{tikz-timing}~\fileversion, dated \filedate.}}
+% \author{Martin Scharrer \\ \url{martin@scharrer-online.de}}
+%
+% \maketitle
+%
+% \section{Introduction}
+%
+% Put text here.
+%
+% \section{Usage}
+%
+% Put text here.
+%
+% \DescribeMacro{\texttiming}
+%
+% \DescribeEnv{tikztimingtable}
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+% \subsection{Package Header}
+%
+% \subsubsection{Package Identification}
+%    \begin{macrocode}
+\ProvidesPackage{tikz-timing}[2009/04/09 v0.1a Digital Timing Diagrams using 
+TikZ]
 \RequirePackage{tikz}
 
 \newcounter{tikztimingchars}
@@ -29,7 +120,11 @@
 }
 
 \@namedef{\tikztiming@prefix @start}{}
-
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\}
+%    \begin{macrocode}
 \DeclareRobustCommand*\texttiming[2][]{%
   \begingroup
     \tikztiming@init
@@ -730,4 +825,9 @@
     +(0.5*\value{maxtikztimingchars},-1*\tikztimingrowpos+1);
  \end{pgfonlayer}
 }
+
+%    \end{macrocode}
+%
+% \Finale
+\endinput
 
