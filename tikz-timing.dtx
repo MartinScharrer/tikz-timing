@@ -36,6 +36,14 @@
 \else
 \let\url=\texttt
 \fi
+\makeatletter
+\newcommand*\tablecaption[2][]{{%
+  \let\@tempa\abovecaptionskip
+  \let\abovecaptionskip\belowcaptionskip
+  \let\belowcaptionskip\@tempa
+  \caption[#1]{#2}%
+}}
+\makeatother
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -86,8 +94,10 @@
 %
 % \DescribeMacro{\texttiming}
 % \begingroup
+% \begin{table}
 % \let\texttimingbefore\texttiminggrid
-% \noindent{\sffamily
+% \sffamily\centering
+% \tablecaption{Timing Characters}\label{tab:chars}
 % \begin{tabular}{clll}
 %   \toprule
 %   Character & Description & Alone & Transition \\
@@ -106,21 +116,14 @@
 % \texttiming{CCCC} \\
 % \texttt{c} &       & \texttiming{c} or \texttiming{h} & \texttiming{cccc} \\
 % \bottomrule
-% \end{tabular}}\medskip
+% \end{tabular}
+% \end{table}
 %
-% \noindent{\sffamily
-% \begin{tabular}{lllllllll}
-%   \toprule
-%   Character & \texttt{H} & \texttt{h} & \texttt{L} & \texttt{l} & \texttt{D} & 
-%   \texttt{d} & \texttt{Z} & \texttt{z} \\\midrule
-%   Alone & \texttiming{H} & \texttiming{h} & \texttiming{L} & \texttiming{l} & 
-%   \texttiming{D} & \texttiming{d} & \texttiming{Z} & \texttiming{z} \\
-%   Transition & \texttiming[L]{H} & \texttiming[L]{h} & \texttiming[H]{L} & 
-%   \texttiming[H]{l} & \texttiming[L]{D} & \texttiming[L]{d} & 
-%   \texttiming[L]{Z} & \texttiming[L]{z}\\\bottomrule
-% \end{tabular}}\medskip
 %
-% \noindent{\sffamily\small
+% \begin{table}
+% \let\texttimingbefore\texttiminggrid
+% \sffamily\small\centering
+% \tablecaption{Data Character}\label{tab:chard}
 % \begin{tabular}{ll@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l}
 %   \toprule
 %   \cs{texttiming} & \texttt{\{DD\}} & \texttt{\{2D\}} & \texttt{\{D\{\}D\}} & 
@@ -133,11 +136,12 @@
 %   \texttiming{d{}2D{ABC}d} &
 %   \texttiming{D{A}D{B}D{C}} & \texttiming[D]{D} \\
 %   \bottomrule
-% \end{tabular}}\medskip
+% \end{tabular}
+% \end{table}
 %
 % Example: |\texttiming{HLZDZLH}| gives \texttiming{HLZDZLH}
 % \endgroup
-% or, without grid, \texttiming{HLZDZLH}.
+% or, with grid, {\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}.
 %
 % \DescribeEnv{tikztimingtable}
 %
@@ -160,7 +164,7 @@
 % \fbox{%
 % \begin{tikztimingtable}
 %   Name   & HLLLH      \\
-%   Clock  & c9c \\
+%   Clock  & c9c        \\
 %   Signal & z4D{Text}z \\
 % \end{tikztimingtable}}
 % \end{minipage}
@@ -545,7 +549,8 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztimingtable@#1&#2\\{%
   \addtocounter{tikztimingrows}{1}%
-  \path (-1,\tikztimingrowpos) node [anchor=base east,timing name] {#1};
+  \path (-1,\tikztimingrowpos) node [anchor=base east,timing name] 
+  {\ignorespaces #1};
   \timing (+0,\tikztimingrowpos) {#2};
   \@ifnextchar\extracode
     {\tikztimingextracode}%
