@@ -10,7 +10,7 @@
     \let\currentchar\empty
     \let\str\empty
     \textwaveX#1\relax
-    %\message{^^J\meaning\str}%
+    \message{^^J\meaning\str}%
     \begin{tikzpicture}[x=.0175ex,y=.0175ex,line width=0.5pt]
       \draw (0,0) \str;
     \end{tikzpicture}
@@ -41,11 +41,17 @@
 \pgfwavesetslope{10}%
 
 \def\pgfwavedef#1{%
-  \pgfwavedef@#1%
+  \pgfwavedef@#1\relax%
 }
 
-\def\pgfwavedef@#1#2#3{%
+\def\pgfwavedef@#1#2\relax#3{%
   \@namedef{path#1#2}{#3}%
+  \def\@tempa{#1}%
+  \lowercase{\def\@tempb{#1}}%
+  \ifx\@tempa\@tempb\else
+    \@ifundefined{path\@tempb #2}%
+      {\pgfwavelet{\@tempb #2}{#1#2}}{}%
+  \fi
 }
 
 \def\pgfwavelet#1#2{%
@@ -55,39 +61,31 @@
 
 \pgfwavedef{HH}{-- ++(100,0) }
 \pgfwavedef{Hh}{-- ++( 50,0) }
-\pgfwavedef{hh}{-- ++( 50,0) }
-\pgfwavedef{hH}{-- ++(100,0) }
 \pgfwavedef{LL}{-- ++(100,0) }
 \pgfwavedef{Ll}{-- ++( 50,0) }
-\pgfwavedef{lL}{-- ++(100,0) }
-\pgfwavedef{ll}{-- ++( 50,0) }
-\pgfwavedef{LH}{-- ++(\slope,+100) -- ++(\nslope,0) }
 \pgfwavedef{HL}{-- ++(\slope,-100) -- ++(\nslope,0) }
-\pgfwavedef{Lh}{-- ++(\slope,+100) -- ++(\hnslope,0) }
-\pgfwavedef{lh}{-- ++(\slope,+100) -- ++(\hnslope,0) }
-\pgfwavedef{lH}{-- ++(\slope,+100) -- ++(\nslope,0) }
 \pgfwavedef{Hl}{-- ++(\slope,-100) -- ++(\hnslope,0) }
-\pgfwavedef{hL}{-- ++(\slope,-100) -- ++(\hnslope,0) }
-\pgfwavedef{hl}{-- ++(\slope,-100) -- ++(\hnslope,0) }
+\pgfwavedef{LH}{-- ++(\slope,+100) -- ++(\nslope,0) }
+\pgfwavedef{Lh}{-- ++(\slope,+100) -- ++(\hnslope,0) }
 
 \pgfwavedef{ZZ}{-- ++(100,0) }
+\pgfwavedef{Zz}{-- ++( 50,0) }
 \pgfwavedef{LZ}{-- ++(\zslope,+50) -- ++(\nzslope,0) }
-\pgfwavedef{HZ}{-- ++(\zslope,-50) -- ++(\nzslope,0) }
-\pgfwavedef{ZL}{-- ++(\zslope,-50) -- ++(\nzslope,0) }
-\pgfwavedef{ZH}{-- ++(\zslope,+50) -- ++(\nzslope,0) }
-\pgfwavedef{lZ}{-- ++(\zslope,+50) -- ++(\nzslope,0) }
-\pgfwavedef{hZ}{-- ++(\zslope,-50) -- ++(\nzslope,0) }
-\pgfwavedef{Zl}{-- ++(\zslope,-50) -- ++(\nzslope,0) }
-\pgfwavedef{Zh}{-- ++(\zslope,+50) -- ++(\nzslope,0) }
-\pgfwavedef{zz}{-- ++(100,0) }
 \pgfwavedef{Lz}{-- ++(\zslope,+50) -- ++(\hnzslope,0) }
+\pgfwavedef{HZ}{-- ++(\zslope,-50) -- ++(\nzslope,0) }
 \pgfwavedef{Hz}{-- ++(\zslope,-50) -- ++(\hnzslope,0) }
-\pgfwavedef{zL}{-- ++(\zslope,-50) -- ++(\hnzslope,0) }
-\pgfwavedef{zH}{-- ++(\zslope,+50) -- ++(\hnzslope,0) }
-\pgfwavedef{lz}{-- ++(\zslope,+50) -- ++(\hnzslope,0) }
-\pgfwavedef{hz}{-- ++(\zslope,-50) -- ++(\hnzslope,0) }
-\pgfwavedef{zl}{-- ++(\zslope,-50) -- ++(\hnzslope,0) }
-\pgfwavedef{zh}{-- ++(\zslope,+50) -- ++(\hnzslope,0) }
+\pgfwavedef{ZH}{-- ++(\zslope,+50) -- ++(\nzslope,0) }
+\pgfwavedef{Zh}{-- ++(\zslope,+50) -- ++(\hnzslope,0) }
+\pgfwavedef{ZL}{-- ++(\zslope,-50) -- ++(\nzslope,0) }
+\pgfwavedef{Zl}{-- ++(\zslope,-50) -- ++(\hnzslope,0) }
+\pgfwavedef{ZD}{}
+\pgfwavedef{Zd}{}
+\pgfwavedef{ZX}{}
+\pgfwavedef{Zx}{}
+\pgfwavedef{DZ}{}
+\pgfwavedef{Dz}{}
+\pgfwavelet{XZ}{DZ}
+\pgfwavelet{Xz}{Dz}
 
 \pgfwavedef{LD}{-- ++(\slope,100)     -- ++(\nslope,0)
                ++(-100,-100) ++(\zslope,+50)
@@ -143,13 +141,19 @@
 \pgfwavelet{dd}{Dd}
 
 \pgfwavelet{LX}{LD}
+\pgfwavelet{Lx}{Ld}
+\pgfwavelet{lx}{ld}
 \pgfwavelet{HX}{HD}
+\pgfwavelet{Hx}{Hd}
 \pgfwavelet{XL}{DL}
 \pgfwavelet{XH}{DH}
 \pgfwavelet{lX}{LD}
 \pgfwavelet{hX}{HD}
+\pgfwavelet{hx}{Hd}
 \pgfwavelet{xL}{DL}
+\pgfwavelet{Xl}{Dl}
 \pgfwavelet{xH}{DH}
+\pgfwavelet{Xh}{Dh}
 \pgfwavedef{XX}{   ++(-1,0) -- ++(+1,0)
             -- ++(\slope,+100) -- ++(\nslope,0)
                ++(-100,0)
@@ -170,6 +174,12 @@
 \pgfwavelet{Xd}{Xx}
 \pgfwavelet{dx}{Xx}
 \pgfwavelet{xd}{Xx}
+\pgfwavelet{xZ}{dZ}
+\pgfwavelet{xz}{dz}
+\pgfwavelet{xH}{dH}
+\pgfwavelet{xh}{dh}
+\pgfwavelet{xL}{dL}
+\pgfwavelet{xl}{dl}
 
 \def\textwaveX#1{%
   \ifx\relax#1\empty
@@ -202,6 +212,21 @@
  Test C & \textwave{LDDXDDLHDDDDHDHDLDLHHDHH} \\
  Test C & \textwave{lddxddlhddddhdhdldlhhdhh} \\
 % Test C & \textwave{ZD} \\
+\end{tabular}
+
+
+\begin{tabular}{lcccccccccc}
+  & H & L & Z & D & X & h & l & z & d & x\\
+H & \textwave{HH} & \textwave{HL} & \textwave{HZ} & \textwave{HD} & \textwave{HX} & \textwave{Hh} & \textwave{Hl} & \textwave{Hz} & \textwave{Hd} & \textwave{Hx}\\
+L & \textwave{LH} & \textwave{LL} & \textwave{LZ} & \textwave{LD} & \textwave{LX} & \textwave{Lh} & \textwave{Ll} & \textwave{Lz} & \textwave{Ld} & \textwave{Lx}\\
+Z & \textwave{ZH} & \textwave{ZL} & \textwave{ZZ} & \textwave{ZD} & \textwave{ZX} & \textwave{Zh} & \textwave{Zl} & \textwave{Zz} & \textwave{Zd} & \textwave{Zx}\\
+D & \textwave{DH} & \textwave{DL} & \textwave{DZ} & \textwave{DD} & \textwave{DX} & \textwave{Dh} & \textwave{Dl} & \textwave{Dz} & \textwave{Dd} & \textwave{Dx}\\
+X & \textwave{XH} & \textwave{XL} & \textwave{XZ} & \textwave{XD} & \textwave{XX} & \textwave{Xh} & \textwave{Xl} & \textwave{Xz} & \textwave{Xd} & \textwave{Xx}\\
+h & \textwave{hH} & \textwave{hL} & \textwave{hZ} & \textwave{hD} & \textwave{hX} & \textwave{hh} & \textwave{hl} & \textwave{hz} & \textwave{hd} & \textwave{hx}\\
+l & \textwave{lH} & \textwave{lL} & \textwave{lZ} & \textwave{lD} & \textwave{lX} & \textwave{lh} & \textwave{ll} & \textwave{lz} & \textwave{ld} & \textwave{lx}\\
+z & \textwave{zH} & \textwave{zL} & \textwave{zZ} & \textwave{zD} & \textwave{zX} & \textwave{zh} & \textwave{zl} & \textwave{zz} & \textwave{zd} & \textwave{zx}\\
+d & \textwave{dH} & \textwave{dL} & \textwave{dZ} & \textwave{dD} & \textwave{dX} & \textwave{dh} & \textwave{dl} & \textwave{dz} & \textwave{dd} & \textwave{dx}\\
+x & \textwave{xH} & \textwave{xL} & \textwave{xZ} & \textwave{xD} & \textwave{xX} & \textwave{xh} & \textwave{xl} & \textwave{xz} & \textwave{xd} & \textwave{xx}\\
 \end{tabular}
 
 \end{document}
