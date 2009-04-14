@@ -78,7 +78,15 @@
 %
 % \GetFileInfo{tikz-timing.dtx}
 %
-% \DoNotIndex{\newcommand,\newenvironment}
+% \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\xdef,\DeclareRobustCommand}
+% \DoNotIndex{\expandafter,\if,\else,\fi,\ifnum,\ifx,\let,\global,\long}
+% \DoNotIndex{\newcounter,\newcount,\message,\meaning,\noexpand,\relax,\value}
+% \DoNotIndex{\setcounter,\addtocounter,\advance,\afterassignment,\AtEndOfPackage}
+% \DoNotIndex{\ProvidesPackage,\providecommand,\RequirePackage,\empty,\begin,\end}
+% \DoNotIndex{\begingroup,\bgroup,\egroup,\endgroup,\csname,\endcsname,\@tempa}
+% \DoNotIndex{\ignorespaces,\lccode,\sffamily,\@gobble,\@ifundefined,\@for}
+% \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameedef,\@nameuse,\@secondoftwo}
+% \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
 %
 % \title{The \textsf{tikz-timing} package\thanks{This document
 %   corresponds to \textsf{tikz-timing}~\fileversion, dated \filedate.}}
@@ -684,12 +692,12 @@ TikZ]
     \tikztiming@iflower{#1}%
       {\def\width{\noexpand\timingwidth/2.}}%
       {\def\width{\noexpand\timingwidth}}%
-    \expandafter\edef\csname \tikztiming@prefix#1\endcsname{#3}%
+    \expandafter\edef\csname\tikztiming@prefix#1\endcsname{#3}%
   \else
     \tikztiming@iflower{#2}%
       {\def\width{\noexpand\timingwidth/2.}}%
       {\def\width{\noexpand\timingwidth}}%
-    \expandafter\edef\csname \tikztiming@prefix#1#2\endcsname{#3}%
+    \expandafter\edef\csname\tikztiming@prefix#1#2\endcsname{#3}%
     \tikztiming@iflower{#2}{}%
       {\tikztiming@iflower{#1}{}%
         {%
@@ -715,7 +723,8 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztiminglet@#1#2\relax#3#4\relax{%
   \expandafter
-  \let\csname \tikztiming@prefix#1#2\expandafter\endcsname\csname \tikztiming@prefix#3#4\endcsname
+  \let\csname\tikztiming@prefix#1#2\expandafter\endcsname
+  \csname\tikztiming@prefix#3#4\endcsname
   \tikztiming@iflower{#1}{}%
     {\tikztiming@iflower{#2}{}%
       {%
@@ -778,15 +787,18 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztimingalias@#1#2{%
   \expandafter
-  \let\csname \tikztiming@prefix#1\expandafter\endcsname
-  \csname \tikztiming@prefix#2\endcsname
+  \let\csname\tikztiming@prefix#1\expandafter\endcsname
+  \csname\tikztiming@prefix#2\endcsname
   \expandafter
-  \let\csname \tikztiming@prefix#1@start\expandafter\endcsname
-  \csname \tikztiming@prefix#2@start\endcsname
+  \let\csname\tikztiming@prefix#1@start\expandafter\endcsname
+  \csname\tikztiming@prefix#2@start\endcsname
   \lowercase{%
   \expandafter
-  \let\csname \tikztiming@prefix#1\expandafter\endcsname
-  \csname \tikztiming@prefix#2\endcsname
+  \let\csname\tikztiming@prefix#1\expandafter\endcsname
+  \csname\tikztiming@prefix#2\endcsname
+  \expandafter
+  \let\csname\tikztiming@prefix#1@start\expandafter\endcsname
+  \csname\tikztiming@prefix#2@start\endcsname
   }%
   \uppercase{\tikztiminglet{#1#1}{#2#2}}%
   \uppercase{%
