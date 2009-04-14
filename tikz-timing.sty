@@ -373,24 +373,20 @@
 \tikztimingdef{ZZ}{-- ++(\width,0) }
 \tikztimingdef{LZ}{
   -- ++(\zslope/2.,+\height/4.) node (timing@save) at ++(0,0) {};
-  \draw [timing z,line cap=butt] (timing@save) ++(0,0) -- ++(\zslope/4.,+\height/8.);
-  \draw [timing z] (timing@save) ++(0,0) ++(\zslope/4.,+\height/8.) --
-  ++(\zslope/4.,+\height/8.) --
+  \draw [timing z] (timing@save) ++(0,0) -- ++(\zslope/2.,+\height/4.) --
   ++(\width-\zslope,0)
 }
-\tikztimingdef{HZ}{
+\tikztimingdef{HZ}{%
   -- ++(\zslope/2.,-\height/4.) node (timing@save) at ++(0,0) {};
-  \draw [timing z,line cap=butt] (timing@save) ++(0,0) -- ++(\zslope/4.,-\height/8.);
-  \draw [timing z] (timing@save) ++(0,0) ++(\zslope/4.,-\height/8.) --
-  ++(\zslope/4.,-\height/8.) --
-  ++(\width-\zslope,0)
+  \draw [timing z] (timing@save) ++(0,0)
+  -- ++(\zslope/2.,-\height/4.) -- ++(\width-\zslope,0)
 }
 \tikztimingdef{ZH}{
   -- ++(\zslope/2.,+\height/4.) node (timing@save) at ++(0,0) {};
   \draw (timing@save) ++(0,0) -- ++(\zslope/2.,+\height/4.) --
   ++(\width-\zslope,0)
 }
-\tikztimingdef{ZL}{
+\tikztimingdef{ZL}{%
   -- ++(\zslope/2.,-\height/4.) node (timing@save) at ++(0,0) {};
   \draw (timing@save) ++(0,0) -- ++(\zslope/2.,-\height/4.) --
   ++(\width-\zslope,0)
@@ -611,18 +607,18 @@
 }
 
 \tikztimingdef{TZ}{%
-  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++(\slope/2.,\value{tikztimingtrans}*\height/4.)
-  node (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
-  -- ++(\slope/2.,\value{tikztimingtrans}*\height/4.)
+  node (timing@save) at ++(0,0) 
+  {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}};
+  \draw [timing z] (timing@save) ++(0,0)
+  -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++(\width-\slope,0)
 }
 
 \tikztimingdef{ZT}{%
-  node {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++(\slope/2.,\value{tikztimingtrans}*\height/4.)
-  node (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
-  -- ++(\slope/2.,\value{tikztimingtrans}*\height/4.)
+  node (timing@save) at ++(0,0) 
+  {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}};
+  \draw (timing@save) ++(0,0)
+  -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++(\width-\slope,0)
 }
 
