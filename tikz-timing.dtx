@@ -921,9 +921,10 @@ TikZ]
   node (timing@save) {}; \draw [\tikztiming@format] (timing@save) ++(0,0)
   -- ++($ (#1,0) - (\dslope/2.,0) $)
 }
-
 \tikztiminglet{ZX}{XX}
 \tikztiminglet{XZ}{ZZ}
+\tikztimingdef{ZZ}{-- ++(#1,0)}
+\tikztiminglet{XX}{ZZ}
 
 \def\tikztiming@format{timing x}
 \tikztimingdef{LX}{\tikztiminguse{LZ}{\width}}
