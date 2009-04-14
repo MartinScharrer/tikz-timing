@@ -141,6 +141,34 @@
 %
 % \DescribeEnv{tikztimingtable}
 %
+% \begin{figure}
+% \centering
+% \begin{minipage}{\textwidth}
+% \hfill
+% \begin{minipage}{0.2\textwidth}
+% \begin{verbatim}
+% \fbox{%
+% \begin{tikztimingtable}
+%   Name   & HLLLH      \\
+%   Clock  & c9c        \\
+%   Signal & z4D{Text}z \\
+% \end{tikztimingtable}}
+% \end{verbatim}
+% \end{minipage}
+% \hfill\hfill
+% \begin{minipage}{0.2\textwidth}
+% \fbox{%
+% \begin{tikztimingtable}
+%   Name   & HLLLH      \\
+%   Clock  & c9c \\
+%   Signal & z4D{Text}z \\
+% \end{tikztimingtable}}
+% \end{minipage}
+% \hfill\null
+% \end{minipage}
+% \caption{Example for \texttt{tikztimingtable}}
+% \end{figure}
+%
 % \StopEventually{}
 %
 % \section{Implementation}
@@ -466,6 +494,82 @@ TikZ]
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsection{Table environment}
+%    \begin{macrocode}
+%\usetikzlibrary{backgrounds}
+\RequirePackage{environ}
+\newcounter{tikztimingrows}
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztimingrowdist}
+%    \begin{macrocode}
+\def\tikztimingrowdist{2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingrowpos}
+%    \begin{macrocode}
+\def\tikztimingrowpos{-\tikztimingrowdist*\value{tikztimingrows}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@extracode}
+%    \begin{macrocode}
+\def\tikztiming@extracode{\@gobble{EXTRACODE}}%
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{environment}{tikztimingtable}
+%    \begin{macrocode}
+\NewEnviron{tikztimingtable}{%
+  \begin{tikzpicture}[timing table]%
+  \let\extracode\tikztiming@extracode
+  \let\tablegrid\tikztiming@tablegrid
+  \setcounter{maxtikztimingchars}{0}%
+  \setcounter{tikztimingrows}{-1}%
+  \expandafter\tikztimingtable@\BODY\endtikztimingtable@
+}[\end{tikzpicture}]
+
+\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
+%    \end{macrocode}
+% \end{environment}
+
+% \begin{macro}{\tikztimingextracode}
+%    \begin{macrocode}
+\long\def\tikztimingextracode#1\endtikztimingtable@{#1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@}
+%    \begin{macrocode}
+\def\tikztimingtable@#1&#2\\{%
+  \addtocounter{tikztimingrows}{1}%
+  \path (-1,\tikztimingrowpos) node [anchor=base east,timing name] {#1};
+  \timing (+0,\tikztimingrowpos) {#2};
+  \@ifnextchar\extracode
+    {\tikztimingextracode}%
+    {%
+      \@ifnextchar\endtikztimingtable@
+        {\@gobble}{\tikztimingtable@}%
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablegrid}
+%    \begin{macrocode}
+\def\tikztiming@tablegrid{%
+ \begin{pgfonlayer}{background}
+    \draw[timing table grid]
+    (0,\tikztimingrowpos) grid 
+    +(0.5*\value{maxtikztimingchars},-1*\tikztimingrowpos+1);
+ \end{pgfonlayer}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Other Macros}
 %
 % \begin{macro}{\tikztiming@iflower}
 %    \begin{macrocode}
@@ -1053,79 +1157,6 @@ TikZ]
 \tikztiminglet{TC}{TT}
 %    \end{macrocode}
 %
-% \subsection{Table environment}
-%    \begin{macrocode}
-%\usetikzlibrary{backgrounds}
-\RequirePackage{environ}
-\newcounter{tikztimingrows}
-%    \end{macrocode}
-%
-% \begin{macro}{\tikztimingrowdist}
-%    \begin{macrocode}
-\def\tikztimingrowdist{2}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingrowpos}
-%    \begin{macrocode}
-\def\tikztimingrowpos{-\tikztimingrowdist*\value{tikztimingrows}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@extracode}
-%    \begin{macrocode}
-\def\tikztiming@extracode{\@gobble{EXTRACODE}}%
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{environment}{tikztimingtable}
-%    \begin{macrocode}
-\NewEnviron{tikztimingtable}{%
-  \begin{tikzpicture}[timing table]%
-  \let\extracode\tikztiming@extracode
-  \let\tablegrid\tikztiming@tablegrid
-  \setcounter{maxtikztimingchars}{0}%
-  \setcounter{tikztimingrows}{-1}%
-  \expandafter\tikztimingtable@\BODY\endtikztimingtable@
-}[\end{tikzpicture}]
-
-\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
-%    \end{macrocode}
-% \end{environment}
-
-% \begin{macro}{\tikztimingextracode}
-%    \begin{macrocode}
-\long\def\tikztimingextracode#1\endtikztimingtable@{#1}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingtable@}
-%    \begin{macrocode}
-\def\tikztimingtable@#1&#2\\{%
-  \addtocounter{tikztimingrows}{1}%
-  \path (-1,\tikztimingrowpos) node [anchor=base east,timing name] {#1};
-  \timing (+0,\tikztimingrowpos) {#2};
-  \@ifnextchar\extracode
-    {\tikztimingextracode}%
-    {%
-      \@ifnextchar\endtikztimingtable@
-        {\@gobble}{\tikztimingtable@}%
-    }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@tablegrid}
-%    \begin{macrocode}
-\def\tikztiming@tablegrid{%
- \begin{pgfonlayer}{background}
-    \draw[timing table grid]
-    (0,\tikztimingrowpos) grid 
-    +(0.5*\value{maxtikztimingchars},-1*\tikztimingrowpos+1);
- \end{pgfonlayer}
-}
-%    \end{macrocode}
-% \end{macro}
 %
 % \Finale
 \endinput
