@@ -1,0 +1,406 @@
+% Copyright (c) 2009 Martin Scharrer <martin@scharrer-online.de>
+% This file is under the LPPL v1.3c (or later) licence.
+
+\ProvidesPackage{tikz-timing}[2009/04/09 v0.1a Digital Timing Diagrams using TikZ]
+\RequirePackage{tikz}
+
+\newcounter{tikztimingchars}
+\newcounter{maxtikztimingchars}
+
+\def\tikztiming@prefix{tikztiming@}
+
+\def\tikztimingx{1.75ex}
+\def\tikztimingy{1.75ex}
+\def\tikztimingoptions{thick}
+
+\def\texttiming#1{%
+  \begingroup
+    \def\lastchar{}%
+    \setcounter{tikztimingchars}{0}%
+    \let\currentchar\empty
+    \let\tikztiming@str\empty
+    \texttiming@#1\relax
+    \begin{tikzpicture}
+      [x=\tikztimingx,y=\tikztimingy,\tikztimingoptions]
+      %\draw[step=50,very thin,color=gray] (0,0) grid (50*\value{tikztimingchars},100);
+      \draw (0,0) \tikztiming@str;%
+    \end{tikzpicture}
+  \endgroup
+}
+
+\def\timing{
+  \@ifnextchar{[}%
+    {\timing@}%
+    {\timing@[]}%
+}
+
+\def\timing@[#1]{%
+  \@ifnextchar{+}%
+    {\timing@@{#1}}%
+    {\@ifnextchar{(}%
+      {\timing@@{#1}}%
+      {\timing@@{#1}(0,0)}%
+    }%
+}
+
+\def\timing@@#1#2(#3){%
+  \timing@@@{#1}{#2(#3)}%
+}
+
+\def\timing@@@#1#2#3{%
+  \begingroup
+    \def\lastchar{}%
+    \setcounter{tikztimingchars}{0}%
+    \let\currentchar\empty
+    \let\tikztiming@str\empty
+    \texttiming@#3\relax
+    \draw [x=\tikztimingx,y=\tikztimingy,\tikztimingoptions,#1] #2 \tikztiming@str;%
+    \ifnum\c@maxtikztimingchars<\c@tikztimingchars
+      \global\c@maxtikztimingchars=\c@tikztimingchars
+    \fi
+  \endgroup
+  \@ifnextchar{;}{\@gobble}{}%
+}
+
+
+\def\texttiming@#1{%
+  \ifx\relax#1\empty
+  \else
+    \tikztiming@iflower{#1}%
+      {\addtocounter{tikztimingchars}{+1}}%
+      {\addtocounter{tikztimingchars}{+2}}%
+    \def\currentchar{#1}%
+    \edef\tikztiming@str{\tikztiming@str\csname \tikztiming@prefix\lastchar\currentchar\endcsname}%
+    \let\lastchar\currentchar
+    \expandafter
+    \texttiming@
+  \fi
+}
+
+
+\def\tikztiming@iflower#1{%
+  \begingroup
+  \edef\@tempa{`#1}%
+  \ifnum\@tempa=\lccode\@tempa
+    \endgroup
+    \expandafter
+    \@firstoftwo
+  \else
+    \endgroup
+    \expandafter
+    \@secondoftwo
+  \fi
+}
+
+\def\timingwidth{1}%
+\def\timingheight{1}%
+
+\def\width{\noexpand\timingwidth}
+\def\fwidth{\noexpand\timingwidth}
+\def\width{\noexpand\timingwidth}
+\def\height{\noexpand\timingheight}
+\def\slope{\noexpand\timingslope}%
+\def\zslope{\noexpand\timingzslope}%
+\def\dslope{\noexpand\timingdslope}%
+
+
+\def\tikztimingsetslope#1{%
+  \edef\timingslope{#1/100.0*\width}%
+  \edef\timingzslope{#1/200.0*\width}%
+  \edef\timingdslope{#1/200.0*\width}%
+}
+
+\def\tikztimingsetdslope#1{%
+  \edef\timingzslope{#1/200.0*\width}%
+}
+
+\def\tikztimingsetizslope#1{%
+  \edef\timingdslope{#1/200.0*\width}%
+}
+\tikztimingsetslope{10}%
+
+\providecommand*\@nameedef[1]{%
+  \expandafter\edef
+  \csname #1\endcsname
+}
+
+\def\tikztimingdef#1{%
+  \tikztimingdef@#1\relax%
+}
+
+\def\tikztimingdef@#1#2\relax#3{%
+  \ifx\relax#2\relax
+    \tikztiming@iflower{#1}%
+      {\def\width{\noexpand\timingwidth/2.}}%
+      {\def\width{\noexpand\timingwidth}}%
+    \expandafter\edef\csname \tikztiming@prefix#1\endcsname{#3}%
+  \else
+    \tikztiming@iflower{#2}%
+      {\def\width{\noexpand\timingwidth/2.}}%
+      {\def\width{\noexpand\timingwidth}}%
+    \expandafter\edef\csname \tikztiming@prefix#1#2\endcsname{#3}%
+    \tikztiming@iflower{#2}{}%
+      {\tikztiming@iflower{#1}{}%
+        {%
+          \uppercase{\lowercase{\tikztimingdef@{#1}}{#2}}\relax{#3}%
+          \lowercase{\uppercase{\tikztimingdef@{#1}}{#2}}\relax{#3}%
+          \lowercase{\tikztimingdef@{#1}{#2}}\relax{#3}%
+        }%
+      }%
+  \fi
+}
+
+\def\tikztiminglet#1#2{%
+  \tikztiminglet@#1\relax#2\relax
+}
+
+\def\tikztiminglet@#1#2\relax#3#4\relax{%
+  \expandafter
+  \let\csname \tikztiming@prefix#1#2\expandafter\endcsname\csname \tikztiming@prefix#3#4\endcsname
+  \tikztiming@iflower{#1}{}%
+    {\tikztiming@iflower{#2}{}%
+      {%
+        \uppercase{\lowercase{%
+        \uppercase{\lowercase{\tikztiminglet@{#1}}{#2}}\relax{#3}}{#4}}\relax%
+        \lowercase{\uppercase{%
+        \lowercase{\uppercase{\tikztiminglet@{#1}}{#2}}\relax{#3}}{#4}}\relax%
+        \lowercase{\tikztiminglet@{#1}{#2}\relax{#3}{#4}}\relax%
+      }%
+    }%
+}
+
+\def\tikztiming@chars#1{}
+\def\tikztiming@char@nums#1{}
+
+\def\tikztimingchar#1{%
+  \uppercase{%
+  \edef\tikztiming@chars{\tikztiming@chars,#1}%
+  \tikztimingchar@{#1}}%
+}
+
+\def\tikztimingchar@#1#2#3{%
+  \def\width{\noexpand\timingwidth}%
+  \@nameedef{\tikztiming@prefix#1}{#2#3}%
+  \def\width{\noexpand\timingwidth/2.}%
+  \lowercase{\@nameedef{\tikztiming@prefix#1}}{#2#3}%
+  \tikztimingdef{#1#1}{#3}%
+}
+
+\def\tikztimingalias#1#2{%
+  \uppercase{\tikztimingalias@{#1}{#2}}%
+}
+
+\def\tikztimingalias@#1#2{%
+  \expandafter
+  \let\csname \tikztiming@prefix#1\expandafter\endcsname
+  \csname \tikztiming@prefix#2\endcsname
+  \lowercase{%
+  \expandafter
+  \let\csname \tikztiming@prefix#1\expandafter\endcsname
+  \csname \tikztiming@prefix#2\endcsname
+  }%
+  \uppercase{\tikztiminglet{#1#1}{#2#2}}%
+  \uppercase{%
+    \@for\@tempa:=\tikztiming@chars\do{%
+      \expandafter\tikztiminglet@@
+      \expandafter{\@tempa}{#1}{#2}%
+    }%
+  }%
+}
+
+\def\tikztiminglet@@#1#2#3{%
+  \tikztiminglet{#1#2}{#1#3}%
+  \tikztiminglet{#2#1}{#3#1}%
+}
+
+\tikztimingchar{H}{++(0,\height)}{-- ++(\width,0) }
+\tikztimingchar{L}{++(0,0)}{-- ++(\width,0) }
+\tikztimingchar{Z}{++(0,\height/2.)}{-- ++(\width,0) }
+\tikztimingchar{D}{++(0,0)}{-- ++(+\width,0) ++(-\width*1.1,+\height)
+                -- ++(+\width*1.1,0) ++(0,-\height) }
+
+\tikztimingdef{HH}{-- ++(\width,0) }
+\tikztimingdef{LL}{-- ++(\width,0) }
+\tikztimingdef{HL}{-- ++(\slope,-\height) -- ++(\width-\slope,0) }
+\tikztimingdef{LH}{-- ++(\slope, \height) -- ++(\width-\slope,0) }
+
+\tikztimingdef{ZZ}{-- ++(\width,0) }
+\tikztimingdef{LZ}{-- ++(\zslope,+\height/2.) -- ++(\width-\zslope,0) }
+\tikztimingdef{HZ}{-- ++(\zslope,-\height/2.) -- ++(\width-\zslope,0) }
+\tikztimingdef{ZH}{-- ++(\zslope,+\height/2.) -- ++(\width-\zslope,0) }
+\tikztimingdef{ZL}{-- ++(\zslope,-\height/2.) -- ++(\width-\zslope,0) }
+
+\tikztimingdef{DZ}{}
+\tikztimingdef{ZD}{
+            -- ++(\dslope/2.,\height/2.)   -- ++(\width-\dslope/2.,0)
+               ++(-\width,-\height/2.)
+            -- ++(\dslope/2.,-\height/2.)  -- ++(\width-\dslope/2.,0) }
+\tikztimingdef{DZ}{
+               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+            -- ++( \dslope/2.,+\height/2.)
+               ++(-\dslope/2.,+\height/2.)
+               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+            -- ++( \dslope/2.,-\height/2.) -- ++(\width-\dslope/2.,0) }
+
+\tikztimingdef{LD}{
+            -- ++(\dslope,\height)       -- ++(\width-\dslope,0)
+               ++(-\width,-\height)        ++(\dslope/2.,+\height/2.)
+            -- ++(\dslope/2.,-\height/2.)  -- ++(\width-\dslope,0) }
+\tikztimingdef{DL}{
+               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+            -- ++( \dslope/2.,+\height/2.)
+               ++(-\dslope/2.,+\height/2.)
+               ++(-\width/10.,0)        -- ++(+\width/10.,0)
+            -- ++(\dslope,-\height)      -- ++(\width-\dslope,0) }
+\tikztimingdef{HD}{-- ++(\dslope,-\height)
+            -- ++(\width-\dslope,0)
+               ++(-\width,+\height) ++(\dslope/2.,-\height/2.)
+            -- ++(\dslope/2.,+\height/2.) -- ++(\width-\dslope,0)
+               ++(0,-\height) }
+\tikztimingdef{DH}{   ++(0,+\height)
+               ++(-\width/10.,0) -- ++(+\width/10.,0)
+            -- ++(\dslope/2.,-\height/2.)
+               ++(-\dslope/2.,-\height/2.)
+               ++(-\width/10.,0) -- ++(+\width/10.,0)
+            -- ++(\dslope,+\height) -- ++(\width-\dslope,0) }
+\tikztimingdef{DD}{-- ++(+\width,0) ++(-\width*1.1,+\height) 
+%++(-\width/2.,+\height/2.) node [scale=0.75] {A} ++(-\width/2.+1,+\height/2.)
+            -- ++(+\width*1.1,0) ++(0,-\height) }
+
+\tikztimingalias{X}{D}
+\tikztimingdef{XX}{
+               ++(-\width/10.,0) -- ++(+\width/10.,0)
+            -- ++(\dslope,+\height) -- ++(\width-\dslope,0)
+               ++(-\width,0)
+               ++(-\width/10.,0) -- ++(+\width/10.,0)
+            -- ++(\dslope,-\height) -- ++(\width-\dslope,0) }
+\tikztiminglet{DX}{XX}
+
+\tikztimingalias{M}{Z}
+\tikztimingchar{M}{++(0,\height/2.)}{
+  -- ++(\width/16.,+\height*.225)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/8.,+\height*.45)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/8.,+\height*.45)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/8.,+\height*.45)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/16.,+\height*.225)
+}
+
+\tikztimingdef{m}{
+     ++(0,+\height/2.)
+  -- ++(\width/8.,+\height*.225)
+  -- ++(\width/4.,-\height*.45)
+  -- ++(\width/4.,+\height*.45)
+  -- ++(\width/4.,-\height*.45)
+  -- ++(\width/8.,+\height*.225)
+}
+
+\tikztimingdef{ZM}{
+  -- ++(\width/16.,+\height*.075)
+  -- ++(\width/8.,-\height*.20)
+  -- ++(\width/8.,+\height*.25)
+  -- ++(\width/8.,-\height*.30)
+  -- ++(\width/8.,+\height*.35)
+  -- ++(\width/8.,-\height*.40)
+  -- ++(\width/8.,+\height*.45)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/16.,+\height*.225)
+}
+
+\tikztimingdef{Zm}{
+  -- ++(\width/8.,+\height*.075)
+  -- ++(\width/4.,-\height*.20)
+  -- ++(\width/4.,+\height*.25)
+  -- ++(\width/4.,-\height*.30)
+  -- ++(\width/8.,+\height*.175)
+}
+\tikztiminglet{zm}{Zm}
+
+\tikztimingdef{Mm}{
+  -- ++(\width/8.,+\height*.225)
+  -- ++(\width/4.,-\height*.45)
+  -- ++(\width/4.,+\height*.45)
+  -- ++(\width/4.,-\height*.45)
+  -- ++(\width/8.,+\height*.225)
+}
+\tikztiminglet{mm}{Mm}
+
+\tikztimingdef{LM}{
+  -- ++(\width/16.,+\height*.60)
+  -- ++(\width/8.,-\height*.20)
+  -- ++(\width/8.,+\height*.25)
+  -- ++(\width/8.,-\height*.30)
+  -- ++(\width/8.,+\height*.35)
+  -- ++(\width/8.,-\height*.40)
+  -- ++(\width/8.,+\height*.45)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/16.,+\height*.20)
+}
+\tikztimingdef{HM}{
+  -- ++(\width/16.,-\height*.40)
+  -- ++(\width/8.,-\height*.20)
+  -- ++(\width/8.,+\height*.25)
+  -- ++(\width/8.,-\height*.30)
+  -- ++(\width/8.,+\height*.35)
+  -- ++(\width/8.,-\height*.40)
+  -- ++(\width/8.,+\height*.45)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/16.,+\height*.20)
+}
+\tikztimingdef{DM}{
+     ++(-\width/16,0)
+  -- ++(+\width/16,0)
+  -- ++(\width/16.,+\height*.50)
+     ++(-\width/8,+\height*.50)
+  -- ++(+\width/16,0)
+  -- ++(\width/16.,-\height*.50)
+  -- ++(\width/8.,-\height*.10)
+  -- ++(\width/8.,+\height*.25)
+  -- ++(\width/8.,-\height*.30)
+  -- ++(\width/8.,+\height*.35)
+  -- ++(\width/8.,-\height*.40)
+  -- ++(\width/8.,+\height*.45)
+  -- ++(\width/8.,-\height*.45)
+  -- ++(\width/16.,+\height*.20)
+}
+\tikztiminglet{XM}{DM}
+\tikztiminglet{MX}{MD}
+
+\tikztimingdef{Lm}{
+  -- ++(\width/8.,+\height*.575)
+  -- ++(\width/4.,-\height*.20)
+  -- ++(\width/4.,+\height*.25)
+  -- ++(\width/4.,-\height*.30)
+  -- ++(\width/8.,+\height*.175)
+}
+\tikztimingdef{Hm}{
+  -- ++(\width/8.,-\height*.425)
+  -- ++(\width/4.,-\height*.20)
+  -- ++(\width/4.,+\height*.25)
+  -- ++(\width/4.,-\height*.30)
+  -- ++(\width/8.,+\height*.175)
+}
+\tikztimingdef{Dm}{
+     ++(-\width/8,0)
+  -- ++(+\width/8,0)
+  -- ++(\width/8.,+\height*.50)
+     ++(-\width/4,+\height*.50)
+  -- ++(+\width/8,0)
+  -- ++(\width/8.,-\height*.50)
+  -- ++(\width/4.,-\height*.10)
+  -- ++(\width/4.,+\height*.25)
+  -- ++(\width/4.,-\height*.30)
+  -- ++(\width/8.,+\height*.15)
+}
+\tikztiminglet{lm}{Lm}
+\tikztiminglet{hm}{Hm}
+\tikztiminglet{dm}{Dm}
+\tikztiminglet{Xm}{Dm}
+\tikztiminglet{mX}{mD}
+\tikztiminglet{xm}{dm}
+
+
+
