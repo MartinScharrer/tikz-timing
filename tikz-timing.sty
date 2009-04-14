@@ -6,6 +6,7 @@
 
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
+\newcount\tikztiming@dlength
 
 \def\tikztiming@prefix{tikztiming@trans@}
 
@@ -23,13 +24,15 @@
   (\timingwidth*\value{tikztimingchars}/2.,\timingheight);
 }
 
+\@namedef{\tikztiming@prefix @start}{}
+
 \newcommand*\texttiming[2][]{%
   \begingroup
-    \def\lastchar{#1}%
     \setcounter{tikztimingchars}{0}%
     \setcounter{tikztimingtrans}{-1}%
+    \def\lastchar{#1}%
     \let\currentchar\empty
-    \let\tikztiming@str\empty
+    \edef\tikztiming@str{\csname \tikztiming@prefix\lastchar @start\endcsname}%
     \texttiming@#2\relax
     %\message{^^J\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
@@ -77,6 +80,19 @@
   \@ifnextchar{;}{\@gobble}{}%
 }
 
+\def\tikztiming@aftercode@D{%
+  \advance\tikztiming@dlength by +2\relax
+}
+\def\tikztiming@aftercode@d{%
+  \advance\tikztiming@dlength by +1\relax
+}
+\def\tikztiming@aftercode@X{%
+  \tikztiming@dlength=2\relax
+}
+\def\tikztiming@aftercode@x{%
+  \tikztiming@dlength=1\relax
+}
+
 
 \def\texttiming@#1{%
   \ifx\relax#1\empty
@@ -89,10 +105,40 @@
         \tikztiming@str
         \csname\tikztiming@prefix\lastchar\currentchar\endcsname
     }%
+    \@ifundefined{tikztiming@aftercode@\currentchar}%
+      {\tikztiming@dlength=0\relax}%
+      {\@nameuse{tikztiming@aftercode@\currentchar}}%
     \let\lastchar\currentchar
     \expandafter
-    \tikztiming@testfornum
+    \tikztiming@testfortext
   \fi
+}
+
+\def\tikztiming@testfortext{%
+  \@ifnextchar\bgroup
+    {\tikztiming@handletext}%
+    {\tikztiming@testfornum}%
+}
+
+
+\tikzset{timing d text/.style={timing,scale=0.6}}
+
+\def\tikztiming@handletext#1{%
+  \@ifnextchar{[}%
+    {\tikztiming@handletext@}%
+    {\tikztiming@handletext@[]}%
+  #1\relax
+}
+\def\tikztiming@handletext@[#1]#2\relax{%
+  \edef\tikztiming@str{%
+    \tikztiming@str
+    node [
+      shift={(-\the\tikztiming@dlength/4.+\dslope/2., \height/2.)},
+      timing d text, #1
+    ] {#2}
+  }%
+  \tikztiming@dlength=0\relax
+  \tikztiming@testfornum
 }
 
 \newcount\tikztiming@count
@@ -223,6 +269,8 @@
 
 \def\tikztimingchar@#1#2#3{%
   \def\width{\noexpand\timingwidth}%
+  \@nameedef{\tikztiming@prefix#1@start}{#2}%
+  \lowercase{\@nameedef{\tikztiming@prefix#1@start}}{#2}%
   \@nameedef{\tikztiming@prefix#1}{#2#3}%
   \def\width{\noexpand\timingwidth/2.}%
   \lowercase{\@nameedef{\tikztiming@prefix#1}}{#2#3}%
