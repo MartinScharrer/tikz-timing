@@ -15,6 +15,8 @@
 \tikzset{texttiming/.style={timing}}
 \tikzset{timing table/.style={timing}}
 \tikzset{timing name/.style={font=\sffamily}}
+\tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
+\tikzset{timing table grid/.style={timing grid}}
 
 \def\texttimingbefore{}
 \def\texttimingafter{}
@@ -26,23 +28,29 @@
 
 \@namedef{\tikztiming@prefix @start}{}
 
-\newcommand*\texttiming[2][]{%
+\DeclareRobustCommand*\texttiming[2][]{%
   \begingroup
-    \setcounter{tikztimingchars}{0}%
-    \setcounter{tikztimingtrans}{-1}%
+    \tikztiming@init
     \def\lastchar{#1}%
-    \let\currentchar\empty
-    \edef\tikztiming@str{\csname \tikztiming@prefix\lastchar @start\endcsname}%
-    \tikztiming@#2\relax\relax
+    \tikztiming@eaddtostr{\csname \tikztiming@prefix\lastchar @start\endcsname}%
+    \tikztiming@#2\relax
     %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle %
       (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
       \texttimingbefore
-      \draw (0,0) \tikztiming@str;%
+      \tikztiming@str;%
       \texttimingafter
     \end{tikzpicture}%
   \endgroup
+}
+
+\def\tikztiming@init{%
+    \def\lastchar{}%
+    \let\currentchar\empty
+    \setcounter{tikztimingchars}{0}%
+    \setcounter{tikztimingtrans}{-1}%
+    \def\tikztiming@str{\draw (0,0) }%
 }
 
 \def\timing{
@@ -66,13 +74,10 @@
 
 \def\timing@@@#1#2#3{%
   \begingroup
-    \def\lastchar{}%
-    \setcounter{tikztimingchars}{0}%
-    \setcounter{tikztimingtrans}{-1}%
-    \let\currentchar\empty
-    \let\tikztiming@str\empty
+    \tikztiming@init
+    \def\tikztiming@str{\draw [timing,#1] #2 }%
     \tikztiming@#3\relax
-    \draw [timing,#1] #2 \tikztiming@str;%
+    \tikztiming@str;%
     \ifnum\c@maxtikztimingchars<\c@tikztimingchars
       \global\c@maxtikztimingchars=\c@tikztimingchars
     \fi
@@ -81,9 +86,11 @@
 }
 
 \def\tikztiming@aftercode@D{%
+  \tikztiminglet{DD}{DS}%
   \advance\tikztiming@dlength by +2\relax
 }
 \def\tikztiming@aftercode@d{%
+  \tikztiminglet{DD}{DS}%
   \advance\tikztiming@dlength by +1\relax
 }
 \def\tikztiming@aftercode@X{%
@@ -137,7 +144,6 @@
 }
 
 
-\tikzset{timing d text/.style={timing,scale=0.6}}
 
 \def\tikztiming@handletext#1{%
   \@ifnextchar{[}%
@@ -155,6 +161,7 @@
     #1 ] {#2}%
   }%
   \tikztiming@dlength=0\relax
+  \tikztiminglet{DD}{SD}%
   \tikztiming@
 }
 
@@ -336,8 +343,21 @@
 \tikztimingchar{H}{++(0,\height)}{-- ++(\width,0) }
 \tikztimingchar{L}{++(0,0)}{-- ++(\width,0) }
 \tikztimingchar{Z}{++(0,\height/2.)}{-- ++(\width,0) }
-\tikztimingchar{D}{++(0,0)}{-- ++(+\width,0) ++(-\width*1.1,+\height)
-                -- ++(+\width*1.1,0) ++(0,-\height) }
+\tikztimingchar{D}{++(0,0)}{
+                -- ++(+\width,0) ++(-\width,+\height)
+                -- ++(+\width,0) ++(0,-\height) }
+\tikztimingdef{DD}{
+                -- ++(+\width,0) ++(-\width*1.05,+\height)
+                -- ++(+\width*1.05,0) ++(0,-\height)
+              }
+\tikztimingchar{S}{++(0,0)}{}
+\tikztiminglet{DS}{DD}
+\tikztimingdef{SD}{
+               ++(-\width/10.,0) -- ++(+\width/10.,0)
+            -- ++(\dslope,+\height) -- ++(\width-\dslope,0)
+               ++(-\width,0)
+               ++(-\width/10.,0) -- ++(+\width/10.,0)
+            -- ++(\dslope,-\height) -- ++(\width-\dslope,0) }
 
 \tikztimingdef{HH}{-- ++(\width,0) }
 \tikztimingdef{LL}{-- ++(\width,0) }
@@ -634,7 +654,6 @@
     }%
 }
 
-\tikzset{timing table grid/.style={timing grid}}
 
 \def\tikztiming@tablegrid{%
  \begin{pgfonlayer}{background}
