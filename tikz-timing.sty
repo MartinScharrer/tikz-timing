@@ -34,7 +34,7 @@
     \let\currentchar\empty
     \edef\tikztiming@str{\csname \tikztiming@prefix\lastchar @start\endcsname}%
     \tikztiming@#2\relax\relax
-    \message{^^J\tikztiming@str^^J}%
+    %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle %
       (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
@@ -103,9 +103,7 @@
     \xdef\tikztiming@str{%
       \the\@temptokena
       #1%
-    }
-    \def\@tempa{#1}%
-    \message{^^JADD: \meaning\tikztiming@str}
+    }%
   \endgroup
 }
 
@@ -152,9 +150,9 @@
     node [
       shift={(-\the\tikztiming@dlength/4.+\dslope/2., \height/2.)},
       timing d text,
-  }
+  }%
   \tikztiming@addtostr{%
-    #1 ] {#2}
+    #1 ] {#2}%
   }%
   \tikztiming@dlength=0\relax
   \tikztiming@
@@ -194,7 +192,6 @@
     \@temptokena{#1}%
     \tikztiming@numloop%
   \endgroup
-  \message{^^JDEBUG: '\meaning\tikztiming@numchars'}%
   \expandafter\tikztiming@@\tikztiming@numchars
 }
 
