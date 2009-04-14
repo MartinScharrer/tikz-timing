@@ -10,6 +10,7 @@
     \let\currentchar\empty
     \let\str\empty
     \textwaveX#1\relax
+    %\message{^^J\meaning\str}%
     \begin{tikzpicture}[x=1.75ex,y=1.75ex,line width=0.75pt]
       \draw (0,0) \str;
     \end{tikzpicture}
@@ -67,22 +68,84 @@
 \def\pathLD{-- ++(\slope,1)     -- ++(\nslope,0)
                ++(-1,-1) ++(\zslope,+0.5)
             -- ++(\zslope,-0.5) -- ++(\nslope,0) }
-\def\pathDL{-- ++(\zslope,+0.5)
+\let\pathlD\pathLD
+\def\pathLd{-- ++(\slope,1)     -- ++(\hnslope,0)
+               ++(-0.5,-1) ++(\zslope,+0.5)
+            -- ++(\zslope,-0.5) -- ++(\hnslope,0) }
+\let\pathld\pathLd
+\def\pathDL{   ++(-0.1,0) -- ++(+0.1,0)
+            -- ++(\zslope,+0.5)
                ++(-\zslope,+0.5)
+               ++(-0.1,0) -- ++(+0.1,0)
             -- ++(\slope,-1) -- ++(\nslope,0) }
-\def\pathHD{
-            -- ++(\slope,-1)
+\let\pathdL\pathdL
+\def\pathDl{   ++(-0.1,0) -- ++(+0.1,0)
+            -- ++(\zslope,+0.5)
+               ++(-\zslope,+0.5)
+               ++(-0.1,0) -- ++(+0.1,0)
+            -- ++(\slope,-1) -- ++(\hnslope,0) }
+\let\pathdl\pathDl
+\def\pathHD{-- ++(\slope,-1)
             -- ++(\nslope,0)
                ++(-1,+1) ++(\zslope,-0.5)
             -- ++(\zslope,+0.5) -- ++(\nslope,0)
                ++(0.0,-1) }
+\let\pathhD\pathHD
+\def\pathHd{-- ++(\slope,-1)
+            -- ++(\hnslope,0)
+               ++(-0.5,+1) ++(\zslope,-0.5)
+            -- ++(\zslope,+0.5) -- ++(\hnslope,0)
+               ++(0.0,-1) }
+\let\pathhd\pathHd
 \def\pathDH{   ++(0.0,+1)
+               ++(-0.1,0) -- ++(+0.1,0)
             -- ++(\zslope,-0.5)
                ++(-\zslope,-0.5)
+               ++(-0.1,0) -- ++(+0.1,0)
             -- ++(\slope,+1) -- ++(\nslope,0) }
-\def\pathDD{-- ++(\slope,+1.0) -- ++(\nslope,0)
+\let\pathdH\pathDH
+\def\pathDh{   ++(0.0,+1)
+               ++(-0.1,0) -- ++(+0.1,0)
+            -- ++(\zslope,-0.5)
+               ++(-\zslope,-0.5)
+               ++(-0.1,0) -- ++(+0.1,0)
+            -- ++(\slope,+1) -- ++(\hnslope,0) }
+\let\pathdh\pathDh
+\def\pathDD{-- ++(+1,0) ++(-1.1,+1)
+            -- ++(+1.1,0) ++(0,-1) }
+\let\pathdD\pathDD
+\def\pathDd{-- ++(+0.5,0) ++(-0.6,+1)
+            -- ++(+0.6,0) ++(0,-1) }
+\let\pathdd\pathDd
+
+\let\pathLX\pathLD
+\let\pathHX\pathHD
+\let\pathXL\pathDL
+\let\pathXH\pathDH
+\let\pathlX\pathLD
+\let\pathhX\pathHD
+\let\pathxL\pathDL
+\let\pathxH\pathDH
+\def\pathXX{   ++(-0.1,0) -- ++(+0.1,0)
+            -- ++(\slope,+1.0) -- ++(\nslope,0)
                ++(-1,0)
+               ++(-0.1,0) -- ++(+0.1,0)
             -- ++(\slope,-1.0) -- ++(\nslope,0) }
+\def\pathXx{   ++(-0.1,0) -- ++(+0.1,0)
+            -- ++(\slope,+1) -- ++(\hnslope,0)
+               ++(-0.5,0)
+               ++(-0.1,0) -- ++(+0.1,0)
+            -- ++(\slope,-1) -- ++(\hnslope,0) }
+\let\pathxX\pathXX
+\let\pathDX\pathXX
+\let\pathXD\pathXX
+\let\pathdX\pathXX
+\let\pathxD\pathXX
+\let\pathxx\pathXx
+\let\pathDx\pathXx
+\let\pathXd\pathXx
+\let\pathdx\pathXx
+\let\pathxd\pathXx
 
 \def\textwaveX#1{%
   \ifx\relax#1\empty
@@ -112,7 +175,8 @@
  Test C & \textwave{lh} \\
  Test C & \textwave{Lh} \\
  Test C & \textwave{lH} \\
- Test C & \textwave{LDDDLHDDDDH} \\
+ Test C & \textwave{LDDXDDLHDDDDHDHDLDLHHDHH} \\
+ Test C & \textwave{lddxddlhddddhdhdldlhhdhh} \\
 \end{tabular}
 
 \end{document}
