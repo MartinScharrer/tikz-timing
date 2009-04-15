@@ -210,7 +210,7 @@ TikZ]
 \tikzset{timing table/.style={timing}}
 \tikzset{timing name/.style={font=\sffamily}}
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
-\tikzset{timing d background/.style={}}
+\tikzset{timing d background/.style={fill=green}}
 \tikzset{timing d/.style={}}
 \tikzset{timing u background/.style={fill=gray}}
 \tikzset{timing u/.style={}}
@@ -883,7 +883,6 @@ TikZ]
   --  +(#1,0) ++(0,+\height)
   -- ++(#1,0) ++(0,-\height)
 }
-\tikztiming@namelet{temp}{DD}
 
 \def\tikztiming@trans@D@fill#1#2{%
   node (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
@@ -898,7 +897,7 @@ TikZ]
 
 \tikztimingdef{DD}{
   node (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
-  -- +(0,\height) -- +(\dslope,0)
+     +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
   -- +(#1,0)
   -- +($ (#1,0) + 0.5*(\dslope,\height) $)
   -- +(#1,\height)
@@ -914,7 +913,17 @@ TikZ]
 \tikztiming@namelet{D@edge@d}{Dd}
 \tikztiming@namelet{d@edge@d}{Dd}
 
-\tikztiming@namelet{DD}{temp}
+\tikztimingdef{DD}{
+  node (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
+  -- +(#1,0)
+  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
+  -- +(#1,\height)
+  -- +(0,\height)
+  -- cycle;
+  \draw [\tikztiming@style] (timing@save) ++(0,0)
+  --  +(#1,0) ++(0,+\height)
+  -- ++(#1,0) ++(0,-\height)
+}
 
 \tikztimingdef{HH}{-- ++(#1,0)}
 \tikztimingdef{LL}{-- ++(#1,0)}
@@ -939,13 +948,6 @@ TikZ]
   -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 
-\tikztimingdef{ZD}{
-  \tikztiming@trans@D@fill{#1}{0}%
-  -- ++(\dslope/2.,\height/2.)  -- ++($ (#1,0) - (\dslope/2.,0) $)
-     ++($ -1*(#1,0) + (0,-\height/2.) $)
-  -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope/2.,0) $)
-}
-
 \tikztimingdef{DZ}{
   -- ++( \dslope/2.,+\height/2.)
      ++(-\dslope/2.,+\height/2.)
@@ -953,6 +955,16 @@ TikZ]
   node (timing@save) {}; \draw [\tikztiming@style] (timing@save) ++(0,0)
   -- ++($ (#1,0) - (\dslope/2.,0) $)
 }
+
+\def\tikztiming@bgstyle{timing d background}
+\def\tikztiming@style{timing d}
+\tikztimingdef{ZD}{
+  \tikztiming@trans@D@fill{#1}{0}%
+  -- ++(\dslope/2.,\height/2.)  -- ++($ (#1,0) - (\dslope/2.,0) $)
+     ++($ -1*(#1,0) + (0,-\height/2.) $)
+  -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope/2.,0) $)
+}
+
 \tikztiminglet{ZX}{XX}
 \tikztiminglet{XZ}{ZZ}
 \tikztimingdef{ZZ}{-- ++(#1,0)}
@@ -963,12 +975,11 @@ TikZ]
 \tikztimingdef{HX}{\tikztiminguse{HZ}{\width}}
 \tikztimingdef{XH}{\tikztiminguse{ZH}{\width}}
 \tikztimingdef{XL}{\tikztiminguse{ZL}{\width}}
-\tikztimingdef{XD}{\tikztiminguse{ZD}{\width}}
 \tikztimingdef{DX}{\tikztiminguse{DZ}{\width}}
-
 
 \def\tikztiming@bgstyle{timing d background}
 \def\tikztiming@style{timing d}
+\tikztimingdef{XD}{\tikztiminguse{ZD}{\width}}
 
 \tikztimingdef{LD}{
   -- ++(0.5*\dslope,0.5*\height)
