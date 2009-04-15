@@ -632,10 +632,10 @@ TikZ]
   \begin{tikzpicture}[timing table]%
   \setcounter{maxtikztimingchars}{0}%
   \setcounter{tikztimingrows}{-1}%
-  \path (-1.0,\tikztimingrowpos) node [anchor=base east,timing name] 
+  \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing name] 
   {Characters};
-  \path (+0.0,\tikztimingrowpos) node [anchor=base west,timing name] {Resulting 
-  Diagram};
+  \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing name] 
+  {Resulting Diagram};
   \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
 }[\end{tikzpicture}]
 
