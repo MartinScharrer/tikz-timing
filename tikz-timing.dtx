@@ -715,8 +715,12 @@ TikZ]
 \def\tikztiming@texttt@@#1{%
   \tikztiming@texttt@\tikztiming@braceopen#1\tikztiming@braceclose
 }
-\def\tikztiming@braceopen{\textnormal{\{}}%
-\def\tikztiming@braceclose{\textnormal{\}}}%
+\begingroup
+\catcode`\{=12
+\catcode`\}=12
+\global\let\tikztiming@braceopen={%
+\global\let\tikztiming@braceclose=}%
+\endgroup
 %    \end{macrocode}
 % \end{macro}
 %
