@@ -208,7 +208,7 @@ TikZ]
 \tikzset{timing grid/.style={timing,help lines}}
 \tikzset{texttiming/.style={timing}}
 \tikzset{timing table/.style={timing}}
-\tikzset{timing name/.style={font=\sffamily}}
+\tikzset{timing name/.style={font=\sffamily,inner sep=0pt,outer sep=0pt}}
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
 \tikzset{timing d background/.style={}}
 \tikzset{timing d/.style={}}
@@ -626,6 +626,23 @@ TikZ]
 %    \end{macrocode}
 % \end{environment}
 
+% \begin{environment}{tikztimingexampletable}
+%    \begin{macrocode}
+\NewEnviron{tikztimingexampletable}{%
+  \begin{tikzpicture}[timing table]%
+  \setcounter{maxtikztimingchars}{0}%
+  \setcounter{tikztimingrows}{-1}%
+  \path (-1.0,\tikztimingrowpos) node [anchor=base east,timing name] 
+  {Characters};
+  \path (+0.0,\tikztimingrowpos) node [anchor=base west,timing name] {Resulting 
+  Diagram};
+  \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
+}[\end{tikzpicture}]
+
+\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
+%    \end{macrocode}
+% \end{environment}
+
 % \begin{macro}{\tikztimingextracode}
 %    \begin{macrocode}
 \long\def\tikztimingextracode#1\endtikztimingtable@{#1}
@@ -645,6 +662,55 @@ TikZ]
       \@ifnextchar\endtikztimingtable@
         {\@gobble}{\tikztimingtable@}%
     }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingexampletable@}
+%    \begin{macrocode}
+\def\tikztimingexampletable@#1\\{%
+  \addtocounter{tikztimingrows}{1}%
+  \path (-1,\tikztimingrowpos) node [anchor=base east,timing name] 
+  {\tikztiming@texttt{#1}};
+  \timing (+0,\tikztimingrowpos) {#1};
+  \@ifnextchar\extracode
+    {\tikztimingextracode}%
+    {%
+      \@ifnextchar\endtikztimingtable@
+        {\@gobble}{\tikztimingexampletable@}%
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@texttt}
+%    \begin{macrocode}
+\def\tikztiming@texttt#1{%
+  \begingroup
+  \ttfamily
+  \tikztiming@texttt@#1\relax
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@texttt@}
+%    \begin{macrocode}
+\def\tikztiming@texttt@{%
+  \@ifnextchar\bgroup
+    {\tikztiming@texttt@@}%
+    {\@ifnextchar\relax
+      {}%
+      {\@firstofone}%
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@texttt@@}
+%    \begin{macrocode}
+\def\tikztiming@texttt@@#1{%
+  \tikztiming@texttt@\{#1\}%
 }
 %    \end{macrocode}
 % \end{macro}
