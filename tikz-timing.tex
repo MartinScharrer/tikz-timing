@@ -7,8 +7,16 @@
 
 \newcolumntype{T}{>{\texttiming\bgroup}{l}<{\egroup}}
 
-\usepackage{fmtcount}
-\padzeroes[2]
+%\usepackage{fmtcount}
+\pgfmathsetbasenumberlength{2}
+
+\newcounter{hexcount}
+\newcommand{\hexcount}{%
+  \pgfmathdectoBase\thehexcount{\value{hexcount}}{16}%
+  \thehexcount
+  \addtocounter{hexcount}{+1}%
+}
+
 %\let\texttimingbefore\texttiminggrid
 
 \begin{document}
@@ -20,8 +28,6 @@ This is a text with a timing MX\texttiming[L]{HLHLHLZ}XM diagram.
 
 \tikzset{small/.style={scale=.7}}
 
-\newcounter{mycount}
-\def\testmycount{\Hexadecimal{mycount}\addtocounter{mycount}{+1}}
 \def\gobble#1{}
 
 \texttt\bgroup XX\egroup
@@ -31,8 +37,7 @@ This is a text with a timing MX\texttiming[L]{HLHLHLZ}XM diagram.
 
 \noindent
 \begin{tikztimingexampletable}
-  [d]20{d2d{[small,blue]{\Hexadecimal{mycount}\addtocounter{mycount}{+1}}}}d \\
- [D]20{D{[small,blue]\Hexadecimal{mycount}\addtocounter{mycount}{+1}}}d \\
+  [d]20{D{[small,blue]\hexcount}}d \\
  5{D{[red,scale=.7]FF}}D{[green,scale=.7]AB}D{[small]AA}D{[small]DD}d \\
  10D{Text}10D{TESS} \\
 \end{tikztimingexampletable}
@@ -91,6 +96,7 @@ This is a text with a timing MX\texttiming[L]{HLHLHLZ}XM diagram.
 \begin{table}
 \let\texttimingbefore\texttiminggrid
 \ttfamily\small
+%\def\ti#1{\fboxsep0pt\fbox{\texttiming{#1}}}%
 \let\ti\texttiming
 \makebox[\textwidth][c]{%
 \begin{tabular}{c|cccccccccccccccccc}
