@@ -701,7 +701,7 @@ TikZ]
     {\tikztiming@texttt@@}%
     {\@ifnextchar\relax
       {}%
-      {\@firstofone}%
+      {\tikztiming@texttt@@@}%
     }%
 }
 %    \end{macrocode}
@@ -714,6 +714,15 @@ TikZ]
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\tikztiming@texttt@@@}
+%    \begin{macrocode}
+\def\tikztiming@texttt@@@#1{%
+  #1\tikztiming@texttt@
+}
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \begin{macro}{\tikztiming@tablegrid}
 %    \begin{macrocode}
