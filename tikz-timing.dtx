@@ -194,7 +194,8 @@ TikZ]
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
 \newcount\tikztiming@dlength
-\newcount\tikztiming@count
+\newcount\tikztiming@numint
+\newcount\tikztiming@numfrac
 
 \def\tikztiming@prefix{tikztiming@trans@}
 %    \end{macrocode}
@@ -539,9 +540,20 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztiming@testfornum{%
   \let\tikztiming@numchars\empty
+  \tikztiming@numfrac0\relax
   \afterassignment
   \tikztiming@testfornum@
-  \tikztiming@count0%
+  \tikztiming@numint0%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornumfrac}
+%    \begin{macrocode}
+\def\tikztiming@testfornumfrac{%
+  \afterassignment
+  \tikztiming@testfornum@@@
+  \tikztiming@numfrac0%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -549,13 +561,13 @@ TikZ]
 % \begin{macro}{\tikztiming@numloop}
 %    \begin{macrocode}
 \def\tikztiming@numloop{%
-  \ifnum\tikztiming@count>0%
+  \ifnum\tikztiming@numint>0%
     \toks@\expandafter{\tikztiming@numchars}%
     \xdef\tikztiming@numchars{%
       \the\toks@
       \the\@temptokena
     }%
-    \global\advance\tikztiming@count by -1\relax
+    \global\advance\tikztiming@numint by -1\relax
     \expandafter\tikztiming@numloop
   \fi
 }
@@ -565,7 +577,7 @@ TikZ]
 % \begin{macro}{\tikztiming@testfornum@}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@{%
-  \ifnum0<\tikztiming@count
+  \ifnum0<\tikztiming@numint
     \expandafter\tikztiming@testfornum@@
   \else
     \expandafter\tikztiming@@
@@ -576,7 +588,17 @@ TikZ]
 %
 % \begin{macro}{\tikztiming@testfornum@@}
 %    \begin{macrocode}
-\def\tikztiming@testfornum@@#1{%
+\def\tikztiming@testfornum@@{%
+  \@ifnextchar{.}%
+    {\expandafter\tikztiming@testfornumfrac\@gobble}%
+    {\tikztiming@testfornum@@@}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornum@@@}
+%    \begin{macrocode}
+\def\tikztiming@testfornum@@@#1{%
   \begingroup
     \@temptokena{#1}%
     \tikztiming@numloop%
