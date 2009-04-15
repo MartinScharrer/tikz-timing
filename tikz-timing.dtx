@@ -196,6 +196,7 @@ TikZ]
 \newcount\tikztiming@dlength
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
+\def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
 
 \def\tikztiming@prefix{tikztiming@trans@}
 %    \end{macrocode}
@@ -262,7 +263,7 @@ TikZ]
       is not defined and will be ignored!}{}{}{}}%
       {\tikztiming@nameaddtostr{\lastchar @start}}%
     \tikztiming@#2\relax
-    %\message{^^J\meaning\tikztiming@str^^J}%
+    \message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle
       (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
@@ -432,9 +433,13 @@ TikZ]
 % \begin{macro}{\tikztiming@nameaddtostr}
 %    \begin{macrocode}
 \def\tikztiming@nameaddtostr#1{%
+  \begingroup
+  \edef\@tempa{\tikztiming@num}%
   \expandafter\g@addto@macro
   \expandafter\tikztiming@str
-  \expandafter{\csname\tikztiming@prefix#1\endcsname}%
+  \expandafter{\csname\tikztiming@prefix#1\expandafter\endcsname
+  \expandafter{\@tempa} }%
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -447,9 +452,9 @@ TikZ]
   \begingroup
     \tikztiming@internaldefs
     \tikztiming@iflower{#1}%
-      {\def\width{\noexpand\timingwidth/2.}}%
-      {\def\width{\noexpand\timingwidth}}%
-    \xdef\@gtempa{\@gtempa{\width}}%
+      {\def\width{####1*\noexpand\timingwidth/2.}}%
+      {\def\width{####1*\noexpand\timingwidth}}%
+    \xdef\@gtempa##1{\@gtempa{\width}}%
   \endgroup
   \expandafter\let\csname\tikztiming@prefix#2\endcsname\@gtempa
   \let\@gtempa\empty
@@ -567,7 +572,7 @@ TikZ]
       \the\toks@
       \the\@temptokena
     }%
-    \global\advance\tikztiming@numint by -1\relax
+    \advance\tikztiming@numint by -1\relax
     \expandafter\tikztiming@numloop
   \fi
 }
@@ -580,6 +585,8 @@ TikZ]
   \ifnum0<\tikztiming@numint
     \expandafter\tikztiming@testfornum@@
   \else
+    \tikztiming@numint1\relax
+    \tikztiming@numfrac0\relax
     \expandafter\tikztiming@@
   \fi
 }
@@ -604,8 +611,7 @@ TikZ]
       \ifnum0=\tikztiming@numfrac\else
         \PackageWarning{tikz-timing}%
           {Can not repeat group by a non-integer factor!
-           Rounding '\the\tikztiming@numint.\the\tikztiming@numfrac' down to 
-           '\the\tikztiming@numint'.}{}{}{}%
+           Rounding '\tikztiming@num' down to '\the\tikztiming@numint'.}{}{}{}%
       \fi
       \tikztiming@testfornum@@@@
     }%
@@ -624,6 +630,8 @@ TikZ]
     \@temptokena{#1}%
     \tikztiming@numloop%
   \endgroup
+  \tikztiming@numint1\relax
+  \tikztiming@numfrac0\relax
   \expandafter\tikztiming@@\tikztiming@numchars
 }
 %    \end{macrocode}
@@ -964,7 +972,7 @@ TikZ]
 % \end{macro}
 %
 %    \begin{macrocode}
-\@namedef{\tikztiming@prefix @start}{}
+\expandafter\def\csname\tikztiming@prefix @start\endcsname#1{}%
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztimingchar@}
