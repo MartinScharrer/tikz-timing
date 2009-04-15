@@ -813,7 +813,9 @@ TikZ]
 % \begin{macro}{\tikztiminguse}
 %    \begin{macrocode}
 \def\tikztiminguse#1{%
-  \@nameuse{\tikztiming@prefix#1@general}%
+  \@ifundefined{\tikztiming@prefix#1@general}%
+    {\PackageWarning{Can not use transition macro for '#1'.}{}{}{}}%
+    {\@nameuse{\tikztiming@prefix#1@general}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -858,6 +860,7 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztiminglet@#1#2\relax#3#4\relax{%
   \tikztiming@namelet{#1#2}{#3#4}%
+  \tikztiming@namelet{#1#2@general}{#3#4@general}%
   \tikztiming@iflower{#1}{}%
     {\tikztiming@iflower{#2}{}%
       {%
@@ -1390,43 +1393,11 @@ TikZ]
 \def\tikztiming@bgstyle{timing u background}
 \def\tikztiming@style{timing u}
 
-\iftrue
-\tracingonline=1
-\tracingmacros=1
 \tikztimingecopy{U}{D}
-\tikztimingdef{UC}{\tikztiminguse{DT}{#1}}
-\tikztimingdef{UT}{\tikztiminguse{DT}{#1}}
-\tikztimingdef{MU}{\tikztiminguse{ZD}{#1}}
-\tikztimingdef{mU}{\tikztiminguse{zD}{#1}}
-\tikztimingdef{mu}{\tikztiminguse{zd}{#1}}
-\tikztimingdef{CU}{\tikztiminguse{TD}{#1}}
-\tikztimingdef{TU}{\tikztiminguse{TD}{#1}}
-\tracingmacros=0
-\tracingonline=0
-\else
-\tikztimingchar{U}{++(0,0)}{}
-
-\tikztimingdef{UU}{\tikztiminguse{DD}{#1}}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
 \tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
-\tikztimingdef{U}{\tikztiminguse{D}{#1}}
-\tikztimingdef{u}{\tikztiminguse{D}{#1}}
-\tikztimingdef{UH}{\tikztiminguse{DH}{#1}}
-\tikztimingdef{UL}{\tikztiminguse{DL}{#1}}
-\tikztimingdef{UZ}{\tikztiminguse{DZ}{#1}}
-\tikztimingdef{UX}{\tikztiminguse{DX}{#1}}
-\tikztimingdef{UM}{\tikztiminguse{DM}{#1}}
 \tikztimingdef{Um}{\tikztiminguse{Dm}{#1}}
 \tikztimingdef{um}{\tikztiminguse{Dm}{#1}}
-\tikztimingdef{UC}{\tikztiminguse{DT}{#1}}
-\tikztimingdef{UT}{\tikztiminguse{DT}{#1}}
-
-\tikztimingdef{HU}{\tikztiminguse{HD}{#1}}
-\tikztimingdef{LU}{\tikztiminguse{LD}{#1}}
-\tikztimingdef{ZU}{\tikztiminguse{ZD}{#1}}
-\tikztimingdef{XU}{\tikztiminguse{XD}{#1}}
-\fi
-
 %    \end{macrocode}
 %
 %
