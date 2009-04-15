@@ -688,8 +688,11 @@ TikZ]
 \def\tikztiming@texttt#1{%
   \begingroup
   \ttfamily
-  \tikztiming@texttt@#1\relax
+  \tikztiming@texttt@#1\tikztiming@texttt@ENDMARKER
   \endgroup
+}
+\def\tikztiming@texttt@ENDMARKER{%
+  \@gobble{tikztiming@texttt@ENDMARKER}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -699,7 +702,7 @@ TikZ]
 \def\tikztiming@texttt@{%
   \@ifnextchar\bgroup
     {\tikztiming@texttt@@}%
-    {\@ifnextchar\relax
+    {\@ifnextchar\tikztiming@texttt@ENDMARKER
       {}%
       {\tikztiming@texttt@@@}%
     }%
@@ -710,30 +713,30 @@ TikZ]
 % \begin{macro}{\tikztiming@texttt@@}
 %    \begin{macrocode}
 \def\tikztiming@texttt@@#1{%
-  \tikztiming@texttt@\{#1\}%
+  \tikztiming@texttt@\tikztiming@braceopen#1\tikztiming@braceclose
 }
+\def\tikztiming@braceopen{\textnormal{\{}}%
+\def\tikztiming@braceclose{\textnormal{\}}}%
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@texttt@@@}
 %    \begin{macrocode}
+
 \def\tikztiming@texttt@@@#1{%
-  \def\@tempa{\noexpand#1}%
-  \if\@tempa\relax
-    \def\@tempb{\noexpand\{}%
-    \ifx\@tempa\@tempb
-      #1%
-    \else
-      \def\@tempb{\noexpand\}}%
-      \ifx\@tempa\@tempb
-        #1%
-      \else
-        \string#1%
-      \fi
-    \fi
-  \else
+  \begingroup
+  \def\@tempa{#1}%
+  \def\@tempb{\tikztiming@braceopen}%
+  \ifx\@tempa\@tempb
     #1%
-  \fi
+  \else
+  \def\@tempb{\tikztiming@braceclose}%
+  \ifx\@tempa\@tempb
+    #1%
+  \else
+    \string#1%
+  \fi\fi
+  \endgroup
   \tikztiming@texttt@
 }
 %    \end{macrocode}
