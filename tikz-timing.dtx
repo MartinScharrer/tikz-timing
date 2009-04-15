@@ -323,13 +323,29 @@ TikZ]
   \begingroup
     \tikztiming@init
     \def\tikztiming@str{\draw [timing,#1] #2 }%
-    \tikztiming@#3\relax
+    \timing@@@init#3\relax
     \tikztiming@str;%
     \ifnum\c@maxtikztimingchars<\c@tikztimingchars
       \global\c@maxtikztimingchars=\c@tikztimingchars
     \fi
   \endgroup
   \@ifnextchar{;}{\@gobble}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\timing@@@init}
+%    \begin{macrocode}
+\newcommand\timing@@@init[1][]{%
+  \def\lastchar{#1}%
+  \@ifundefined{tikztiming@initcode@\lastchar}%
+    {}%
+    {\@nameuse{tikztiming@initcode@\lastchar}}%
+  \@ifundefined{\tikztiming@prefix\lastchar @start}%
+    {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
+    is not defined and will be ignored!}{}{}{}}%
+    {\tikztiming@nameaddtostr{\lastchar @start}}%
+  \tikztiming@
 }
 %    \end{macrocode}
 % \end{macro}
