@@ -872,6 +872,24 @@ TikZ]
 }
 \def\tikztiming@bgstyle{timing d background}
 \def\tikztiming@style{timing d}
+\tikztimingdef{DD}{
+  node (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
+     +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
+  -- +(#1,0)
+  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
+  -- +(#1,\height)
+  -- +(\dslope,\height) -- cycle;
+  \draw [\tikztiming@style] (timing@save) ++(0,0)
+  --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
+  --  +(\dslope,-\height) -- ++(#1,-\height)
+}
+\tikztiming@namelet{D@edge@D}{DD}
+\tikztiming@namelet{d@edge@D}{DD}
+\tikztiming@namelet{D@edge@d}{Dd}
+\tikztiming@namelet{d@edge@d}{Dd}
+\tikztiming@namelet{D@edge@D@general}{DD@general}
+
+
 \tikztimingchar{D}{++(0,0)}{
   node (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
   -- +(#1,0)
@@ -884,6 +902,9 @@ TikZ]
   -- ++(#1,0) ++(0,-\height)
 }
 
+\tikztiming@namelet{D@edge@@start}{D@start}
+\tikztiming@namelet{d@edge@@start}{d@start}
+
 \def\tikztiming@trans@D@fill#1#2{%
   node (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
   -- +(0.5*\dslope,-0.5*\height)
@@ -893,36 +914,6 @@ TikZ]
   -- ++($ (#2,\height) - (#1,0) + (0.5*\dslope,0) $)
   -- cycle;
   \draw [\tikztiming@style] (timing@save) ++(0,0)
-}
-
-\tikztimingdef{DD}{
-  node (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
-     +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
-  -- +(#1,0)
-  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
-  -- +(#1,\height)
-  -- +(\dslope,\height) -- cycle;
-  \draw [\tikztiming@style] (timing@save) ++(0,0)
-  --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
-  --  +(\dslope,-\height) -- ++(#1,-\height)
-}
-\tikztiming@namelet{D@edge@@start}{D@start}
-\tikztiming@namelet{d@edge@@start}{d@start}
-\tikztiming@namelet{D@edge@D}{DD}
-\tikztiming@namelet{d@edge@D}{DD}
-\tikztiming@namelet{D@edge@d}{Dd}
-\tikztiming@namelet{d@edge@d}{Dd}
-
-\tikztimingdef{DD}{
-  node (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
-  -- +(#1,0)
-  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
-  -- +(#1,\height)
-  -- +(0,\height)
-  -- cycle;
-  \draw [\tikztiming@style] (timing@save) ++(0,0)
-  --  +(#1,0) ++(0,+\height)
-  -- ++(#1,0) ++(0,-\height)
 }
 
 \tikztimingdef{HH}{-- ++(#1,0)}
@@ -1267,30 +1258,31 @@ TikZ]
 \def\tikztiming@bgstyle{timing u background}
 \def\tikztiming@style{timing u}
 \tikztimingchar{U}{++(0,0)}{}
-\tikztiminglet{UD}{DD}
-\tikztimingdef{UU}{\tikztiminguse{DD}{\width}}
-\tikztimingdef{U}{\tikztiminguse{D}{\width}}
-\tikztimingdef{u}{\tikztiminguse{D}{\width}}
-\tikztimingdef{DU}{\tikztiminguse{UU}{\width}}
-\tikztimingdef{UH}{\tikztiminguse{DH}{\width}}
-\tikztimingdef{UL}{\tikztiminguse{DL}{\width}}
-\tikztimingdef{UZ}{\tikztiminguse{DZ}{\width}}
-\tikztimingdef{UX}{\tikztiminguse{DX}{\width}}
-\tikztimingdef{UM}{\tikztiminguse{DM}{\width}}
-\tikztimingdef{Um}{\tikztiminguse{Dm}{\width}}
-\tikztimingdef{um}{\tikztiminguse{Dm}{\width}}
-\tikztimingdef{UC}{\tikztiminguse{DT}{\width}}
-\tikztimingdef{UT}{\tikztiminguse{DT}{\width}}
 
-\tikztimingdef{HU}{\tikztiminguse{HD}{\width}}
-\tikztimingdef{LU}{\tikztiminguse{LD}{\width}}
-\tikztimingdef{ZU}{\tikztiminguse{ZD}{\width}}
-\tikztimingdef{XU}{\tikztiminguse{XD}{\width}}
-\tikztimingdef{MU}{\tikztiminguse{ZD}{\width}}
-\tikztimingdef{mU}{\tikztiminguse{zD}{\width}}
-\tikztimingdef{mu}{\tikztiminguse{zd}{\width}}
-\tikztimingdef{CU}{\tikztiminguse{TD}{\width}}
-\tikztimingdef{TU}{\tikztiminguse{TD}{\width}}
+\tikztimingdef{UU}{\tikztiminguse{DD}{#1}}
+\tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
+\tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
+\tikztimingdef{U}{\tikztiminguse{D}{#1}}
+\tikztimingdef{u}{\tikztiminguse{D}{#1}}
+\tikztimingdef{UH}{\tikztiminguse{DH}{#1}}
+\tikztimingdef{UL}{\tikztiminguse{DL}{#1}}
+\tikztimingdef{UZ}{\tikztiminguse{DZ}{#1}}
+\tikztimingdef{UX}{\tikztiminguse{DX}{#1}}
+\tikztimingdef{UM}{\tikztiminguse{DM}{#1}}
+\tikztimingdef{Um}{\tikztiminguse{Dm}{#1}}
+\tikztimingdef{um}{\tikztiminguse{Dm}{#1}}
+\tikztimingdef{UC}{\tikztiminguse{DT}{#1}}
+\tikztimingdef{UT}{\tikztiminguse{DT}{#1}}
+
+\tikztimingdef{HU}{\tikztiminguse{HD}{#1}}
+\tikztimingdef{LU}{\tikztiminguse{LD}{#1}}
+\tikztimingdef{ZU}{\tikztiminguse{ZD}{#1}}
+\tikztimingdef{XU}{\tikztiminguse{XD}{#1}}
+\tikztimingdef{MU}{\tikztiminguse{ZD}{#1}}
+\tikztimingdef{mU}{\tikztiminguse{zD}{#1}}
+\tikztimingdef{mu}{\tikztiminguse{zd}{#1}}
+\tikztimingdef{CU}{\tikztiminguse{TD}{#1}}
+\tikztimingdef{TU}{\tikztiminguse{TD}{#1}}
 
 %    \end{macrocode}
 %
