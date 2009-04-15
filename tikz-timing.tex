@@ -1,6 +1,8 @@
 \documentclass{article}
 
 \usepackage{tikz-timing}
+\usepackage{graphicx}
+\usepackage{booktabs}
 \usepackage{array}
 
 \newcolumntype{T}{>{\texttiming\bgroup}{l}<{\egroup}}
@@ -28,73 +30,100 @@ This is a text with a timing MX\texttiming[L]{HLHLHLZ}XM diagram.
 \testtt\bgroup XX\egroup
 
 \noindent
-\begin{tabular}{lll}
- 10C & \texttiming{10C} \\
- DD\{\}DD & \texttiming{DD{}DD} \\
- DD\{\}DD & \texttiming[D]{DD{}DD} \\
- 10H2T5L5X & \texttiming{10H2T5L5X} \\
- Clock & \texttiming[c]{20{cc}c} \\
- Counter & 
- \texttiming[d]{20{D{[small,blue]\Hexadecimal{mycount}\addtocounter{mycount}{+1}}}d} 
- \\
- Counter & 
- \texttiming[D]{20{D{[small,blue]\Hexadecimal{mycount}\addtocounter{mycount}{+1}}}d} 
- \\
- D10\{Text\} & 
- \texttiming{5{D{[red,scale=.7]FF}}D{[green,scale=.7]AB}D{[small]AA}D{[small]DD}d} 
- \\
- D10\{Text\} & \texttiming{10D{Text}10D{TESS}} \\
- CLCLCCLCC & \texttiming{CLCLCCLCC} \\
- CHCHCCHCC & \texttiming{CHCHCCHCC} \\
- CDCDCCDCC & \texttiming{CDCDCCDCC} \\
- CXCXCCXCC & \texttiming{CXCXCCXCC} \\
- CZCZCCZCC & \texttiming{CC} \\
- CMCMCCMCC & \texttiming{CMCMCCMCC} \\
-\end{tabular}
+\begin{tikztimingexampletable}
+  [d]20{d2d{[small,blue]{\Hexadecimal{mycount}\addtocounter{mycount}{+1}}}}d \\
+ [D]20{D{[small,blue]\Hexadecimal{mycount}\addtocounter{mycount}{+1}}}d \\
+ 5{D{[red,scale=.7]FF}}D{[green,scale=.7]AB}D{[small]AA}D{[small]DD}d \\
+ 10D{Text}10D{TESS} \\
+\end{tikztimingexampletable}
 
-\begin{tabular}{lll}
- Test A & \texttiming{hlhlhlhlhlhlhlhlhlhlhlhl} \\
- Test A & \texttiming{HLHLHLHLHLHLHLHLHLHLHLHL} \\
- Test B & \texttiming{LLHHHHHHHHHHLLLLLLLLLLLL} \\
- Test C & \texttiming{LLLLLLLLLHHHHHLHLHLHLLHH} \\
- Test C & \texttiming{LLLLLLLLzHHHHHLHLHLHLLHH} \\
- Test C & \texttiming{LLLLLLLLLlhHHHHLHLHLHLLHH} \\
- Test C & \texttiming{LHLZZLZHZZLH} \\
- Test C & \texttiming{lhlzzlzhzzlh} \\
- Test C & \texttiming{LH} \\
- Test C & \texttiming{lh} \\
- Test C & \texttiming{Lh} \\
- Test C & \texttiming{lH} \\
- Test C & \texttiming{LDDXDDLHDDDDHDHDLDLHHDHH} \\
- Test C & \texttiming{lddxddlhddddhdhdldlhhdhh} \\
- Test C & \texttiming{ZZDZDzdzdZdZDzDz} \\
- Test C & \texttiming{LMLHMHDMDZMMZZMMMMMMMMMZ} \\
- test c & \texttiming{lmlhmhdmdzmmzzmmmmmmmmmz} \\
- test c & \texttiming{zmmzZMMZzMMzZmmZ} \\
- Test D & \texttiming{MM} \\
- Test D & \texttiming{Mm} \\
- Test D & \texttiming{mM} \\
- Test D & \texttiming{mm} \\
- Test D & \texttiming{mzmzmzmzmzmzmzmzmzmzmzmzmzm} \\
- Test D & \texttiming{MZMZMZMZMZMZMZMZMZMZMZMZMZM} \\
- Test D & \texttiming{mlmlmlmlmlmlmlmlmlmlmlmlmlm} \\
- Test D & \texttiming{MLMLMLMLMLMLMLMLMLMLMLMLMLM} \\
- Test D & \texttiming{mhmhmhmhmhmhmhmhmhmhmhmhmhm} \\
- Test D & \texttiming{MHMHMHMHMHMHMHMHMHMHMHMHMHM} \\
- Test D & \texttiming{mdmdmdmdmdmdmdmdmdmdmdmdmdm} \\
- Test D & \texttiming{MDMDMDMDMDMDMDMDMDMDMDMDMDM} \\
- Clock test & \texttiming{LCLCLCLCLCLCHCHCHCHCHCHC}\\
- Clock test & \texttiming{CCHCLCLCZCDCMCTCCC}\\
-            & {CCHCLCLCZCDCMCTCCC} \\
- Trans. test & \texttiming{TTHTLTLTZTDTMTCTTT} \\
-\end{tabular}
+\begin{tikztimingexampletable}
+ 10C \\
+ DD{}DD \\
+ [D]DD{}DD \\
+ 10H2T5L5X \\
+ [c]20{cc}c \\
+ 10D{Text}10D{TESS} \\
+ CLCLCCLCC \\
+ CHCHCCHCC \\
+ CDCDCCDCC \\
+ CXCXCCXCC \\
+ CC \\
+ CMCMCCMCC \\
+%
+ hlhlhlhlhlhlhlhlhlhlhlhl \\
+ HLHLHLHLHLHLHLHLHLHLHLHL \\
+ LLHHHHHHHHHHLLLLLLLLLLLL \\
+ LLLLLLLLLHHHHHLHLHLHLLHH \\
+ LLLLLLLLzHHHHHLHLHLHLLHH \\
+ LLLLLLLLLlhHHHHLHLHLHLLHH \\
+ LHLZZLZHZZLH \\
+ lhlzzlzhzzlh \\
+ LH \\
+ lh \\
+ Lh \\
+ lH \\
+ LDDXDDLHDDDDHDHDLDLHHDHH \\
+ lddxddlhddddhdhdldlhhdhh \\
+ ZZDZDzdzdZdZDzDz \\
+ LMLHMHDMDZMMZZMMMMMMMMMZ \\
+ lmlhmhdmdzmmzzmmmmmmmmmz \\
+ zmmzZMMZzMMzZmmZ \\
+ MM \\
+ Mm \\
+ mM \\
+ mm \\
+ mzmzmzmzmzmzmzmzmzmzmzmzmzm \\
+ MZMZMZMZMZMZMZMZMZMZMZMZMZM \\
+ mlmlmlmlmlmlmlmlmlmlmlmlmlm \\
+ MLMLMLMLMLMLMLMLMLMLMLMLMLM \\
+ mhmhmhmhmhmhmhmhmhmhmhmhmhm \\
+ MHMHMHMHMHMHMHMHMHMHMHMHMHM \\
+ mdmdmdmdmdmdmdmdmdmdmdmdmdm \\
+ MDMDMDMDMDMDMDMDMDMDMDMDMDM \\
+ LCLCLCLCLCLCHCHCHCHCHCHC\\
+ CCHCLCLCZCDCMCTCCC\\
+ TTHTLTLTZTDTMTCTTT \\
+\end{tikztimingexampletable}
 
 \bigskip
 
+\begin{table}
+\let\texttimingbefore\texttiminggrid
+\ttfamily\small
+\let\ti\texttiming
 \makebox[\textwidth][c]{%
-  \small
-  \input{table}
+\begin{tabular}{c|cccccccccccccccccc}
+ \toprule
+ \vbox to 1ex{\vss%
+ \hbox to 0pt 
+ {\hss\sffamily\scalebox{0.4}{\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}{\mbox{\rotatebox{45}{from}}}$}}\hss}\vss}
+ & H & h & L & l & Z & z & X & x & D & d & U & u & M & m & C & c & T & t \\
+ \midrule
+  H & \ti{HH} & \ti{Hh} & \ti{HL} & \ti{Hl} & \ti{HZ} & \ti{Hz} & \ti{HX} & \ti{Hx} & \ti{HD} & \ti{Hd} & \ti{HU} & \ti{Hu} & \ti{HM} & \ti{Hm} & \ti{HC} & \ti{Hc} & \ti{HT} & \ti{Ht}\\
+  h & \ti{hH} & \ti{hh} & \ti{hL} & \ti{hl} & \ti{hZ} & \ti{hz} & \ti{hX} & \ti{hx} & \ti{hD} & \ti{hd} & \ti{hU} & \ti{hu} & \ti{hM} & \ti{hm} & \ti{hC} & \ti{hc} & \ti{hT} & \ti{ht}\\
+  L & \ti{LH} & \ti{Lh} & \ti{LL} & \ti{Ll} & \ti{LZ} & \ti{Lz} & \ti{LX} & \ti{Lx} & \ti{LD} & \ti{Ld} & \ti{LU} & \ti{Lu} & \ti{LM} & \ti{Lm} & \ti{LC} & \ti{Lc} & \ti{LT} & \ti{Lt}\\
+  l & \ti{lH} & \ti{lh} & \ti{lL} & \ti{ll} & \ti{lZ} & \ti{lz} & \ti{lX} & \ti{lx} & \ti{lD} & \ti{ld} & \ti{lU} & \ti{lu} & \ti{lM} & \ti{lm} & \ti{lC} & \ti{lc} & \ti{lT} & \ti{lt}\\
+  Z & \ti{ZH} & \ti{Zh} & \ti{ZL} & \ti{Zl} & \ti{ZZ} & \ti{Zz} & \ti{ZX} & \ti{Zx} & \ti{ZD} & \ti{Zd} & \ti{ZU} & \ti{Zu} & \ti{ZM} & \ti{Zm} & \ti{ZC} & \ti{Zc} & \ti{ZT} & \ti{Zt}\\
+  z & \ti{zH} & \ti{zh} & \ti{zL} & \ti{zl} & \ti{zZ} & \ti{zz} & \ti{zX} & \ti{zx} & \ti{zD} & \ti{zd} & \ti{zU} & \ti{zu} & \ti{zM} & \ti{zm} & \ti{zC} & \ti{zc} & \ti{zT} & \ti{zt}\\
+  X & \ti{XH} & \ti{Xh} & \ti{XL} & \ti{Xl} & \ti{XZ} & \ti{Xz} & \ti{XX} & \ti{Xx} & \ti{XD} & \ti{Xd} & \ti{XU} & \ti{Xu} & \ti{XM} & \ti{Xm} & \ti{XC} & \ti{Xc} & \ti{XT} & \ti{Xt}\\
+  x & \ti{xH} & \ti{xh} & \ti{xL} & \ti{xl} & \ti{xZ} & \ti{xz} & \ti{xX} & \ti{xx} & \ti{xD} & \ti{xd} & \ti{xU} & \ti{xu} & \ti{xM} & \ti{xm} & \ti{xC} & \ti{xc} & \ti{xT} & \ti{xt}\\
+  D & \ti{DH} & \ti{Dh} & \ti{DL} & \ti{Dl} & \ti{DZ} & \ti{Dz} & \ti{DX} & \ti{Dx} & \ti{DD} & \ti{Dd} & \ti{DU} & \ti{Du} & \ti{DM} & \ti{Dm} & \ti{DC} & \ti{Dc} & \ti{DT} & \ti{Dt}\\
+  d & \ti{dH} & \ti{dh} & \ti{dL} & \ti{dl} & \ti{dZ} & \ti{dz} & \ti{dX} & \ti{dx} & \ti{dD} & \ti{dd} & \ti{dU} & \ti{du} & \ti{dM} & \ti{dm} & \ti{dC} & \ti{dc} & \ti{dT} & \ti{dt}\\
+  U & \ti{UH} & \ti{Uh} & \ti{UL} & \ti{Ul} & \ti{UZ} & \ti{Uz} & \ti{UX} & \ti{Ux} & \ti{UD} & \ti{Ud} & \ti{UU} & \ti{Uu} & \ti{UM} & \ti{Um} & \ti{UC} & \ti{Uc} & \ti{UT} & \ti{Ut}\\
+  u & \ti{uH} & \ti{uh} & \ti{uL} & \ti{ul} & \ti{uZ} & \ti{uz} & \ti{uX} & \ti{ux} & \ti{uD} & \ti{ud} & \ti{uU} & \ti{uu} & \ti{uM} & \ti{um} & \ti{uC} & \ti{uc} & \ti{uT} & \ti{ut}\\
+  M & \ti{MH} & \ti{Mh} & \ti{ML} & \ti{Ml} & \ti{MZ} & \ti{Mz} & \ti{MX} & \ti{Mx} & \ti{MD} & \ti{Md} & \ti{MU} & \ti{Mu} & \ti{MM} & \ti{Mm} & \ti{MC} & \ti{Mc} & \ti{MT} & \ti{Mt}\\
+  m & \ti{mH} & \ti{mh} & \ti{mL} & \ti{ml} & \ti{mZ} & \ti{mz} & \ti{mX} & \ti{mx} & \ti{mD} & \ti{md} & \ti{mU} & \ti{mu} & \ti{mM} & \ti{mm} & \ti{mC} & \ti{mc} & \ti{mT} & \ti{mt}\\
+  C & \ti{CH} & \ti{Ch} & \ti{CL} & \ti{Cl} & \ti{CZ} & \ti{Cz} & \ti{CX} & 
+  \ti{Cx} & \ti{CD} & \ti{Cd} & \ti{CU} & \ti{Cu} & \ti{CM} & \ti{Cm} & \ti{CC} 
+  & \ti{Cc} & \ti{CT} & \ti{Ct}\\
+  c & \ti{cH} & \ti{ch} & \ti{cL} & \ti{cl} & \ti{cZ} & \ti{cz} & \ti{cX} & \ti{cx} & \ti{cD} & \ti{cd} & \ti{cU} & \ti{cu} & \ti{cM} & \ti{cm} & \ti{cC} & \ti{cc} & \ti{cT} & \ti{ct}\\
+  T & \ti{TH} & \ti{Th} & \ti{TL} & \ti{Tl} & \ti{TZ} & \ti{Tz} & \ti{TX} & \ti{Tx} & \ti{TD} & \ti{Td} & \ti{TU} & \ti{Tu} & \ti{TM} & \ti{Tm} & \ti{TC} & \ti{Tc} & \ti{TT} & \ti{Tt}\\
+  t & \ti{tH} & \ti{th} & \ti{tL} & \ti{tl} & \ti{tZ} & \ti{tz} & \ti{tX} & \ti{tx} & \ti{tD} & \ti{td} & \ti{tU} & \ti{tu} & \ti{tM} & \ti{tm} & \ti{tC} & \ti{tc} & \ti{tT} & \ti{tt}\\
+ \bottomrule
+\end{tabular}
 }
+\end{table}
 
 \end{document}
 
