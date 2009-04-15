@@ -598,7 +598,28 @@ TikZ]
 %
 % \begin{macro}{\tikztiming@testfornum@@@}
 %    \begin{macrocode}
-\def\tikztiming@testfornum@@@#1{%
+\def\tikztiming@testfornum@@@{%
+  \@ifnextchar\bgroup
+    {%
+      \ifnum0=\tikztiming@numfrac\else
+        \PackageWarning{tikz-timing}%
+          {Can not repeat group by a non-integer factor!
+           Rounding '\the\tikztiming@numint.\the\tikztiming@numfrac' down to 
+           '\the\tikztiming@numint'.}{}{}{}%
+      \fi
+      \tikztiming@testfornum@@@@
+    }%
+    {%
+      % TODO: Add handling of non-integer factors for characters.
+      \tikztiming@testfornum@@@@
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornum@@@@}
+%    \begin{macrocode}
+\def\tikztiming@testfornum@@@@#1{%
   \begingroup
     \@temptokena{#1}%
     \tikztiming@numloop%
