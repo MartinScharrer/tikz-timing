@@ -191,6 +191,10 @@ TikZ]
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
 
+\newif\iftikztiming@examples
+\DeclareOption{examples}{\tikztiming@examplestrue}
+\ProcessOptions\relax
+
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
 \newcount\tikztiming@dlength
@@ -628,23 +632,6 @@ TikZ]
 %    \end{macrocode}
 % \end{environment}
 
-% \begin{environment}{tikztimingexampletable}
-%    \begin{macrocode}
-\NewEnviron{tikztimingexampletable}{%
-  \begin{tikzpicture}[timing table]%
-  \setcounter{maxtikztimingchars}{0}%
-  \setcounter{tikztimingrows}{-1}%
-  \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing name] 
-  {Characters};
-  \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing name] 
-  {Resulting Diagram};
-  \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
-}[\end{tikzpicture}]
-
-\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
-%    \end{macrocode}
-% \end{environment}
-
 % \begin{macro}{\tikztimingextracode}
 %    \begin{macrocode}
 \long\def\tikztimingextracode#1\endtikztimingtable@{#1}
@@ -667,6 +654,27 @@ TikZ]
 }
 %    \end{macrocode}
 % \end{macro}
+
+%    \begin{macrocode}
+\iftikztiming@examples
+%    \end{macrocode}
+
+% \begin{environment}{tikztimingexampletable}
+%    \begin{macrocode}
+\NewEnviron{tikztimingexampletable}{%
+  \begin{tikzpicture}[timing table]%
+  \setcounter{maxtikztimingchars}{0}%
+  \setcounter{tikztimingrows}{-1}%
+  \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing name] 
+  {Characters};
+  \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing name] 
+  {Resulting Diagram};
+  \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
+}[\end{tikzpicture}]
+
+\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
+%    \end{macrocode}
+% \end{environment}
 %
 % \begin{macro}{\tikztimingexampletable@}
 %    \begin{macrocode}
@@ -748,6 +756,9 @@ TikZ]
 %    \end{macrocode}
 % \end{macro}
 %
+%    \begin{macrocode}
+\fi % examples
+%    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@tablegrid}
 %    \begin{macrocode}
