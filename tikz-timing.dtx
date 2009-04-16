@@ -236,11 +236,11 @@
 \tikzset{timing name/.style={font=\sffamily,inner sep=0pt,outer sep=0pt}}
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
 \tikzset{timing d background/.style={}}
-\tikzset{timing d/.style={green}}
+\tikzset{timing d/.style={}}
 \tikzset{timing u background/.style={fill=gray}}
 \tikzset{timing u/.style={}}
 \tikzset{timing o background/.style={}}
-\tikzset{timing o/.style={line width=0.10ex,black!75,dotted}}
+\tikzset{timing o/.style={timing d,line width=0.10ex,dotted}}
 \tikzset{timing z/.style={blue}}
 \tikzset{timing x/.style={red}}
 \tikzset{timing table grid/.style={timing grid}}
@@ -1117,6 +1117,16 @@
 %    \end{macrocode}
 % \end{macro}
 
+%
+% \begin{macro}{\tikztiming@newpath}
+%    \begin{macrocode}
+\def\tikztiming@newdraw{%
+  node [timing save] (timing@save) {};%
+  \draw (timing@save) ++(0,0)
+}
+%    \end{macrocode}
+% \end{macro}
+
 % \subsection{Definition of Timing Characters}
 %    \begin{macrocode}
 \tikztimingchar{H}{++(0,\height)}{-- ++(#1,0)}
@@ -1245,7 +1255,10 @@
 \tikztimingdef{DL}{
   -- ++( \dslope/2.,+\height/2.)
      ++(-\dslope/2.,+\height/2.)
-  -- ++(\dslope,-\height)       -- ++($ (#1,0) - (\dslope,0) $)
+  -- ++(\dslope/2.,-\height/2.)
+  node [timing save] (timing@save) {}; \draw (timing@save) ++(0,0)
+  -- ++(\dslope/2.,-\height/2.)
+  -- ++($ (#1,0) - (\dslope,0) $)
 }
 
 \tikztimingdef{HD}{
@@ -1262,7 +1275,10 @@
      ++(0,+\height)
   -- ++(+\dslope/2.,-\height/2.)
      ++(-\dslope/2.,-\height/2.)
-  -- ++(+\dslope,+\height)       -- ++($ (#1,0) - (\dslope,0) $)
+  -- ++(\dslope/2.,+\height/2.)
+  node [timing save] (timing@save) {}; \draw (timing@save) ++(0,0)
+  -- ++(\dslope/2.,+\height/2.)
+  -- ++($ (#1,0) - (\dslope,0) $)
 }
 
 
@@ -1360,6 +1376,7 @@
      ++($ -1/8.*(#1,0) + (0,+\height*.50) $)
   -- ++($  1/16.*(#1,0) + (0,0) $)
   -- ++($  1/16.*(#1,0) + (0,-\height*.50) $)
+  \tikztiming@newdraw
   -- ++($  1/8.*(#1,0) + (0,-\height*.10) $)
   -- ++($  1/8.*(#1,0) + (0,+\height*.25) $)
   -- ++($  1/8.*(#1,0) + (0,-\height*.30) $)
@@ -1391,6 +1408,7 @@
      ++($ -1/4.*(#1,0) + (0,+\height*.50) $)
   -- ++($  1/8.*(#1,0) + (0,0) $)
   -- ++($  1/8.*(#1,0) + (0,-\height*.50) $)
+  \tikztiming@newdraw
   -- ++($  1/4.*(#1,0) + (0,-\height*.10) $)
   -- ++($  1/4.*(#1,0) + (0,+\height*.25) $)
   -- ++($  1/4.*(#1,0) + (0,-\height*.30) $)
@@ -1525,15 +1543,21 @@
 \tikztimingdef{Um}{\tikztiminguse{Dm}{#1}}
 \tikztimingdef{um}{\tikztiminguse{Dm}{#1}}
 
-
 \def\tikztiming@bgstyle{timing o background}
 \def\tikztiming@style{timing o}
 
 \tikztimingecopy{O}{D}
-\tikztimingdef{OD}{\tikztiminguse{D@edge@D}{#1}}
-\tikztimingdef{DO}{\tikztiminguse{D@edge@D}{#1}}
 \tikztimingdef{Om}{\tikztiminguse{Dm}{#1}}
 \tikztimingdef{om}{\tikztiminguse{Dm}{#1}}
+\tikztimingdef{UO}{\tikztiminguse{DD}{#1}}
+
+\def\tikztiming@bgstyle{timing d background}
+\def\tikztiming@style{timing d}
+\tikztimingdef{OD}{\tikztiminguse{DD}{#1}}
+
+\def\tikztiming@bgstyle{timing u background}
+\def\tikztiming@style{timing u}
+\tikztimingdef{OU}{\tikztiminguse{DD}{#1}}
 %    \end{macrocode}
 %
 %
