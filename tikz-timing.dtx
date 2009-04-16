@@ -194,9 +194,7 @@ TikZ]
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
 \newcount\tikztiming@dlength
-\newcount\tikztiming@numint
-\newcount\tikztiming@numfrac
-\def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
+\newcount\tikztiming@count
 
 \def\tikztiming@prefix{tikztiming@trans@}
 %    \end{macrocode}
@@ -264,7 +262,7 @@ TikZ]
       {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
       is not defined and will be ignored!}{}{}{}}%
       {\tikztiming@nameaddtostr{\lastchar @start}}%
-    \tikztiming@#2\relax\relax
+    \tikztiming@#2\relax
     %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle 
@@ -327,7 +325,7 @@ TikZ]
   \begingroup
     \tikztiming@init
     \def\tikztiming@str{\draw [timing,#1] #2 }%
-    \timing@@@init#3\relax\relax
+    \timing@@@init#3\relax
     \tikztiming@str;%
     \ifnum\c@maxtikztimingchars<\c@tikztimingchars
       \global\c@maxtikztimingchars=\c@tikztimingchars
@@ -435,13 +433,9 @@ TikZ]
 % \begin{macro}{\tikztiming@nameaddtostr}
 %    \begin{macrocode}
 \def\tikztiming@nameaddtostr#1{%
-  \begingroup
-  \edef\@tempa{\tikztiming@num}%
   \expandafter\g@addto@macro
   \expandafter\tikztiming@str
-  \expandafter{\csname\tikztiming@prefix#1\expandafter\endcsname
-  \expandafter{\@tempa} }%
-  \endgroup
+  \expandafter{\csname\tikztiming@prefix#1\endcsname}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -454,9 +448,9 @@ TikZ]
   \begingroup
     \tikztiming@internaldefs
     \tikztiming@iflower{#1}%
-      {\def\width{####1*\noexpand\timingwidth/2.}}%
-      {\def\width{####1*\noexpand\timingwidth}}%
-    \xdef\@gtempa##1{\@gtempa{\width}}%
+      {\def\width{\noexpand\timingwidth/2.}}%
+      {\def\width{\noexpand\timingwidth}}%
+    \xdef\@gtempa{\@gtempa{\width}}%
   \endgroup
   \expandafter\let\csname\tikztiming@prefix#2\endcsname\@gtempa
   \let\@gtempa\empty
@@ -478,36 +472,11 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztiming@@#1{%
   \ifx\relax#1\empty
-    \expandafter\@gobble
   \else
-    \expandafter\@firstofone
-  \fi
-   {%
-    \def\currentchar{#1}%
-    \@ifnextchar\bgroup
-      {\def\nextchar{}\tikztiming@@@}%
-      {\tikztiming@@next}%
-   }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-%
-% \begin{macro}{\tikztiming@@next}
-%    \begin{macrocode}
-\def\tikztiming@@next#1{%
-  \def\nextchar{#1}%
-  \tikztiming@@@#1%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@@@}
-%    \begin{macrocode}
-\def\tikztiming@@@{%
-    \tikztiming@iflower{\currentchar}%
+    \tikztiming@iflower{#1}%
       {\addtocounter{tikztimingchars}{+1}}%
       {\addtocounter{tikztimingchars}{+2}}%
+    \def\currentchar{#1}%
     \@ifundefined{tikztiming@before@\currentchar}%
       {}%
       {\@nameuse{tikztiming@before@\currentchar}}%
@@ -521,6 +490,7 @@ TikZ]
       {\@nameuse{tikztiming@aftercode@\currentchar}}%
     \expandafter
     \tikztiming@testfortext
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -571,20 +541,9 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztiming@testfornum{%
   \let\tikztiming@numchars\empty
-  \tikztiming@numfrac0\relax
   \afterassignment
   \tikztiming@testfornum@
-  \tikztiming@numint0%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornumfrac}
-%    \begin{macrocode}
-\def\tikztiming@testfornumfrac{%
-  \afterassignment
-  \tikztiming@testfornum@@@
-  \tikztiming@numfrac0%
+  \tikztiming@count0%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -592,13 +551,13 @@ TikZ]
 % \begin{macro}{\tikztiming@numloop}
 %    \begin{macrocode}
 \def\tikztiming@numloop{%
-  \ifnum\tikztiming@numint>0%
+  \ifnum\tikztiming@count>0%
     \toks@\expandafter{\tikztiming@numchars}%
     \xdef\tikztiming@numchars{%
       \the\toks@
       \the\@temptokena
     }%
-    \advance\tikztiming@numint by -1\relax
+    \global\advance\tikztiming@count by -1\relax
     \expandafter\tikztiming@numloop
   \fi
 }
@@ -608,11 +567,9 @@ TikZ]
 % \begin{macro}{\tikztiming@testfornum@}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@{%
-  \ifnum0<\tikztiming@numint
+  \ifnum0<\tikztiming@count
     \expandafter\tikztiming@testfornum@@
   \else
-    \tikztiming@numint1\relax
-    \tikztiming@numfrac0\relax
     \expandafter\tikztiming@@
   \fi
 }
@@ -621,43 +578,11 @@ TikZ]
 %
 % \begin{macro}{\tikztiming@testfornum@@}
 %    \begin{macrocode}
-\def\tikztiming@testfornum@@{%
-  \@ifnextchar{.}%
-    {\expandafter\tikztiming@testfornumfrac\@gobble}%
-    {\tikztiming@testfornum@@@}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornum@@@}
-%    \begin{macrocode}
-\def\tikztiming@testfornum@@@{%
-  \@ifnextchar\bgroup
-    {%
-      \ifnum0=\tikztiming@numfrac\else
-        \PackageWarning{tikz-timing}%
-          {Can not repeat group by a non-integer factor!
-           Rounding '\tikztiming@num' down to '\the\tikztiming@numint'.}{}{}{}%
-      \fi
-      \tikztiming@testfornum@@@@
-    }%
-    {%
-      % TODO: Add handling of non-integer factors for characters.
-      \tikztiming@testfornum@@@@
-    }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornum@@@@}
-%    \begin{macrocode}
-\def\tikztiming@testfornum@@@@#1{%
+\def\tikztiming@testfornum@@#1{%
   \begingroup
     \@temptokena{#1}%
     \tikztiming@numloop%
   \endgroup
-  \tikztiming@numint1\relax
-  \tikztiming@numfrac0\relax
   \expandafter\tikztiming@\tikztiming@numchars
 }
 %    \end{macrocode}
@@ -998,7 +923,7 @@ TikZ]
 % \end{macro}
 %
 %    \begin{macrocode}
-\expandafter\def\csname\tikztiming@prefix @start\endcsname#1{}%
+\@namedef{\tikztiming@prefix @start}{}
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztimingchar@}
