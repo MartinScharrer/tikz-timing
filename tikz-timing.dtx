@@ -480,8 +480,20 @@ TikZ]
   \ifx\relax#1\empty
   \else
     \def\currentchar{#1}%
-    \expandafter\tikztiming@@@
+    \@ifnextchar\bgroup
+      {\def\nextchar{}\expandafter\tikztiming@@@}%
+      {\expandafter\tikztiming@@next}%
   \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tikztiming@@next}
+%    \begin{macrocode}
+\def\tikztiming@@next#1{%
+  \def\nextchar{#1}%
+  \tikztiming@@@#1%
 }
 %    \end{macrocode}
 % \end{macro}
