@@ -18,18 +18,23 @@
 % \iffalse
 %<package>\ProvidesPackage{tikz-timing}
 %<examplecode>\ProvidesPackage{tikz-timing-examplecode}
-%<driver>\ProvidesFile{tikz-timing.dtx}
+%<*driver>
+\ProvidesFile{tikz-timing.dtx}
+%</driver>
   [2009/04/16 v0.2
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package.]
-%<driver>   DTX-File of 'tikz-timing' package.]
+%<*driver>
+  DTX-File of 'tikz-timing' package.]
+%</driver>
 %<examplecode>\RequirePackage{tikz-timing}%
 %<examplecode>   [\csname ver@\@currname.\@currext\endcsname]
 %<examplecode>\RequirePackage{pgffor}%
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
 \documentclass{ltxdoc}
-\usepackage{tikz-timing}[\filedate]
+\usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
+\usepackage{tikz-timing-examplecode}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage{booktabs}
 \usepackage{ifpdf}
 \ifpdf
@@ -38,12 +43,22 @@
 \let\url=\texttt
 \fi
 \makeatletter
-\newcommand*\tablecaption[2][]{{%
-  \let\@tempa\abovecaptionskip
-  \let\abovecaptionskip\belowcaptionskip
-  \let\belowcaptionskip\@tempa
-  \caption[#1]{#2}%
-}}
+\let\stdcaption\caption
+\newcommand*\tablecaption[2][]{%
+  \begingroup
+  \@tempskipa\abovecaptionskip
+  \abovecaptionskip\belowcaptionskip
+  \belowcaptionskip\@tempskipa
+  \stdcaption[#1]{#2}%
+  \endgroup
+}
+\let\stdtable\table
+\let\endstdtable\endtable
+\renewenvironment{table}%
+{\begin{stdtable}%
+ \let\caption\tablecaption
+}{\end{stdtable}}%
+
 \makeatother
 \EnableCrossrefs
 \CodelineIndex
@@ -106,7 +121,7 @@
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
 % \sffamily\centering
-% \tablecaption{Timing Characters}\label{tab:chars}
+% \caption{Timing Characters}\label{tab:chars}
 % \begin{tabular}{clll}
 %   \toprule
 %   Character & Description & Alone & Transition \\
@@ -132,7 +147,7 @@
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
 % \sffamily\small\centering
-% \tablecaption{Data Character}\label{tab:chard}
+% \caption{Data Character}\label{tab:chard}
 % \begin{tabular}{ll@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l}
 %   \toprule
 %   \cs{texttiming} & \texttt{\{DD\}} & \texttt{\{2D\}} & \texttt{\{D\{\}D\}} & 
@@ -146,6 +161,14 @@
 %   \texttiming{D{A}D{B}D{C}} & \texttiming[D]{D} \\
 %   \bottomrule
 % \end{tabular}
+% \end{table}
+%
+%
+% \begin{table}
+% \let\texttimingbefore\texttiminggrid
+% \sffamily
+% \caption{Overview over all transitions.}\label{tab:full}
+% \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
 %
 % Example: |\texttiming{HLZDZLH}| gives \texttiming{HLZDZLH}
@@ -326,13 +349,26 @@
     \tikztiming@init
     \def\tikztiming@str{\draw [timing,#1] #2 }%
     \timing@@@init#3\relax
-    \tikztiming@str;%
+    \begin{scope}[timing]
+      \tikztiming@str;%
+    \end{scope}
     \ifnum\c@maxtikztimingchars<\c@tikztimingchars
       \global\c@maxtikztimingchars=\c@tikztimingchars
     \fi
   \endgroup
-  \@ifnextchar{;}{\@gobble}{}%
+  \timing@@@end
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\timing@@@end}
+%    \begin{macrocode}
+\def\timing@@@end#1;{%
+  \ifx;#1;\else
+    \PackageError{tikz-package}{Can not parse timing path}{}{}{}%
+  \fi
+}
+%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -758,7 +794,7 @@
 %    \begin{macrocode}
 \def\tikztimingfullexampletable{
   \begin{tikzpicture}[x=1em,y=1em]
-    \let\texttimingafter=\texttiminggrid
+    \tikzset{timing d background/.style={fill={gray!25},fill opacity=0.5}}%
     \def\chars{\@gobble}%
     \def\@tempa{}%
     \@for\tchar:=\tikztiming@chars\do{%
@@ -771,29 +807,34 @@
          {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
          {\mbox{\rotatebox{45}{from}}}$}}%
     };
-    \node (charnodex) at (0,0) {};
-    \node (charnodey) at (0,0) {};
+    \node (charnodex) at (0.25,0) {};%
+    \node (charnodey) at (0,0) {};%
     \expandafter\foreach
     \expandafter\tchar
-    \expandafter i\expandafter n\expandafter{\chars} {
+    \expandafter i\expandafter n\expandafter{\chars} {%
       \path (charnodex) ++(+2,0) node (charnodex) {\strut\tchar};
       \path (charnodey) ++(0,-2) node (charnodey) {\strut\tchar};
-    }
+    }%
     \draw [thick] (charnodex) +(+1,+1) -- (-1,+1);
     \draw [thin]  (charnodex) +(+1,-1) -- (-1,-1);
     \draw [thin]  (charnodey) +(+1,-0.6) -- (+1,-1.4) (+1,-0.6) -- (+1,+0.6);
     \draw [thick] (charnodey) ++(-1,-1) -- +($ (2,0) + (charnodex) $);
     %
-    \node (charnodex) at (2,-2) {};
-    \node (charnodey) at (2,-2) {};
+    \path (1.5,-2) node (charnodex) {\strut};
+    \node (charnodex) at (charnodex.base) {};
+    \node (charnodey) at (charnodex.base) {};
+    \def\@tempa{\timing (charnodey)}
     \expandafter\foreach
     \expandafter\xchar
     \expandafter i\expandafter n\expandafter{\chars} {
     \expandafter\foreach
     \expandafter\ychar
     \expandafter i\expandafter n\expandafter{\chars} {
-    \draw (charnodey) node {\expandafter\texttiming\expandafter{\ychar\xchar}} 
-    +(0,-2) node (charnodey) {};
+      \draw [xstep={\timingwidth/2.},ystep={\timingheight/2.},timing grid,
+        shift={(charnodey)}]
+        (0,0) grid +(2,1);
+      \expandafter\@tempa\expandafter{\ychar\xchar};
+      \path (charnodey) +(0,-2) node (charnodey) {};
     }
     \path (charnodex) ++(+2,0) node (charnodex) {} node (charnodey) {};
     }
