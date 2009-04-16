@@ -478,12 +478,16 @@ TikZ]
 %    \begin{macrocode}
 \def\tikztiming@@#1{%
   \ifx\relax#1\empty
+    \expandafter\@gobble
   \else
+    \expandafter\@firstofone
+  \fi
+   {%
     \def\currentchar{#1}%
     \@ifnextchar\bgroup
-      {\def\nextchar{}\expandafter\tikztiming@@@}%
-      {\expandafter\tikztiming@@next}%
-  \fi
+      {\def\nextchar{}\tikztiming@@@}%
+      {\tikztiming@@next}%
+   }%
 }
 %    \end{macrocode}
 % \end{macro}
