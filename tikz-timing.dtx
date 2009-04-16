@@ -236,9 +236,11 @@
 \tikzset{timing name/.style={font=\sffamily,inner sep=0pt,outer sep=0pt}}
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
 \tikzset{timing d background/.style={}}
-\tikzset{timing d/.style={}}
+\tikzset{timing d/.style={green}}
 \tikzset{timing u background/.style={fill=gray}}
 \tikzset{timing u/.style={}}
+\tikzset{timing o background/.style={}}
+\tikzset{timing o/.style={line width=0.10ex,black!75,dotted}}
 \tikzset{timing z/.style={blue}}
 \tikzset{timing x/.style={red}}
 \tikzset{timing table grid/.style={timing grid}}
@@ -1522,6 +1524,16 @@
 \tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
 \tikztimingdef{Um}{\tikztiminguse{Dm}{#1}}
 \tikztimingdef{um}{\tikztiminguse{Dm}{#1}}
+
+
+\def\tikztiming@bgstyle{timing o background}
+\def\tikztiming@style{timing o}
+
+\tikztimingecopy{O}{D}
+\tikztimingdef{OD}{\tikztiminguse{D@edge@D}{#1}}
+\tikztimingdef{DO}{\tikztiminguse{D@edge@D}{#1}}
+\tikztimingdef{Om}{\tikztiminguse{Dm}{#1}}
+\tikztimingdef{om}{\tikztiminguse{Dm}{#1}}
 %    \end{macrocode}
 %
 %
