@@ -25,6 +25,8 @@
 %<driver>   DTX-File of 'tikz-timing' package.]
 %<examplecode>\RequirePackage{tikz-timing}%
 %<examplecode>   [\csname ver@\@currname.\@currext\endcsname]
+%<examplecode>\RequirePackage{pgffor}%
+%<examplecode>\usetikzlibrary{calc}%
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\filedate]
@@ -733,7 +735,6 @@
 %
 % \begin{macro}{\tikztiming@texttt@@@}
 %    \begin{macrocode}
-
 \def\tikztiming@texttt@@@#1{%
   \begingroup
   \def\@tempa{#1}%
@@ -749,6 +750,54 @@
   \fi\fi
   \endgroup
   \tikztiming@texttt@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingfullexampletable}
+%    \begin{macrocode}
+\def\tikztimingfullexampletable{
+  \begin{tikzpicture}[x=1em,y=1em]
+    \let\texttimingafter=\texttiminggrid
+    \def\chars{\@gobble}%
+    \def\@tempa{}%
+    \@for\tchar:=\tikztiming@chars\do{%
+      \expandafter\lowercase\expandafter{\expandafter\def\expandafter\@tempa
+      \expandafter{\tchar}}%
+      \edef\chars{\chars,\tchar,\@tempa}%
+    }
+    \node (charnode) at (0,0) {%
+       \scalebox{0.4}%
+         {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
+         {\mbox{\rotatebox{45}{from}}}$}}%
+    };
+    \node (charnodex) at (0,0) {};
+    \node (charnodey) at (0,0) {};
+    \expandafter\foreach
+    \expandafter\tchar
+    \expandafter i\expandafter n\expandafter{\chars} {
+      \path (charnodex) ++(+2,0) node (charnodex) {\strut\tchar};
+      \path (charnodey) ++(0,-2) node (charnodey) {\strut\tchar};
+    }
+    \draw [thick] (charnodex) +(+1,+1) -- (-1,+1);
+    \draw [thin]  (charnodex) +(+1,-1) -- (-1,-1);
+    \draw [thin]  (charnodey) +(+1,-0.6) -- (+1,-1.4) (+1,-0.6) -- (+1,+0.6);
+    \draw [thick] (charnodey) ++(-1,-1) -- +($ (2,0) + (charnodex) $);
+    %
+    \node (charnodex) at (2,-2) {};
+    \node (charnodey) at (2,-2) {};
+    \expandafter\foreach
+    \expandafter\xchar
+    \expandafter i\expandafter n\expandafter{\chars} {
+    \expandafter\foreach
+    \expandafter\ychar
+    \expandafter i\expandafter n\expandafter{\chars} {
+    \draw (charnodey) node {\expandafter\texttiming\expandafter{\ychar\xchar}} 
+    +(0,-2) node (charnodey) {};
+    }
+    \path (charnodex) ++(+2,0) node (charnodex) {} node (charnodey) {};
+    }
+  \end{tikzpicture}
 }
 %    \end{macrocode}
 % \end{macro}
