@@ -16,17 +16,16 @@
 % \fi
 %
 % \iffalse
-\def\filedate{2009/04/13}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\fileversion}
-%    \begin{macrocode}
-\def\fileversion{v1.0}
-
+%<package>\ProvidesPackage{tikz-timing}
+%<examplecode>\ProvidesPackage{tikz-timing-examplecode}
+%<driver>\ProvidesFile{tikz-timing.dtx}
+  [2009/04/16 v0.2
+%<package>   Digital Timing Diagrams using TikZ]
+%<examplecode>   Macros to produce examples for the tikz-timing package.]
+%<driver>   DTX-File of 'tikz-timing' package.]
+%<examplecode>\RequirePackage{tikz-timing}%
+%<examplecode>   [\csname ver@\@currname.\@currext\endcsname]
 %<*driver>
-\ProvidesFile{tikz-timing.dtx}
-  [\filedate\space\fileversion\space Timing Diagrams]
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\filedate]
 \usepackage{booktabs}
@@ -186,14 +185,9 @@
 % \section{Implementation}
 % \subsection{Package Header}
 %    \begin{macrocode}
-\ProvidesPackage{tikz-timing}[2009/04/09 v0.1a Digital Timing Diagrams using 
-TikZ]
+%<*package>
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
-
-\newif\iftikztiming@examples
-\DeclareOption{examples}{\tikztiming@examplestrue}
-\ProcessOptions\relax
 
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
@@ -655,8 +649,11 @@ TikZ]
 %    \end{macrocode}
 % \end{macro}
 
+% The following code is only needed to produce package examples and therefor not 
+% included in the style file but written to an additional file.
 %    \begin{macrocode}
-\iftikztiming@examples
+%</package>
+%<*examplecode>
 %    \end{macrocode}
 
 % \begin{environment}{tikztimingexampletable}
@@ -757,7 +754,8 @@ TikZ]
 % \end{macro}
 %
 %    \begin{macrocode}
-\fi % examples
+%</examplecode>
+%<*package>
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@tablegrid}
@@ -1439,4 +1437,4 @@ TikZ]
 %
 % \Finale
 \endinput
-
+%</package>

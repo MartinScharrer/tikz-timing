@@ -36,7 +36,10 @@ and version 1.2 or later is part of all distributions of LaTeX version
 
 \endpreamble
 
-\generate{\file{tikz-timing.sty}{\from{tikz-timing.dtx}{package}}}
+\generate{%
+  \file{tikz-timing.sty}{\from{tikz-timing.dtx}{package}}%
+  \file{tikz-timing-examplecode.sty}{\from{tikz-timing.dtx}{examplecode}}%
+}
 
 \obeyspaces
 \Msg{*************************************************************}
@@ -55,3 +58,4 @@ and version 1.2 or later is part of all distributions of LaTeX version
 
 \endbatchfile
 
+%% vim: ft=tex
