@@ -1017,9 +1017,30 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@char@nums}
+% \begin{macro}{\tikztiming@ifcharexists}
 %    \begin{macrocode}
-\def\tikztiming@char@nums#1{}
+\def\tikztiming@ifcharexists#1{%
+  \def\tikztiming@ifcharexists@##1,#1,##2\relax{%
+    \ifx\relax##2\relax%
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+  }%
+  \expandafter\tikztiming@ifcharexists@
+  \expandafter,\tikztiming@chars,#1,\relax%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tikztiming@addchar}
+%    \begin{macrocode}
+\def\tikztiming@addchar#1{%
+  \tikztiming@ifcharexists{#1}{%
+    \edef\tikztiming@chars{\tikztiming@chars,#1}%
+  }{}%
+}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1027,7 +1048,7 @@
 %    \begin{macrocode}
 \def\tikztimingchar#1{%
   \uppercase{%
-  \edef\tikztiming@chars{\tikztiming@chars,#1}%
+  \tikztiming@addchar{#1}%
   \tikztimingchar@{#1}}%
 }
 %    \end{macrocode}
@@ -1163,6 +1184,12 @@
   \newdraw [\style]
   -- ++(#1,0)
 }
+
+\tikztimingchar{X}{}{}%
+\tikztimingchar{D}{}{}%
+\tikztimingchar{U}{}{}%
+\tikztimingchar{O}{}{}%
+\tikztimingchar{M}{}{}%
 
 \tikztimingdef{DD}{
   node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
