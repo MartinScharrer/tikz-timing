@@ -1059,12 +1059,10 @@
   \tikztiming@namelet{#1}{#2}%
   \tikztiming@namelet{#1@start}{#2@start}%
   }%
-  \uppercase{\tikztiminglet{#1#1}{#2#2}}%
-  \uppercase{%
-    \@for\@tempa:=\tikztiming@chars\do{%
-      \expandafter\tikztiminglet@@
-      \expandafter{\@tempa}{#1}{#2}%
-    }%
+  \tikztiminglet{#1#1}{#2#2}%
+  \@for\@tempa:=\tikztiming@chars\do{%
+    \expandafter\tikztiminglet@@
+    \expandafter{\@tempa}{#1}{#2}%
   }%
 }
 %    \end{macrocode}
@@ -1088,14 +1086,10 @@
   \tikztimingdef{#1}{\tikztiminguse{#2}{##1}}%
   \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
   }%
-  \uppercase{%
   \tikztimingdef{#1#1}{\tikztiminguse{#2#2}{##1}}%
-  }%
-  \uppercase{%
-    \@for\@tempa:=\tikztiming@chars\do{%
-      \expandafter\tikztimingdef@@
-      \expandafter{\@tempa}{#1}{#2}%
-    }%
+  \@for\@tempa:=\tikztiming@chars\do{%
+    \expandafter\tikztimingdef@@
+    \expandafter{\@tempa}{#1}{#2}%
   }%
 }
 %    \end{macrocode}
@@ -1104,6 +1098,17 @@
 % \begin{macro}{\tikztiminglet@@}
 %    \begin{macrocode}
 \def\tikztiminglet@@#1#2#3{%
+  \tikztiminglet@@@#1#2#3%
+  \lowercase{\tikztiminglet@@@#1}#2#3%
+  \lowercase{\tikztiminglet@@@#1#2#3}%
+  \lowercase{\uppercase{\tikztiminglet@@@#1}#2#3}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiminglet@@@}
+%    \begin{macrocode}
+\def\tikztiminglet@@@#1#2#3{%
   \tikztiminglet{#1#2}{#1#3}%
   \tikztiminglet{#2#1}{#3#1}%
 }
@@ -1114,6 +1119,17 @@
 % \begin{macro}{\tikztimingdef@@}
 %    \begin{macrocode}
 \def\tikztimingdef@@#1#2#3{%
+  \tikztimingdef@@@#1#2#3%
+  \lowercase{\tikztimingdef@@@#1}#2#3%
+  \lowercase{\tikztimingdef@@@#1#2#3}%
+  \lowercase{\uppercase{\tikztimingdef@@@#1}#2#3}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingdef@@@}
+%    \begin{macrocode}
+\def\tikztimingdef@@@#1#2#3{%
   \tikztimingdef{#1#2}{\tikztiminguse{#1#3}{##1}}%
   \tikztimingdef{#2#1}{\tikztiminguse{#3#1}{##1}}%
 }
@@ -1525,12 +1541,8 @@
 \tikztimingecopy{U}{D}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
 \tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
-\tikztimingdef{Um}{\tikztiminguse{Dm}{#1}}
-\tikztimingdef{um}{\tikztiminguse{Dm}{#1}}
 
 \tikztimingecopy{O}{D}
-\tikztimingdef{Om}{\tikztiminguse{Dm}{#1}}
-\tikztimingdef{om}{\tikztiminguse{Dm}{#1}}
 %    \end{macrocode}
 %
 % \Finale
