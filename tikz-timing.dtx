@@ -237,6 +237,7 @@
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
 \tikzset{timing d background/.style={}}
 \tikzset{timing d/.style={}}
+\tikzset{timing m/.style={orange}}
 \tikzset{timing u background/.style={fill=gray}}
 \tikzset{timing u/.style={}}
 \tikzset{timing o background/.style={}}
@@ -1156,11 +1157,12 @@
 
 \tikztimingchar{L}{++(0,0)}{-- ++(#1,0)}
 \tikztimingchar{Z}{++(0,\height/2.)}{%
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
+%  \newdraw [\style]
+  \newdraw [\style]
   -- ++(#1,0)
 }
 \tikztimingchar{X}{++(0,\height/2.)}{%
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
+  \newdraw [\style]
   -- ++(#1,0)
 }
 \tikztimingdef{DD}{
@@ -1213,19 +1215,19 @@
 \tikztimingdef{LH}{-- ++(\slope, \height) \tikztiminguse{LL}{#1-\slope}}
 
 \tikztimingdef{LZ}{
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
+  \newdraw [\style]
   -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{HZ}{%
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
+  \newdraw [\style]
   -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
   \tikztimingdef{ZH}{
-    node [timing save] (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+    \newdraw
   -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{ZL}{%
-  node [timing save] (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  \newdraw
   -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 
@@ -1298,6 +1300,7 @@
 
 \tikztimingalias{M}{Z}
 \tikztimingchar{M}{++(0,\height/2.)}{
+  [\style]
   -- ++($ 1/16.*(#1,0) + (0,+\height*.225) $)
   -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.45) $)
@@ -1310,15 +1313,16 @@
 }
 
 \tikztimingdef{MZ}{
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
+  \newdraw [\style]
   -- ++(#1,0)
 }
 \tikztimingdef{MX}{
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
+  \newdraw [\style]
   -- ++(#1,0)
 }
 
 \tikztimingdef{m}{
+  [\style]
      ++(0,+\height/2.)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.225) $)
   -- ++($ 1/4.*(#1,0) + (0,-\height*.45) $)
@@ -1328,7 +1332,7 @@
 }
 
 \tikztimingdef{ZM}{
-  node [timing save] (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  \newdraw [\style]
   -- ++($ 1/16.*(#1,0) + (0,+\height*.075) $)
   -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
@@ -1341,7 +1345,7 @@
 }
 
 \tikztimingdef{Zm}{
-  node [timing save] (timing@save) at ++(0,0) {}; \draw (timing@save) ++(0,0)
+  \newdraw [\style]
   -- ++($ 1/8.*(#1,0) + (0,+\height*.075) $)
   -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
@@ -1358,6 +1362,7 @@
 }
 
 \tikztimingdef{LM}{
+  \newdraw [\style]
   -- ++($ 1/16.*(#1,0) + (0,+\height*.60) $)
   -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
@@ -1369,6 +1374,7 @@
   -- ++($ 1/16.*(#1,0) + (0,+\height*.20) $)
 }
 \tikztimingdef{HM}{
+  \newdraw [\style]
   -- ++($ 1/16.*(#1,0) + (0,-\height*.40) $)
   -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
@@ -1386,7 +1392,7 @@
      ++($ -1/8.*(#1,0) + (0,+\height*.50) $)
   -- ++($  1/16.*(#1,0) + (0,0) $)
   -- ++($  1/16.*(#1,0) + (0,-\height*.50) $)
-  \tikztiming@newdraw
+  \newdraw [\style]
   -- ++($  1/8.*(#1,0) + (0,-\height*.10) $)
   -- ++($  1/8.*(#1,0) + (0,+\height*.25) $)
   -- ++($  1/8.*(#1,0) + (0,-\height*.30) $)
@@ -1398,6 +1404,7 @@
 }
 
 \tikztimingdef{Lm}{
+  \newdraw [\style]
   -- ++($ 1/8.*(#1,0) + (0,+\height*.575) $)
   -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
@@ -1405,6 +1412,7 @@
   -- ++($ 1/8.*(#1,0) + (0,+\height*.175) $)
 }
 \tikztimingdef{Hm}{
+  \newdraw [\style]
   -- ++($ 1/8.*(#1,0) + (0,-\height*.425) $)
   -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
@@ -1418,7 +1426,7 @@
      ++($ -1/4.*(#1,0) + (0,+\height*.50) $)
   -- ++($  1/8.*(#1,0) + (0,0) $)
   -- ++($  1/8.*(#1,0) + (0,-\height*.50) $)
-  \tikztiming@newdraw
+  \newdraw [\style]
   -- ++($  1/4.*(#1,0) + (0,-\height*.10) $)
   -- ++($  1/4.*(#1,0) + (0,+\height*.25) $)
   -- ++($  1/4.*(#1,0) + (0,-\height*.30) $)
@@ -1504,6 +1512,7 @@
 }
 
 \tikztimingdef{TM}{%
+  \newdraw [\style]
   node [timing calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++($ 1/16.*(#1,0) + (0,\value{tikztimingtrans}*\height*.50+\height*.10) $)
   -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
@@ -1516,8 +1525,8 @@
   -- ++($ 1/16.*(#1,0) + (0,+\height*.20) $)
 }
 
-
 \tikztimingdef{Tm}{%
+  \newdraw [\style]
   node [timing calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++($ 1/8.*(#1,0) + (0,\value{tikztimingtrans}*\height*.50+\height*.075) $)
   -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
