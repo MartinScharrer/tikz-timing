@@ -484,7 +484,7 @@
   \def\@gtempa##1{#3}%
   \expandafter\let\csname\tikztiming@prefix#2@general\endcsname\@gtempa
   \begingroup
-    \tikztiming@internaldefs
+    \lowercase{\tikztiming@internaldefs{#1}}%
     \tikztiming@iflower{#1}%
       {\def\width{\noexpand\timingwidth/2.}}%
       {\def\width{\noexpand\timingwidth}}%
@@ -893,7 +893,7 @@
 %
 % \begin{macro}{\tikztiming@internaldefs}
 %    \begin{macrocode}
-\def\tikztiming@internaldefs{%
+\def\tikztiming@internaldefs#1{%
   \def\draw{\noexpand\draw}%
   \def\path{\noexpand\path}%
   \def\fill{\noexpand\fill}%
@@ -903,6 +903,9 @@
   \def\slope{\noexpand\timingslope}%
   \def\zslope{\noexpand\timingzslope}%
   \def\dslope{\noexpand\timingdslope}%
+  \def\style{timing #1}%
+  \def\bgstyle{timing #1 background}%
+  \def\newdraw{\tikztiming@newdraw}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1132,25 +1135,22 @@
 \tikztimingchar{H}{++(0,\height)}{-- ++(#1,0)}
 
 \tikztimingchar{L}{++(0,0)}{-- ++(#1,0)}
-\def\tikztiming@style{timing z}
 \tikztimingchar{Z}{++(0,\height/2.)}{%
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [timing z] (timing@save) ++(0,0)
+  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
   -- ++(#1,0)
 }
 \tikztimingchar{X}{++(0,\height/2.)}{%
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [timing x] (timing@save) ++(0,0)
+  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
   -- ++(#1,0)
 }
-\def\tikztiming@bgstyle{timing d background}
-\def\tikztiming@style{timing d}
 \tikztimingdef{DD}{
-  node [timing save] (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
+  node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
      +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
   -- +(#1,0)
   -- +($ (#1,0) + 0.5*(\dslope,\height) $)
   -- +(#1,\height)
   -- +(\dslope,\height) -- cycle;
-  \draw [\tikztiming@style] (timing@save) ++(0,0)
+  \draw [\style] (timing@save) ++(0,0)
   --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
   --  +(\dslope,-\height) -- ++(#1,-\height)
 }
@@ -1162,13 +1162,13 @@
 
 
 \tikztimingchar{D}{++(0,0)}{
-  node [timing save] (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
+  node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
   -- +(#1,0)
   -- +($ (#1,0) + 0.5*(\dslope,\height) $)
   -- +(#1,\height)
   -- +(0,\height)
   -- cycle;
-  \draw [\tikztiming@style] (timing@save) ++(0,0)
+  \draw [\style] (timing@save) ++(0,0)
   --  +(#1,0) ++(0,+\height)
   -- ++(#1,0) ++(0,-\height)
 }
@@ -1177,14 +1177,14 @@
 \tikztiming@namelet{d@edge@@start}{d@start}
 
 \def\tikztiming@trans@D@fill#1#2{%
-  node [timing save] (timing@save) {}; \path [\tikztiming@bgstyle] (timing@save) ++(0,0)
+  node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
   -- +(0.5*\dslope,-0.5*\height)
   -- ++($ (#1,-0.5*\height) - (#2,0) $)
   -- +(0.5*\dslope,0.5*\height)
   -- +(0,\height)
   -- ++($ (#2,\height) - (#1,0) + (0.5*\dslope,0) $)
   -- cycle;
-  \draw [\tikztiming@style] (timing@save) ++(0,0)
+  \draw [\style] (timing@save) ++(0,0)
 }
 
 \tikztimingdef{HH}{-- ++(#1,0)}
@@ -1192,13 +1192,12 @@
 \tikztimingdef{HL}{-- ++(\slope,-\height) \tikztiminguse{HH}{#1-\slope}}
 \tikztimingdef{LH}{-- ++(\slope, \height) \tikztiminguse{LL}{#1-\slope}}
 
-\def\tikztiming@style{timing z}
 \tikztimingdef{LZ}{
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\tikztiming@style] (timing@save) ++(0,0)
+  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
   -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{HZ}{%
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\tikztiming@style] (timing@save) ++(0,0)
+  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
   -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
   \tikztimingdef{ZH}{
@@ -1214,12 +1213,10 @@
   -- ++( \dslope/2.,+\height/2.)
      ++(-\dslope/2.,+\height/2.)
   -- ++( \dslope/2.,-\height/2.)
-  node [timing save] (timing@save) {}; \draw [\tikztiming@style] (timing@save) ++(0,0)
+  node [timing save] (timing@save) {}; \draw [\style] (timing@save) ++(0,0)
   -- ++($ (#1,0) - (\dslope/2.,0) $)
 }
 
-\def\tikztiming@bgstyle{timing d background}
-\def\tikztiming@style{timing d}
 \tikztimingdef{ZD}{
   \tikztiming@trans@D@fill{#1}{0}%
   -- ++(\dslope/2.,\height/2.)  -- ++($ (#1,0) - (\dslope/2.,0) $)
@@ -1232,15 +1229,12 @@
 \tikztimingdef{ZZ}{-- ++(#1,0)}
 \tikztiminglet{XX}{ZZ}
 
-\def\tikztiming@style{timing x}
 \tikztimingdef{LX}{\tikztiminguse{LZ}{\width}}
 \tikztimingdef{HX}{\tikztiminguse{HZ}{\width}}
 \tikztimingdef{XH}{\tikztiminguse{ZH}{\width}}
 \tikztimingdef{XL}{\tikztiminguse{ZL}{\width}}
 \tikztimingdef{DX}{\tikztiminguse{DZ}{\width}}
 
-\def\tikztiming@bgstyle{timing d background}
-\def\tikztiming@style{timing d}
 \tikztimingdef{XD}{\tikztiminguse{ZD}{\width}}
 
 \tikztimingdef{LD}{
@@ -1295,14 +1289,12 @@
   -- ++($ 1/16.*(#1,0) + (0,+\height*.225) $)
 }
 
-\def\tikztiming@style{timing z}
 \tikztimingdef{MZ}{
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\tikztiming@style] (timing@save) ++(0,0)
+  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
   -- ++(#1,0)
 }
-\def\tikztiming@style{timing x}
 \tikztimingdef{MX}{
-  node [timing save] (timing@save) at ++(0,0) {}; \draw [\tikztiming@style] (timing@save) ++(0,0)
+  node [timing save] (timing@save) at ++(0,0) {}; \draw [\style] (timing@save) ++(0,0)
   -- ++(#1,0)
 }
 
@@ -1449,15 +1441,13 @@
   -- ++(\slope, -0.5*\value{tikztimingtranspos}*\height) -- ++($ (#1,0) - (\slope,0) $)
 }
 
-\def\tikztiming@style{timing z}
 \tikztimingdef{TZ}{%
   node [timing save] (timing@save)
   at ++(0,0) {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  ; \draw [\tikztiming@style] (timing@save) ++(0,0)
+  ; \draw [\style] (timing@save) ++(0,0)
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
 }
-\def\tikztiming@style{timing x}
 \tikztimingdef{TX}{\tikztiminguse{TZ}{\width}}
 
 \tikztimingdef{ZT}{%
@@ -1474,8 +1464,6 @@
   -- ++(\slope,\value{tikztimingtrans}*\height) -- ++($ (#1,0) - (\slope,0) $)
 }
 
-\def\tikztiming@bgstyle{timing d background}
-\def\tikztiming@style{timing d}
 \tikztimingdef{TD}{
   node [timing calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   node [timing calc] {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
@@ -1534,40 +1522,16 @@
 }
 \tikztiminglet{TC}{TT}
 
-\def\tikztiming@bgstyle{timing u background}
-\def\tikztiming@style{timing u}
-
 \tikztimingecopy{U}{D}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
 \tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
 \tikztimingdef{Um}{\tikztiminguse{Dm}{#1}}
 \tikztimingdef{um}{\tikztiminguse{Dm}{#1}}
 
-\def\tikztiming@bgstyle{timing o background}
-\def\tikztiming@style{timing o}
-
 \tikztimingecopy{O}{D}
 \tikztimingdef{Om}{\tikztiminguse{Dm}{#1}}
 \tikztimingdef{om}{\tikztiminguse{Dm}{#1}}
-\tikztimingdef{UO}{\tikztiminguse{DD}{#1}}
-
-\def\tikztiming@bgstyle{timing d background}
-\def\tikztiming@style{timing d}
-\tikztimingdef{OD}{\tikztiminguse{DD}{#1}}
-
-\def\tikztiming@bgstyle{timing u background}
-\def\tikztiming@style{timing u}
-\tikztimingdef{OU}{\tikztiminguse{DD}{#1}}
-
-\def\tikztiming@style{timing z}
-\tikztimingdef{UZ}{\tikztiminguse{DZ}{#1}}
-\tikztimingdef{OZ}{\tikztiminguse{DZ}{#1}}
-
-\def\tikztiming@style{timing x}
-\tikztimingdef{UX}{\tikztiminguse{DX}{#1}}
-\tikztimingdef{OX}{\tikztiminguse{DX}{#1}}
 %    \end{macrocode}
-%
 %
 % \Finale
 \endinput
