@@ -987,17 +987,21 @@
 %
 % \begin{macro}{\tikztiminglet@}
 %    \begin{macrocode}
+\def\dotind{}
+
 \def\tikztiminglet@#1#2\relax#3#4\relax{%
   \tikztiming@namelet{#1#2}{#3#4}%
   \tikztiming@namelet{#1#2@general}{#3#4@general}%
   \tikztiming@iflower{#1}{}%
-    {\tikztiming@iflower{#2}{}%
+    {\tikztiming@iflower{#2}%
+      {%
+        \lowercase{\tikztiminglet@{#1}{#2}\relax{#3}{#4}}\relax
+      }%
       {%
         \uppercase{\lowercase{%
-        \uppercase{\lowercase{\tikztiminglet@{#1}}{#2}}\relax{#3}}{#4}}\relax%
+        \uppercase{\lowercase{\tikztiminglet@{#1}}{#2}}\relax{#3}}{#4}}\relax
         \lowercase{\uppercase{%
-        \lowercase{\uppercase{\tikztiminglet@{#1}}{#2}}\relax{#3}}{#4}}\relax%
-        \lowercase{\tikztiminglet@{#1}{#2}\relax{#3}{#4}}\relax%
+        \lowercase{\uppercase{\tikztiminglet@{#1}}{#2}}\relax{#3}}{#4}}\relax
       }%
     }%
 }
@@ -1344,7 +1348,7 @@
   -- ++($ 1/4.*(#1,0) + (0,-\height*.30) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.175) $)
 }
-\tikztiminglet{zm}{Zm}
+%\tikztiminglet{zm}{Zm}
 
 \tikztimingdef{Mm}{
   -- ++($ 1/8.*(#1,0) + (0,+\height*.225) $)
@@ -1353,7 +1357,7 @@
   -- ++($ 1/4.*(#1,0) + (0,-\height*.45) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.225) $)
 }
-\tikztiminglet{mm}{Mm}
+%\tikztiminglet{mm}{Mm}
 
 \tikztimingdef{LM}{
   -- ++($ 1/16.*(#1,0) + (0,+\height*.60) $)
@@ -1422,9 +1426,9 @@
   -- ++($  1/4.*(#1,0) + (0,-\height*.30) $)
   -- ++($  1/8.*(#1,0) + (0,+\height*.15) $)
 }
-\tikztiminglet{lm}{Lm}
-\tikztiminglet{hm}{Hm}
-\tikztiminglet{dm}{Dm}
+%\tikztiminglet{lm}{Lm}
+%\tikztiminglet{hm}{Hm}
+%\tikztiminglet{dm}{Dm}
 \tikztiminglet{XM}{ZM}
 
 \newcounter{tikztimingtrans}
@@ -1526,7 +1530,7 @@
   -- ++($ 1/4.*(#1,0) + (0,-\height*.30) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.175) $)
 }
-\tikztiminglet{tm}{Tm}%
+%\tikztiminglet{tm}{Tm}%
 
 \tikztimingalias{C}{T}
 \tikztimingchar{C}{++(0,0)}{
