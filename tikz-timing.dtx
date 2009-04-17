@@ -965,12 +965,14 @@
     \tikztiming@nameedef[#1]{#1}{#3}%
   \else
     \tikztiming@nameedef[#2]{#1#2}{#3}%
-    \tikztiming@iflower{#2}{}%
-      {\tikztiming@iflower{#1}{}%
+    \tikztiming@iflower{#1}{}%
+      {\tikztiming@iflower{#2}%
+        {%
+          \lowercase{\tikztimingdef@{#1}{#2}}\relax{#3}%
+        }%
         {%
           \uppercase{\lowercase{\tikztimingdef@{#1}}{#2}}\relax{#3}%
           \lowercase{\uppercase{\tikztimingdef@{#1}}{#2}}\relax{#3}%
-          \lowercase{\tikztimingdef@{#1}{#2}}\relax{#3}%
         }%
       }%
   \fi
