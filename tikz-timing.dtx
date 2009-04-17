@@ -1156,15 +1156,12 @@
 \tikztimingchar{H}{++(0,\height)}{-- ++(#1,0)}
 
 \tikztimingchar{L}{++(0,0)}{-- ++(#1,0)}
+
 \tikztimingchar{Z}{++(0,\height/2.)}{%
-%  \newdraw [\style]
   \newdraw [\style]
   -- ++(#1,0)
 }
-\tikztimingchar{X}{++(0,\height/2.)}{%
-  \newdraw [\style]
-  -- ++(#1,0)
-}
+
 \tikztimingdef{DD}{
   node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
      +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
@@ -1181,7 +1178,6 @@
 \tikztiming@namelet{D@edge@d}{Dd}
 \tikztiming@namelet{d@edge@d}{Dd}
 \tikztiming@namelet{D@edge@D@general}{DD@general}
-
 
 \tikztimingchar{D}{++(0,0)}{
   node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
@@ -1246,19 +1242,6 @@
   -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope/2.,0) $)
 }
 
-\tikztiminglet{ZX}{XX}
-\tikztiminglet{XZ}{ZZ}
-\tikztimingdef{ZZ}{-- ++(#1,0)}
-\tikztiminglet{XX}{ZZ}
-
-\tikztimingdef{LX}{\tikztiminguse{LZ}{\width}}
-\tikztimingdef{HX}{\tikztiminguse{HZ}{\width}}
-\tikztimingdef{XH}{\tikztiminguse{ZH}{\width}}
-\tikztimingdef{XL}{\tikztiminguse{ZL}{\width}}
-\tikztimingdef{DX}{\tikztiminguse{DZ}{\width}}
-
-\tikztimingdef{XD}{\tikztiminguse{ZD}{\width}}
-
 \tikztimingdef{LD}{
   -- ++(0.5*\dslope,0.5*\height)
   \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
@@ -1313,10 +1296,6 @@
 }
 
 \tikztimingdef{MZ}{
-  \newdraw [\style]
-  -- ++(#1,0)
-}
-\tikztimingdef{MX}{
   \newdraw [\style]
   -- ++(#1,0)
 }
@@ -1432,7 +1411,6 @@
   -- ++($  1/4.*(#1,0) + (0,-\height*.30) $)
   -- ++($  1/8.*(#1,0) + (0,+\height*.15) $)
 }
-\tikztiminglet{XM}{ZM}
 
 \newcounter{tikztimingtrans}
 \newcounter{tikztimingtranspos}
@@ -1471,7 +1449,6 @@
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
 }
-\tikztimingdef{TX}{\tikztiminguse{TZ}{\width}}
 
 \tikztimingdef{ZT}{%
   node [timing save] (timing@save) at ++(0,0) 
@@ -1480,7 +1457,6 @@
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
 }
-\tikztiminglet{XT}{ZT}
 
 \tikztimingdef{TT}{%
   node [timing calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
@@ -1550,6 +1526,7 @@
 \tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
 
 \tikztimingecopy{O}{D}
+\tikztimingecopy{X}{Z}
 %    \end{macrocode}
 %
 % \Finale
