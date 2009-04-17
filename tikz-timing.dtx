@@ -243,8 +243,13 @@
 \tikzset{timing o background/.style={}}
 \tikzset{timing o/.style={timing d,line width=0.10ex,dotted}}
 \tikzset{timing z/.style={blue}}
+\tikzset{timing t.style={}}
+\tikzset{timing c/.style={timing/slope=0.0}}
 \tikzset{timing x/.style={red}}
 \tikzset{timing table grid/.style={timing grid}}
+\tikzset{timing/slope/.code={\tikztimingsetslope{#1}}}
+\tikzset{timing/dslope/.code={\tikztimingsetdslope{#1}}}
+\tikzset{timing/zslope/.code={\tikztimingsetzslope{#1}}}
 %    \end{macrocode}
 %
 % \subsection{Macros}
@@ -914,9 +919,9 @@
 % \begin{macro}{\tikztimingsetslope}
 %    \begin{macrocode}
 \def\tikztimingsetslope#1{%
-  \edef\timingslope{#1/100.0*\noexpand\timingwidth}%
-  \edef\timingzslope{#1/200.0*\noexpand\timingwidth}%
-  \edef\timingdslope{#1/50.0*\noexpand\timingwidth}%
+  \edef\timingslope{#1*\noexpand\timingwidth}%
+  \edef\timingzslope{#1/2.0*\noexpand\timingwidth}%
+  \edef\timingdslope{#1*2.0*\noexpand\timingwidth}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -924,20 +929,20 @@
 % \begin{macro}{\tikztimingsetdslope}
 %    \begin{macrocode}
 \def\tikztimingsetdslope#1{%
-  \edef\timingzslope{#1/100.0*\noexpand\timingwidth}%
+  \edef\timingzslope{#1*\noexpand\timingwidth}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingsetizslope}
+% \begin{macro}{\tikztimingsetzslope}
 %    \begin{macrocode}
-\def\tikztimingsetizslope#1{%
-  \edef\timingdslope{#1/100.0*\noexpand\timingwidth}%
+\def\tikztimingsetzslope#1{%
+  \edef\timingdslope{#1*\noexpand\timingwidth}%
 }
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
-\tikztimingsetslope{10}%
+\tikztimingsetslope{0.10}%
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiminguse}
