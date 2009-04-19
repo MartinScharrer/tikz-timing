@@ -685,7 +685,10 @@
 \def\tikztiming@testforcode{%
   \@ifnextchar{!}%
     {\tikztiming@testforcode@}%
-    {\tikztiming@@}%
+    {\@ifnextchar{[}%
+      {\tikztiming@handleoption}%
+      {\tikztiming@@}%
+    }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -708,6 +711,15 @@
 %    \begin{macrocode}
 \def\tikztiming@handlecode#1{%
   \tikztiming@addtostr{ [/utils/exec={#1}] }%
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@handleoption}
+%    \begin{macrocode}
+\def\tikztiming@handleoption[#1]{%
+  \tikztiming@addtostr{ [#1] }%
   \tikztiming@
 }
 %    \end{macrocode}
