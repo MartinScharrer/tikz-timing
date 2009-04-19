@@ -228,7 +228,7 @@
 %    \begin{macrocode}
 \tikzset{timing/.style={%
     line width=0.15ex,x=1.6ex,y=1.6ex,
-    line cap=round,line join=round,font=\sffamily
+    line cap=round,line join=round,font=\sffamily,
     timing/slope=0.10
   }%
 }
@@ -983,9 +983,9 @@
 %    \begin{macrocode}
 \def\tikztimingsetslope#1{%
   \edef\timingslope{#1*\noexpand\timingwidth}%
-  \edef\timingslope@{#1}%
-  \tikztimingsetdslope{#1/2.0}%
-  \tikztimingsetzslope{#1*2.0}%
+  \edef\tikztiming@slope{#1}%
+  \tikztimingsetdslope{#1*2.0}%
+  \tikztimingsetzslope{#1/2.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -994,7 +994,7 @@
 %    \begin{macrocode}
 \def\tikztimingsetdslope#1{%
   \edef\timingdslope{#1*\noexpand\timingwidth}%
-  \edef\timingdslope@{#1}%
+  \edef\tikztiming@dslope{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1003,7 +1003,7 @@
 %    \begin{macrocode}
 \def\tikztimingsetzslope#1{%
   \edef\timingzslope{#1*\noexpand\timingwidth}%
-  \edef\timingzslope@{#1}%
+  \edef\tikztiming@zslope{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1234,13 +1234,45 @@
 }
 %    \end{macrocode}
 % \end{macro}
-
 %
-% \begin{macro}{\tikztiming@newpath}
+% \begin{macro}{\tikztiming@savesettings}
+%    \begin{macrocode}
+\def\tikztiming@savesettings{%
+  \xdef\tikztiming@saved@settings{%
+    {\tikztiming@slope}%
+    {\tikztiming@dslope}%
+    {\tikztiming@zslope}%
+    {\the\pgflinewidth}%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@restoresettings}
+%    \begin{macrocode}
+\def\tikztiming@restoresettings{%
+  \expandafter\tikztiming@restoresettings@
+  \tikztiming@saved@settings\relax
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@restoresettings@}
+%    \begin{macrocode}
+\def\tikztiming@restoresettings@#1#2#3#4\relax{%
+  \tikztimingsetslope{#1}%
+  \tikztimingsetdslope{#2}%
+  \tikztimingsetzslope{#3}%
+  \pgfsetlinewidth{#4}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@newdraw}
 %    \begin{macrocode}
 \def\tikztiming@newdraw{%
-  node [timing save] (timing@save) {};%
-  \draw (timing@save) ++(0,0)
+  node [timing save,/utils/exec=\noexpand\tikztiming@savesettings] (timing@save) {};%
+  \draw [/utils/exec=\noexpand\tikztiming@restoresettings] (timing@save) ++(0,0)
 }
 %    \end{macrocode}
 % \end{macro}
