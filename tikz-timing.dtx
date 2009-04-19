@@ -35,6 +35,7 @@
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage{tikz-timing-examplecode}[\csname ver@tikz-timing.dtx\endcsname]
+\usepackage[electronic]{ifsym}
 \usepackage{booktabs}
 \usepackage{ifpdf}
 \ifpdf
@@ -63,6 +64,7 @@
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
+\OnlyDescription
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
@@ -104,15 +106,49 @@
 % \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameuse,\@secondoftwo}
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
 %
-% \title{The \textsf{tikz-timing} package\thanks{This document
+% \title{The {\huge\textsf{\texttiming{z3d{\strut tikz}z5d{\strut timing}z}}} 
+% package\thanks{This document
 %   corresponds to \textsf{tikz-timing}~\fileversion, dated \filedate.}}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de}}
 %
 % \maketitle
+% \providecommand*\pkg{\texttt}
 %
 % \section{Introduction}
 % This package allows the typesetting of timing diagram inside text or 
-% tikzpicture environments.
+% tikzpicture environments. The signal levels of the timing diagram can be given 
+% by corresponding characters/letters like `|H|' for \emph{Logical High} or 
+% `|L|' for \emph{Logical Low}. So e.g.\ `|{HLZXD}|' gives `\texttiming{HLZXD}'.
+% A special table environment is provided to produce a larger timing diagram 
+% with multiple labeled signals.
+%
+% \subsection{Similar Packages}
+% There a some packages which target the same application like the package 
+% presented by this document.
+%
+% \begin{description}
+%   \item[\pkg{ifsym}] This package (using the |electronic| option) provides a 
+%   special font which contains graphical representation of the logical levels 
+%   high and low at the corresponding letter `|H|' and `|L|'. The lower case 
+%   versions have only half the width of the uppercase ones. Also a transition 
+%   can be added using the `\verb+|+' character which will be added 
+%   automatically between |HL| and |LH|.
+%   The diagrams are created using the command |\textifsym|\marg{characters}, 
+%   e.g.\ |\textifsym{HLhlHL}| results in `\textifsym{HLhlHL}'.
+%
+%   There is no support for transition slopes and no support for new 
+%   user-defined logical levels.
+%
+%   \item[\pkg{timing} (CTAN)] This package also provides a font for the logical 
+%   levels but supports transition slopes and larger timing diagrams. This 
+%   package seems not been updated for a while.
+%
+%   \item[\pkg{timing} (TikZ Example Page)] This package is accidentally also 
+%   called `|timing.sty|' and is not published on CTAN but on the TikZ example 
+%   website. It is a small package which is meant as an example for the graphics 
+%   package \pkg{tikz} which is used to draw the diagram.  The logical levels 
+%   must be provided using macros like `|\bit|\marg{0 or 1}\marg{length}'.
+% \end{description}
 %
 % \section{Usage}
 %
@@ -168,7 +204,7 @@
 % \let\texttimingbefore\texttiminggrid
 % \sffamily
 % \caption{Overview over all transitions.}\label{tab:full}
-% \makebox[\textwidth][c]{\tikztimingfullexampletable}
+% ^^A \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
 %
 % Example: |\texttiming{HLZDZLH}| gives \texttiming{HLZDZLH}
