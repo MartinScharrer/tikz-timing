@@ -679,6 +679,40 @@
 %    \end{macrocode}
 % \end{macro}
 %
+%
+% \begin{macro}{\tikztiming@testforcode}
+%    \begin{macrocode}
+\def\tikztiming@testforcode{%
+  \@ifnextchar{!}%
+    {\tikztiming@testforcode@}%
+    {\tikztiming@@}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testforcode@}
+%    \begin{macrocode}
+\def\tikztiming@testforcode@#1{%
+  \@ifnextchar\bgroup
+    {\tikztiming@handlecode}%
+    {%
+      \PackageWarning{tikz-timing}{Missing braces after '!' character. Ignoring 
+      this character}{}{}{}%
+      \tikztiming@
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@handlecode}
+%    \begin{macrocode}
+\def\tikztiming@handlecode#1{%
+  \tikztiming@addtostr{ [/utils/exec={#1}] }%
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
 
 % \begin{macro}{\tikztiming@testfornum}
 %    \begin{macrocode}
@@ -730,7 +764,7 @@
         {%
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
-          \expandafter\tikztiming@@
+          \expandafter\tikztiming@testforcode
         }%
     }
   \fi
@@ -762,7 +796,7 @@
       \tikztiming@testfornum@@@@
     }%
     {%
-      \tikztiming@@
+      \tikztiming@testforcode
     }%
 }
 %    \end{macrocode}
