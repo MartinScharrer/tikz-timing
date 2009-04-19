@@ -227,8 +227,10 @@
 % \subsection{TikZ Style Settings}
 %    \begin{macrocode}
 \tikzset{timing/.style={%
-  line width=0.15ex,x=1.6ex,y=1.6ex,
-  line cap=round,line join=round,font=\sffamily}%
+    line width=0.15ex,x=1.6ex,y=1.6ex,
+    line cap=round,line join=round,font=\sffamily
+    timing/slope=0.10
+  }%
 }
 \tikzset{timing grid/.style={timing,help lines}}
 \tikzset{texttiming/.style={timing}}
@@ -981,8 +983,9 @@
 %    \begin{macrocode}
 \def\tikztimingsetslope#1{%
   \edef\timingslope{#1*\noexpand\timingwidth}%
-  \edef\timingzslope{#1/2.0*\noexpand\timingwidth}%
-  \edef\timingdslope{#1*2.0*\noexpand\timingwidth}%
+  \edef\timingslope@{#1}%
+  \tikztimingsetdslope{#1/2.0}%
+  \tikztimingsetzslope{#1*2.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -990,7 +993,8 @@
 % \begin{macro}{\tikztimingsetdslope}
 %    \begin{macrocode}
 \def\tikztimingsetdslope#1{%
-  \edef\timingzslope{#1*\noexpand\timingwidth}%
+  \edef\timingdslope{#1*\noexpand\timingwidth}%
+  \edef\timingdslope@{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -998,7 +1002,8 @@
 % \begin{macro}{\tikztimingsetzslope}
 %    \begin{macrocode}
 \def\tikztimingsetzslope#1{%
-  \edef\timingdslope{#1*\noexpand\timingwidth}%
+  \edef\timingzslope{#1*\noexpand\timingwidth}%
+  \edef\timingzslope@{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
