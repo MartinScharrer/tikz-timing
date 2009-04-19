@@ -216,7 +216,7 @@
 
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
-\newcount\tikztiming@dlength
+\def\tikztiming@dlength{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
 \def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
@@ -407,7 +407,8 @@
 % \begin{macro}{\tikztiming@aftercode@D}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@D{%
-  \advance\tikztiming@dlength by +2\relax
+  \pgfmathparse{\tikztiming@dlength + \tikztiming@num}%
+  \let\tikztiming@dlength\pgfmathresult
 }
 %    \end{macrocode}
 % \end{macro}
@@ -415,7 +416,8 @@
 % \begin{macro}{\tikztiming@aftercode@d}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@d{%
-  \advance\tikztiming@dlength by +1\relax
+  \pgfmathparse{\tikztiming@dlength + \tikztiming@num/2.}%
+  \let\tikztiming@dlength\pgfmathresult
 }
 %    \end{macrocode}
 % \end{macro}
@@ -542,7 +544,7 @@
       {\tikztiming@nameaddtostr{\lastchar\currentchar}}%
     \let\lastchar\currentchar
     \@ifundefined{tikztiming@aftercode@\currentchar}%
-      {\tikztiming@dlength=0\relax}%
+      {\def\tikztiming@dlength{0.0}\relax}%
       {\@nameuse{tikztiming@aftercode@\currentchar}}%
     \expandafter
     \tikztiming@testfortext
@@ -577,7 +579,7 @@
 \def\tikztiming@handletext@[#1]#2\relax{%
   \tikztiming@eaddtostr{%
     node [%]
-      shift={(-\the\tikztiming@dlength/4.+\noexpand\timingdslope/2., 
+      shift={(-\tikztiming@dlength/2.+\noexpand\timingdslope/2., 
       \noexpand\timingheight/2.)},%
       timing d text,%
   }%
@@ -585,7 +587,7 @@
       #1%
       ] {#2}%
   }%
-  \tikztiming@dlength=0\relax
+  \def\tikztiming@dlength{0.0}%
   \def\lastchar{D@edge@}%
   \tikztiming@
 }
@@ -668,8 +670,7 @@
       \tikztiming@testfornum@@@@
     }%
     {%
-      % TODO: Add handling of non-integer factors for characters.
-      \tikztiming@testfornum@@@@
+      \tikztiming@@
     }%
 }
 %    \end{macrocode}
