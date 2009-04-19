@@ -301,7 +301,7 @@
       {\tikztiming@nameaddtostr{\lastchar @start}}%
     \fi
     \tikztiming@#2\relax
-    \message{^^J\meaning\tikztiming@str^^J}%
+    %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
@@ -537,7 +537,6 @@
       {\pgfmathparse{\tikztimingwidth + \tikztiming@num/2.0}}%
       {\pgfmathparse{\tikztimingwidth + \tikztiming@num}}%
     \let\tikztimingwidth\pgfmathresult
-    \message{^^JWIDTH: \tikztimingwidth}%
     \def\currentchar{#1}%
     \@ifundefined{tikztiming@before@\currentchar}%
       {}%
