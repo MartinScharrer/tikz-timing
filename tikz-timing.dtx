@@ -215,8 +215,7 @@
 \usetikzlibrary{calc}
 
 \def\tikztimingwidth{0.0}
-\newcounter{tikztimingchars}
-\newcounter{maxtikztimingchars}
+\def\tikztimingmaxwidth{0.0}
 \def\tikztiming@dlength{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
@@ -364,12 +363,13 @@
     \tikztiming@init
     \def\tikztiming@str{\draw [timing,#1] #2 }%
     \timing@@@init#3\relax
-    \begin{scope}[timing]
+    \begin{scope}[timing]%
       \tikztiming@str;%
-    \end{scope}
-    % TODO: update this:
-    \ifnum\c@maxtikztimingchars<\c@tikztimingchars
-      \global\c@maxtikztimingchars=\c@tikztimingchars
+    \end{scope}%
+    \pgfmathparse{max(\tikztimingmaxwidth,\tikztimingwidth)}%
+    \ifx\tikztimingmaxwidth\pgfmathresult\else
+      \pgfmathparse{ceil(2.0*\tikztimingwidth)/2.0}%
+      \global\let\tikztimingmaxwidth\pgfmathresult
     \fi
   \endgroup
   \timing@@@end
@@ -767,7 +767,7 @@
 %    \begin{macrocode}
 \NewEnviron{tikztimingexampletable}{%
   \begin{tikzpicture}[timing table]%
-  \setcounter{maxtikztimingchars}{0}%
+  \def\tikztimingmaxwidth{0.0}%
   \setcounter{tikztimingrows}{-1}%
   \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing name] 
   {Characters};
@@ -923,7 +923,7 @@
   \begin{pgfonlayer}{background}
     \draw[timing table grid]
     (0,\tikztimingrowpos) grid 
-    +(0.5*\value{maxtikztimingchars},-1*\tikztimingrowpos+1);
+    +(0.5*ceil(2*\tikztimingmaxwidth)),-1*\tikztimingrowpos+1);
   \end{pgfonlayer}
 }
 %    \end{macrocode}
