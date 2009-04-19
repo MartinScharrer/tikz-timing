@@ -1302,7 +1302,7 @@
   -- +($ (#1,0) + 0.5*(\dslope,\height) $)
   -- +(#1,\height)
   -- +(\dslope,\height) -- cycle;
-  \draw [\style] (timing@save) ++(0,0)
+  \draw [timing restore,\style] (timing@save) ++(0,0)
   --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
   --  +(\dslope,-\height) -- ++(#1,-\height)
 }
@@ -1319,7 +1319,7 @@
   -- +(#1,\height)
   -- +(0,\height)
   -- cycle;
-  \draw [\style] (timing@save) ++(0,0)
+  \draw [timing restore,\style] (timing@save) ++(0,0)
   --  +(#1,0) ++(0,+\height)
   -- ++(#1,0) ++(0,-\height)
 }
@@ -1335,7 +1335,7 @@
   -- +(0,\height)
   -- ++($ (#2,\height) - (#1,0) + (0.5*\dslope,0) $)
   -- cycle;
-  \draw [\style] (timing@save) ++(0,0)
+  \draw [timing restore,\style] (timing@save) ++(0,0)
 }
 
 \tikztimingdef{HH}{-- ++(#1,0)}
