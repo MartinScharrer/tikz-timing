@@ -235,7 +235,8 @@
 \tikzset{timing grid/.style={timing,help lines}}
 \tikzset{texttiming/.style={timing}}
 \tikzset{timing table/.style={timing}}
-\tikzset{timing save/.style={inner sep=0pt,outer sep=0pt}}
+\tikzset{timing save/.style={inner sep=0pt,outer sep=0pt,/utils/exec=\tikztiming@savesettings}}
+\tikzset{timing restore/.style={/utils/exec=\tikztiming@restoresettings}}
 \tikzset{timing calc/.style={inner sep=0pt,outer sep=0pt}}
 \tikzset{timing name/.style={font=\sffamily,inner sep=0pt,outer sep=0pt}}
 \tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
@@ -1271,8 +1272,8 @@
 % \begin{macro}{\tikztiming@newdraw}
 %    \begin{macrocode}
 \def\tikztiming@newdraw{%
-  node [timing save,/utils/exec=\noexpand\tikztiming@savesettings] (timing@save) {};%
-  \draw [/utils/exec=\noexpand\tikztiming@restoresettings] (timing@save) ++(0,0)
+  node [timing save] (timing@save) {};%
+  \draw [timing restore] (timing@save) ++(0,0)
 }
 %    \end{macrocode}
 % \end{macro}
