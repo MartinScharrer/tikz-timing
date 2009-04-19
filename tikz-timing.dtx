@@ -214,6 +214,7 @@
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
 
+\def\tikztimingwidth{0.0}
 \newcounter{tikztimingchars}
 \newcounter{maxtikztimingchars}
 \def\tikztiming@dlength{0.0}
@@ -279,7 +280,7 @@
 %    \begin{macrocode}
 \def\texttiminggrid{%
   \draw[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing grid] (0,0) grid 
-  (\timingwidth*\value{tikztimingchars}/2.,\timingheight);
+  (\timingwidth*\tikztimingwidth,\timingheight);
 }
 %    \end{macrocode}
 % \end{macro}
@@ -303,7 +304,7 @@
     \message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[texttiming]%
       \path[use as bounding box] (0,0) rectangle 
-      (\timingwidth*\value{tikztimingchars}/2.,\timingheight);%
+      (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
       \tikztiming@str;%
       \texttimingafter
@@ -318,7 +319,7 @@
 \def\tikztiming@init{%
     \def\lastchar{}%
     \let\currentchar\empty
-    \setcounter{tikztimingchars}{0}%
+    \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \def\tikztiming@str{\draw (0,0)}%
 }
@@ -366,6 +367,7 @@
     \begin{scope}[timing]
       \tikztiming@str;%
     \end{scope}
+    % TODO: update this:
     \ifnum\c@maxtikztimingchars<\c@tikztimingchars
       \global\c@maxtikztimingchars=\c@tikztimingchars
     \fi
@@ -532,8 +534,10 @@
   \ifx\relax#1\empty
   \else
     \tikztiming@iflower{#1}%
-      {\addtocounter{tikztimingchars}{+1}}%
-      {\addtocounter{tikztimingchars}{+2}}%
+      {\pgfmathparse{\tikztimingwidth + \tikztiming@num/2.0}}%
+      {\pgfmathparse{\tikztimingwidth + \tikztiming@num}}%
+    \let\tikztimingwidth\pgfmathresult
+    \message{^^JWIDTH: \tikztimingwidth}%
     \def\currentchar{#1}%
     \@ifundefined{tikztiming@before@\currentchar}%
       {}%
@@ -721,7 +725,7 @@
   \begin{tikzpicture}[timing table]%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
-  \setcounter{maxtikztimingchars}{0}%
+  \def\tikztimingwidth{0.0}%
   \setcounter{tikztimingrows}{-1}%
   \expandafter\tikztimingtable@\BODY\endtikztimingtable@
 }[\end{tikzpicture}]
