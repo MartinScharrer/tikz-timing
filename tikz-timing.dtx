@@ -722,12 +722,19 @@
 %    \begin{macrocode}
 \def\tikztiming@testfornum@{%
   \ifnum0<\tikztiming@numint
-    \expandafter\tikztiming@testfornum@@
+    \let\tikztiming@next\tikztiming@testfornum@@
   \else
-    \tikztiming@numint1\relax
-    \tikztiming@numfrac0\relax
-    \expandafter\tikztiming@@
+    \def\tikztiming@next{%
+      \@ifnextchar{.}%
+        {\expandafter\tikztiming@testfornumfrac\@gobble}%
+        {%
+          \tikztiming@numint1\relax
+          \tikztiming@numfrac0\relax
+          \expandafter\tikztiming@@
+        }%
+    }
   \fi
+  \tikztiming@next
 }
 %    \end{macrocode}
 % \end{macro}
