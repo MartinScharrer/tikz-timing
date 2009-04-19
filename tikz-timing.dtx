@@ -161,20 +161,21 @@
 % \begin{tabular}{clll}
 %   \toprule
 %   Character & Description & Alone & Transition \\
+%             &             &       & Example    \\
 %   \midrule
 % \texttt{H} & High & \texttiming{H} & \texttiming[L]{H} \\
-% \texttt{h} & & \texttiming{h} & \texttiming[L]{h} \\
 % \texttt{L} & Low & \texttiming{L} & \texttiming[H]{L} \\
-% \texttt{l} & & \texttiming{l} & \texttiming[H]{l} \\
-% \texttt{D} & Double / Data & \texttiming{D} & \texttiming[L]{D{}D} \\
-% \texttt{d} & & \texttiming{d} & \texttiming[L]{d{}d} \\
 % \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming[L]{Z} \\
-% \texttt{z} & & \texttiming{z} & \texttiming[L]{z} \\
+% \texttt{X} & Undefined / Don't Care & \texttiming{X} & \texttiming[L]{X} \\
+% \texttt{D} & Data / Double & \texttiming{D} & \texttiming[L]{D{A}D} \\
+% \texttt{U} & Unknown Data & \texttiming{U} & \texttiming[D]{U} \\
 % \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{TTTT} \\
-% \texttt{t} &        & \texttiming{l} or \texttiming{h} & \texttiming{tttt} \\
 % \texttt{C} & Clock (no slope) & \texttiming{C} or \texttiming{H} & 
 % \texttiming{CCCC} \\
-% \texttt{c} &       & \texttiming{c} or \texttiming{h} & \texttiming{cccc} \\
+% \texttt{M} & Metastable Condition & \texttiming{M} & \texttiming[H]{Ml} \\
+%   \midrule
+% \texttt{G} & Glitch (zero width) & \texttiming{G} & \texttiming{HGH} \\
+% \texttt{S} & Space (nothing) & \texttiming{S} & \texttiming{HSL} \\
 % \bottomrule
 % \end{tabular}
 % \end{table}
