@@ -528,6 +528,7 @@
 %    \begin{macrocode}
 \def\tikztiming@eaddtostr#1{%
   \begingroup
+    \tikztiming@internaldefs{}%
     \@temptokena\expandafter{\tikztiming@str}%
     \xdef\tikztiming@str{%
       \the\@temptokena
@@ -649,9 +650,9 @@
 %    \begin{macrocode}
 \def\tikztiming@handletext@[#1]#2\relax{%
   \tikztiming@eaddtostr{%
+    node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
     node [%]
-      shift={(-\tikztiming@dlength/2.+\noexpand\timingdslope/2., 
-      \noexpand\timingheight/2.)},%
+      shift={($ (timing@dstart)!0.5!(timing@dend) $)},%
       timing d text,%
   }%
   \tikztiming@addtostr{%[
@@ -1372,6 +1373,7 @@
   -- +(#1,\height)
   -- +(\dslope,\height) -- cycle;
   \draw [timing restore,\style] (timing@save) ++(0,0)
+  node [timing save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
   --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
   --  +(\dslope,-\height) -- ++(#1,-\height)
 }
@@ -1389,6 +1391,7 @@
   -- +(0,\height)
   -- cycle;
   \draw [timing restore,\style] (timing@save) ++(0,0)
+  node [timing save] (timing@dstart) at +(0,\height/2.0) {}
   --  +(#1,0) ++(0,+\height)
   -- ++(#1,0) ++(0,-\height)
 }
@@ -1405,6 +1408,7 @@
   -- ++($ (#2,\height) - (#1,0) + (0.5*\dslope,0) $)
   -- cycle;
   \draw [timing restore,\style] (timing@save) ++(0,0)
+  node [timing save] (timing@dstart) {}
 }
 
 \tikztimingdef{HH}{-- ++(#1,0)}
