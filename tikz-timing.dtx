@@ -409,6 +409,22 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@aftercode@G}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@G{%
+  \let\lastchar\secondlastchar
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@g}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@g{%
+  \let\lastchar\secondlastchar
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@aftercode@D}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@D{%
@@ -427,18 +443,41 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@beforecode@D@edge@}
+% \begin{macro}{\tikztiming@beforecode@@default}
 %    \begin{macrocode}
-\def\tikztiming@beforecode@D@edge@{%
-  \def\currentchar{D}%
+\def\tikztiming@beforecode@@default{%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@beforenextcode@@default}
+%    \begin{macrocode}
+\def\tikztiming@beforenextcode@@default{%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tikztiming@beforenextcode@D@edge@}
+%    \begin{macrocode}
+\def\tikztiming@beforenextcode@D@edge@{%
+  \if D\currentchar\else
+    \if d\currentchar\else
+      \def\lastchar{D}%
+    \fi
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@beforecode@d@edge@}
 %    \begin{macrocode}
-\def\tikztiming@before@d@edge@{%
-  \def\currentchar{d}%
+\def\tikztiming@beforenextcode@d@edge@{%
+  \if D\currentchar\else
+    \if d\currentchar\else
+      \def\lastchar{d}%
+    \fi
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -541,16 +580,23 @@
       {\pgfmathparse{\tikztimingwidth + \tikztiming@num}}%
     \let\tikztimingwidth\pgfmathresult
     \def\currentchar{#1}%
-    \@ifundefined{tikztiming@before@\currentchar}%
-      {}%
-      {\@nameuse{tikztiming@before@\currentchar}}%
+    \@ifundefined{tikztiming@beforenextcode@\lastchar}%
+      {\tikztiming@beforenextcode@@default}%
+      {\@nameuse{tikztiming@beforenextcode@\lastchar}}%
+    \@ifundefined{tikztiming@beforecode@\currentchar}%
+      {\tikztiming@beforecode@@default}%
+      {\@nameuse{tikztiming@beforecode@\currentchar}}%
     \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
       {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' is
        not defined and will be ignored!}{}{}{}}%
       {\tikztiming@nameaddtostr{\lastchar\currentchar}}%
+    \let\secondlastchar\lastchar
     \let\lastchar\currentchar
+    \if D\currentchar\else
+      \def\tikztiming@dlength{0.0}%
+    \fi
     \@ifundefined{tikztiming@aftercode@\currentchar}%
-      {\def\tikztiming@dlength{0.0}\relax}%
+      {}%
       {\@nameuse{tikztiming@aftercode@\currentchar}}%
     \expandafter
     \tikztiming@testfortext
@@ -973,6 +1019,7 @@
   \def\slope{\noexpand\timingslope}%
   \def\zslope{\noexpand\timingzslope}%
   \def\dslope{\noexpand\timingdslope}%
+  \def\gslope{0}%
   \def\style{timing #1}%
   \def\bgstyle{timing #1 background}%
   \def\newdraw{\tikztiming@newdraw}%
@@ -1295,6 +1342,8 @@
 \tikztimingchar{O}{}{}%
 \tikztimingchar{M}{}{}%
 
+\tikztimingchar{G}{++(0,0)}{-- ++(\gslope,\height) -- ++(\gslope,-\height)}
+
 \tikztimingdef{DD}{
   node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
      +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
@@ -1342,6 +1391,16 @@
 \tikztimingdef{LL}{-- ++(#1,0)}
 \tikztimingdef{HL}{-- ++(\slope,-\height) \tikztiminguse{HH}{#1-\slope}}
 \tikztimingdef{LH}{-- ++(\slope, \height) \tikztiminguse{LL}{#1-\slope}}
+
+\tikztimingdef{HG}{-- ++(\gslope,-\height) -- ++(\gslope,+\height)}
+\tikztimingdef{LG}{-- ++(\gslope,+\height) -- ++(\gslope,-\height)}
+\tikztimingdef{ZG}{
+  -- ++(\gslope,-\height/2.0)
+  -- ++(\gslope,+\height)
+  -- ++(\gslope,-\height/2.0)
+}
+\tikztiminglet{DG}{LG}
+\tikztiminglet{MG}{ZG}
 
 \tikztimingdef{LZ}{
   \newdraw [\style]
