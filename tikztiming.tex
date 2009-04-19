@@ -20,8 +20,7 @@
 \extracode
  \begin{pgfonlayer}{background}
     \draw[step=.5,ultra thin,gray]
-    (0,\tikztimingrowpos) grid 
-    +(0.5*\value{maxtikztimingchars},-1*\tikztimingrowpos+1);
+    (0,\tikztimingrowpos) grid +(\tikztimingmaxwidth,-1*\tikztimingrowpos+1);
  \end{pgfonlayer}
 \end{tikztimingtable}
 }
