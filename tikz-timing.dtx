@@ -649,18 +649,31 @@
 % \begin{macro}{\tikztiming@handletext@}
 %    \begin{macrocode}
 \def\tikztiming@handletext@[#1]#2\relax{%
+  \begingroup
+  \expandafter\lowercase\expandafter{%
+    \expandafter\def\expandafter\currentcharlc
+    \expandafter{\currentchar}%
+  }%
+  \pgfkeysifdefined{/tikz/timing \currentcharlc\space text/.@cmd}%
+  {%
   \tikztiming@eaddtostr{%
     node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
     node [%]
       shift={($ (timing@dstart)!0.5!(timing@dend) $)},%
-      timing d text,%
+      timing \currentcharlc\space text,%
   }%
+  \endgroup
   \tikztiming@addtostr{%[
       #1%
       ] {#2}%
   }%
   \def\tikztiming@dlength{0.0}%
   \def\lastchar{D@edge@}%
+  }{%
+    \endgroup
+    \PackageWarning{tikz-timing}{Ignoring text for character 
+    '\currentchar'!}{}{}{}%
+  }%
   \tikztiming@
 }
 %    \end{macrocode}
