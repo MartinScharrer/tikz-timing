@@ -1502,6 +1502,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \tikztiminglet{LS}{S}
 \tikztiminglet{ZS}{S}
 \tikztiminglet{DS}{S}
+\tikztiminglet{TS}{S}
 
 \tikztimingdef{LZ}{
   \newdraw [\style]
@@ -1708,7 +1709,6 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \newcounter{tikztimingtrans}
 \newcounter{tikztimingtranspos}
 
-\tikztimingalias{T}{Z}
 \tikztimingchar{T}{++(0,0)}{
   -- ++(#1,0)
 }
@@ -1741,9 +1741,14 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 
 \tikztimingdef{TZ}{%
   \newdraw [\style]
-  node [timing/save] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
+}
+
+\tikztimingdef{TG}{%
+  -- +(\gslope,-1*\value{tikztimingtrans}*\height)
+  -- +(\gslope,0)
 }
 
 \tikztimingdef{ZT}{%
