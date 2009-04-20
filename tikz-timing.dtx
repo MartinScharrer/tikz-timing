@@ -232,28 +232,29 @@
     timing/slope=0.10
   }%
 }
-\tikzset{timing grid/.style={timing,help lines}}
-\tikzset{texttiming/.style={timing}}
-\tikzset{timing table/.style={timing}}
-\tikzset{timing save/.style={inner sep=0pt,outer sep=0pt,/utils/exec=\tikztiming@savesettings}}
-\tikzset{timing restore/.style={/utils/exec=\tikztiming@restoresettings}}
-\tikzset{timing calc/.style={inner sep=0pt,outer sep=0pt}}
-\tikzset{timing name/.style={font=\sffamily,inner sep=0pt,outer sep=0pt}}
-\tikzset{timing d text/.style={timing,scale=0.6,font=\sffamily}}
-\tikzset{timing d background/.style={}}
-\tikzset{timing h/.style={}}
-\tikzset{timing l/.style={}}
-\tikzset{timing d/.style={}}
-\tikzset{timing m/.style={orange}}
-\tikzset{timing u background/.style={fill=gray}}
-\tikzset{timing u/.style={}}
-\tikzset{timing o background/.style={}}
-\tikzset{timing o/.style={timing d,line width=0.10ex,dotted}}
-\tikzset{timing z/.style={blue}}
-\tikzset{timing t/.style={}}
-\tikzset{timing c/.style={timing/slope=0.0}}
-\tikzset{timing x/.style={red}}
-\tikzset{timing table grid/.style={timing grid}}
+\tikzset{timing/grid/.style={timing,help lines}}
+\tikzset{timing/intext/.style={timing}}
+\tikzset{timing/table/.style={timing}}
+\tikzset{timing/save/.style={inner sep=0pt,outer 
+sep=0pt,/utils/exec=\tikztiming@savesettings}}
+\tikzset{timing/restore/.style={/utils/exec=\tikztiming@restoresettings}}
+\tikzset{timing/calc/.style={inner sep=0pt,outer sep=0pt}}
+\tikzset{timing/name/.style={font=\sffamily,inner sep=0pt,outer sep=0pt}}
+\tikzset{timing/d/text/.style={timing,scale=0.6,font=\sffamily}}
+\tikzset{timing/d/background/.style={}}
+\tikzset{timing/h/.style={}}
+\tikzset{timing/l/.style={}}
+\tikzset{timing/d/.style={}}
+\tikzset{timing/m/.style={orange}}
+\tikzset{timing/u/background/.style={fill=gray}}
+\tikzset{timing/u/.style={}}
+\tikzset{timing/o/background/.style={}}
+\tikzset{timing/o/.style={timing/d,line width=0.10ex,dotted}}
+\tikzset{timing/z/.style={blue}}
+\tikzset{timing/t/.style={}}
+\tikzset{timing/c/.style={timing/slope=0.0}}
+\tikzset{timing/x/.style={red}}
+\tikzset{timing/table/grid/.style={timing/grid}}
 \tikzset{timing/slope/.code={\tikztimingsetslope{#1}}}
 \tikzset{timing/dslope/.code={\tikztimingsetdslope{#1}}}
 \tikzset{timing/zslope/.code={\tikztimingsetzslope{#1}}}
@@ -277,11 +278,11 @@
 % \end{macro}
 %
 % \begin{macro}{\texttiminggrid}
-% Draws a background grid with the `timing grid' setting. Should be used inside 
+% Draws a background grid with the `timing/grid' setting. Should be used inside 
 % \cs{texttimingbefore}.
 %    \begin{macrocode}
 \def\texttiminggrid{%
-  \draw[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing grid] (0,0) grid 
+  \draw[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/grid] (0,0) grid 
   (\timingwidth*\tikztimingwidth,\timingheight);
 }
 %    \end{macrocode}
@@ -304,7 +305,7 @@
     \fi
     \tikztiming@#2\relax
     %\message{^^J\meaning\tikztiming@str^^J}%
-    \begin{tikzpicture}[texttiming]%
+    \begin{tikzpicture}[timing/intext]%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
@@ -654,13 +655,13 @@
     \expandafter\def\expandafter\currentcharlc
     \expandafter{\currentchar}%
   }%
-  \pgfkeysifdefined{/tikz/timing \currentcharlc\space text/.@cmd}%
+  \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
   \tikztiming@eaddtostr{%
     node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
     node [%]
       shift={($ (timing@dstart)!0.5!(timing@dend) $)},%
-      timing \currentcharlc\space text,%
+      timing/\currentcharlc/text,%
   }%
   \endgroup
   \tikztiming@addtostr{%[
@@ -856,7 +857,7 @@
 % \begin{environment}{tikztimingtable}
 %    \begin{macrocode}
 \NewEnviron{tikztimingtable}{%
-  \begin{tikzpicture}[timing table]%
+  \begin{tikzpicture}[timing/table]%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
   \def\tikztimingwidth{0.0}%
@@ -878,7 +879,7 @@
 %    \begin{macrocode}
 \def\tikztimingtable@#1&#2\\{%
   \addtocounter{tikztimingrows}{1}%
-  \path (-1,\tikztimingrowpos) node [anchor=base east,timing name] 
+  \path (-1,\tikztimingrowpos) node [anchor=base east,timing/name] 
   {\ignorespaces #1};
   \timing (+0,\tikztimingrowpos) {#2};
   \@ifnextchar\extracode
@@ -901,12 +902,12 @@
 % \begin{environment}{tikztimingexampletable}
 %    \begin{macrocode}
 \NewEnviron{tikztimingexampletable}{%
-  \begin{tikzpicture}[timing table]%
+  \begin{tikzpicture}[timing/table]%
   \def\tikztimingmaxwidth{0.0}%
   \setcounter{tikztimingrows}{-1}%
-  \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing name] 
+  \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing/name] 
   {Characters};
-  \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing name] 
+  \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing/name] 
   {Resulting Diagram};
   \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
 }[\end{tikzpicture}]
@@ -919,7 +920,7 @@
 %    \begin{macrocode}
 \def\tikztimingexampletable@#1\\{%
   \addtocounter{tikztimingrows}{1}%
-  \path (-1,\tikztimingrowpos) node [anchor=base east,timing name] 
+  \path (-1,\tikztimingrowpos) node [anchor=base east,timing/name] 
   {\tikztiming@texttt{#1}};
   \timing (+0,\tikztimingrowpos) {#1};
   \@ifnextchar\extracode
@@ -998,7 +999,7 @@
 %    \begin{macrocode}
 \def\tikztimingfullexampletable{
   \begin{tikzpicture}[x=1em,y=1em,font=\sffamily]
-    \tikzset{timing d background/.style={fill={gray!25},fill opacity=0.5}}%
+    \tikzset{timing/d/background/.style={fill={gray!25},fill opacity=0.5}}%
     \def\chars{\@gobble}%
     \def\@tempa{}%
     \@for\tchar:=\tikztiming@chars\do{%
@@ -1034,7 +1035,7 @@
     \expandafter\foreach
     \expandafter\ychar
     \expandafter i\expandafter n\expandafter{\chars} {
-      \draw [xstep={\timingwidth/2.},ystep={\timingheight/2.},timing grid,
+      \draw [xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/grid,
         shift={(charnodey)}]
         (0,0) grid +(2,1);
       \expandafter\@tempa\expandafter{\ychar\xchar};
@@ -1056,7 +1057,7 @@
 %    \begin{macrocode}
 \def\tikztiming@tablegrid{%
   \begin{pgfonlayer}{background}
-    \draw[timing table grid]
+    \draw[timing/table/grid]
     (0,\tikztimingrowpos) grid 
     +(0.5*ceil(2*\tikztimingmaxwidth)),-1*\tikztimingrowpos+1);
   \end{pgfonlayer}
@@ -1106,8 +1107,10 @@
   \def\zslope{\noexpand\timingzslope}%
   \def\dslope{\noexpand\timingdslope}%
   \def\gslope{0}%
-  \def\style{timing #1}%
-  \def\bgstyle{timing #1 background}%
+  \lowercase{%
+  \def\style{timing/#1}%
+  \def\bgstyle{timing/#1/background}%
+  }%
   \def\newdraw{\tikztiming@newdraw}%
 }
 %    \end{macrocode}
@@ -1405,8 +1408,8 @@
 % \begin{macro}{\tikztiming@newdraw}
 %    \begin{macrocode}
 \def\tikztiming@newdraw{%
-  node [timing save] (timing@save) {};%
-  \draw [timing restore] (timing@save) ++(0,0)
+  node [timing/save] (timing@save) {};%
+  \draw [timing/restore] (timing@save) ++(0,0)
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1432,14 +1435,14 @@
 \tikztimingchar{S}{++(0,0)}{++(#1,0)}
 
 \tikztimingdef{DD}{
-  node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
+  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
      +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
   -- +(#1,0)
   -- +($ (#1,0) + 0.5*(\dslope,\height) $)
   -- +(#1,\height)
   -- +(\dslope,\height) -- cycle;
-  \draw [timing restore,\style] (timing@save) ++(0,0)
-  node [timing save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
+  \draw [timing/restore,\style] (timing@save) ++(0,0)
+  node [timing/save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
   --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
   --  +(\dslope,-\height) -- ++(#1,-\height)
 }
@@ -1450,14 +1453,14 @@
 \tikztiming@namelet{D@edge@D@general}{DD@general}
 
 \tikztimingchar{D}{++(0,0)}{
-  node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
+  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
   -- +(#1,0)
   -- +($ (#1,0) + 0.5*(\dslope,\height) $)
   -- +(#1,\height)
   -- +(0,\height)
   -- cycle;
-  \draw [timing restore,\style] (timing@save) ++(0,0)
-  node [timing save] (timing@dstart) at +(0,\height/2.0) {}
+  \draw [timing/restore,\style] (timing@save) ++(0,0)
+  node [timing/save] (timing@dstart) at +(0,\height/2.0) {}
   --  +(#1,0) ++(0,+\height)
   -- ++(#1,0) ++(0,-\height)
 }
@@ -1466,15 +1469,15 @@
 \tikztiming@namelet{d@edge@@start}{d@start}
 
 \def\tikztiming@trans@D@fill#1#2{%
-  node [timing save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
+  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
   -- +(0.5*\dslope,-0.5*\height)
   -- ++($ (#1,-0.5*\height) - (#2,0) $)
   -- +(0.5*\dslope,0.5*\height)
   -- +(0,\height)
   -- ++($ (#2,\height) - (#1,0) + (0.5*\dslope,0) $)
   -- cycle;
-  \draw [timing restore,\style] (timing@save) ++(0,0)
-  node [timing save] (timing@dstart) {}
+  \draw [timing/restore,\style] (timing@save) ++(0,0)
+  node [timing/save] (timing@dstart) {}
 }
 
 \tikztimingdef{HH}{-- ++(#1,0)}
@@ -1709,33 +1712,33 @@
 
 \tikztimingdef{HT}{%
   {[\style]
-  node [timing calc] {\setcounter{tikztimingtrans}{-1}}
+  node [timing/calc] {\setcounter{tikztimingtrans}{-1}}
   -- ++(\slope,\value{tikztimingtrans}*\height) -- ++($ (#1,0) - (\slope,0) $)
   }
 }
 
 \tikztimingdef{LT}{%
   {[\style]
-  node [timing calc] {\setcounter{tikztimingtrans}{+1}}
+  node [timing/calc] {\setcounter{tikztimingtrans}{+1}}
   -- ++(\slope,\value{tikztimingtrans}*\height) -- ++($ (#1,0) - (\slope,0) $)
   }
 }
 
 \tikztimingdef{TL}{%
-  node [timing calc] {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+  node [timing/calc] {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
   \addtocounter{tikztimingtranspos}{+1}}
   -- ++(\slope, -0.5*\value{tikztimingtranspos}*\height) -- ++($ (#1,0) - (\slope,0) $)
 }
 
 \tikztimingdef{TH}{%
-  node [timing calc] {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+  node [timing/calc] {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
   \addtocounter{tikztimingtranspos}{-1}}
   -- ++(\slope, -0.5*\value{tikztimingtranspos}*\height) -- ++($ (#1,0) - (\slope,0) $)
 }
 
 \tikztimingdef{TZ}{%
   \newdraw [\style]
-  node [timing save] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  node [timing/save] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
 }
@@ -1743,7 +1746,7 @@
 \tikztimingdef{ZT}{%
   \newdraw
   {[\style]
-  node [timing save] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  node [timing/save] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
   }
@@ -1751,14 +1754,14 @@
 
 \tikztimingdef{TT}{%
   {[\style]
-  node [timing calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  node [timing/calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\slope,\value{tikztimingtrans}*\height) -- ++($ (#1,0) - (\slope,0) $)
   }
 }
 
 \tikztimingdef{TD}{
-  node [timing calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  node [timing calc] {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+  node [timing/calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  node [timing/calc] {\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
   \addtocounter{tikztimingtranspos}{-1}}
   -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
   \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
@@ -1772,7 +1775,7 @@
 }
 
 \tikztimingdef{DT}{
-  node [timing calc] {\setcounter{tikztimingtrans}{-1}}
+  node [timing/calc] {\setcounter{tikztimingtrans}{-1}}
   \tikztiminguse{DL}{#1}%
 }
 
@@ -1785,7 +1788,7 @@
 
 \tikztimingdef{TM}{%
   \newdraw [\style]
-  node [timing calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  node [timing/calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++($ 1/16.*(#1,0) + (0,\value{tikztimingtrans}*\height*.50+\height*.10) $)
   -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
@@ -1799,7 +1802,7 @@
 
 \tikztimingdef{Tm}{%
   \newdraw [\style]
-  node [timing calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  node [timing/calc] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++($ 1/8.*(#1,0) + (0,\value{tikztimingtrans}*\height*.50+\height*.075) $)
   -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
   -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
