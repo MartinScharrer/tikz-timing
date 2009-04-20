@@ -999,6 +999,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \def\tikztimingfullexampletable{
   \begin{tikzpicture}[x=1em,y=1em,font=\sffamily]
     \tikzset{timing/d/background/.style={fill={gray!25},fill opacity=0.5}}%
+    \iffalse
     \def\chars{\@gobble}%
     \def\@tempa{}%
     \@for\tchar:=\tikztiming@chars\do{%
@@ -1006,6 +1007,9 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       \expandafter{\tchar}}%
       \edef\chars{\chars,\tchar,\@tempa}%
     }
+    \else
+    \let\chars\tikztiming@chars
+    \fi
     \node (charnode) at (0,0) {%
        \scalebox{0.4}%
          {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
