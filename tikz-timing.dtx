@@ -13,6 +13,7 @@
 % and version 1.2 or later is part of all distributions of LaTeX
 % version 1999/12/01 or later.
 %
+% $Id$
 % \fi
 %
 % \iffalse
@@ -65,6 +66,7 @@
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
+  \newpage
   \PrintIndex
 \end{document}
 %</driver>
@@ -104,12 +106,24 @@
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
 %
 % \title{The {\huge\textsf{\texttiming{z3d{\strut tikz}z5d{\strut timing}z}}} 
-% package\thanks{This document
-%   corresponds to \textsf{tikz-timing}~\fileversion, dated \filedate.}}
+% package}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de}}
+% \date{Version \fileversion\\[0.5ex]\filedate}
 %
+% \ifpdf
+% \hypersetup{%
+%   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
+%   pdftitle    = {The svn-multi package, \fileversion\ from \filedate},
+%   pdftitle    = {The tikz-timing package},
+%   pdfsubject  = {Documentation of LaTeX package tikz-timing which allows the 
+%   easy creation of timing diagrams inside tikz pictures or text.},
+%   pdfkeywords = {tikz-timing, timing diagram, LaTeX}
+% }%
+% \fi
 % \maketitle
-% \providecommand*\pkg{\texttt}
+%
+% ^^A\vfill
+%
 %
 % \section{Introduction}
 % This package allows the typesetting of timing diagram inside text or 
