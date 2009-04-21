@@ -39,6 +39,8 @@
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
 \usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{array}
 \usepackage{booktabs}
 \usepackage{ydoc}
 \usepackage{flafter}
@@ -232,7 +234,6 @@
 % Example: |\tikz \timing [green] ++(1,2) {[L]HLZDZLH};| 
 % gives `\tikz \timing [green] ++(1,2) {[L]HLZDZLH};'.
 %
-% \begingroup
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
 % \sffamily\centering
@@ -260,6 +261,35 @@
 % \end{tabular}
 % \end{table}
 %
+% \begin{table}
+% \let\texttimingbefore\texttiminggrid
+% \sffamily\centering
+% \caption{Modifiers for Timing Characters}\label{tab:modifiers}
+% \makebox[\textwidth][c]{%
+% \begin{tabularx}{1.2\textwidth}{>{\ttfamily}l>{\raggedright}X>{\ttfamily}ll}
+%   \toprule
+%   \normalfont
+%   Modifier Syntax  & Description & \normalfont Example & Example \\
+%                    &             & \normalfont Usage    & Result  \\\midrule
+% D\{\}D & Produces transition between two data values. & D\{\}D & 
+% \texttiming{D{}D} \\
+% D\{\meta{Text}\} & Adds text material into a data signal using a node.  & 
+% D\{A\}D\{B\} & \texttiming{D{A}D{B}} \\
+% D\{[\meta{TikZ Settings}]\meta{Text}\} & Adds text material into a data signal 
+% using the given settings.  & D\{[blue]A\} & \texttiming{D{[blue]A}} \\
+% \meta{\small integer}\{\meta{characters}\} &  Repeats the given characters by 
+% the given number.  & 5\{hl\} & \texttiming{5{hl}}\\
+% \meta{\small number}\meta{character} & Sets width of next signal to given 
+% number.  Half of it if character is in lower case. & 2.6H5.2l & 
+% \texttiming{1.2H7.1L}\\
+%   \midrule
+% {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & [blue]LH & 
+% \texttiming{[blue]LH}
+% \\
+% !\{\meta{code}\}  & Executes given \TeX\ code at this place. & & \\
+% \bottomrule
+% \end{tabularx}}
+% \end{table}
 %
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
@@ -287,7 +317,6 @@
 % \caption{Overview over all transitions.}\label{tab:full}
 % ^^A \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
-% \endgroup
 %
 % \subsection{Table for Timing Diagrams}
 % \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\Signal Name/Label\ \ \&\ \ 
