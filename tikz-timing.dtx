@@ -37,6 +37,7 @@
 \usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage{tikz-timing-examplecode}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage[electronic]{ifsym}
+\usepackage{calc}
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{ydoc}
@@ -243,19 +244,28 @@
 % \envv{tikzpicture}. This allows to add some drawing lines or a grid to the 
 % picture. It is also possible to draw something behind the timing diagram by 
 % using the PGF background layer:
-% |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|.
+% |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|. This needs the 
+% |backgrounds| TikZ library (|\usetikzlibrary{backgrounds}|) which is loaded by 
+% |tikz-timing|.
 %
 % \begin{figure}
 % \centering
 % \begin{minipage}{\textwidth}
 % \hfill
-% \begin{minipage}{0.2\textwidth}
+% \begin{minipage}{0.4\textwidth}\small
 % \begin{verbatim}
 % \fbox{%
 % \begin{tikztimingtable}
-%   Name   & HLLLH      \\
-%   Clock  & c9c        \\
-%   Signal & z4D{Text}z \\
+%   <<Name>> & hLLLLh     \\
+%   Clock    & 10{c}      \\
+%   Signal   & z4D{Text}z \\
+%  \extracode
+%   \draw (0,0) circle (0.2pt);
+%   \begin{pgfonlayer}{background}
+%     \draw [help lines,densely dashed]
+%       (0,0) ++(0.5,1.5) -- +(0,-6)
+%       (0,0) ++(4.5,1.5) -- +(0,-6);
+%   \end{pgfonlayer}
 % \end{tikztimingtable}}
 % \end{verbatim}
 % \end{minipage}
@@ -263,9 +273,16 @@
 % \begin{minipage}{0.2\textwidth}
 % \fbox{%
 % \begin{tikztimingtable}
-%   Name   & HLLLH      \\
-%   Clock  & c9c        \\
-%   Signal & z4D{Text}z \\
+%   <<Name>> & hLLLLh     \\
+%   Clock    & 10{c}      \\
+%   Signal   & z4D{Text}z \\
+%  \extracode
+%   \draw (0,0) circle (0.2pt);
+%   \begin{pgfonlayer}{background}
+%     \draw [help lines,densely dashed]
+%       (0,0) ++(0.5,1.5) -- +(0,-6)
+%       (0,0) ++(4.5,1.5) -- +(0,-6);
+%   \end{pgfonlayer}
 % \end{tikztimingtable}}
 % \end{minipage}
 % \hfill\null
@@ -282,6 +299,7 @@
 %<*package>
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
+\usetikzlibrary{backgrounds}
 
 \def\tikztimingwidth{0.0}
 \def\tikztimingmaxwidth{0.0}
