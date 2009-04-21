@@ -237,24 +237,25 @@
 % \let\texttimingbefore\texttiminggrid
 % \sffamily\centering
 % \caption{Timing Characters}\label{tab:chars}
-% \begin{tabular}{clll}
+% \begin{tabular}{clccc}
 %   \toprule
-%   Character & Description & Alone & Transition \\
-%             &             &       & Example    \\
+%   Character & Description & Full Width & Half Width & Transition \\
+%             &             & \small (Uppercase) & \small (Lowercase) & Example 
+%             \\\midrule
+% \texttt{H} & High & \texttiming{H} & \texttiming{h} & \texttiming[L]{H} \\
+% \texttt{L} & Low & \texttiming{L} & \texttiming{l} & \texttiming[H]{L} \\
+% \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming{z} & \texttiming[L]{Z} \\
+% \texttt{X} & Undefined / Don't Care & \texttiming{X} & \texttiming{x} & \texttiming[L]{X} \\
+% \texttt{D} & Data / Double & \texttiming{D} & \texttiming{d} & \texttiming[L]{D{A}D} \\
+% \texttt{U} & Unknown Data & \texttiming{U} & \texttiming{u} & \texttiming[D]{U} \\
+% \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{l} or 
+% \texttiming{h} & \texttiming{TTTT} \\
+% \texttt{C} & Clock (no slope) & \texttiming{L} or \texttiming{H} & 
+% \texttiming{l} or \texttiming{h} & \texttiming{CCCC} \\
+% \texttt{M} & Metastable Condition & \texttiming{M} & \texttiming{m} & \texttiming[H]{Ml} \\
 %   \midrule
-% \texttt{H} & High & \texttiming{H} & \texttiming[L]{H} \\
-% \texttt{L} & Low & \texttiming{L} & \texttiming[H]{L} \\
-% \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming[L]{Z} \\
-% \texttt{X} & Undefined / Don't Care & \texttiming{X} & \texttiming[L]{X} \\
-% \texttt{D} & Data / Double & \texttiming{D} & \texttiming[L]{D{A}D} \\
-% \texttt{U} & Unknown Data & \texttiming{U} & \texttiming[D]{U} \\
-% \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{TTTT} \\
-% \texttt{C} & Clock (no slope) & \texttiming{C} or \texttiming{H} & 
-% \texttiming{CCCC} \\
-% \texttt{M} & Metastable Condition & \texttiming{M} & \texttiming[H]{Ml} \\
-%   \midrule
-% \texttt{G} & Glitch (zero width) & \texttiming{G} & \texttiming{HGH} \\
-% \texttt{S} & Space (nothing) & \texttiming{S} & \texttiming{HSL} \\
+% \texttt{G} & Glitch (zero width) & \texttiming{G} & \texttiming{g} & \texttiming{HGH} \\
+% \texttt{S} & Space (nothing) & \texttiming{S} & \texttiming{s} & \texttiming{HSL} \\
 % \bottomrule
 % \end{tabular}
 % \end{table}
