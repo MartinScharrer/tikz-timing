@@ -1123,10 +1123,11 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztimingsetslope}
 %    \begin{macrocode}
 \def\tikztimingsetslope#1{%
-  \edef\timingslope{#1*\noexpand\timingwidth}%
-  \edef\tikztiming@slope{#1}%
-  \tikztimingsetdslope{#1*2.0}%
-  \tikztimingsetzslope{#1/2.0}%
+  \pgfmathparse{min(1.0,{max(0.0,#1)})}%
+  \let\tikztiming@slope\pgfmathresult
+  \edef\timingslope{\tikztiming@slope*\noexpand\timingwidth}%
+  \tikztimingsetdslope{\tikztiming@slope*2.0}%
+  \tikztimingsetzslope{\tikztiming@slope/2.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1134,8 +1135,9 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztimingsetdslope}
 %    \begin{macrocode}
 \def\tikztimingsetdslope#1{%
-  \edef\timingdslope{#1*\noexpand\timingwidth}%
-  \edef\tikztiming@dslope{#1}%
+  \pgfmathparse{min(1.0,{max(0.0,#1)})}%
+  \let\tikztiming@dslope\pgfmathresult
+  \edef\timingdslope{\tikztiming@dslope*\noexpand\timingwidth}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1143,8 +1145,9 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztimingsetzslope}
 %    \begin{macrocode}
 \def\tikztimingsetzslope#1{%
-  \edef\timingzslope{#1*\noexpand\timingwidth}%
-  \edef\tikztiming@zslope{#1}%
+  \pgfmathparse{min(1.0,{max(0.0,#1)})}%
+  \let\tikztiming@zslope\pgfmathresult
+  \edef\timingzslope{\tikztiming@zslope*\noexpand\timingwidth}%
 }
 %    \end{macrocode}
 % \end{macro}
