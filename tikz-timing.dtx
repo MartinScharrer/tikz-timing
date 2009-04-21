@@ -128,12 +128,13 @@
 %
 %
 % \section{Introduction}
-% This package allows the typesetting of timing diagram inside text or 
-% tikzpicture environments. The signal levels of the timing diagram can be given 
-% by corresponding characters/letters like `|H|' for \emph{Logical High} or 
-% `|L|' for \emph{Logical Low}. So e.g.\ `|{HLZXD}|' gives `\texttiming{HLZXD}'.
+% This package uses the \pkg{tikz} package to produce timing diagram inside text 
+% or \envv{tikzpicture} environments. The signal levels of the timing diagram 
+% can be given by corresponding characters/letters like `|H|' for \emph{Logical 
+% High} or `|L|' for \emph{Logical Low}. So e.g.\ `|{HLZXD}|' gives 
+% `\texttiming{HLZXD}'.
 % A special table environment is provided to produce a larger timing diagram 
-% with multiple labeled signals.
+% with multiple labeled signals and the possibility to add own drawing material.
 %
 % \subsection{Similar Packages}
 % There a some packages which target the same application like the package 
@@ -287,16 +288,17 @@
 % \end{table}
 % \endgroup
 %
-%
+% \subsection{Table for Timing Diagrams}
 % \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\Signal Name/Label\ \ \&\ \ 
 % Characters \textbackslash\textbackslash}
-% This environment can be used to typeset timing diagram tables. The syntax is 
-% like the one for a \envv{tabular} environment with two columns. The first 
-% column is the signal name and the second one are the logic characters which 
-% would be placed inside the argument of a \cs{texttiming} or \cs{timing} macro.  
-% The whole table will be drawn inside a \envv{tikzpicture} environment.  
-% Additional \pkg{tikz} drawing code can be insert at the end of the table by 
-% using the \cs{extracode} macro.
+% This environment can be used to typeset full timing diagrams not only a single 
+% line.  The syntax is like the one for a \envv{tabular} environment with two 
+% columns.  The first column is the signal name and the second one are the logic 
+% characters which would be placed inside the argument of a \cs{texttiming} or 
+% \cs{timing} macro.  The whole table will be drawn inside a \envv{tikzpicture} 
+% environment using multiple \cs{timing} and \cs{node} macros for the logic 
+% levels and their labels, respectively.  Additional \pkg{tikz} drawing code can 
+% be insert at the end of the table by using the \cs{extracode} macro.
 %
 % \DescribeMacro{extracode}{}
 % This macro is only defined inside a \env{tikztimingtable} environment and can 
