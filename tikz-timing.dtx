@@ -40,6 +40,7 @@
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{ydoc}
+\usepackage{flafter}
 
 \makeatletter
 \let\stdcaption\caption
@@ -105,8 +106,8 @@
 % \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameuse,\@secondoftwo}
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
 %
-% \title{The {\huge\textsf{\texttiming{z3d{\strut tikz}z5d{\strut timing}z}}} 
-% package}
+% \title{The \raisebox{-0.66ex}{\Huge\textsf{\texttiming{z3d{\strut 
+% tikz}z5d{\strut timing}z}}} package}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de}}
 % \date{Version \fileversion\\[0.5ex]\filedate}
 %
@@ -225,7 +226,24 @@
 % \endgroup
 % or, with grid, {\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}.
 %
-% \DescribeEnv{tikztimingtable}
+% \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\Signal Name/Label\ \ \&\ \ 
+% Characters \textbackslash\textbackslash}
+% This environment can be used to typeset timing diagram tables. The syntax is 
+% like the one for a \envv{tabular} environment with two columns. The first 
+% column is the signal name and the second one are the logic characters which 
+% would be placed inside the argument of a \cs{texttiming} or \cs{timing} macro.  
+% The whole table will be drawn inside a \envv{tikzpicture} environment.  
+% Additional \pkg{tikz} drawing code can be insert at the end of the table by 
+% using the \cs{extracode} macro.
+%
+% \DescribeMacro{extracode}{}
+% This macro is only defined inside a \env{tikztimingtable} environment and can 
+% only be used after the last table line (\ie after a |\\|). If used all code 
+% between it and the |\end{tikztimingtable}| will be placed inside the same 
+% \envv{tikzpicture}. This allows to add some drawing lines or a grid to the 
+% picture. It is also possible to draw something behind the timing diagram by 
+% using the PGF background layer:
+% |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|.
 %
 % \begin{figure}
 % \centering
@@ -256,6 +274,7 @@
 % \end{figure}
 %
 % \StopEventually{}
+% \clearpage
 %
 % \section{Implementation}
 % \subsection{Package Header}
