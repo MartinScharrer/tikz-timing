@@ -166,6 +166,7 @@
 % \end{description}
 %
 % \section{Usage}
+% \subsection{Macro for use in Text Mode}
 %
 % \DescribeMacro{texttiming}{\oarg{initial character}\marg{characters}}
 % This macro places a single timing diagram line into the current text. The 
@@ -187,6 +188,27 @@
 % Example: |\texttiming[L]{HLZDZLH}| ^^A
 % gives `\texttiming{HLZDZLH}', with grid: 
 % `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.
+%
+% \DescribeMacro{texttimingbefore}{\hspace{15.5em}(\emph{defaults to}: 
+% \meta{empty})}
+% \DescribeMacro*{texttimingafter}{\hspace{16em}(\emph{defaults to}: 
+% \meta{empty})}
+% This two macros are executed before and after every timing diagram line 
+% created by \cs{texttiming} macro inside the same \envv{tikzpicture} 
+% environment and can be used to add drawing macros. The argument of the 
+% \cs{texttiming} macro is already processed before any of these macros are 
+% expanded, therefore this macros can access the width of the diagram.
+%
+% Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
+% background of the \cs{texttiming} diagram. A more \LaTeX-stylish way to do 
+% this is |\renewcommand*{\textttimingbefore}{\texttiminggrid}|.
+%
+% \DescribeMacro{texttiminggrid}{}
+% This macro should only be used inside \cs{texttimingbefore} or 
+% \cs{texttimingafter} and draws a grid of the full size of the
+% \cs{texttiming} diagram.
+%
+% \subsection{Macro for use inside TikZ-Pictures}
 %
 % \DescribeMacro{timing}{\oarg{TikZ Settings}\ ^^A
 % \parg{TikZ Coordinate}\ \{\oarg{initial character}\meta{characters}\};}
