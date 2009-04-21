@@ -1,3 +1,10 @@
+
+% Restore article settings:
+\textwidth 345.0pt
+\marginparwidth 65.0pt
+\oddsidemargin 62.0pt
+\evensidemargin 62.0pt\relax
+
 \RequirePackage{ifpdf}
 \ifpdf
   % use hypdoc if you have it, hyperref else
@@ -104,6 +111,36 @@
   \nopagebreak
   \ignorespaces
 }
+
+\def\DescribeEnv{\@ifnextchar*{\DescribeEnvS}{\DescribeEnvN}}
+\def\DescribeEnvN{%
+  \bigskip\pagebreak[3]\par\noindent\DescribeEnvS*%
+}
+\def\DescribeEnvS*#1#2{%
+  \begingroup
+  \g@namedef{href@desc@#1}{}%
+  \immediate\write\@mainaux{%
+    \noexpand\g@namedef{href@desc@#1}{}%
+  }%
+  \@ifundefined{href@impl@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{impl@#1}}}%
+  \hypersetup{linkcolor=macrodesccolor}%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}%
+  \css{begin}%
+  \{\macrolink{\macroformat{\textcolor{macrodesccolor}{#1}}}\}%
+  \noindent\mbox{}\macroargformat{#2}\\*\relax
+  \hspace*{\macrosep}%
+  \css{end}%
+  \{\macrolink{\macroformat{\textcolor{macrodesccolor}{#1}}}\}%
+  \nopagebreak
+  \macroline*[0.2\baselineskip]%
+  \endgroup
+  \nopagebreak
+  \ignorespaces
+}
+
 \def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
 \def\DescribeScriptN{%
   \bigskip\par\pagebreak[2]\noindent\DescribeScriptS*%
@@ -214,8 +251,36 @@
   \macrolink{\texttt{\textbackslash#1}}%
   \endgroup
 }
+
+\DeclareRobustCommand{\envi}[1]{%
+  \begingroup
+  \hypersetup{linkcolor=macroimplcolor}%
+  \renewcommand{\macrohlinkprefix}{impl}%
+  \@ifundefined{href@impl@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{impl@#1}}}%
+  \envX{#1}%
+  \endgroup
+}
+\DeclareRobustCommand{\envd}[1]{%
+  \begingroup
+  \hypersetup{linkcolor=macrodesccolor}%
+  \renewcommand{\macrohlinkprefix}{macro}%
+  \@ifundefined{href@desc@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{desc@#1}}}%
+  \envX{#1}%
+  \endgroup
+}
+\DeclareRobustCommand{\envX}[1]{%
+  \begingroup
+  \macrolink{\texttt{\{#1\}}}%
+  \endgroup
+}
 \let\cs\csd
+\let\env\envd
 \DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
+\DeclareRobustCommand{\envv}[1]{\texttt{\{#1\}}}
 \DeclareRobustCommand{\op}[1]{%
   \begingroup
   \hypersetup{linkcolor=optioncolor}%
@@ -231,6 +296,7 @@
 
 \def\StopEventually#1{\origStopEventually{#1}%
 \let\cs\csi
+\let\env\envi
 }
 
 \fi
