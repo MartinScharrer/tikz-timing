@@ -37,12 +37,8 @@
 \usepackage{tikz-timing-examplecode}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage[electronic]{ifsym}
 \usepackage{booktabs}
-\usepackage{ifpdf}
-\ifpdf
-\usepackage{hyperref}
-\else
-\let\url=\texttt
-\fi
+\usepackage{ydoc}
+
 \makeatletter
 \let\stdcaption\caption
 \newcommand*\tablecaption[2][]{%
@@ -64,7 +60,7 @@
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
-\OnlyDescription
+%\OnlyDescription
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
@@ -152,7 +148,7 @@
 %
 % \section{Usage}
 %
-% \DescribeMacro{\texttiming}
+% \DescribeMacro{texttiming}{\oarg{initial character}\marg{characters}}
 % \begingroup
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid

@@ -1,0 +1,220 @@
+\RequirePackage{ifpdf}
+\ifpdf
+  % use hypdoc if you have it, hyperref else
+  \IfFileExists{hypdoc.sty}
+    {\RequirePackage{hypdoc}}
+    {\RequirePackage{hyperref}}
+\else
+  \let\url\texttt
+\fi
+\RequirePackage{xspace}
+\newcommand{\ie}{i.e.\@\xspace}
+\newcommand{\eg}{e.g.\@\xspace}
+
+\iffalse
+\let\css=\cs
+\let\op=\cs
+\let\DescribeOption\DescribeMacro
+\let\DescribeScript\DescribeOption
+\else % crossreference of macros in documentation
+\makeatletter
+
+\RequirePackage{xspace}
+\@namedef{seen@package@latex}{1} %^^A avoid footnotes for 'latex'
+\newcommand*{\pkg}[1]{%
+  \href{http://tug.ctan.org/pkg/#1}{\texttt{#1}}%
+  % URL footnote (for print-out) on first appearance:
+  \@ifundefined{seen@package@#1}{%
+    \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
+    \@namedef{seen@package@#1}{1}%
+  }{}%
+  \xspace
+}
+\newcommand*{\svnmulti}{%
+  \texttt{svn-multi}\xspace%
+}
+
+% link \cs to macro definitions
+\let\origmacro\macro
+\let\origendmacro\endmacro
+\let\origStopEventually\StopEventually
+\let\origPrintDescribeMacro\PrintDescribeMacro
+\RequirePackage{xcolor}
+\definecolor{darkred}{rgb}{0.333.0.0,0.0}
+\hypersetup{colorlinks=true,linkcolor=darkred,urlcolor=darkred}
+\definecolor{macrodesccolor}{rgb}{0.0,0.0,0.8}
+\definecolor{macroimplcolor}{rgb}{0.0,0.0,0.4}
+\definecolor{metacolor}{rgb}{0.0,0.4,0.4}
+\definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
+\definecolor{optioncolor}{rgb}{0.3.0.2,0}
+
+\let\macroline\\
+\newlength{\macrosep}
+\setlength{\macrosep}{-3em}
+\renewcommand{\meta@font@select}{\color{metacolor}\itshape}
+\newcommand{\macroformat}[1]{\textbf{\ttfamily #1}}
+\newcommand{\optionformat}[1]{\textbf{\sffamily #1}}
+\newcommand{\scriptformat}[1]{\textbf{\ttfamily #1}}
+\newcommand{\macroargformat}[1]{\texttt{#1}}
+\newcommand{\scriptargformat}[1]{\textbf{#1}}
+\newcommand{\macrohlinkprefix}{desc}
+\newcommand{\macrolink}{}
+
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+\IfFileExists{lmodern.sty}{\RequirePackage{lmodern}}{}%
+
+\def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
+\def\DescribeMacroN{%
+  \bigskip\pagebreak[3]\par\noindent\DescribeMacroS*%
+}
+\def\DescribeMacroS*#1#2{%
+  \begingroup
+  \g@namedef{href@desc@#1}{}%
+  \immediate\write\@mainaux{%
+    \noexpand\g@namedef{href@desc@#1}{}%
+  }%
+  \@ifundefined{href@impl@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{impl@#1}}}%
+  \hypersetup{linkcolor=macrodesccolor}%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{desc@#1}{}}%
+  \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
+  \noindent\mbox{}\macroargformat{#2}\nopagebreak
+  \macroline*[0.2\baselineskip]%
+  \endgroup
+  \nopagebreak
+  \ignorespaces
+}
+\def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
+\def\DescribeScriptN{%
+  \bigskip\par\pagebreak[2]\noindent\DescribeScriptS*%
+}
+\def\DescribeScriptS*#1#2{%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{script@#1}{}}%
+  \scriptformat{\textcolor{scriptcolor}{#1}}%
+  \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
+  \nopagebreak
+}
+\def\DescribeOption{\@ifnextchar*{\DescribeOptionS}{\DescribeOptionN}}
+\def\DescribeOptionN{%
+  \bigskip\par\noindent\DescribeOptionS*%
+}
+\def\DescribeOptionS*#1{%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{option@#1}{}}%
+  \optionformat{\textcolor{optioncolor}{#1}}%
+  \noindent\mbox{}\macroline*[0.2\baselineskip]%
+  \nopagebreak
+}
+\newcounter{macrolevel}
+\renewenvironment{macro}[1]{%
+  \addtocounter{macrolevel}{1}%
+  \expandafter\macroX\expandafter{\expandafter\@gobble\string#1}%
+}{%
+  \addtocounter{macrolevel}{-1}%
+}
+\providecommand*{\g@namedef}[1]{%
+  \expandafter\gdef\csname #1\endcsname
+}
+\newcommand*{\macroX}[1]{%
+  \ifnum\c@macrolevel<2
+    \smallskip
+  \fi
+  \par\noindent
+  \g@namedef{href@impl@#1}{}%
+  \immediate\write\@mainaux{%
+    \noexpand\g@namedef{href@impl@#1}{}%
+  }%
+  \@ifundefined{href@desc@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{desc@#1}}}%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\hypertarget{impl@#1}{}}%
+  \macrolink{\macroformat{%
+    \textcolor{macroimplcolor}{\textbackslash #1}}}%
+  \\*[\smallskipamount]%
+  \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
+}
+
+\newcounter{macroargs}
+\newcounter{nmacroarg}
+
+\newcommand*{\imacroarg}[1][0]{%
+  \setcounter{macroargs}{#1}%
+  \setcounter{nmacroarg}{1}%
+  \ifnum\c@macroargs>0
+    \expandafter\imacroargX
+  \fi
+}
+\newcommand*{\aftermacroargs}{%
+  \@ifnextchar\begin
+    {\\*[-2ex]\ignorespaces}%
+    {\\*[\smallskipamount]\ignorespaces}%
+}
+\newcommand*{\imacroargX}[1]{%
+  \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
+  \ifnum\c@macroargs>1
+    \newline
+  \fi
+  \addtocounter{nmacroarg}{1}%
+  \addtocounter{macroargs}{-1}%
+  \ifnum\c@macroargs>0
+    \expandafter\imacroargX
+  \else
+    \expandafter\aftermacroargs
+  \fi
+}
+
+
+\def\karg#1{\{\$\textcolor{metacolor}{#1}\$\}}
+\def\kmarg#1{\{\$\meta{#1}\$\}}
+
+\DeclareRobustCommand{\csi}[1]{%
+  \begingroup
+  \hypersetup{linkcolor=macroimplcolor}%
+  \renewcommand{\macrohlinkprefix}{impl}%
+  \@ifundefined{href@impl@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{impl@#1}}}%
+  \csX{#1}%
+  \endgroup
+}
+\DeclareRobustCommand{\csd}[1]{%
+  \begingroup
+  \hypersetup{linkcolor=macrodesccolor}%
+  \renewcommand{\macrohlinkprefix}{macro}%
+  \@ifundefined{href@desc@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{desc@#1}}}%
+  \csX{#1}%
+  \endgroup
+}
+\DeclareRobustCommand{\csX}[1]{%
+  \begingroup
+  \macrolink{\texttt{\textbackslash#1}}%
+  \endgroup
+}
+\let\cs\csd
+\DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
+\DeclareRobustCommand{\op}[1]{%
+  \begingroup
+  \hypersetup{linkcolor=optioncolor}%
+  \hyperlink{option@#1}{\textbf{\sffamily #1}}%
+  \endgroup
+}
+\DeclareRobustCommand{\scr}[1]{%
+  \begingroup
+  \hypersetup{linkcolor=scriptcolor}%
+  \hyperlink{script@#1}{\scriptformat{#1}}%
+  \endgroup
+}
+
+\def\StopEventually#1{\origStopEventually{#1}%
+\let\cs\csi
+}
+
+\fi
+
