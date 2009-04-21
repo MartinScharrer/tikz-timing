@@ -225,10 +225,27 @@
 % \caption{Overview over all transitions.}\label{tab:full}
 % ^^A \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
-%
-% Example: |\texttiming{HLZDZLH}| gives `\texttiming{HLZDZLH}'
 % \endgroup
-% or, with grid, `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.
+% \newcommand*\Example[2][]{\par Example: 
+% \makebox[12em][l]{\css{texttiming}\texttt{^^A
+% \ifx\relax#1\relax\else[#1]\fi#1}\{\texttt{#2}\}}^^A
+% gives \texttiming[#1]{#2}.}
+%
+% Example: |\texttiming{HLZDZLH}|^^A
+% \phantom{\texttt{[L]}} gives `\texttiming{HLZDZLH}', with grid: 
+% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.
+%
+% Example: |\texttiming[L]{HLZDZLH}| gives `\texttiming[L]{HLZDZLH}', with grid: 
+% `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.
+%
+% Example: |\texttiming{cccc}|\phantom{\texttt{[c]}} gives `\texttiming{cccc}'.
+%
+% Example: |\texttiming[c]{cccc}| gives `\texttiming[c]{cccc}'.
+%
+% Example: |\texttiming{10c10c}|\phantom{\texttt{\{\}\{\}}} gives 
+% `\texttiming{10c10c}'.
+%
+% Example: |\texttiming{10{c}10{c}}| gives `\texttiming{10{c}10{c}}'.
 %
 % Example: |\tikz \timing [green] ++(1,2) {HLZDZLH};|
 % gives
