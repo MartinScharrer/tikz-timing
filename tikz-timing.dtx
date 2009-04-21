@@ -168,6 +168,9 @@
 % \section{Usage}
 %
 % \DescribeMacro{texttiming}{\oarg{initial character}\marg{characters}}
+% \DescribeMacro{timing}{\oarg{TikZ Settings}\ ^^A
+% \parg{TikZ Coordinate}\ \{\oarg{initial character}\meta{characters}\};}
+%
 % \begingroup
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
@@ -223,9 +226,13 @@
 % ^^A \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
 %
-% Example: |\texttiming{HLZDZLH}| gives \texttiming{HLZDZLH}
+% Example: |\texttiming{HLZDZLH}| gives `\texttiming{HLZDZLH}'
 % \endgroup
-% or, with grid, {\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}.
+% or, with grid, `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.
+%
+% Example: |\tikz \timing [green] ++(1,2) {HLZDZLH};|
+% gives
+% `\tikz \timing [green] ++(1,2) {HLZDZLH};'.
 %
 % \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\Signal Name/Label\ \ \&\ \ 
 % Characters \textbackslash\textbackslash}
@@ -450,9 +457,9 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \def\timing@@@#1#2#3{%
   \begingroup
     \tikztiming@init
-    \def\tikztiming@str{\draw [timing,#1] #2 }%
+    \def\tikztiming@str{\draw #2 }%
     \timing@@@init#3\relax
-    \begin{scope}[timing]%
+    \begin{scope}[timing,#1]%
       \tikztiming@str;%
     \end{scope}%
     \pgfmathparse{max(\tikztimingmaxwidth,\tikztimingwidth)}%
