@@ -21,17 +21,34 @@
 
 \RequirePackage{xspace}
 \@namedef{seen@package@latex}{1} %^^A avoid footnotes for 'latex'
+\newcommand*{\pkgctanurl}[1]{%
+  CTAN: \url{http://tug.ctan.org/pkg/#1}%
+}
 \newcommand*{\pkg}[1]{%
   \href{http://tug.ctan.org/pkg/#1}{\texttt{#1}}%
   % URL footnote (for print-out) on first appearance:
   \@ifundefined{seen@package@#1}{%
-    \footnote{CTAN: \url{http://tug.ctan.org/pkg/#1}}%
+    \footnote{\pkgctanurl{#1}}%
     \@namedef{seen@package@#1}{1}%
   }{}%
   \xspace
 }
-\newcommand*{\svnmulti}{%
-  \texttt{svn-multi}\xspace%
+\newcommand*{\pkgnoctan}[3][]{%
+  \href{#3}{\texttt{#2}}%
+  % URL footnote (for print-out) on first appearance:
+  \@ifundefined{seen@package@#2@#3}{%
+    \footnote{#1\url{#3}}%
+    \@namedef{seen@package@#2@#3}{1}%
+  }{}%
+  \xspace
+}
+
+\newcommand*{\itempkg}[2][]{%
+  \item[\pkg{#2}#1]\footnotetext{\pkgctanurl{#2}}%
+}
+
+\newcommand*{\itempkgnoctan}[3][]{%
+  \item[\pkgnoctan{#2}{#3}#1]\footnotetext{Location: \url{#3}}%
 }
 
 % link \cs to macro definitions
