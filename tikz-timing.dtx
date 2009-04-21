@@ -168,8 +168,46 @@
 % \section{Usage}
 %
 % \DescribeMacro{texttiming}{\oarg{initial character}\marg{characters}}
+% This macro places a single timing diagram line into the current text. The 
+% signals have the same height as a uppercase letter (like `X') of the current 
+% font, \ie they scale with the font size.
+%
+% The macro argument must contain only valid logic characters which define the 
+% logical levels of the diagram line.
+%
+% An initial character can be given as an optional argument. No logic level will 
+% be drawn for this character. Instead it will be used to define the initial 
+% position of the signal so that the diagram line will start with a transition 
+% from the initial to the first character.
+%
+% Example: |\texttiming{HLZDZLH}|^^A
+% \phantom{\texttt{[L]}} gives `\texttiming{HLZDZLH}', with grid: 
+% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.
+%
+% Example: |\texttiming[L]{HLZDZLH}| ^^A
+% gives `\texttiming{HLZDZLH}', with grid: 
+% `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.
+%
 % \DescribeMacro{timing}{\oarg{TikZ Settings}\ ^^A
 % \parg{TikZ Coordinate}\ \{\oarg{initial character}\meta{characters}\};}
+% This macro does the same as \cs{texttiming} but is designed to be used inside 
+% a \envv{tikzpicture} environment and only there. Like normal TikZ macros 
+% (\css{path}, \css{drawn}, \css{node}) it allows an optional argument with TikZ 
+% settings and an optional TikZ-coordinate (which may start with |+| or |++|).  
+% However, a own argument parser, not the one used by TikZ, is used to detect 
+% and read these optional arguments. Therefore the order of the arguments is 
+% mandatory and might not be reversed. This small limitation might be overcome 
+% in future versions of this package.
+%
+% Please note that the optional initial character may be given \emph{inside} and 
+% at the very start of the mandatory argument, not before it. This is necessary 
+% because of several technical reasons.
+%
+% Example: |\tikz \timing [green] ++(1,2) {HLZDZLH};|\phantom{\texttt{[L]}} 
+% gives `\tikz \timing [green] ++(1,2) {HLZDZLH};'.
+% 
+% Example: |\tikz \timing [green] ++(1,2) {[L]HLZDZLH};| 
+% gives `\tikz \timing [green] ++(1,2) {[L]HLZDZLH};'.
 %
 % \begingroup
 % \begin{table}
@@ -226,30 +264,7 @@
 % ^^A \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
 % \endgroup
-% \newcommand*\Example[2][]{\par Example: 
-% \makebox[12em][l]{\css{texttiming}\texttt{^^A
-% \ifx\relax#1\relax\else[#1]\fi#1}\{\texttt{#2}\}}^^A
-% gives \texttiming[#1]{#2}.}
 %
-% Example: |\texttiming{HLZDZLH}|^^A
-% \phantom{\texttt{[L]}} gives `\texttiming{HLZDZLH}', with grid: 
-% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.
-%
-% Example: |\texttiming[L]{HLZDZLH}| gives `\texttiming[L]{HLZDZLH}', with grid: 
-% `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.
-%
-% Example: |\texttiming{cccc}|\phantom{\texttt{[c]}} gives `\texttiming{cccc}'.
-%
-% Example: |\texttiming[c]{cccc}| gives `\texttiming[c]{cccc}'.
-%
-% Example: |\texttiming{10c10c}|\phantom{\texttt{\{\}\{\}}} gives 
-% `\texttiming{10c10c}'.
-%
-% Example: |\texttiming{10{c}10{c}}| gives `\texttiming{10{c}10{c}}'.
-%
-% Example: |\tikz \timing [green] ++(1,2) {HLZDZLH};|
-% gives
-% `\tikz \timing [green] ++(1,2) {HLZDZLH};'.
 %
 % \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\Signal Name/Label\ \ \&\ \ 
 % Characters \textbackslash\textbackslash}
