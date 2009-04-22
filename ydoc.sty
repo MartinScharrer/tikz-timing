@@ -18,14 +18,6 @@
 \newcommand{\ie}{i.e.\@\xspace}
 \newcommand{\eg}{e.g.\@\xspace}
 
-\iffalse
-\let\css=\cs
-\let\op=\cs
-\let\DescribeOption\DescribeMacro
-\let\DescribeScript\DescribeOption
-\else % crossreference of macros in documentation
-\makeatletter
-
 \RequirePackage{xspace}
 \@namedef{seen@package@latex}{1} %^^A avoid footnotes for 'latex'
 \newcommand*{\pkgctanurl}[1]{%
@@ -299,5 +291,78 @@
 \let\env\envi
 }
 
-\fi
+\RequirePackage{listings}
+
+\def\macrocode@catcodes{%
+  \let\do\@makeother
+  \dospecials
+  \@makeother\ \relax
+  \@makeother\^^M\relax
+}
+
+\begingroup
+\endlinechar=-1\relax
+\@makeother\^^M\relax
+\gdef\macrocode{\begingroup\macrocode@catcodes\macrocode@}%
+\gdef\macrocode@#1^^M{\endgroup\begingroup\macrocode@catcodes\macrocode@@}%
+\endgroup%
+
+\begingroup%
+\endlinechar=-1\relax
+\catcode`\(=\catcode`\{
+\catcode`\)=\catcode`\}
+\catcode`\{=12
+\catcode`\}=12
+\catcode`\ =12
+\catcode`\|=0
+\@makeother\^^M\relax
+\catcode`\%=12
+\catcode`\\=12
+|long|gdef|macrocode@@#1^^M%    \end{macrocode}(|endgroup|handlemacrocode@(#1))
+|endgroup
+
+
+\def\handlemacrocode@#1{%
+  \handlemacrocode{#1}%
+  \end{macrocode}%
+}
+
+\newwrite\macrocode@write
+\newwrite\codeoutput@write
+\def\codeoutput@header{\@percentchar\@percentchar\space Code!}
+\def\codeoutput@footer{^^J\noexpand\endinput}
+
+\AtBeginDocument{%
+  \immediate\openout\codeoutput@write=\jobname.stv\relax
+  \immediate\write\codeoutput@write{\codeoutput@header}%
+}
+
+\lstset{%
+  numbers=left,
+  numberstyle=\tiny,
+  basicstyle=\ttfamily,
+  stepnumber=1,
+  firstnumber=last,
+  language=[latex]tex,
+  breaklines,
+  name=macrocode
+}%
+
+\def\handlemacrocode#1{%
+  \immediate\openout\macrocode@write=\jobname.mcr\relax
+  \newlinechar=13\relax
+  \immediate\write\macrocode@write{#1}%
+  \immediate\write\codeoutput@write{#1}%
+  \immediate\closeout\macrocode@write
+  %\gdef\code{#1}%
+  \par\noindent\lstinputlisting{\jobname.mcr}%
+  %\gdef\code{\scantokens{#1}}%
+}
+
+\def\endmacrocode{}
+
+\AtEndDocument{%
+  \immediate\write\codeoutput@write{\codeoutput@footer}%
+  \immediate\closeout\codeoutput@write
+}
 
