@@ -341,12 +341,16 @@
 % |backgrounds| TikZ library (|\usetikzlibrary{backgrounds}|) which is loaded by 
 % |tikz-timing|.
 %
-% \clearpage
 % \section{Styles}
 % The generated logic signals are drawn using the style mechanism provided by 
 % \pkg{tikz} (which is based on \pkg{pgfkeys}). This styles are defined and can 
 % be redefined using \css{tikzset}\marg{style name/.style=value,\ldots}. They 
-% can also be used in all places where \meta{TikZ Settings} is mentioned.
+% can also be used in all places where \meta{TikZ Settings} is mentioned. Please 
+% note that path/draw specific settings might not survive the transition to 
+% characters which have there own color, because these start a new drawing path.  
+% For a more detailed explanation why this is necessary see the \pkg{tikz} 
+% manual.  However, timing specific settings are saved and restored between 
+% internal paths.
 %
 % The package follows the directory structures approach used by TikZ/PGF and 
 % places all styles and other settings under the ``subdirectory'' `|timing|' in 
@@ -397,8 +401,8 @@
 % the logic characters. The syntax of \cs{textttiming} is identical except the 
 % initial character is given as a normal optional argument before the characters 
 % argument.\\[\smallskipamount]
-% \emph{Example notation example:} `|[c]cccc|' means either |\timing{[c]cccc};| 
-% or |\texttiming[c]{cccc}|.
+% ^^A\emph{Example notation example:} `|[c]cccc|' means either 
+% ^^A|\timing{[c]cccc};| or |\texttiming[c]{cccc}|.
 %
 % \vspace{3cm}
 %
