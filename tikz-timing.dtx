@@ -559,14 +559,13 @@
 %   HHGHHGGHHLLGLLGH \\
 %   ZZ G ZZ G XX G X \\
 %   LLL 2{0.1H 0.1L} 0.6H HH \\
-%   D{ABC}LL [timing/slope=0.01,ultra thin] 4{.003H .02L} 0.6H 
-%   [timing/slope=0.1] LHL \\
+%   LLL [timing/slope=0.05] 4{.05H .05L} 0.6H HH\\
 %   LLL 0.4U 0.6H HH \\
 %   [L][timing/slope=1.0] HL HL HL HL HL \\
 %   LLLLL !{-- +(.5,.5) -- ++(1,0)} HHHHHH \\
 %   LLLLL [/utils/exec={\somemacro\code}] HHHHHH \\
 %   LL [green] HH [brown] XX LL ZZ [orange] HH \\
-%   [] [line width=2pt] HLXZDU [line width=0.1pt] HLXZDU \\
+%   [][line width=2pt] HLXZDU [line width=0.1pt] HLXZDU \\
 % \end{tikztimingexampletable}%
 % }
 % \\\scriptsize
@@ -590,7 +589,8 @@
 \def\tikztiming@dlength{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
-\def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
+\def\tikztiming@num{1.0}%
+%%\def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
 
 \def\tikztiming@prefix{tikztiming@trans@}
 %    \end{macrocode}
@@ -1118,7 +1118,28 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %
 % \begin{macro}{\tikztiming@testfornumfrac}
 %    \begin{macrocode}
-\def\tikztiming@testfornumfrac{%
+\def\tikztiming@testfornumfrac#1{%
+  \futurelet\@tempa\tikztiming@testfornumfrac@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornumfrac@}
+%    \begin{macrocode}
+\def\tikztiming@testfornumfrac@{%
+  \ifx0\@tempa
+    \edef\@tempb{\@tempb0}%
+    \expandafter\tikztiming@testfornumfrac
+  \else
+    \expandafter\tikztiming@testfornumfrac@@
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornumfrac@@}
+%    \begin{macrocode}
+\def\tikztiming@testfornumfrac@@{%
   \afterassignment
   \tikztiming@testfornum@@@
   \tikztiming@numfrac0%
@@ -1149,11 +1170,13 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \let\tikztiming@next\tikztiming@testfornum@@
   \else
     \def\tikztiming@next{%
+      \def\@tempb{}%
       \@ifnextchar{.}%
-        {\expandafter\tikztiming@testfornumfrac\@gobble}%
+        {\tikztiming@testfornumfrac}%
         {%
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
+          \def\tikztiming@num{1.0}%
           \expandafter\tikztiming@testforcode
         }%
     }%
@@ -1166,8 +1189,9 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztiming@testfornum@@}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@@{%
+  \def\@tempb{}%
   \@ifnextchar{.}%
-    {\expandafter\tikztiming@testfornumfrac\@gobble}%
+    {\tikztiming@testfornumfrac}%
     {\tikztiming@testfornum@@@}%
 }
 %    \end{macrocode}
@@ -1176,6 +1200,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztiming@testfornum@@@}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@@@{%
+  \xdef\tikztiming@num{\the\tikztiming@numint.\@tempb\the\tikztiming@numfrac}%
   \@ifnextchar\bgroup
     {%
       \ifnum0=\tikztiming@numfrac\else
