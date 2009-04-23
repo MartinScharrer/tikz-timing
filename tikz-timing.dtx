@@ -214,6 +214,7 @@
 %
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
+% \let\normalfont\sffamily
 % \sffamily\centering
 % \caption{Modifiers for Timing Characters}\label{tab:modifiers}
 % \makebox[\textwidth][c]{%
@@ -237,7 +238,8 @@
 % {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & [blue]LH & 
 % \texttiming{[blue]LH}
 % \\
-% !\{\meta{code}\}  & Executes given \TeX\ code at this place. & & \\
+% !\{\meta{code}\}  & Places given code into the internal \envv{tikzpicture}.
+%& \multicolumn{2}{l}{\small See Table~\ref{tab:example}.} \\
 % \bottomrule
 % \end{tabularx}}
 % \end{table}
@@ -541,6 +543,7 @@
 %   LLL 2{0.1H 0.1L} 0.6H HH \\
 %   LLL 0.4U 0.6H HH \\
 %   [L][timing/slope=1.0] HL HL HL HL HL \\
+%   LLLLL !{-- +(.5,.5) -- ++(1,0)} HHHHHH \\
 %   \\
 %   ABCDEFGHIJKLMNOPQRSTUVXYZ \\
 %   abcdefghijklmnopqrstuvxyz \\
@@ -1063,7 +1066,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztiming@handlecode}
 %    \begin{macrocode}
 \def\tikztiming@handlecode#1{%
-  \tikztiming@addtostr{ [/utils/exec={#1}] }%
+  \tikztiming@addtostr{ #1 }%
   \tikztiming@
 }
 %    \end{macrocode}
