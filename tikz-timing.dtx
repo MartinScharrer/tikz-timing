@@ -328,7 +328,7 @@
 % \caption{Examples}\label{tab:example}
 % \begin{tikztimingexampletable}
 %   HLZXDUTC \\
-%   cc   cc \\
+%   cccc \\
 %   tttt \\
 %   [c]cccc \\
 %   4{c} \\
@@ -1121,6 +1121,8 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \def\tikztiming@texttt#1{%
   \begingroup
   \ttfamily
+  \let\orig@xifnch\@xifnch
+  \def\@xifnch{\space\orig@xifnch}%
   \tikztiming@texttt@#1\tikztiming@texttt@ENDMARKER
   \endgroup
 }
