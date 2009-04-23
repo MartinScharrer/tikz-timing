@@ -291,24 +291,6 @@
 % \end{tabularx}}
 % \end{table}
 %
-% \begin{table}
-% \let\texttimingbefore\texttiminggrid
-% \sffamily\small\centering
-% \caption{Data Character}\label{tab:chard}
-% \begin{tabular}{ll@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l}
-%   \toprule
-%   \cs{texttiming} & \texttt{\{DD\}} & \texttt{\{2D\}} & \texttt{\{D\{\}D\}} & 
-%   \texttt{\{2D\{[blue]ABC\}\}} &
-%   \texttt{\{d\{\}2D\{ABC\}d\}} &
-%   \texttt{\{D\{A\}D\{B\}D\{C\}\}}
-%    & \texttt{[D]\{D\}}\\ \midrule
-%   Result & \texttiming{DD} & \texttiming{2D} & \texttiming{D{}D} & 
-%   \texttiming{2D{[blue]ABC}} &
-%   \texttiming{d{}2D{ABC}d} &
-%   \texttiming{D{A}D{B}D{C}} & \texttiming[D]{D} \\
-%   \bottomrule
-% \end{tabular}
-% \end{table}
 %
 %
 % \begin{table}
@@ -341,6 +323,22 @@
 % |backgrounds| TikZ library (|\usetikzlibrary{backgrounds}|) which is loaded by 
 % |tikz-timing|.
 %
+% \begin{table}
+% \centering
+% \caption{Examples}\label{tab:example}
+% \begin{tikztimingexampletable}
+%   HLZXDUTC \\
+%   cc   cc \\
+%   tttt \\
+%   [c]cccc \\
+%   4{c} \\
+%   4c4c \\
+%   4{1.2c} \\
+%   4{1.8c} \\
+%   [d] 4{5D{Text}} 0.2D \\
+%   3.4H 0.6L \\
+% \end{tikztimingexampletable}
+% \end{table}
 % \begin{figure}
 % \centering
 % \begin{minipage}{\textwidth}
@@ -544,7 +542,10 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \begingroup
     \tikztiming@init
     \def\tikztiming@str{\draw #2 }%
-    \timing@@@init#3\relax
+    \@ifnextchar{[}%
+      {\timing@@@init}%
+      {\timing@@@init[]}%
+    #3\relax
     \begin{scope}[timing,#1]%
       \tikztiming@str;%
     \end{scope}%
@@ -572,7 +573,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %
 % \begin{macro}{\timing@@@init}
 %    \begin{macrocode}
-\newcommand\timing@@@init[1][]{%
+\def\timing@@@init[#1]{%
   \def\lastchar{#1}%
   \@ifundefined{tikztiming@initcode@\lastchar}%
     {}%
@@ -689,16 +690,20 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %
 % \begin{macro}{\tikztiming@initcode@d}
 %    \begin{macrocode}
-\def\tikztiming@initcode@D{%
+\def\tikztiming@initcode@d{%
   \def\lastchar{d@edge@}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@}
+% The |\@ifnextchar\bgroup| is a trick to remove following spaces which would 
+% break the number test.
 %    \begin{macrocode}
 \def\tikztiming@{%
-  \tikztiming@testfornum
+  \@ifnextchar\bgroup
+    {\tikztiming@testfornum}%
+    {\tikztiming@testfornum}%
 }
 %    \end{macrocode}
 % \end{macro}
