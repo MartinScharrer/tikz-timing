@@ -1,4 +1,4 @@
-# $Id: Makefile 628 2007-07-10 20:32:06Z martin $
+# $Id$
 
 PACKAGE=tikz-timing
 PACKFILES = ${PACKAGE}.dtx ${PACKAGE}.ins ${PACKAGE}.pdf

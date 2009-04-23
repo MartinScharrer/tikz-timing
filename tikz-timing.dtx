@@ -13,6 +13,7 @@
 % and version 1.2 or later is part of all distributions of LaTeX
 % version 1999/12/01 or later.
 %
+% $Id$
 % \fi
 %
 % \iffalse
@@ -35,38 +36,41 @@
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage{tikz-timing-examplecode}[\csname ver@tikz-timing.dtx\endcsname]
+\usepackage[electronic]{ifsym}
+\usepackage{calc}
 \usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{flafter,fnpos}
 \usepackage{booktabs}
-\usepackage{ifpdf}
-\ifpdf
-\usepackage{hyperref}
-\else
-\let\url=\texttt
-\fi
+\usepackage{ydoc}
+\usepackage{placeins}
+\makeFNbottom
+\makeFNbelow
+
+\def\bottomfraction{0.9}
+\def\textfraction{0.09}
+
 \makeatletter
-\let\stdcaption\caption
-\newcommand*\tablecaption[2][]{%
-  \begingroup
+
+\let\stdtable\table
+\let\endstdtable\endtable
+\renewenvironment{table}[1][tbp]%
+{\begin{stdtable}[#1]%
   \@tempskipa\abovecaptionskip
   \abovecaptionskip\belowcaptionskip
   \belowcaptionskip\@tempskipa
-  \stdcaption[#1]{#2}%
-  \endgroup
-}
-\let\stdtable\table
-\let\endstdtable\endtable
-\renewenvironment{table}%
-{\begin{stdtable}%
- \let\caption\tablecaption
 }{\end{stdtable}}%
 
 \makeatother
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
+%\OnlyDescription
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
+  \newpage
   \PrintIndex
 \end{document}
 %</driver>
@@ -105,90 +109,325 @@
 % \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameuse,\@secondoftwo}
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
 %
-% \title{The \textsf{tikz-timing} package\thanks{This document
-%   corresponds to \textsf{tikz-timing}~\fileversion, dated \filedate.}}
-% \author{Martin Scharrer \\ \url{martin@scharrer-online.de}}
+% \ifpdf
+% \hypersetup{%
+%   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
+%   pdftitle    = {The svn-multi package, \fileversion\ from \filedate},
+%   pdftitle    = {The tikz-timing package},
+%   pdfsubject  = {Documentation of LaTeX package tikz-timing which allows the 
+%   easy creation of timing diagrams inside tikz pictures or text.},
+%   pdfkeywords = {tikz-timing, timing diagram, LaTeX}
+% }%
+% \fi
+% \clearpage
+% \null
+% \vspace*{-2em}
+% \begin{center}
+% \tikzset{timing/z/.style={black}}
+%   {\LARGE\sffamily The 
+%   \raisebox{-0.66ex}{\Huge\textsf{\texttiming[z]{3d{\strut 
+%tikz}z5d{\strut timing}0.2z}}} package}\\[3ex]
+%   {\large Martin Scharrer \\\normalsize 
+%   \url{martin@scharrer-online.de}}\\[2.5ex]
+%   {\large Version \fileversion\ -- \filedate}\\
+% \end{center}
+% \vspace{1.5em}%
 %
-% \maketitle
+% ^^A\vfill
+% \textbf{Note:} This is a new package which might not yet behave fully as 
+% intended.  Some of the internal and user macros might still change in future 
+% versions. While the package runs stable it should be taken as a $\beta$ 
+% version.
 %
 % \section{Introduction}
-% This package allows the typesetting of timing diagram inside text or 
-% tikzpicture environments.
+% Th package \pkg{tikz-timing} uses the \pkg{tikz} package to produce timing 
+% diagram inside text or \envv{tikzpicture} environments.  Also a tabular-like 
+% environment is provided to produce a larger timing diagram with multiple 
+% labeled signals and the possibility to add own drawing material.
 %
-% \section{Usage}
+% The signal levels of the timing diagram can be given by corresponding 
+% characters/letters like `|H|' for \emph{Logical High} or `|L|' for 
+% \emph{Logical Low}. So e.g.\ `|{HLZXD}|' gives `\texttiming{HLZXD}'.  
+% Lowercase characters only produce a signal with half the width while uppercase 
+% characters produce it with the ``full'' width which is by default identical to 
+% there height.
+% Table~\ref{tab:chars} shows all by default defined logic characters.  
+% Additional functionality is provided by the ``modifiers'' shown in 
+% Table~\ref{tab:modifiers}.
+% 
+% \iffalse
+% The package is build to make it possible to define new characters from scratch 
+% or as modified copy of other characters. However, no user macros nor 
+% documentation for this are provided at the moment. Interested \LaTeX\ users 
+% should look at the default definitions at the end of the source code.
+% \fi
 %
-% \DescribeMacro{\texttiming}
-% \begingroup
-% \begin{table}
+% \begin{table}[b!]
 % \let\texttimingbefore\texttiminggrid
 % \sffamily\centering
 % \caption{Timing Characters}\label{tab:chars}
-% \begin{tabular}{clll}
+% \begin{tabular}{clccc}
 %   \toprule
-%   Character & Description & Alone & Transition \\
+%   Character & Description & Full Width & Half Width & Transition \\
+%             &             & \small (Uppercase) & \small (Lowercase) & Example 
+%             \\\midrule
+% \texttt{H} & High & \texttiming{H} & \texttiming{h} & \texttiming[L]{H} \\
+% \texttt{L} & Low & \texttiming{L} & \texttiming{l} & \texttiming[H]{L} \\
+% \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming{z} & \texttiming[L]{Z} \\
+% \texttt{X} & Undefined / Don't Care & \texttiming{X} & \texttiming{x} & \texttiming[L]{X} \\
+% \texttt{D} & Data / Double & \texttiming{D} & \texttiming{d} & \texttiming[L]{D{A}D} \\
+% \texttt{U} & Unknown Data & \texttiming{U} & \texttiming{u} & \texttiming[D]{U} \\
+% \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{l} or 
+% \texttiming{h} & \texttiming{TTTT} \\
+% \texttt{C} & Clock (no slope) & \texttiming{L} or \texttiming{H} & 
+% \texttiming{l} or \texttiming{h} & \texttiming{CCCC} \\
+% \texttt{M} & Metastable Condition & \texttiming{M} & \texttiming{m} & \texttiming[H]{Ml} \\
 %   \midrule
-% \texttt{H} & High & \texttiming{H} & \texttiming[L]{H} \\
-% \texttt{h} & & \texttiming{h} & \texttiming[L]{h} \\
-% \texttt{L} & Low & \texttiming{L} & \texttiming[H]{L} \\
-% \texttt{l} & & \texttiming{l} & \texttiming[H]{l} \\
-% \texttt{D} & Double / Data & \texttiming{D} & \texttiming[L]{D{}D} \\
-% \texttt{d} & & \texttiming{d} & \texttiming[L]{d{}d} \\
-% \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming[L]{Z} \\
-% \texttt{z} & & \texttiming{z} & \texttiming[L]{z} \\
-% \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{TTTT} \\
-% \texttt{t} &        & \texttiming{l} or \texttiming{h} & \texttiming{tttt} \\
-% \texttt{C} & Clock (no slope) & \texttiming{C} or \texttiming{H} & 
-% \texttiming{CCCC} \\
-% \texttt{c} &       & \texttiming{c} or \texttiming{h} & \texttiming{cccc} \\
+% \texttt{G} & Glitch (zero width) & \texttiming{G} & \texttiming{g} & \texttiming{HGH} \\
+% \texttt{S} & Space (nothing) & \texttiming{S} & \texttiming{s} & \texttiming{HSL} \\
 % \bottomrule
 % \end{tabular}
 % \end{table}
 %
+% \subsection{Similar Packages}
+% There a some packages which target the same application like the package 
+% presented by this document.
+%
+% \begin{description}
+%   \itempkg{ifsym} This package (using the |electronic| option) provides a 
+%   special font which contains graphical representation of the logical levels 
+%   high and low at the corresponding letter `|H|' and `|L|'.  The lower case 
+%   versions have only half the width of the uppercase ones. Also a transition 
+%   can be added using the `\verb+|+' character which will (sometimes) be added 
+%   automatically between |HL| and |LH|.
+%   The diagrams are created using the command |\textifsym|\marg{characters}, 
+%   e.g.\ \verb+\textifsym{H|L|h|l|H|L}+ results in
+%   \DeleteShortVerb{\|} `\textifsym{H|L|h|l|H|L}'.
+%   \MakeShortVerb{\|}
+%
+%   There is no support for transition slopes and no support for new 
+%   user-defined logical levels.
+%
+%   \itempkg[(CTAN)]{timing} This package also provides a font for the logical 
+%   levels but supports transition slopes and larger timing diagrams.  This 
+%   package seems not been updated for a while.
+%
+%   \itempkgnoctan[(TikZ Example Page)]{timing}%
+%   {http://www.texample.net/tikz/examples/timing-diagram/} This package is 
+%   accidentally also called `|timing.sty|' and is not published on CTAN but on 
+%   the TikZ example website.  It is a small package which is meant as an 
+%   example for the graphics package \pkg{tikz} which is used to draw the 
+%   diagram.  The logical levels must be provided using macros like 
+%   `|\bit|\marg{0 or 1}\marg{length}'.
+% \end{description}
+%
+% \section{Usage}
 %
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
-% \sffamily\small\centering
-% \caption{Data Character}\label{tab:chard}
-% \begin{tabular}{ll@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l@{\ \ }l}
+% \let\normalfont\sffamily
+% \sffamily\centering
+% \caption{Modifiers for Timing Characters}\label{tab:modifiers}
+% \makebox[\textwidth][c]{%
+% \begin{tabularx}{1.2\textwidth}{>{\ttfamily}l>{\raggedright}X>{\ttfamily}ll}
 %   \toprule
-%   \cs{texttiming} & \texttt{\{DD\}} & \texttt{\{2D\}} & \texttt{\{D\{\}D\}} & 
-%   \texttt{\{2D\{[blue]ABC\}\}} &
-%   \texttt{\{d\{\}2D\{ABC\}d\}} &
-%   \texttt{\{D\{A\}D\{B\}D\{C\}\}}
-%    & \texttt{[D]\{D\}}\\ \midrule
-%   Result & \texttiming{DD} & \texttiming{2D} & \texttiming{D{}D} & 
-%   \texttiming{2D{[blue]ABC}} &
-%   \texttiming{d{}2D{ABC}d} &
-%   \texttiming{D{A}D{B}D{C}} & \texttiming[D]{D} \\
-%   \bottomrule
-% \end{tabular}
+%   \normalfont
+%   Modifier Syntax  & Description & \normalfont Example & Example \\
+%                    &             & \normalfont Usage    & Result  \\\midrule
+% D\{\}D & Produces transition between two data values. & D\{\}D & 
+% \texttiming{D{}D} \\
+% D\{\meta{Text}\} & Adds text material into a data signal using a node.  & 
+% D\{A\}D\{B\} & \texttiming{D{A}D{B}} \\
+% D\{[\meta{TikZ Settings}]\meta{Text}\} & Adds text material into a data signal 
+% using the given settings.  & D\{[blue]A\} & \texttiming{D{[blue]A}} \\
+% \meta{\small integer}\{\meta{characters}\} &  Repeats the given characters by 
+% the given number.  & 5\{hl\} & \texttiming{5{hl}}\\
+% \meta{\small number}\meta{character} & Sets width of next signal to given 
+% number.  Half of it if character is in lower case. & 2.6H5.2l & 
+% \texttiming{2.6H5.2l}\\
+%   \midrule
+% {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & [blue]LH & 
+% \texttiming{[blue]LH}
+% \\
+% !\{\meta{code}\}  & Places given code into the internal \envv{tikzpicture}.
+%& \multicolumn{2}{l}{\small See Table~\ref{tab:example}.} \\
+% \bottomrule
+% \end{tabularx}}
 % \end{table}
+%
 %
 %
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
 % \sffamily
 % \caption{Overview over all transitions.}\label{tab:full}
-% \makebox[\textwidth][c]{\tikztimingfullexampletable}
+%  \makebox[\textwidth][c]{\tikztimingfullexampletable}
+% \end{table}
+% \subsection{Macro for use in Text Mode}
+%
+% \DescribeMacro{texttiming}{\oarg{initial character}\marg{characters}}
+% This macro places a single timing diagram line into the current text. The 
+% signals have the same height as a uppercase letter (like `X') of the current 
+% font, \ie they scale with the font size.
+%
+% The macro argument must contain only valid logic characters which define the 
+% logical levels of the diagram line.
+%
+% An initial character can be given as an optional argument. No logic level will 
+% be drawn for this character. Instead it will be used to define the initial 
+% position of the signal so that the diagram line will start with a transition 
+% from the initial to the first character.
+%
+% Example: |\texttiming{HLZDZLH}|^^A
+% \phantom{\texttt{[L]}} gives `\texttiming{HLZDZLH}', with grid: 
+% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.
+%
+% Example: |\texttiming[L]{HLZDZLH}| ^^A
+% gives `\texttiming{HLZDZLH}', with grid: 
+% `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.
+%
+% \DescribeMacro{texttimingbefore}{\hspace{15.5em}(\emph{defaults to}: 
+% \meta{empty})}
+% \DescribeMacro*{texttimingafter}{\hspace{16em}(\emph{defaults to}: 
+% \meta{empty})}
+% This two macros are executed before and after every timing diagram line 
+% created by \cs{texttiming} macro inside the same \envv{tikzpicture} 
+% environment and can be used to add drawing macros. The argument of the 
+% \cs{texttiming} macro is already processed before any of these macros are 
+% expanded, therefore this macros can access the width of the diagram.
+%
+% Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
+% background of the \cs{texttiming} diagram. A more \LaTeX-stylish way to do 
+% this is |\renewcommand*{\textttimingbefore}{\texttiminggrid}|.
+%
+% \DescribeMacro{texttiminggrid}{}
+% This macro should only be used inside \cs{texttimingbefore} or 
+% \cs{texttimingafter} and draws a grid of the full size of the
+% \cs{texttiming} diagram.
+%
+% \subsection{Macro for use inside TikZ-Pictures}
+%
+% \DescribeMacro{timing}{\oarg{TikZ Settings}\ ^^A
+% \parg{TikZ Coordinate}\ \{\oarg{initial character}\meta{characters}\};}
+% This macro does the same as \cs{texttiming} but is designed to be used inside 
+% a \envv{tikzpicture} environment and only there. Like normal TikZ macros 
+% (\css{path}, \css{drawn}, \css{node}) it allows an optional argument with TikZ 
+% settings and an optional TikZ-coordinate (which may start with |+| or |++|).  
+% However, a own argument parser, not the one used by TikZ, is used to detect 
+% and read these optional arguments. Therefore the order of the arguments is 
+% mandatory and might not be reversed. This small limitation might be overcome 
+% in future versions of this package.
+%
+% Please note that the optional initial character may be given \emph{inside} and 
+% at the very start of the mandatory argument, not before it. This is necessary 
+% because of several technical reasons.
+%
+% Example: |\tikz \timing [green] ++(1,2) {HLZDZLH};|\phantom{\texttt{[L]}} 
+% gives `\tikz \timing [green] ++(1,2) {HLZDZLH};'.
+% 
+% Example: |\tikz \timing [green] ++(1,2) {[L]HLZDZLH};| 
+% gives `\tikz \timing [green] ++(1,2) {[L]HLZDZLH};'.
+%
+%
+% \subsection{Table for Timing Diagrams}
+% \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\Signal Name/Label\ \ \&\ \ 
+% Characters \textbackslash\textbackslash}
+% This environment can be used to typeset full timing diagrams not only a single 
+% line.  The syntax is like the one for a \envv{tabular} environment with two 
+% columns.  The first column is the signal name and the second one are the logic 
+% characters which would be placed inside the argument of a \cs{texttiming} or 
+% \cs{timing} macro.  The whole table will be drawn inside a \envv{tikzpicture} 
+% environment using multiple \cs{timing} and \cs{node} macros for the logic 
+% levels and their labels, respectively.  Additional \pkg{tikz} drawing code can 
+% be insert at the end of the table by using the \cs{extracode} macro.
+%
+% \DescribeMacro{extracode}{}
+% This macro is only defined inside a \env{tikztimingtable} environment and can 
+% only be used after the last table line (\ie after a |\\|). If used all code 
+% between it and the |\end{tikztimingtable}| will be placed inside the same 
+% \envv{tikzpicture}. This allows to add some drawing lines or a grid to the 
+% picture. It is also possible to draw something behind the timing diagram by 
+% using the PGF background layer:
+% |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|. This needs the 
+% |backgrounds| TikZ library (|\usetikzlibrary{backgrounds}|) which is loaded by 
+% |tikz-timing|.
+%
+% \section{Styles}
+% The generated logic signals are drawn using the style mechanism provided by 
+% \pkg{tikz} (which is based on \pkg{pgfkeys}). This styles are defined and can 
+% be redefined using \css{tikzset}\marg{style name/.style=value,\ldots}. They 
+% can also be used in all places where \meta{TikZ Settings} is mentioned. Please 
+% note that path/draw specific settings might not survive the transition to 
+% characters which have there own color, because these start a new drawing path.  
+% For a more detailed explanation why this is necessary see the \pkg{tikz} 
+% manual.  However, timing specific settings are saved and restored between 
+% internal paths.
+%
+% The package follows the directory structures approach used by TikZ/PGF and 
+% places all styles and other settings under the ``subdirectory'' `|timing|' in 
+% the main ``directory'' `tikz', which is the default when \css{tikzset} is 
+% used.\\Example: The slope of the transitions can be changed using the key 
+% `|timing/slope|', which can also written in the absolute form 
+% `|/tikz/timing/slope|'.
+%
+% The Table~\ref{tab:styles} lists all styles defined by this package.
+% \bigskip
+%
+% \begin{table}[h!tbp]
+%   \centering
+%   \caption{TikZ Styles and Settings provided and used by this Package.}
+%   \label{tab:styles}
+%   \makebox[\textwidth][c]{%
+%   \begin{tabular}{>{\ttfamily}ll}
+%     \toprule
+%     \normalfont Style/Setting & Description \\
+%     \midrule
+%     timing      & Base settings like line width and bit height\&width.  \\
+%     timing/intext & Used for \cs{texttiming}. Depends on |timing|.\\
+%     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
+%     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
+%     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
+%     \midrule
+%     timing/\meta{char} & Style for character \meta{char}. Not used for `|H|' 
+%     and `|L|'. \\
+%     timing/\meta{char}/background & Background style for characters `|D|' and 
+%     `|U|'. \\
+%     timing/\meta{char}/text & Text style for character \meta{char}. Only 
+%     defined for `|D|'. \\
+%     \midrule
+%     timing/slope=\meta{0.0--1.0} & Sets slope for logic transitions. \\
+%                  & This also sets |dslope=2*slope|, |zslope=slope/2|. \\
+%     timing/dslope=\meta{0.0--1.0} & Sets slope for data transitions. \\
+%     timing/zslope=\meta{0.0--1.0} & Sets slope for Z transitions. \\
+%     \bottomrule
+%   \end{tabular}
+%   }
 % \end{table}
 %
-% Example: |\texttiming{HLZDZLH}| gives \texttiming{HLZDZLH}
-% \endgroup
-% or, with grid, {\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}.
+% \section{Examples}
+% This section shows some examples by putting either the full source code or 
+% only the needed characters beside the graphical result. Please note that the 
+% displayed syntax is the one of \cs{timing} where the initial character is 
+% declared as optional argument (\oarg{char}) \emph{inside}/\emph{together} with 
+% the logic characters. The syntax of \cs{textttiming} is identical except the 
+% initial character is given as a normal optional argument before the characters 
+% argument.\\[\smallskipamount]
+% ^^A\emph{Example notation example:} `|[c]cccc|' means either 
+% ^^A|\timing{[c]cccc};| or |\texttiming[c]{cccc}|.
 %
-% \DescribeEnv{tikztimingtable}
+% \vspace{3cm}
 %
 % \begin{figure}
 % \centering
 % \begin{minipage}{\textwidth}
 % \hfill
-% \begin{minipage}{0.2\textwidth}
+% \begin{minipage}{0.4\textwidth}\small
 % \begin{verbatim}
 % \fbox{%
 % \begin{tikztimingtable}
-%   Name   & HLLLH      \\
-%   Clock  & c9c        \\
-%   Signal & z4D{Text}z \\
+%   <<Name>> & hLLLLh     \\
+%   Clock    & 10{c}      \\
+%   Signal   & z4D{Text}z \\
 % \end{tikztimingtable}}
 % \end{verbatim}
 % \end{minipage}
@@ -196,24 +435,152 @@
 % \begin{minipage}{0.2\textwidth}
 % \fbox{%
 % \begin{tikztimingtable}
-%   Name   & HLLLH      \\
-%   Clock  & c9c        \\
-%   Signal & z4D{Text}z \\
+%   <<Name>> & hLLLLh     \\
+%   Clock    & 10{c}      \\
+%   Signal   & z4D{Text}z \\
 % \end{tikztimingtable}}
 % \end{minipage}
 % \hfill\null
 % \end{minipage}
-% \caption{Example for \texttt{tikztimingtable}}
+% \caption{Example of \env{tikztimingtable} without \cs{extracode}.}
 % \end{figure}
 %
-% \StopEventually{}
+% \begin{figure}
+% \centering
+% \begin{minipage}{\textwidth}
+% \hfill
+% \begin{minipage}{0.4\textwidth}\small
+% \begin{verbatim}
+% \fbox{%
+% \begin{tikztimingtable}
+%   <<Name>> & hLLLLh     \\
+%   Clock    & 10{c}      \\
+%   Signal   & z4D{Text}z \\
+%  \extracode
+%   \draw (0,0) circle (0.2pt);
+%   \begin{pgfonlayer}{background}
+%     \draw [help lines,densely dashed]
+%       (0,0) ++(0.5,1.5) -- +(0,-6)
+%       (0,0) ++(4.5,1.5) -- +(0,-6);
+%   \end{pgfonlayer}
+% \end{tikztimingtable}}
+% \end{verbatim}
+% \end{minipage}
+% \hfill\hfill
+% \begin{minipage}{0.2\textwidth}
+% \fbox{%
+% \begin{tikztimingtable}
+%   <<Name>> & hLLLLh     \\
+%   Clock    & 10{c}      \\
+%   Signal   & z4D{Text}z \\
+%  \extracode
+%   \draw (0,0) circle (0.2pt);
+%   \begin{pgfonlayer}{background}
+%     \draw [help lines,densely dashed]
+%       (0,0) ++(0.5,1.5) -- +(0,-6)
+%       (0,0) ++(4.5,1.5) -- +(0,-6);
+%   \end{pgfonlayer}
+% \end{tikztimingtable}}
+% \end{minipage}
+% \hfill\null
+% \end{minipage}
+% \caption{Example of \env{tikztimingtable} with \cs{extracode}.}
+% \end{figure}
+
+% \begin{figure}
+% \centering
+% \begin{minipage}{\textwidth}
+% \hfill
+% \begin{minipage}{0.4\textwidth}\small
+% \begin{verbatim}
+% \begin{tikzpicture}[x=5cm,y=5cm]
+%   \draw (0,0) rectangle (1,1);
+%   \draw (0.2,0.7) circle (10pt);
+%   \begin{scope}[green]
+%     \draw (0.1,0.1) -- +(0.8,0.2);
+%     \timing (0.3,0.4) {hlzhhlhhlll};
+%   \end{scope}
+%   \timing [rotate=-30]
+%       (0.4,0.7) {HLZHHLHHLLL};
+% \end{tikzpicture}
+% \end{verbatim}
+% \end{minipage}
+% \hfill
+% \hfill\null
+% \begin{minipage}{0.2\textwidth}
+% \begin{tikzpicture}[x=5cm,y=5cm]
+%   \draw (0,0) rectangle (1,1);
+%   \draw (0.2,0.7) circle (10pt);
+%   \begin{scope}[green]
+%     \draw (0.1,0.1) -- +(0.8,0.2);
+%     \timing (0.3,0.4) {hlzhhlhhlll};
+%   \end{scope}
+%   \timing [rotate=-30]
+%       (0.4,0.7) {HLZHHLHHLLL};
+% \end{tikzpicture}
+% \end{minipage}
+% \hfill\null
+% \end{minipage}
+% \caption{Example of \cs{timing} inside general \envv{tikzpicture}.}
+% \end{figure}
+
+% \begin{table}
+% \centering
+% \pgfmathsetbasenumberlength{2}
+% \newcounter{hexcount}
+% \addtocounter{hexcount}{+8}%
+% \newcommand{\hexcountmacro}{%
+%   \pgfmathdectoBase\thehexcount{\value{hexcount}}{16}%
+%   \thehexcount
+%   \addtocounter{hexcount}{+1}%
+% }
+% \caption{Examples for Character Usage}\label{tab:example}
+% \def\somemacro{}%
+% \def\code{}%
+% \makebox[\textwidth][c]{%
+% \begin{tikztimingexampletable}
+%   HLZXDUTC \\
+%   cccc \\
+%   tttt \\
+%   [c]cccc \\
+%   4{c} \\
+%   4c4c \\
+%   4{1.2c} \\
+%   4{1.8c} \\
+%   [d] 4{5D{Text}} 0.2D \\
+%   3.4H 0.6L \\
+%   DDDUUUDDD \\
+%   DDD{}DU{}UDD \\
+%   8{2D{\hexcountmacro}} \\
+%   3{2{0.25X 2.5D .25Z}} \\
+%   DDD{} 3{0.2D{}} DDD \\
+%   DDD{} 3{0.2D{}} 0.4D{} 0.6D{} DDD \\
+%   HHHLLH SSSS HLLHHL \\
+%   HHGHHGGHHLLGLLGH \\
+%   ZZ G ZZ G XX G X \\
+%   LLL 2{0.1H 0.1L} 0.6H HH \\
+%   LLL 0.4U 0.6H HH \\
+%   [L][timing/slope=1.0] HL HL HL HL HL \\
+%   LLLLL !{-- +(.5,.5) -- ++(1,0)} HHHHHH \\
+%   LLLLL [/utils/exec={\somemacro\code}] HHHHHH \\
+%   LL [green] HH [brown] XX LL ZZ [orange] HH \\
+%   [line width=2pt] HLXZDU [line width=0.1pt] HLXZDU \\
+% \end{tikztimingexampletable}%
+% }
+% \\\tiny
+% \emph{Note:} Optional argument must be placed before macro argument if 
+% \cs{texttiming} is used.
+% \end{table}
 %
+% \StopEventually{}
+% \FloatBarrier
 % \section{Implementation}
 % \subsection{Package Header}
 %    \begin{macrocode}
 %<*package>
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
+\usetikzlibrary{backgrounds}
 
 \def\tikztimingwidth{0.0}
 \def\tikztimingmaxwidth{0.0}
@@ -364,9 +731,12 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \def\timing@@@#1#2#3{%
   \begingroup
     \tikztiming@init
-    \def\tikztiming@str{\draw [timing,#1] #2 }%
-    \timing@@@init#3\relax
-    \begin{scope}[timing]%
+    \def\tikztiming@str{\draw (0,0) }%
+    \@ifnextchar{[}%
+      {\timing@@@init}%
+      {\timing@@@init[]}%
+    #3\relax
+    \begin{scope}[shift={#2},timing,#1]%
       \tikztiming@str;%
     \end{scope}%
     \pgfmathparse{max(\tikztimingmaxwidth,\tikztimingwidth)}%
@@ -393,7 +763,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %
 % \begin{macro}{\timing@@@init}
 %    \begin{macrocode}
-\newcommand\timing@@@init[1][]{%
+\def\timing@@@init[#1]{%
   \def\lastchar{#1}%
   \@ifundefined{tikztiming@initcode@\lastchar}%
     {}%
@@ -510,16 +880,20 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %
 % \begin{macro}{\tikztiming@initcode@d}
 %    \begin{macrocode}
-\def\tikztiming@initcode@D{%
+\def\tikztiming@initcode@d{%
   \def\lastchar{d@edge@}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@}
+% The |\@ifnextchar\bgroup| is a trick to remove following spaces which would 
+% break the number test.
 %    \begin{macrocode}
 \def\tikztiming@{%
-  \tikztiming@testfornum
+  \@ifnextchar\bgroup
+    {\tikztiming@testfornum}%
+    {\tikztiming@testfornum}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -710,7 +1084,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztiming@handlecode}
 %    \begin{macrocode}
 \def\tikztiming@handlecode#1{%
-  \tikztiming@addtostr{ [/utils/exec={#1}] }%
+  \tikztiming@addtostr{ #1 }%
   \tikztiming@
 }
 %    \end{macrocode}
@@ -909,6 +1283,15 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing/name] 
   {Resulting Diagram};
   \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
+  \draw [line width=\lightrulewidth]
+     (current bounding box.north west) +(-1,-2) --
+     ($ (current bounding box.north east) +(+1,-2) $);
+  \draw [line width=\heavyrulewidth]
+     (current bounding box.north west) +(0,1) --
+     ($ (current bounding box.north east) +(0,0) $);
+  \draw [line width=\heavyrulewidth]
+     (current bounding box.south west) +(0,-1) --
+     ($ (current bounding box.south east) +(0,0) $);
 }[\end{tikzpicture}]
 
 \def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
@@ -937,6 +1320,8 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \def\tikztiming@texttt#1{%
   \begingroup
   \ttfamily
+  \let\orig@xifnch\@xifnch
+  \def\@xifnch{\space\orig@xifnch}%
   \tikztiming@texttt@#1\tikztiming@texttt@ENDMARKER
   \endgroup
 }
@@ -1023,10 +1408,12 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       \path (charnodex) ++(+2,0) node (charnodex) {\strut\tchar};
       \path (charnodey) ++(0,-2) node (charnodey) {\strut\tchar};
     }%
-    \draw [thick] (charnodex) +(+1,+1) -- (-1,+1);
-    \draw [thin]  (charnodex) +(+1,-1) -- (-1,-1);
-    \draw [thin]  (charnodey) +(+1,-0.6) -- (+1,-1.4) (+1,-0.6) -- (+1,+0.6);
-    \draw [thick] (charnodey) ++(-1,-1) -- +($ (2,0) + (charnodex) $);
+    \draw [line width=\heavyrulewidth] (charnodex) +(+1,+1) -- (-1,+1);
+    \draw [line width=\lightrulewidth]  (charnodex) +(+1,-1) -- (-1,-1);
+    \draw [line width=\lightrulewidth]  (charnodey) +(+1,-0.6) -- (+1,-1.4) 
+    (+1,-0.6) -- (+1,+0.6);
+    \draw [line width=\heavyrulewidth] (charnodey) ++(-1,-1) -- +($ (2,0) + 
+    (charnodex) $);
     %
     \path (1.5,-2) node (charnodex) {\strut};
     \node (charnodex) at (charnodex.base) {};
