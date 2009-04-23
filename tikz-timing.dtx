@@ -531,7 +531,7 @@
 % \addtocounter{hexcount}{+8}%
 % \newcommand{\hexcountmacro}{%
 %   \pgfmathdectoBase\thehexcount{\value{hexcount}}{16}%
-%   \thehexcount
+%   \hbox{\thehexcount}%
 %   \addtocounter{hexcount}{+1}%
 % }
 % \caption{Examples for Character Usage}\label{tab:example}
