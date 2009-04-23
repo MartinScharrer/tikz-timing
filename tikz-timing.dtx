@@ -44,6 +44,7 @@
 \usepackage{flafter,fnpos}
 \usepackage{booktabs}
 \usepackage{ydoc}
+\usepackage{placeins}
 \makeFNbottom
 \makeFNbelow
 
@@ -108,11 +109,6 @@
 % \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameuse,\@secondoftwo}
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
 %
-% \title{The \raisebox{-0.66ex}{\Huge\textsf{\texttiming{z3d{\strut 
-% tikz}z5d{\strut timing}z}}} package}
-% \author{Martin Scharrer \\ \url{martin@scharrer-online.de}}
-% \date{Version \fileversion\\[0.5ex]\filedate}
-%
 % \ifpdf
 % \hypersetup{%
 %   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
@@ -123,18 +119,31 @@
 %   pdfkeywords = {tikz-timing, timing diagram, LaTeX}
 % }%
 % \fi
-% \maketitle
-%
-% \renewcommand{\thetable}{\arabic{table}}
+% \clearpage
+% \null
+% \vspace*{-2em}
+% \begin{center}
+% \tikzset{timing/z/.style={black}}
+%   {\LARGE\sffamily The 
+%   \raisebox{-0.66ex}{\Huge\textsf{\texttiming[z]{3d{\strut 
+%tikz}z5d{\strut timing}0.2z}}} package}\\[3ex]
+%   {\large Martin Scharrer \\\normalsize 
+%   \url{martin@scharrer-online.de}}\\[2.5ex]
+%   {\large Version \fileversion\ -- \filedate}\\
+% \end{center}
+% \vspace{1.5em}%
 %
 % ^^A\vfill
-%
+% \textbf{Note:} This is a new package which might not yet behave fully as 
+% intended.  Some of the internal and user macros might still change in future 
+% versions. While the package runs stable it should be taken as a $\beta$ 
+% version.
 %
 % \section{Introduction}
-% This package uses the \pkg{tikz} package to produce timing diagram inside text 
-% or \envv{tikzpicture} environments.  Also a tabular-like environment is 
-% provided to produce a larger timing diagram with multiple labeled signals and 
-% the possibility to add own drawing material.
+% Th package \pkg{tikz-timing} uses the \pkg{tikz} package to produce timing 
+% diagram inside text or \envv{tikzpicture} environments.  Also a tabular-like 
+% environment is provided to produce a larger timing diagram with multiple 
+% labeled signals and the possibility to add own drawing material.
 %
 % The signal levels of the timing diagram can be given by corresponding 
 % characters/letters like `|H|' for \emph{Logical High} or `|L|' for 
@@ -189,10 +198,12 @@
 %   special font which contains graphical representation of the logical levels 
 %   high and low at the corresponding letter `|H|' and `|L|'.  The lower case 
 %   versions have only half the width of the uppercase ones. Also a transition 
-%   can be added using the `\verb+|+' character which will be added 
+%   can be added using the `\verb+|+' character which will (sometimes) be added 
 %   automatically between |HL| and |LH|.
 %   The diagrams are created using the command |\textifsym|\marg{characters}, 
-%   e.g.\ |\textifsym{HLhlHL}| results in `\textifsym{HLhlHL}'.
+%   e.g.\ \verb+\textifsym{H|L|h|l|H|L}+ results in
+%   \DeleteShortVerb{\|} `\textifsym{H|L|h|l|H|L}'.
+%   \MakeShortVerb{\|}
 %
 %   There is no support for transition slopes and no support for new 
 %   user-defined logical levels.
@@ -377,8 +388,8 @@
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
 %     \midrule
-%     timing/\meta{char} & Style for character \meta{char}. Not defined for 
-%     `|H|' and `|L|'. \\
+%     timing/\meta{char} & Style for character \meta{char}. Not used for `|H|' 
+%     and `|L|'. \\
 %     timing/\meta{char}/background & Background style for characters `|D|' and 
 %     `|U|'. \\
 %     timing/\meta{char}/text & Text style for character \meta{char}. Only 
@@ -562,8 +573,7 @@
 % \end{table}
 %
 % \StopEventually{}
-% \clearpage
-%
+% \FloatBarrier
 % \section{Implementation}
 % \subsection{Package Header}
 %    \begin{macrocode}
