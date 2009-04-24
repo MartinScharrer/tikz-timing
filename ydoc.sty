@@ -5,16 +5,11 @@
 \oddsidemargin 62.0pt
 \evensidemargin 62.0pt\relax
 
-\RequirePackage{ifpdf}
-\ifpdf
-  % use hypdoc if you have it, hyperref else
-  \IfFileExists{hypdoc.sty}
-    {\RequirePackage{hypdoc}}
-    {\RequirePackage{hyperref}}
-  \hypersetup{bookmarksopen=true,bookmarksopenlevel=2}
-\else
-  \let\url\texttt
-\fi
+% use hypdoc if you have it, hyperref else
+\IfFileExists{hypdoc.sty}
+  {\RequirePackage{hypdoc}}
+  {\RequirePackage{hyperref}}
+\hypersetup{bookmarksopen=true,bookmarksopenlevel=2}
 \RequirePackage{xspace}
 \newcommand{\ie}{i.e.\@\xspace}
 \newcommand{\eg}{e.g.\@\xspace}
