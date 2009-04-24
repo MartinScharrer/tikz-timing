@@ -1059,31 +1059,10 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %
 % \begin{macro}{\tikztiming@testfornumfrac}
 %    \begin{macrocode}
-\def\tikztiming@testfornumfrac#1{%
-  \futurelet\@tempa\tikztiming@testfornumfrac@
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornumfrac@}
-%    \begin{macrocode}
-\def\tikztiming@testfornumfrac@{%
-  \ifx0\@tempa
-    \edef\@tempb{\@tempb0}%
-    \expandafter\tikztiming@testfornumfrac
-  \else
-    \expandafter\tikztiming@testfornumfrac@@
-  \fi
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornumfrac@@}
-%    \begin{macrocode}
-\def\tikztiming@testfornumfrac@@{%
+\def\tikztiming@testfornumfrac{%
   \afterassignment
   \tikztiming@testfornum@@@
-  \tikztiming@numfrac0%
+  \tikztiming@numfrac1%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1111,9 +1090,8 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \let\tikztiming@next\tikztiming@testfornum@@
   \else
     \def\tikztiming@next{%
-      \def\@tempb{}%
       \@ifnextchar{.}%
-        {\tikztiming@testfornumfrac}%
+        {\expandafter\tikztiming@testfornumfrac\@gobble}%
         {%
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
@@ -1130,9 +1108,8 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztiming@testfornum@@}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@@{%
-  \def\@tempb{}%
   \@ifnextchar{.}%
-    {\tikztiming@testfornumfrac}%
+    {\expandafter\tikztiming@testfornumfrac\@gobble}%
     {\tikztiming@testfornum@@@}%
 }
 %    \end{macrocode}
@@ -1141,7 +1118,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztiming@testfornum@@@}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@@@{%
-  \xdef\tikztiming@num{\the\tikztiming@numint.\@tempb\the\tikztiming@numfrac}%
+  \xdef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
   \@ifnextchar\bgroup
     {%
       \ifnum0=\tikztiming@numfrac\else
