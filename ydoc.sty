@@ -364,3 +364,70 @@
 }
 \fi
 
+
+%%% Examples %%%
+\RequirePackage{fancyvrb}
+\RequirePackage{listings}
+\RequirePackage{trivfloat}
+
+\newfloat{example}{tbp}{fle}
+\floatname{example}{Example}
+
+\newenvironment{exampletable}{%
+  \floatstyle{plaintop}%
+  \restylefloat{example}%
+  \belowcaptionskip=\abovecaptionskip
+  \example
+}{\endexample}
+
+\newenvironment{examplecode}
+  {\begingroup\VerbatimOut[gobble=4]{\jobname.exa}}
+  {\endVerbatimOut\endgroup\formatexample}
+
+\newsavebox{\examplecodebox}
+\newsavebox{\exampleresultbox}
+\usepackage{ifthen,calc}
+
+\def\formatexample{%
+  \par\noindent
+  \catcode`\%=14%
+  \makebox[\textwidth]{\null
+  \makebox%[0.5\textwidth]
+  {\lstinputlisting{\jobname.exa}}\hfill \makebox%[0.5\textwidth]
+  {\fbox{\input{\jobname.exa}}}%
+  }%
+}
+
+\def\formatexample{%
+  \begingroup
+  \savebox{\examplecodebox}{\lstinputlisting{\jobname.exa}}
+  \savebox{\exampleresultbox}{\input{\jobname.exa}}%
+  %
+  \par\noindent
+  \setlength{\@tempdima}{\wd\examplecodebox + \wd\exampleresultbox}%
+  \ifthenelse{\linewidth < \@tempdima}%
+    {%
+      \centerline{\usebox{\examplecodebox}} \\[\bigskipamount]%
+      \centerline{\usebox{\exampleresultbox}}%
+    }%
+    {%
+      \minipage[c]{\wd\examplecodebox}\hbox{\usebox{\examplecodebox}}\endminipage%
+      \hfill
+      \minipage[c]{\wd\exampleresultbox}\hbox{\usebox{\exampleresultbox}}\endminipage%
+      \\%
+    }%
+  \endgroup
+  \par
+}
+
+\lstset{%
+  %numbers=left,
+  numberstyle=\scriptsize\sffamily,
+  basicstyle=\ttfamily,
+  stepnumber=1,
+  language=[latex]tex,
+  breaklines,
+}%
+
+%%% %%%
+
