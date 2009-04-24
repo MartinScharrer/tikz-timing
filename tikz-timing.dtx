@@ -76,7 +76,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1653}
+% \CheckSum{1649}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1794,6 +1794,19 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \tikztiming@namelet{D@edge@D@general}{DD@general}
 
 \tikztimingchar{D}{++(0,0)}{
+  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
+  -- +(#1,0)
+  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
+  -- +(#1,\height)
+  -- +(0,\height)
+  -- cycle;
+  \draw [timing/restore,\style] (timing@save) ++(0,0)
+  node [timing/save] (timing@dstart) at +(-\dslope/2.,\height/2.0) {}
+  --  +(#1,0) ++(0,+\height)
+  -- ++(#1,0) ++(0,-\height)
+}
+
+\tikztimingchar{DD}{
   node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
   -- +(#1,0)
   -- +($ (#1,0) + 0.5*(\dslope,\height) $)
