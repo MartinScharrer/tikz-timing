@@ -370,13 +370,19 @@
 \RequirePackage{listings}
 \RequirePackage{trivfloat}
 
+\belowcaptionskip=\abovecaptionskip
+\floatstyle{plaintop}
+\restylefloat{table}
+
+\floatstyle{plain}
+\restylefloat{figure}
+
 \newfloat{example}{tbp}{fle}
 \floatname{example}{Example}
 
 \newenvironment{exampletable}{%
   \floatstyle{plaintop}%
   \restylefloat{example}%
-  \belowcaptionskip=\abovecaptionskip
   \example
 }{\endexample}
 
