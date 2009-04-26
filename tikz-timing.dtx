@@ -17,12 +17,18 @@
 % \fi
 %
 % \iffalse
-%<package>\ProvidesPackage{tikz-timing}
-%<examplecode>\ProvidesPackage{tikz-timing-examplecode}
 %<*driver>
-\ProvidesFile{tikz-timing.dtx}
+\makeatletter
 %</driver>
-  [2009/04/25 v0.3a
+\def\tikztiming@version{v0.3a}
+\RequirePackage{svn-prov}
+%<package>\ProvidesPackageSVN
+%<examplecode>\ProvidesPackageSVN[tikz-timing-examplecode]
+%<*driver>
+\ProvidesFileSVN
+%</driver>
+ {$Id$}
+  [\tikztiming@version\space
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package.]
 %<*driver>
@@ -33,6 +39,7 @@
 %<examplecode>\RequirePackage{pgffor}%
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
+\makeatother
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage{tikz-timing-examplecode}[\csname ver@tikz-timing.dtx\endcsname]
@@ -67,6 +74,7 @@
 \CodelineIndex
 \RecordChanges
 %\OnlyDescription
+\listfiles
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
