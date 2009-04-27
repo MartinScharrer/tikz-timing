@@ -621,10 +621,10 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \@ifundefined{\tikztiming@prefix\lastchar @start}%
       {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
       is not defined and will be ignored!}{}{}{}}%
-      {\tikztiming@output{\lastchar @start}{}}%
+      {\tikztiming@nameaddtostr{\lastchar @start}{}}%
     \fi
     \tikztiming@#2\relax
-    %\message{^^J\meaning\tikztiming@str^^J}%
+    \message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[timing/intext]%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
@@ -727,7 +727,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \@ifundefined{\tikztiming@prefix\lastchar @start}%
     {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
     is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@output{\lastchar @start}{}}%
+    {\tikztiming@nameaddtostr{\lastchar @start}{}}%
   \fi
   \tikztiming@
 }
@@ -878,8 +878,62 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %
 % \begin{macro}{\tikztiming@output}
 %    \begin{macrocode}
+\def\tikztiming@output@bufchara{}%
+\def\tikztiming@output@bufcharb{}%
+\def\tikztiming@output@bufnum{0}%
+
+\def\DEBUG#1{{%
+  \let~=\space
+  \message{^^JDEBUG: #1^^J}%
+}}%
+
 \def\tikztiming@output#1#2{%
-  \tikztiming@nameaddtostr{#1#2}%
+  \ifx\relax#2\relax
+    \tikztiming@nameaddtostr{#1}%
+  \else
+    \ifcase0%
+      \ifx\tikztiming@output@bufchara\empty
+        \ifx\tikztiming@output@bufcharb\empty
+          1%
+        \fi
+      \fi\relax
+      % not empty
+      \edef\tikztiming@output@lastchar{#1}%
+      \edef\tikztiming@output@currentchar{#2}%
+      \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
+        \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
+        \let\tikztiming@output@bufnum\pgfmathresult
+        \def\tikztiming@num{1.0}%
+      \else
+        \tikztiming@output@flush
+        \edef\tikztiming@output@bufchara{#1}%
+        \edef\tikztiming@output@bufcharb{#2}%
+      \fi
+    \else % empty
+      \edef\tikztiming@output@bufchara{#1}%
+      \edef\tikztiming@output@bufcharb{#2}%
+      \let\tikztiming@output@bufnum\tikztiming@num
+      \def\tikztiming@num{1.0}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@output@flush}
+%    \begin{macrocode}
+\def\tikztiming@output@flush{%
+  \begingroup
+    \let\tikztiming@num\tikztiming@output@bufnum
+    \tikztiming@nameaddtostr{%
+      \tikztiming@output@bufchara
+      \tikztiming@output@bufcharb
+    }%
+  \endgroup
+  \def\tikztiming@output@bufchara{}%
+  \def\tikztiming@output@bufcharb{}%
+  \let\tikztiming@output@bufnum\tikztiming@num
+  \def\tikztiming@num{1.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -894,6 +948,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \expandafter{\csname\tikztiming@prefix#1\expandafter\endcsname
     \expandafter{\@tempa} }%
   \endgroup
+  \def\tikztiming@num{1.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -930,6 +985,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \begin{macrocode}
 \def\tikztiming@@#1{%
   \ifx\relax#1\empty
+    \tikztiming@output@flush
   \else
     \let\lasttikztimingwidth\tikztimingwidth
     \tikztiming@iflower{#1}%
