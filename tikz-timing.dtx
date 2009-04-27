@@ -84,7 +84,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1649}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -621,7 +621,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \@ifundefined{\tikztiming@prefix\lastchar @start}%
       {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
       is not defined and will be ignored!}{}{}{}}%
-      {\tikztiming@nameaddtostr{\lastchar @start}}%
+      {\tikztiming@output{\lastchar @start}{}}%
     \fi
     \tikztiming@#2\relax
     %\message{^^J\meaning\tikztiming@str^^J}%
@@ -727,7 +727,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \@ifundefined{\tikztiming@prefix\lastchar @start}%
     {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
     is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@nameaddtostr{\lastchar @start}}%
+    {\tikztiming@output{\lastchar @start}{}}%
   \fi
   \tikztiming@
 }
@@ -876,15 +876,23 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@output}
+%    \begin{macrocode}
+\def\tikztiming@output#1#2{%
+  \tikztiming@nameaddtostr{#1#2}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@nameaddtostr}
 %    \begin{macrocode}
 \def\tikztiming@nameaddtostr#1{%
   \begingroup
-  \edef\@tempa{\tikztiming@num}%
-  \expandafter\g@addto@macro
-  \expandafter\tikztiming@str
-  \expandafter{\csname\tikztiming@prefix#1\expandafter\endcsname
-  \expandafter{\@tempa} }%
+    \edef\@tempa{\tikztiming@num}%
+    \expandafter\g@addto@macro
+    \expandafter\tikztiming@str
+    \expandafter{\csname\tikztiming@prefix#1\expandafter\endcsname
+    \expandafter{\@tempa} }%
   \endgroup
 }
 %    \end{macrocode}
@@ -938,7 +946,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
       {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' is
        not defined and will be ignored!}{}{}{}}%
-      {\tikztiming@nameaddtostr{\lastchar\currentchar}}%
+      {\tikztiming@output{\lastchar}{\currentchar}}%
     \let\secondlastchar\lastchar
     \let\lastchar\currentchar
     \if D\currentchar\else
