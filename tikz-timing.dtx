@@ -624,7 +624,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       {\tikztiming@nameaddtostr{\lastchar @start}{}}%
     \fi
     \tikztiming@#2\relax
-    \message{^^J\meaning\tikztiming@str^^J}%
+    %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[timing/intext]%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
@@ -919,15 +919,6 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %
 % \begin{macro}{\tikztiming@output}
 %    \begin{macrocode}
-\def\tikztiming@output@bufchara{}%
-\def\tikztiming@output@bufcharb{}%
-\def\tikztiming@output@bufnum{0}%
-
-\def\DEBUG#1{{%
-  \let~=\space
-  \message{^^JDEBUG: #1^^J}%
-}}%
-
 \def\tikztiming@output#1#2{%
   \ifx\relax#2\relax
     \tikztiming@nameaddtostr{#1}%
@@ -939,23 +930,17 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
         \fi
       \fi\relax
       % not empty
-      \edef\tikztiming@output@lastchar{#1}%
       \edef\tikztiming@output@currentchar{#2}%
-        \DEBUG{INPUT:
-      \tikztiming@output@currentchar, \tikztiming@output@bufcharb: 
-      \expandafter\meaning\csname tikztiming@nocombine@#2\endcsname}%
       \ifcase0%
       \expandafter\ifx\csname tikztiming@nocombine@#2\endcsname\relax
       \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
         1%
       \fi\fi
       \relax
-        \DEBUG{FLUSH}%
         \tikztiming@output@flush
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
       \or
-        \DEBUG{COMBINE}%
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
         \let\tikztiming@output@bufnum\pgfmathresult
         \def\tikztiming@num{1.0}%
@@ -968,6 +953,13 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \fi
   \fi
 }
+%    \end{macrocode}
+%
+% Init buffer macros:
+%    \begin{macrocode}
+\def\tikztiming@output@bufchara{}%
+\def\tikztiming@output@bufcharb{}%
+\def\tikztiming@output@bufnum{0}%
 %    \end{macrocode}
 % \end{macro}
 %
