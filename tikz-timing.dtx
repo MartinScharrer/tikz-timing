@@ -734,6 +734,47 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \end{macrocode}
 % \end{macro}
 %
+%
+% \begin{macro}{\tikztiming@trans@}
+% The empty transition gets defined to avoid errors if it is used by the generic 
+% code, e.g. if a non-combinable character like `C' is the last one.
+%    \begin{macrocode}
+\let\tikztiming@trans@\@gobble
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@T}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@T{%
+  \tikztiming@output@flush
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@t}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@t{%
+  \tikztiming@aftercode@T
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@C}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@C{%
+  %\tikztiming@output@flush
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@c}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@c{%
+  \tikztiming@aftercode@C
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@aftercode@G}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@G{%
@@ -900,14 +941,24 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       % not empty
       \edef\tikztiming@output@lastchar{#1}%
       \edef\tikztiming@output@currentchar{#2}%
+        \DEBUG{INPUT:
+      \tikztiming@output@currentchar, \tikztiming@output@bufcharb: 
+      \expandafter\meaning\csname tikztiming@nocombine@#2\endcsname}%
+      \ifcase0%
+      \expandafter\ifx\csname tikztiming@nocombine@#2\endcsname\relax
       \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
-        \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
-        \let\tikztiming@output@bufnum\pgfmathresult
-        \def\tikztiming@num{1.0}%
-      \else
+        1%
+      \fi\fi
+      \relax
+        \DEBUG{FLUSH}%
         \tikztiming@output@flush
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
+      \or
+        \DEBUG{COMBINE}%
+        \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
+        \let\tikztiming@output@bufnum\pgfmathresult
+        \def\tikztiming@num{1.0}%
       \fi
     \else % empty
       \edef\tikztiming@output@bufchara{#1}%
@@ -929,11 +980,11 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       \tikztiming@output@bufchara
       \tikztiming@output@bufcharb
     }%
-  \endgroup
-  \def\tikztiming@output@bufchara{}%
-  \def\tikztiming@output@bufcharb{}%
-  \let\tikztiming@output@bufnum\tikztiming@num
-  \def\tikztiming@num{1.0}%
+  \endgroup%
+  \gdef\tikztiming@output@bufchara{}%
+  \gdef\tikztiming@output@bufcharb{}%
+  \global\let\tikztiming@output@bufnum\tikztiming@num
+  \gdef\tikztiming@num{1.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1049,6 +1100,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
+  \tikztiming@output@flush
   \tikztiming@eaddtostr{%
     node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
     node [%]
@@ -2244,6 +2296,13 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 }
 
 \tikztimingecopy{C}{T}
+\def\tikztiming@nocombine@T{}%
+\def\tikztiming@nocombine@C{}%
+\def\tikztiming@nocombine@t{}%
+\def\tikztiming@nocombine@c{}%
+\def\tikztiming@nocombine@M{}%
+\def\tikztiming@nocombine@m{}%
+
 
 \tikztimingecopy{U}{D}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
