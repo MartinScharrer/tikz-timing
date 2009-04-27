@@ -17,15 +17,24 @@
 \RequirePackage{xspace}
 \@namedef{seen@package@latex}{1} %^^A avoid footnotes for 'latex'
 \newcommand*{\pkgctanurl}[1]{%
-  CTAN: \url{http://tug.ctan.org/pkg/#1}%
+  CTAN: \url{http://www.ctan.org/pkg/#1}%
 }
-\newcommand*{\pkg}[1]{%
-  \href{http://tug.ctan.org/pkg/#1}{\texttt{#1}}%
+\newcommand*{\pkg}[2][\@tempa]{%
+  \begingroup
+  \def\@tempa{#2}%
+  \let\@tempb\empty
+  \ifx\@tempa#1
+    \def\@tempb{}%
+  \else
+    \def\@tempb{Part of the \texttt{#1} package,\ }%
+  \fi
+  \href{http://www.ctan.org/pkg/#1}{\texttt{\@tempa}}%
   % URL footnote (for print-out) on first appearance:
-  \@ifundefined{seen@package@#1}{%
-    \footnote{\pkgctanurl{#1}}%
-    \@namedef{seen@package@#1}{1}%
+  \@ifundefined{seen@package@#2}{%
+    \footnote{\@tempb\pkgctanurl{#1}}%
+    \expandafter\gdef\csname seen@package@#2\endcsname{}%
   }{}%
+  \endgroup
   \xspace
 }
 \newcommand*{\pkgnoctan}[3][]{%
@@ -368,7 +377,7 @@
 %%% Examples %%%
 \RequirePackage{fancyvrb}
 \RequirePackage{listings}
-\RequirePackage{trivfloat}
+\RequirePackage{float}
 
 \belowcaptionskip=\abovecaptionskip
 \floatstyle{plaintop}
