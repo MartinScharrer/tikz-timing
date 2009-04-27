@@ -1,0 +1,36 @@
+%&pdflatex
+\documentclass{article}
+
+\usepackage{tikz-timing}
+
+\makeatletter
+\def\oldversion{%
+  \def\tikztiming@output##1##2{%
+    \tikztiming@nameaddtostr{##1##2}%
+  }%
+  \def\tikztiming@output@flush{}
+}
+
+\def\test#1{%
+  \par\bigskip
+  \texttt{New:}~\texttiming{#1}
+  \par
+  {\oldversion
+  \texttt{Old:}~\texttiming{#1}
+  }%
+}
+\makeatother
+\begin{document}
+
+\tracingassigns=1
+\test{H}
+\test{HH}
+\test{HHH}
+\test{H5L}
+\test{HL}
+\test{HHLHLHXXXXH}
+\test{DDDMMZZZLZ}
+\tracingassigns=0
+
+\end{document}
+
