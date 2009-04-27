@@ -1823,8 +1823,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   -- +(#1,\height)
   -- +(0,\height)
   -- cycle;
-  \draw [timing/restore,\style] (timing@save) ++(0,0)
-  node [timing/save] (timing@dstart) at +(0,\height/2.0) {}
+  \newdraw [\style]
   --  +(#1,0) ++(0,+\height)
   -- ++(#1,0) ++(0,-\height)
 }
