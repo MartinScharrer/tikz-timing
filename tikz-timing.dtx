@@ -147,11 +147,10 @@
 % version.
 %
 % \section{Introduction}
-% The package \pkg{tikz-timing} uses the \texttt{tikz} front-end layer of the 
-% graphic package \pkg{pgf} to produce timing diagrams inside text or 
-% \envv{tikzpicture} environments.  Also a tabular-like environment is provided 
-% to produce a larger timing diagram with multiple labeled signals and the 
-% possibility to add own drawing material.
+% The package \pkg{tikz-timing} uses the \pkg[pgf]{tikz} package to produce 
+% timing diagrams inside text or \envv{tikzpicture} environments.  Also a 
+% tabular-like environment is provided to produce a larger timing diagram with 
+% multiple labeled signals and the possibility to add own drawing material.
 %
 % The signal levels of the timing diagram can be given by corresponding 
 % characters/letters like `|H|' for \emph{Logical High} or `|L|' for 
@@ -363,14 +362,14 @@
 %
 % \section{Styles}
 % The generated logic signals are drawn using the style mechanism provided by 
-% \pkg{tikz} (which is based on \pkg{pgfkeys}). This styles are defined and can 
-% be redefined using \css{tikzset}\marg{style name/.style=value,\ldots}. They 
-% can also be used in all places where \meta{TikZ Settings} is mentioned. Please 
-% note that path/draw specific settings might not survive the transition to 
-% characters which have there own color, because these start a new drawing path.  
-% For a more detailed explanation why this is necessary see the \pkg{tikz} 
-% manual.  However, timing specific settings are saved and restored between 
-% internal paths.
+% \pkg{tikz} (which is based on \pkg[pgf]{pgfkeys}). This styles are defined and 
+% can be redefined using \css{tikzset}\marg{style name/.style=value,\ldots}.  
+% They can also be used in all places where \meta{TikZ Settings} is mentioned.  
+% Please note that path/draw specific settings might not survive the transition 
+% to characters which have there own color, because these start a new drawing 
+% path.  For a more detailed explanation why this is necessary see the 
+% \pkg{tikz} manual.  However, timing specific settings are saved and restored 
+% between internal paths.
 %
 % The package follows the directory structures approach used by TikZ/PGF and 
 % places all styles and other settings under the ``subdirectory'' `|timing|' in 
@@ -397,11 +396,11 @@
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
 %     \midrule
-%     timing/\meta{char} & Style for character \meta{char}. Not used for `|H|' 
-%     and `|L|'. \\
-%     timing/\meta{char}/background & Background style for characters `|D|' and 
-%     `|U|'. \\
-%     timing/\meta{char}/text & Text style for character \meta{char}. Only 
+%     timing/\meta{char (lowercase)} & Style for character \meta{char}. Not used 
+%     for `|H|' and `|L|'. \\
+%     timing/\meta{char (lc)}/background & Background style for characters `|D|' 
+%     and `|U|'. \\
+%     timing/\meta{char (lc)}/text & Text style for character \meta{char}. Only 
 %     defined for `|D|'. \\
 %     \midrule
 %     timing/slope=\meta{0.0--1.0} & Sets slope for logic transitions. \\
@@ -411,6 +410,8 @@
 %     \bottomrule
 %   \end{tabular}
 %   }
+%   \\[\smallskipamount]
+%   \emph{Note:} As a convention all style names are completely in lowercase.
 % \end{table}
 %
 % \section{Examples}
