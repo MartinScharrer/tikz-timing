@@ -55,22 +55,11 @@
 \makeFNbottom
 \makeFNbelow
 
-\def\bottomfraction{0.9}
+\def\topfraction{0.91}
+\def\bottomfraction{0.89}
 \def\floatpagefraction{0.9}
 \def\textfraction{0.09}
 
-\makeatletter
-
-\let\stdtable\table
-\let\endstdtable\endtable
-\renewenvironment{table}[1][tbp]%
-{\begin{stdtable}[#1]%
-  \@tempskipa\abovecaptionskip
-  \abovecaptionskip\belowcaptionskip
-  \belowcaptionskip\@tempskipa
-}{\end{stdtable}}%
-
-\makeatother
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -264,9 +253,8 @@
 %   \midrule
 % {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & H[blue]LH & 
 % \texttiming{H[blue]LH} \\
-% ;  & The internal drawing path is stopped and a new one is started. This ends 
-% the scope of all options given by \texttt{[ ]}. & H;[blue]L;H & 
-% \texttiming{H;[blue]L;H} \\
+% ;  & Renews the internal drawing path which ends the scope of all options 
+% given by \texttt{[ ]}. & H;[blue]L;H & \texttiming{H;[blue]L;H} \\
 % ,  & Same as `\texttt{;}', but timing specific options (atm.: slopes and line 
 % width) are restored for the new path. & \small H,[lw=1pt]L;H & 
 % \texttiming{H,[line width=1pt]L;H} \\
@@ -285,6 +273,7 @@
 % \caption{Overview over all transitions.}\label{tab:full}
 %  \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
+%
 % \subsection{Macro for use in Text Mode}
 %
 % \DescribeMacro{texttiming}{\oarg{initial character}\marg{characters}}
@@ -327,6 +316,7 @@
 % \cs{texttimingafter} and draws a grid of the full size of the
 % \cs{texttiming} diagram.
 %
+% \newpage
 % \subsection{Macro for use inside TikZ-Pictures}
 %
 % \DescribeMacro{timing}{\oarg{TikZ Settings}\ ^^A
@@ -351,6 +341,7 @@
 % gives `\tikz \timing [green] ++(1,2) {[L]HLZDZLH};'.
 %
 %
+% \newpage
 % \subsection{Table for Timing Diagrams}
 % \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\Signal Name/Label\ \ \&\ \ 
 % Characters \textbackslash\textbackslash}
@@ -374,6 +365,7 @@
 % |backgrounds| TikZ library (|\usetikzlibrary{backgrounds}|) which is loaded by 
 % |tikz-timing|.
 %
+% \newpage
 % \section{Styles}
 % The generated logic signals are drawn using the style mechanism provided by 
 % \pkg{tikz} (which is based on \pkg[pgf]{pgfkeys}). This styles are defined and 
@@ -393,9 +385,7 @@
 % `|/tikz/timing/slope|'.
 %
 % The Table~\ref{tab:styles} lists all styles defined by this package.
-% \bigskip
-%
-% \begin{table}[h!tbp]
+% \begin{table}[b]
 %   \centering
 %   \caption{TikZ Styles and Settings provided and used by this Package.}
 %   \label{tab:styles}
@@ -530,7 +520,12 @@
 %   LLLLL !{-- +(.5,.5) -- ++(1,0)} HHHHHH \\
 %   LLLLL [/utils/exec={\somemacro\code}] HHHHHH \\
 %   LL [green] HH [brown] XX LL ZZ [orange] HH \\
-%   [][line width=2pt] HLXZDU [line width=0.1pt] HLXZDU \\
+%   [][line width=1pt] HLXZDU  [line width=0.1pt] HLXZDU \\
+%   [][line width=1pt] HLXZDU ,[line width=0.1pt] HLXZDU \\
+%   [][line width=1pt] HLXZDU ;[line width=0.1pt] HLXZDU \\
+%   [][dashed] HLXZDU  [dotted] HLXZDU \\
+%   [][dashed] HLXZDU ,[dotted] HLXZDU \\
+%   [][dashed] HLXZDU ;[dotted] HLXZDU \\
 % \end{tikztimingexampletable}%
 % }
 % \\\scriptsize
@@ -541,6 +536,7 @@
 %
 % \StopEventually{}
 % \FloatBarrier
+% \clearpage
 % \section{Implementation}
 % \subsection{Package Header}
 %    \begin{macrocode}
