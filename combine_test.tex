@@ -12,9 +12,9 @@
 }
 
 \def\test#1{%
-  \par\bigskip
+  \par\bigskip\noindent
   \texttt{New:}~\texttiming{#1}
-  \par
+  \\*
   {\oldversion
   \texttt{Old:}~\texttiming{#1}
   }%
@@ -41,6 +41,7 @@
 \test{5{M}}
 \test{5M}
 \test{DUDUUDUDU{}UD}
+\test{DUDUUDDDDDdDdDDUDUUD}
 
 \test{DDD{test}5D{test2}D}
 
