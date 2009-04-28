@@ -1056,7 +1056,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       {\@ifundefined{\tikztiming@prefix\lastchar\currentcharuc}%
         {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' 
         is not defined and will be ignored!}{}{}{}}%
-        {\tikztiming@output{\lastchar\currentcharuc}}%
+        {\tikztiming@output{\lastchar}{\currentcharuc}}%
       }%
       {\tikztiming@output{\lastchar}{\currentchar}}%
     \let\secondlastchar\lastchar
