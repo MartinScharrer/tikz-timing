@@ -84,7 +84,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1649}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -621,7 +621,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \@ifundefined{\tikztiming@prefix\lastchar @start}%
       {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
       is not defined and will be ignored!}{}{}{}}%
-      {\tikztiming@nameaddtostr{\lastchar @start}}%
+      {\tikztiming@nameaddtostr{\lastchar @start}{}}%
     \fi
     \tikztiming@#2\relax
     %\message{^^J\meaning\tikztiming@str^^J}%
@@ -727,9 +727,50 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \@ifundefined{\tikztiming@prefix\lastchar @start}%
     {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
     is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@nameaddtostr{\lastchar @start}}%
+    {\tikztiming@nameaddtostr{\lastchar @start}{}}%
   \fi
   \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tikztiming@trans@}
+% The empty transition gets defined to avoid errors if it is used by the generic 
+% code, e.g. if a non-combinable character like `C' is the last one.
+%    \begin{macrocode}
+\let\tikztiming@trans@\@gobble
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@T}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@T{%
+  \tikztiming@output@flush
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@t}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@t{%
+  \tikztiming@aftercode@T
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@C}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@C{%
+  %\tikztiming@output@flush
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@aftercode@c}
+%    \begin{macrocode}
+\def\tikztiming@aftercode@c{%
+  \tikztiming@aftercode@C
 }
 %    \end{macrocode}
 % \end{macro}
@@ -876,16 +917,81 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@output}
+%    \begin{macrocode}
+\def\tikztiming@output#1#2{%
+  \ifx\relax#2\relax
+    \tikztiming@nameaddtostr{#1}%
+  \else
+    \ifcase0%
+      \ifx\tikztiming@output@bufchara\empty
+        \ifx\tikztiming@output@bufcharb\empty
+          1%
+        \fi
+      \fi\relax
+      % not empty
+      \edef\tikztiming@output@currentchar{#2}%
+      \ifcase0%
+      \expandafter\ifx\csname tikztiming@nocombine@#2\endcsname\relax
+      \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
+        1%
+      \fi\fi
+      \relax
+        \tikztiming@output@flush
+        \edef\tikztiming@output@bufchara{#1}%
+        \edef\tikztiming@output@bufcharb{#2}%
+      \or
+        \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
+        \let\tikztiming@output@bufnum\pgfmathresult
+        \def\tikztiming@num{1.0}%
+      \fi
+    \else % empty
+      \edef\tikztiming@output@bufchara{#1}%
+      \edef\tikztiming@output@bufcharb{#2}%
+      \let\tikztiming@output@bufnum\tikztiming@num
+      \def\tikztiming@num{1.0}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%
+% Init buffer macros:
+%    \begin{macrocode}
+\def\tikztiming@output@bufchara{}%
+\def\tikztiming@output@bufcharb{}%
+\def\tikztiming@output@bufnum{0}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@output@flush}
+%    \begin{macrocode}
+\def\tikztiming@output@flush{%
+  \begingroup
+    \let\tikztiming@num\tikztiming@output@bufnum
+    \tikztiming@nameaddtostr{%
+      \tikztiming@output@bufchara
+      \tikztiming@output@bufcharb
+    }%
+  \endgroup%
+  \gdef\tikztiming@output@bufchara{}%
+  \gdef\tikztiming@output@bufcharb{}%
+  \global\let\tikztiming@output@bufnum\tikztiming@num
+  \gdef\tikztiming@num{1.0}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@nameaddtostr}
 %    \begin{macrocode}
 \def\tikztiming@nameaddtostr#1{%
   \begingroup
-  \edef\@tempa{\tikztiming@num}%
-  \expandafter\g@addto@macro
-  \expandafter\tikztiming@str
-  \expandafter{\csname\tikztiming@prefix#1\expandafter\endcsname
-  \expandafter{\@tempa} }%
+    \edef\@tempa{\tikztiming@num}%
+    \expandafter\g@addto@macro
+    \expandafter\tikztiming@str
+    \expandafter{\csname\tikztiming@prefix#1\expandafter\endcsname
+    \expandafter{\@tempa} }%
   \endgroup
+  \def\tikztiming@num{1.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -922,6 +1028,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \begin{macrocode}
 \def\tikztiming@@#1{%
   \ifx\relax#1\empty
+    \tikztiming@output@flush
   \else
     \let\lasttikztimingwidth\tikztimingwidth
     \tikztiming@iflower{#1}%
@@ -938,7 +1045,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
       {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' is
        not defined and will be ignored!}{}{}{}}%
-      {\tikztiming@nameaddtostr{\lastchar\currentchar}}%
+      {\tikztiming@output{\lastchar}{\currentchar}}%
     \let\secondlastchar\lastchar
     \let\lastchar\currentchar
     \if D\currentchar\else
@@ -985,6 +1092,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
+  \tikztiming@output@flush
   \tikztiming@eaddtostr{%
     node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
     node [%]
@@ -2179,6 +2287,13 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 }
 
 \tikztimingecopy{C}{T}
+\def\tikztiming@nocombine@T{}%
+\def\tikztiming@nocombine@C{}%
+\def\tikztiming@nocombine@t{}%
+\def\tikztiming@nocombine@c{}%
+\def\tikztiming@nocombine@M{}%
+\def\tikztiming@nocombine@m{}%
+
 
 \tikztimingecopy{U}{D}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
