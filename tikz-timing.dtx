@@ -624,7 +624,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       {\tikztiming@nameaddtostr{\lastchar @start}}%
     \fi
     \tikztiming@#2\relax
-    \message{^^J\meaning\tikztiming@str^^J}%
+    %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{tikzpicture}[timing/intext]%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
