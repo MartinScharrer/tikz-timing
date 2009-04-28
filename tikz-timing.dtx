@@ -537,7 +537,6 @@
 
 \def\tikztimingwidth{0.0}
 \def\tikztimingmaxwidth{0.0}
-\def\tikztiming@dlength{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
 \def\tikztiming@num{1.0}%
@@ -809,39 +808,6 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@aftercode@D}
-%    \begin{macrocode}
-\def\tikztiming@aftercode@D{%
-  \pgfmathparse{\tikztiming@dlength + \tikztiming@num}%
-  \let\tikztiming@dlength\pgfmathresult
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@aftercode@d}
-%    \begin{macrocode}
-\def\tikztiming@aftercode@d{%
-  \pgfmathparse{\tikztiming@dlength + \tikztiming@num/2.}%
-  \let\tikztiming@dlength\pgfmathresult
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@beforecode@@default}
-%    \begin{macrocode}
-\def\tikztiming@beforecode@@default{%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@beforenextcode@@default}
-%    \begin{macrocode}
-\def\tikztiming@beforenextcode@@default{%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-%
 % \begin{macro}{\tikztiming@beforenextcode@D@edge@}
 %    \begin{macrocode}
 \def\tikztiming@beforenextcode@D@edge@{%
@@ -1047,10 +1013,10 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \def\currentchar{#1}%
     \uppercase{\def\currentcharuc{#1}}%
     \@ifundefined{tikztiming@beforenextcode@\lastchar}%
-      {\tikztiming@beforenextcode@@default}%
+      {}%
       {\@nameuse{tikztiming@beforenextcode@\lastchar}}%
     \@ifundefined{tikztiming@beforecode@\currentchar}%
-      {\tikztiming@beforecode@@default}%
+      {}%
       {\@nameuse{tikztiming@beforecode@\currentchar}}%
     \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
       {\@ifundefined{\tikztiming@prefix\lastchar\currentcharuc}%
@@ -1061,9 +1027,6 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       {\tikztiming@output{\lastchar}{\currentchar}}%
     \let\secondlastchar\lastchar
     \let\lastchar\currentcharuc
-    \if D\currentchar\else
-      \def\tikztiming@dlength{0.0}%
-    \fi
     \@ifundefined{tikztiming@aftercode@\currentcharuc}%
       {}%
       {\@nameuse{tikztiming@aftercode@\currentcharuc}}%
@@ -1117,7 +1080,6 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       #1%
       ] {#2}%
   }%
-  \def\tikztiming@dlength{0.0}%
   \def\lastchar{D@edge@}%
   }{%
     \endgroup
