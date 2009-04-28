@@ -558,18 +558,18 @@
 % \subsection{TikZ Style Settings}
 %    \begin{macrocode}
 \tikzset{timing/.style={%
-    line width=0.15ex,x=1.6ex,y=1.6ex,
-    line cap=round,line join=round,font=\sffamily,
+    x=1.6ex, y=1.6ex,
+    line cap=round, line join=round,
   }%
 }
 \tikzset{timing/grid/.style={timing,help lines}}
 \tikzset{timing/intext/.style={timing}}
-\tikzset{timing/table/.style={timing}}
+\tikzset{timing/table/.style={timing,line width=0.15ex,font=\sffamily}}
 \tikzset{timing/coord/.style={inner sep=0pt,outer sep=0pt}}
 \tikzset{timing/save/.style={inner sep=0pt,outer 
 sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \tikzset{timing/restore/.style={/utils/exec=\tikztiming@restoresettings}}
-\tikzset{timing/name/.style={font=\sffamily,inner sep=0pt,outer sep=0pt}}
+\tikzset{timing/name/.style={inner sep=0pt,outer sep=0pt}}
 \tikzset{timing/d/text/.style={timing,scale=0.6,font=\sffamily}}
 \tikzset{timing/d/background/.style={}}
 \tikzset{timing/h/.style={}}
@@ -1314,8 +1314,8 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 
 % \begin{environment}{tikztimingtable}
 %    \begin{macrocode}
-\NewEnviron{tikztimingtable}{%
-  \begin{tikzpicture}[timing/table]%
+\NewEnviron{tikztimingtable}[1][]{%
+  \begin{tikzpicture}[timing/table,#1]%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
   \def\tikztimingwidth{0.0}%
