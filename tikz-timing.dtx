@@ -936,8 +936,9 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \else
     \let\lasttikztimingwidth\tikztimingwidth
     \tikztiming@iflower{#1}%
-      {\pgfmathparse{\tikztimingwidth + \tikztiming@num/2.0}}%
-      {\pgfmathparse{\tikztimingwidth + \tikztiming@num}}%
+      {\pgfmathparse{\tikztiming@num/2.0}\let\tikztiming@num\pgfmathresult}%
+      {}%
+    \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
     \let\tikztimingwidth\pgfmathresult
     \def\currentchar{#1}%
     \uppercase{\def\currentcharuc{#1}}%
