@@ -613,7 +613,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \DeclareRobustCommand*\texttiming[2][]{%
   \begingroup
     \tikztiming@init
-    \def\lastchar{#1}%
+    \uppercase{\def\lastchar{#1}}%
     \@ifundefined{tikztiming@initcode@\lastchar}%
       {}%
       {\@nameuse{tikztiming@initcode@\lastchar}}%
@@ -719,7 +719,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\timing@@@init}
 %    \begin{macrocode}
 \def\timing@@@init[#1]{%
-  \def\lastchar{#1}%
+  \uppercase{\def\lastchar{#1}}%
   \@ifundefined{tikztiming@initcode@\lastchar}%
     {}%
     {\@nameuse{tikztiming@initcode@\lastchar}}%
@@ -859,7 +859,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \def\tikztiming@beforenextcode@d@edge@{%
   \if D\currentchar\else
     \if d\currentchar\else
-      \def\lastchar{d}%
+      \def\lastchar{D}%
     \fi
   \fi
 }
@@ -1002,10 +1002,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \def\@gtempa##1{#3}%
   \expandafter\let\csname\tikztiming@prefix#2@general\endcsname\@gtempa
   \begingroup
-    \lowercase{\tikztiming@internaldefs{#1}}%
-    \tikztiming@iflower{#1}%
-      {\def\width{####1*\noexpand\timingwidth/2.}}%
-      {\def\width{####1*\noexpand\timingwidth}}%
+    \tikztiming@internaldefs{#1}%
     \xdef\@gtempa##1{\@gtempa{\width}}%
   \endgroup
   \expandafter\let\csname\tikztiming@prefix#2\endcsname\@gtempa
@@ -1015,11 +1012,22 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@namelet}
+% Only execute |\let| if the original macro is defined or the destination macro 
+% is defined and would now set to undefined.
 %    \begin{macrocode}
 \newcommand\tikztiming@namelet[2]{%
-  \expandafter\let
-  \csname\tikztiming@prefix#1\expandafter\endcsname
-  \csname\tikztiming@prefix#2\endcsname
+  \ifcase0%
+    \@ifundefined{\tikztiming@prefix#2}%
+      {\@ifundefined{\tikztiming@prefix#1}%
+        {0}{1}%
+      }%
+      {1}%
+    \relax
+  \else
+    \expandafter\let
+    \csname\tikztiming@prefix#1\expandafter\endcsname
+    \csname\tikztiming@prefix#2\endcsname
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1032,10 +1040,12 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \else
     \let\lasttikztimingwidth\tikztimingwidth
     \tikztiming@iflower{#1}%
-      {\pgfmathparse{\tikztimingwidth + \tikztiming@num/2.0}}%
-      {\pgfmathparse{\tikztimingwidth + \tikztiming@num}}%
+      {\pgfmathparse{\tikztiming@num/2.0}\let\tikztiming@num\pgfmathresult}%
+      {}%
+    \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
     \let\tikztimingwidth\pgfmathresult
     \def\currentchar{#1}%
+    \uppercase{\def\currentcharuc{#1}}%
     \@ifundefined{tikztiming@beforenextcode@\lastchar}%
       {\tikztiming@beforenextcode@@default}%
       {\@nameuse{tikztiming@beforenextcode@\lastchar}}%
@@ -1043,17 +1053,20 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       {\tikztiming@beforecode@@default}%
       {\@nameuse{tikztiming@beforecode@\currentchar}}%
     \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
-      {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' is
-       not defined and will be ignored!}{}{}{}}%
+      {\@ifundefined{\tikztiming@prefix\lastchar\currentcharuc}%
+        {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' 
+        is not defined and will be ignored!}{}{}{}}%
+        {\tikztiming@nameaddtostr{\lastchar\currentcharuc}}%
+      }%
       {\tikztiming@output{\lastchar}{\currentchar}}%
     \let\secondlastchar\lastchar
-    \let\lastchar\currentchar
+    \let\lastchar\currentcharuc
     \if D\currentchar\else
       \def\tikztiming@dlength{0.0}%
     \fi
-    \@ifundefined{tikztiming@aftercode@\currentchar}%
+    \@ifundefined{tikztiming@aftercode@\currentcharuc}%
       {}%
-      {\@nameuse{tikztiming@aftercode@\currentchar}}%
+      {\@nameuse{tikztiming@aftercode@\currentcharuc}}%
     \expandafter
     \tikztiming@testfortext
   \fi
@@ -1555,7 +1568,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \def\draw{\noexpand\draw}%
   \def\path{\noexpand\path}%
   \def\fill{\noexpand\fill}%
-  \def\width{\noexpand\timingwidth}%
+  \def\width{####1*\noexpand\timingwidth}%
   \def\fwidth{\noexpand\timingwidth}%
   \def\height{\noexpand\timingheight}%
   \def\slope{\noexpand\timingslope}%
@@ -1632,16 +1645,6 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     \tikztiming@nameedef[#1]{#1}{#3}%
   \else
     \tikztiming@nameedef[#2]{#1#2}{#3}%
-    \tikztiming@iflower{#1}{}%
-      {\tikztiming@iflower{#2}%
-        {%
-          \lowercase{\tikztimingdef@{#1}{#2}}\relax{#3}%
-        }%
-        {%
-          \uppercase{\lowercase{\tikztimingdef@{#1}}{#2}}\relax{#3}%
-          \lowercase{\uppercase{\tikztimingdef@{#1}}{#2}}\relax{#3}%
-        }%
-      }%
   \fi
 }
 %    \end{macrocode}
@@ -1729,9 +1732,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \begin{macrocode}
 \def\tikztimingchar@#1#2#3{%
   \tikztiming@nameedef[#1]{#1@start}{#2}%
-  \lowercase{\tikztiming@nameedef[#1]{#1@start}}{#2}%
   \tikztiming@nameedef[#1]{#1}{#2#3}%
-  \lowercase{\tikztiming@nameedef[#1]{#1}}{#2#3}%
   \tikztimingdef{#1#1}{#3}%
 }
 %    \end{macrocode}
@@ -1778,13 +1779,24 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \tikztimingdef{#1}{\tikztiminguse{#2}{##1}}%
   \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
   \lowercase{%
-  \tikztimingdef{#1}{\tikztiminguse{#2}{##1}}%
-  \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
+    \@ifundefined{\tikztiming@prefix#2}{}{%
+      \tikztimingdef{#1}{\tikztiminguse{#2}{##1}}%
+      \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
+    }%
   }%
   \tikztimingdef{#1#1}{\tikztiminguse{#2#2}{##1}}%
   \@for\@tempa:=\tikztiming@chars\do{%
     \expandafter\tikztimingdef@@
     \expandafter{\@tempa}{#1}{#2}%
+%    \end{macrocode}
+%    Handle lowercase macros:
+%    \begin{macrocode}
+    \expandafter\lowercase\expandafter{\expandafter\def\expandafter\@tempb
+    \expandafter{\@tempa}}%
+    \@ifundefined{\tikztiming@prefix#2\@tempb}{}{%
+      \expandafter\tikztimingdef@@
+      \expandafter{\@tempb}{#1}{#2}%
+    }%
   }%
 }
 %    \end{macrocode}
@@ -1794,6 +1806,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \begin{macrocode}
 \def\tikztiminglet@@#1#2#3{%
   \tikztiminglet@@@#1#2#3%
+  % Should stay, cause no harm:
   \lowercase{\tikztiminglet@@@#1}#2#3%
   \lowercase{\tikztiminglet@@@#1#2#3}%
   \lowercase{\uppercase{\tikztiminglet@@@#1}#2#3}%
@@ -1815,9 +1828,6 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \begin{macrocode}
 \def\tikztimingdef@@#1#2#3{%
   \tikztimingdef@@@#1#2#3%
-  \lowercase{\tikztimingdef@@@#1}#2#3%
-  \lowercase{\tikztimingdef@@@#1#2#3}%
-  \lowercase{\uppercase{\tikztimingdef@@@#1}#2#3}%
 }
 %    \end{macrocode}
 % \end{macro}
