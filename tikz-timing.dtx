@@ -1214,10 +1214,14 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \xdef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
   \@ifnextchar\bgroup
     {%
+      \expandafter\tikztiming@numfrac\expandafter0\expandafter
+      \@gobble\the\tikztiming@numfrac\relax
       \ifnum0=\tikztiming@numfrac\else
+        \pgfmathparse{round(\tikztiming@num)}%
         \PackageWarning{tikz-timing}%
-          {Can not repeat group by a non-integer factor!
-           Rounding '\tikztiming@num' down to '\the\tikztiming@numint'.}{}{}{}%
+          {Can not repeat group by a non-integer factor!^^J%
+           Rounding '\tikztiming@num' to '\pgfmathresult'.}{}{}{}%
+        \let\tikztiming@num\pgfmathresult
       \fi
       \tikztiming@testfornum@@@@
     }%
