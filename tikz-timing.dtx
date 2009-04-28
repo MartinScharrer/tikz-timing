@@ -56,6 +56,7 @@
 \makeFNbelow
 
 \def\bottomfraction{0.9}
+\def\floatpagefraction{0.9}
 \def\textfraction{0.09}
 
 \makeatletter
@@ -242,7 +243,7 @@
 % \sffamily\centering
 % \caption{Modifiers for Timing Characters}\label{tab:modifiers}
 % \makebox[\textwidth][c]{%
-% \begin{tabularx}{1.2\textwidth}{>{\ttfamily}l>{\raggedright}X>{\ttfamily}ll}
+% \begin{tabularx}{1.25\textwidth}{>{\ttfamily}l>{\raggedright}X>{\ttfamily}ll}
 %   \toprule
 %   \normalfont
 %   Modifier Syntax  & Description & \normalfont Example & Example \\
@@ -251,17 +252,24 @@
 % \texttiming{D{}D} \\
 % D\{\meta{Text}\} & Adds text material into a data signal using a node.  & 
 % D\{A\}D\{B\} & \texttiming{D{A}D{B}} \\
-% D\{[\meta{TikZ Settings}]\meta{Text}\} & Adds text material into a data signal 
-% using the given settings.  & D\{[blue]A\} & \texttiming{D{[blue]A}} \\
-% \meta{\small integer}\{\meta{characters}\} &  Repeats the given characters by 
-% the given number.  & 5\{hl\} & \texttiming{5{hl}}\\
-% \meta{\small number}\meta{character} & Sets width of next signal to given 
-% number.  Half of it if character is in lower case. & 2.6H5.2l & 
+% D\{[\meta{\scriptsize 
+% \raisebox{-1ex}{\shortstack{TikZ\\Settings}}}]\meta{Text}\} & Adds text 
+% material into a data signal using the given settings.  & D\{[blue]A\} & 
+% \texttiming{D{[blue]A}} \\
+% \meta{\small integer}\{\meta{\small characters}\} &  Repeats the given 
+% characters by the given number.  & 5\{hl\} & \texttiming{5{hl}}\\
+% \meta{\small number}\meta{\small character} & Sets width of next signal to 
+% given number.  Half of it if character is in lower case. & 2.6H5.2l & 
 % \texttiming{2.6H5.2l}\\
 %   \midrule
-% {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & [blue]LH & 
-% \texttiming{[blue]LH}
-% \\
+% {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & H[blue]LH & 
+% \texttiming{H[blue]LH} \\
+% ;  & The internal drawing path is stopped and a new one is started. This ends 
+% the scope of all options given by \texttt{[ ]}. & H;[blue]L;H & 
+% \texttiming{H;[blue]L;H} \\
+% ,  & Same as `\texttt{;}', but timing specific options (atm.: slopes and line 
+% width) are restored for the new path. & \small H,[lw=1pt]L;H & 
+% \texttiming{H,[line width=1pt]L;H} \\
 % !\{\meta{code}\}  & Places given code into the internal \envv{tikzpicture}.
 %& \multicolumn{2}{l}{\small See Example~\ref{exa:adv} on
 % page~\pageref{exa:adv}.} \\
@@ -1104,7 +1112,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \tikztiming@output@flush
   \tikztiming@eaddtostr{%
     \newdraw
-  }
+  }%
   \tikztiming@
 }
 %    \end{macrocode}
@@ -1116,7 +1124,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \tikztiming@output@flush
   \tikztiming@eaddtostr{%
     \newdrawns
-  }
+  }%
   \tikztiming@
 }
 %    \end{macrocode}
