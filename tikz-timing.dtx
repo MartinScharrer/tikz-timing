@@ -719,7 +719,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\timing@@@init}
 %    \begin{macrocode}
 \def\timing@@@init[#1]{%
-  \def\lastchar{#1}%
+  \uppercase{\def\lastchar{#1}}%
   \@ifundefined{tikztiming@initcode@\lastchar}%
     {}%
     {\@nameuse{tikztiming@initcode@\lastchar}}%
@@ -818,7 +818,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \def\tikztiming@beforenextcode@d@edge@{%
   \if D\currentchar\else
     \if d\currentchar\else
-      \def\lastchar{d}%
+      \def\lastchar{D}%
     \fi
   \fi
 }
@@ -1683,9 +1683,9 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \@for\@tempa:=\tikztiming@chars\do{%
     \expandafter\tikztimingdef@@
     \expandafter{\@tempa}{#1}{#2}%
-%    \begin{macrocode}
-%    Handle lowercase macros:
 %    \end{macrocode}
+%    Handle lowercase macros:
+%    \begin{macrocode}
     \expandafter\lowercase\expandafter{\expandafter\def\expandafter\@tempb
     \expandafter{\@tempa}}%
     \@ifundefined{\tikztiming@prefix#2\@tempb}{}{%
