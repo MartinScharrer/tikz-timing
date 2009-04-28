@@ -896,8 +896,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \def\@gtempa##1{#3}%
   \expandafter\let\csname\tikztiming@prefix#2@general\endcsname\@gtempa
   \begingroup
-    \lowercase{\tikztiming@internaldefs{#1}}%
-    \def\width{####1*\noexpand\timingwidth}%
+    \tikztiming@internaldefs{#1}%
     \xdef\@gtempa##1{\@gtempa{\width}}%
   \endgroup
   \expandafter\let\csname\tikztiming@prefix#2\endcsname\@gtempa
@@ -1461,7 +1460,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \def\draw{\noexpand\draw}%
   \def\path{\noexpand\path}%
   \def\fill{\noexpand\fill}%
-  \def\width{\noexpand\timingwidth}%
+  \def\width{####1*\noexpand\timingwidth}%
   \def\fwidth{\noexpand\timingwidth}%
   \def\height{\noexpand\timingheight}%
   \def\slope{\noexpand\timingslope}%
