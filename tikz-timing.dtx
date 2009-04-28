@@ -20,7 +20,7 @@
 %<*driver>
 \makeatletter
 %</driver>
-\def\tikztiming@version{v0.3b}
+\def\tikztiming@version{v0.4}
 \RequirePackage{svn-prov}
 %<package>\ProvidesPackageSVN
 %<examplecode>\ProvidesPackageSVN[tikz-timing-examplecode]
@@ -104,6 +104,12 @@
 %
 %
 % \changes{v0.3}{2009/04/24}{First released version}
+% \changes{v0.4}{2009/04/28}{Added output routine which combines successive 
+% occurrences of the same character. This improves screen display quality and 
+% reduces rendering time and file size.}
+% \changes{v0.4}{2009/04/28}{Removed own macros for lowercase characters. They 
+% are now handled by the uppercase macros which receive half of the width.  
+% Exceptions are possible like for the `m' character.}
 %
 % \GetFileInfo{tikz-timing.dtx}
 %
@@ -555,6 +561,7 @@
 \tikzset{timing/grid/.style={timing,help lines}}
 \tikzset{timing/intext/.style={timing}}
 \tikzset{timing/table/.style={timing}}
+\tikzset{timing/coord/.style={inner sep=0pt,outer sep=0pt}}
 \tikzset{timing/save/.style={inner sep=0pt,outer 
 sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \tikzset{timing/restore/.style={/utils/exec=\tikztiming@restoresettings}}
@@ -1091,6 +1098,30 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@stoppath}
+%    \begin{macrocode}
+\def\tikztiming@stoppath#1{%
+  \tikztiming@output@flush
+  \tikztiming@eaddtostr{%
+    \newdraw
+  }
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@stoppath@nosave}
+%    \begin{macrocode}
+\def\tikztiming@stoppath@nosave#1{%
+  \tikztiming@output@flush
+  \tikztiming@eaddtostr{%
+    \newdrawns
+  }
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \begin{macro}{\tikztiming@testforcode}
 %    \begin{macrocode}
@@ -1099,7 +1130,13 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
     {\tikztiming@testforcode@}%
     {\@ifnextchar{[}%
       {\tikztiming@handleoption}%
-      {\tikztiming@@}%
+      {\@ifnextchar{;}%
+        {\tikztiming@stoppath@nosave}%
+        {\@ifnextchar{,}%
+          {\tikztiming@stoppath}%
+          {\tikztiming@@}%
+        }%
+      }%
     }%
 }
 %    \end{macrocode}
@@ -1546,6 +1583,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \def\bgstyle{timing/#1/background}%
   }%
   \def\newdraw{\tikztiming@newdraw}%
+  \def\newdrawns{\tikztiming@newdraw@nosave}%
   \def\code##1{ [/utils/exec={\unexpanded{##1}}] }%
 }
 %    \end{macrocode}
@@ -1793,14 +1831,6 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 % \begin{macro}{\tikztimingdef@@}
 %    \begin{macrocode}
 \def\tikztimingdef@@#1#2#3{%
-  \tikztimingdef@@@#1#2#3%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingdef@@@}
-%    \begin{macrocode}
-\def\tikztimingdef@@@#1#2#3{%
   \tikztimingdef{#1#2}{\tikztiminguse{#1#3}{##1}}%
   \tikztimingdef{#2#1}{\tikztiminguse{#3#1}{##1}}%
 }
@@ -1845,6 +1875,15 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \def\tikztiming@newdraw{%
   node [timing/save] (timing@save) {};%
   \draw [timing/restore] (timing@save) ++(0,0)
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\tikztiming@newdraw}
+%    \begin{macrocode}
+\def\tikztiming@newdraw@nosave{%
+  node [timing/coord] (timing@save) {};%
+  \draw (timing@save) ++(0,0)
 }
 %    \end{macrocode}
 % \end{macro}
