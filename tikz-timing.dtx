@@ -596,32 +596,34 @@
     line cap=round, line join=round,
   }%
 }
-\tikzset{timing/grid/.style={timing,help lines}}
-\tikzset{timing/intext/.style={timing}}
-\tikzset{timing/table/.style={timing,line width=0.15ex,font=\sffamily}}
-\tikzset{timing/coord/.style={inner sep=0pt,outer sep=0pt}}
-\tikzset{timing/save/.style={inner sep=0pt,outer 
-sep=0pt,/utils/exec=\tikztiming@savesettings}}
-\tikzset{timing/restore/.style={/utils/exec=\tikztiming@restoresettings}}
-\tikzset{timing/name/.style={inner sep=0pt,outer sep=0pt}}
-\tikzset{timing/d/text/.style={timing,scale=0.6,font=\sffamily}}
-\tikzset{timing/d/background/.style={}}
-\tikzset{timing/h/.style={}}
-\tikzset{timing/l/.style={}}
-\tikzset{timing/d/.style={}}
-\tikzset{timing/m/.style={black!40!brown}}
-\tikzset{timing/u/background/.style={fill=gray}}
-\tikzset{timing/u/.style={}}
-\tikzset{timing/o/background/.style={}}
-\tikzset{timing/o/.style={timing/d,line width=0.10ex,dotted}}
-\tikzset{timing/z/.style={blue}}
-\tikzset{timing/t/.style={}}
-\tikzset{timing/c/.style={timing/slope=0.0}}
-\tikzset{timing/x/.style={red}}
-\tikzset{timing/table/grid/.style={timing/grid}}
-\tikzset{timing/slope/.code={\tikztimingsetslope{#1}}}
-\tikzset{timing/dslope/.code={\tikztimingsetdslope{#1}}}
-\tikzset{timing/zslope/.code={\tikztimingsetzslope{#1}}}
+\tikzset{%
+  timing/.cd,
+  grid/.style={timing,help lines},
+  intext/.style={timing},
+  table/.style={timing,line width=0.15ex,font=\sffamily},
+  coord/.style={inner sep=0pt,outer sep=0pt},
+  save/.style={inner sep=0pt,outer sep=0pt,/utils/exec=\tikztiming@savesettings},
+  restore/.style={/utils/exec=\tikztiming@restoresettings},
+  name/.style={inner sep=0pt,outer sep=0pt},
+  d/text/.style={timing,scale=0.6,font=\sffamily},
+  d/background/.style={},
+  h/.style={},
+  l/.style={},
+  d/.style={},
+  m/.style={black!40!brown},
+  u/background/.style={fill=gray},
+  u/.style={},
+  o/background/.style={},
+  o/.style={timing/d,line width=0.10ex,dotted},
+  z/.style={blue},
+  t/.style={},
+  c/.style={timing/slope=0.0},
+  x/.style={red},
+  table/grid/.style={timing/grid},
+  slope/.code={\tikztimingsetslope{#1}},
+  dslope/.code={\tikztimingsetdslope{#1}},
+  zslope/.code={\tikztimingsetzslope{#1}},
+}
 %    \end{macrocode}
 %
 % \subsection{Macros}
