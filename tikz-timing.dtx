@@ -1683,6 +1683,15 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
   \@for\@tempa:=\tikztiming@chars\do{%
     \expandafter\tikztimingdef@@
     \expandafter{\@tempa}{#1}{#2}%
+%    \begin{macrocode}
+%    Handle lowercase macros:
+%    \end{macrocode}
+    \expandafter\lowercase\expandafter{\expandafter\def\expandafter\@tempb
+    \expandafter{\@tempa}}%
+    \@ifundefined{\tikztiming@prefix#2\@tempb}{}{%
+      \expandafter\tikztimingdef@@
+      \expandafter{\@tempb}{#1}{#2}%
+    }%
   }%
 }
 %    \end{macrocode}
