@@ -84,7 +84,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1649}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -613,7 +613,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
 \DeclareRobustCommand*\texttiming[2][]{%
   \begingroup
     \tikztiming@init
-    \def\lastchar{#1}%
+    \uppercase{\def\lastchar{#1}}%
     \@ifundefined{tikztiming@initcode@\lastchar}%
       {}%
       {\@nameuse{tikztiming@initcode@\lastchar}}%
@@ -940,6 +940,7 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       {\pgfmathparse{\tikztimingwidth + \tikztiming@num}}%
     \let\tikztimingwidth\pgfmathresult
     \def\currentchar{#1}%
+    \uppercase{\def\currentcharuc{#1}}%
     \@ifundefined{tikztiming@beforenextcode@\lastchar}%
       {\tikztiming@beforenextcode@@default}%
       {\@nameuse{tikztiming@beforenextcode@\lastchar}}%
@@ -947,17 +948,20 @@ sep=0pt,/utils/exec=\tikztiming@savesettings}}
       {\tikztiming@beforecode@@default}%
       {\@nameuse{tikztiming@beforecode@\currentchar}}%
     \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
-      {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' is
-       not defined and will be ignored!}{}{}{}}%
+      {\@ifundefined{\tikztiming@prefix\lastchar\currentcharuc}%
+        {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' 
+        is not defined and will be ignored!}{}{}{}}%
+        {\tikztiming@nameaddtostr{\lastchar\currentcharuc}}%
+      }%
       {\tikztiming@nameaddtostr{\lastchar\currentchar}}%
     \let\secondlastchar\lastchar
-    \let\lastchar\currentchar
+    \let\lastchar\currentcharuc
     \if D\currentchar\else
       \def\tikztiming@dlength{0.0}%
     \fi
-    \@ifundefined{tikztiming@aftercode@\currentchar}%
+    \@ifundefined{tikztiming@aftercode@\currentcharuc}%
       {}%
-      {\@nameuse{tikztiming@aftercode@\currentchar}}%
+      {\@nameuse{tikztiming@aftercode@\currentcharuc}}%
     \expandafter
     \tikztiming@testfortext
   \fi
