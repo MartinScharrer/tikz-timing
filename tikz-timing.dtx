@@ -537,9 +537,10 @@
   \def\tikztimingmaxwidth{0.0}%
   \coordinate (last row) at (0,-1);
   \coordinate (label pos) at (-1,0);
-  \path (last row) +(-1,0.5) node [anchor=base east,timing/name] {Characters};
-  \path (last row) +(0,0.5)  node [anchor=base west,timing/name] {Resulting 
-  Diagram};
+  \path (last row) +(-\tikztiming@coldist,0.5*\tikztiming@rowdist) node
+    [anchor=base east,timing/name] {Characters};
+  \path (last row) +(0,0.5*\tikztiming@rowdist) node
+    [anchor=base west,timing/name] {Resulting Diagram};
   \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
   \draw [line width=\lightrulewidth]
      (current bounding box.north west) +(-1,-2) --
@@ -561,8 +562,9 @@
 \def\tikztimingexampletable@#1\\{%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
-  \path (last row) +(0,-2) coordinate (last row);
-  \path (last row) +(-1,0) node [anchor=base east,timing/name]
+  \path (last row) +(0,-1*\tikztiming@rowdist) coordinate (last row);
+  \path (last row) +(-1*\tikztiming@coldist,0) node
+    [anchor=base east,timing/name]
     {\ttfamily\tikztiming@text};
   \timing (last row) {#1};
   \@ifnextchar\extracode
@@ -1167,6 +1169,9 @@
 \newcount\tikztiming@numfrac
 \def\tikztiming@num{1.0}%
 %%\def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
+
+\def\tikztiming@rowdist{2}%
+\def\tikztiming@coldist{1}%
 
 \def\tikztiming@prefix{tikztiming@trans@}
 %    \end{macrocode}
@@ -1936,9 +1941,11 @@
   \begin{tikzpicture}[timing/table,#1]%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
+  \let\rowdist\tikztiming@rowdist
+  \let\coldist\tikztiming@coldist
   \def\tikztimingwidth{0.0}%
-  \coordinate (last row) at (0,+2);
-  \coordinate (label pos) at (-1,0);
+  \coordinate (last row)  at (0,\rowdist);
+  \coordinate (label pos) at (-1*\coldist,0);
   \expandafter\tikztimingtable@\BODY\endtikztimingtable@
 }[\end{tikzpicture}]
 
@@ -1955,8 +1962,8 @@
 % \begin{macro}{\tikztimingtable@}
 %    \begin{macrocode}
 \def\tikztimingtable@#1&#2\\{%
-  \path (last row) +(0,-2) coordinate (last row);
-  \path (last row) +(-1,0) node [anchor=base east,timing/name]
+  \path (last row) +(0,-1*\rowdist) coordinate (last row);
+  \path (last row) +(-1*\coldist,0) node [anchor=base east,timing/name]
     {\ignorespaces #1};
   \timing (last row) {#2};
   \@ifnextchar\extracode
