@@ -49,7 +49,6 @@
 \makeatother
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
-\usepackage{tikz-timing-examplecode}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
 \usepackage{xcolor}
@@ -66,6 +65,186 @@
 \def\bottomfraction{0.89}
 \def\floatpagefraction{0.9}
 \def\textfraction{0.09}
+
+\makeatletter
+% The following code is only needed to produce package examples and therefor not 
+% included in the style file but might be written to an additional file.
+%    \begin{macrocode}
+%</driver>
+%<*examplecode>
+%    \end{macrocode}
+
+% \begin{environment}{tikztimingexampletable}
+%    \begin{macrocode}
+\NewEnviron{tikztimingexampletable}{%
+  \begin{tikzpicture}[timing/table]%
+  \def\tikztimingmaxwidth{0.0}%
+  \setcounter{tikztimingrows}{-1}%
+  \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing/name] 
+  {Characters};
+  \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing/name] 
+  {Resulting Diagram};
+  \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
+  \draw [line width=\lightrulewidth]
+     (current bounding box.north west) +(-1,-2) --
+     ($ (current bounding box.north east) +(+1,-2) $);
+  \draw [line width=\heavyrulewidth]
+     (current bounding box.north west) +(0,1) --
+     ($ (current bounding box.north east) +(0,0) $);
+  \draw [line width=\heavyrulewidth]
+     (current bounding box.south west) +(0,-1) --
+     ($ (current bounding box.south east) +(0,0) $);
+}[\end{tikzpicture}]
+
+\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{macro}{\tikztimingexampletable@}
+%    \begin{macrocode}
+\def\tikztimingexampletable@#1\\{%
+  \addtocounter{tikztimingrows}{1}%
+  \path (-1,\tikztimingrowpos) node [anchor=base east,timing/name] 
+  {\tikztiming@texttt{#1}};
+  \timing (+0,\tikztimingrowpos) {#1};
+  \@ifnextchar\extracode
+    {\tikztimingextracode}%
+    {%
+      \@ifnextchar\endtikztimingtable@
+        {\@gobble}{\tikztimingexampletable@}%
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@texttt}
+%    \begin{macrocode}
+\def\tikztiming@texttt#1{%
+  \begingroup
+  \ttfamily
+  \let\orig@xifnch\@xifnch
+  \def\@xifnch{\space\orig@xifnch}%
+  \tikztiming@texttt@#1\tikztiming@texttt@ENDMARKER
+  \endgroup
+}
+\def\tikztiming@texttt@ENDMARKER{%
+  \@gobble{tikztiming@texttt@ENDMARKER}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@texttt@}
+%    \begin{macrocode}
+\def\tikztiming@texttt@{%
+  \@ifnextchar\bgroup
+    {\tikztiming@texttt@@}%
+    {\@ifnextchar\tikztiming@texttt@ENDMARKER
+      {}%
+      {\tikztiming@texttt@@@}%
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@texttt@@}
+%    \begin{macrocode}
+\def\tikztiming@texttt@@#1{%
+  \tikztiming@texttt@\tikztiming@braceopen#1\tikztiming@braceclose
+}
+\begingroup
+\catcode`\{=12
+\catcode`\}=12
+\global\let\tikztiming@braceopen={%
+\global\let\tikztiming@braceclose=}%
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@texttt@@@}
+%    \begin{macrocode}
+\def\tikztiming@texttt@@@#1{%
+  \begingroup
+  \def\@tempa{#1}%
+  \def\@tempb{\tikztiming@braceopen}%
+  \ifx\@tempa\@tempb
+    #1%
+  \else
+  \def\@tempb{\tikztiming@braceclose}%
+  \ifx\@tempa\@tempb
+    #1%
+  \else
+    \string#1%
+  \fi\fi
+  \endgroup
+  \tikztiming@texttt@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingfullexampletable}
+%    \begin{macrocode}
+\def\tikztimingfullexampletable{
+  \begin{tikzpicture}[x=1em,y=1em,font=\sffamily]
+    \tikzset{timing/d/background/.style={fill={gray!25},fill opacity=0.5}}%
+    \iffalse
+    \def\chars{\@gobble}%
+    \def\@tempa{}%
+    \@for\tchar:=\tikztiming@chars\do{%
+      \expandafter\lowercase\expandafter{\expandafter\def\expandafter\@tempa
+      \expandafter{\tchar}}%
+      \edef\chars{\chars,\tchar,\@tempa}%
+    }
+    \else
+    \let\chars\tikztiming@chars
+    \fi
+    \node (charnode) at (0,0) {%
+       \scalebox{0.4}%
+         {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
+         {\mbox{\rotatebox{45}{from}}}$}}%
+    };
+    \node (charnodex) at (0.25,0) {};%
+    \node (charnodey) at (0,0) {};%
+    \expandafter\foreach
+    \expandafter\tchar
+    \expandafter i\expandafter n\expandafter{\chars} {%
+      \path (charnodex) ++(+2,0) node (charnodex) {\strut\tchar};
+      \path (charnodey) ++(0,-2) node (charnodey) {\strut\tchar};
+    }%
+    \draw [line width=\heavyrulewidth] (charnodex) +(+1,+1) -- (-1,+1);
+    \draw [line width=\lightrulewidth]  (charnodex) +(+1,-1) -- (-1,-1);
+    \draw [line width=\lightrulewidth]  (charnodey) +(+1,-0.6) -- (+1,-1.4) 
+    (+1,-0.6) -- (+1,+0.6);
+    \draw [line width=\heavyrulewidth] (charnodey) ++(-1,-1) -- +($ (2,0) + 
+    (charnodex) $);
+    %
+    \path (1.5,-2) node (charnodex) {\strut};
+    \node (charnodex) at (charnodex.base) {};
+    \node (charnodey) at (charnodex.base) {};
+    \def\@tempa{\timing (charnodey)}
+    \expandafter\foreach
+    \expandafter\xchar
+    \expandafter i\expandafter n\expandafter{\chars} {
+    \expandafter\foreach
+    \expandafter\ychar
+    \expandafter i\expandafter n\expandafter{\chars} {
+      \draw [xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/grid,
+        shift={(charnodey)}]
+        (0,0) grid +(2,1);
+      \expandafter\@tempa\expandafter{\ychar\xchar};
+      \path (charnodey) +(0,-2) node (charnodey) {};
+    }
+    \path (charnodex) ++(+2,0) node (charnodex) {} node (charnodey) {};
+    }
+  \end{tikzpicture}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</examplecode>
+%<*driver>
+%    \end{macrocode}
+\makeatother
 
 \EnableCrossrefs
 \CodelineIndex
@@ -1393,184 +1572,6 @@
 %    \end{macrocode}
 % \end{macro}
 
-% The following code is only needed to produce package examples and therefor not 
-% included in the style file but written to an additional file.
-%    \begin{macrocode}
-%</package>
-%<*examplecode>
-%    \end{macrocode}
-
-% \begin{environment}{tikztimingexampletable}
-%    \begin{macrocode}
-\NewEnviron{tikztimingexampletable}{%
-  \begin{tikzpicture}[timing/table]%
-  \def\tikztimingmaxwidth{0.0}%
-  \setcounter{tikztimingrows}{-1}%
-  \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing/name] 
-  {Characters};
-  \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing/name] 
-  {Resulting Diagram};
-  \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
-  \draw [line width=\lightrulewidth]
-     (current bounding box.north west) +(-1,-2) --
-     ($ (current bounding box.north east) +(+1,-2) $);
-  \draw [line width=\heavyrulewidth]
-     (current bounding box.north west) +(0,1) --
-     ($ (current bounding box.north east) +(0,0) $);
-  \draw [line width=\heavyrulewidth]
-     (current bounding box.south west) +(0,-1) --
-     ($ (current bounding box.south east) +(0,0) $);
-}[\end{tikzpicture}]
-
-\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
-%    \end{macrocode}
-% \end{environment}
-%
-% \begin{macro}{\tikztimingexampletable@}
-%    \begin{macrocode}
-\def\tikztimingexampletable@#1\\{%
-  \addtocounter{tikztimingrows}{1}%
-  \path (-1,\tikztimingrowpos) node [anchor=base east,timing/name] 
-  {\tikztiming@texttt{#1}};
-  \timing (+0,\tikztimingrowpos) {#1};
-  \@ifnextchar\extracode
-    {\tikztimingextracode}%
-    {%
-      \@ifnextchar\endtikztimingtable@
-        {\@gobble}{\tikztimingexampletable@}%
-    }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@texttt}
-%    \begin{macrocode}
-\def\tikztiming@texttt#1{%
-  \begingroup
-  \ttfamily
-  \let\orig@xifnch\@xifnch
-  \def\@xifnch{\space\orig@xifnch}%
-  \tikztiming@texttt@#1\tikztiming@texttt@ENDMARKER
-  \endgroup
-}
-\def\tikztiming@texttt@ENDMARKER{%
-  \@gobble{tikztiming@texttt@ENDMARKER}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@texttt@}
-%    \begin{macrocode}
-\def\tikztiming@texttt@{%
-  \@ifnextchar\bgroup
-    {\tikztiming@texttt@@}%
-    {\@ifnextchar\tikztiming@texttt@ENDMARKER
-      {}%
-      {\tikztiming@texttt@@@}%
-    }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@texttt@@}
-%    \begin{macrocode}
-\def\tikztiming@texttt@@#1{%
-  \tikztiming@texttt@\tikztiming@braceopen#1\tikztiming@braceclose
-}
-\begingroup
-\catcode`\{=12
-\catcode`\}=12
-\global\let\tikztiming@braceopen={%
-\global\let\tikztiming@braceclose=}%
-\endgroup
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@texttt@@@}
-%    \begin{macrocode}
-\def\tikztiming@texttt@@@#1{%
-  \begingroup
-  \def\@tempa{#1}%
-  \def\@tempb{\tikztiming@braceopen}%
-  \ifx\@tempa\@tempb
-    #1%
-  \else
-  \def\@tempb{\tikztiming@braceclose}%
-  \ifx\@tempa\@tempb
-    #1%
-  \else
-    \string#1%
-  \fi\fi
-  \endgroup
-  \tikztiming@texttt@
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingfullexampletable}
-%    \begin{macrocode}
-\def\tikztimingfullexampletable{
-  \begin{tikzpicture}[x=1em,y=1em,font=\sffamily]
-    \tikzset{timing/d/background/.style={fill={gray!25},fill opacity=0.5}}%
-    \iffalse
-    \def\chars{\@gobble}%
-    \def\@tempa{}%
-    \@for\tchar:=\tikztiming@chars\do{%
-      \expandafter\lowercase\expandafter{\expandafter\def\expandafter\@tempa
-      \expandafter{\tchar}}%
-      \edef\chars{\chars,\tchar,\@tempa}%
-    }
-    \else
-    \let\chars\tikztiming@chars
-    \fi
-    \node (charnode) at (0,0) {%
-       \scalebox{0.4}%
-         {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
-         {\mbox{\rotatebox{45}{from}}}$}}%
-    };
-    \node (charnodex) at (0.25,0) {};%
-    \node (charnodey) at (0,0) {};%
-    \expandafter\foreach
-    \expandafter\tchar
-    \expandafter i\expandafter n\expandafter{\chars} {%
-      \path (charnodex) ++(+2,0) node (charnodex) {\strut\tchar};
-      \path (charnodey) ++(0,-2) node (charnodey) {\strut\tchar};
-    }%
-    \draw [line width=\heavyrulewidth] (charnodex) +(+1,+1) -- (-1,+1);
-    \draw [line width=\lightrulewidth]  (charnodex) +(+1,-1) -- (-1,-1);
-    \draw [line width=\lightrulewidth]  (charnodey) +(+1,-0.6) -- (+1,-1.4) 
-    (+1,-0.6) -- (+1,+0.6);
-    \draw [line width=\heavyrulewidth] (charnodey) ++(-1,-1) -- +($ (2,0) + 
-    (charnodex) $);
-    %
-    \path (1.5,-2) node (charnodex) {\strut};
-    \node (charnodex) at (charnodex.base) {};
-    \node (charnodey) at (charnodex.base) {};
-    \def\@tempa{\timing (charnodey)}
-    \expandafter\foreach
-    \expandafter\xchar
-    \expandafter i\expandafter n\expandafter{\chars} {
-    \expandafter\foreach
-    \expandafter\ychar
-    \expandafter i\expandafter n\expandafter{\chars} {
-      \draw [xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/grid,
-        shift={(charnodey)}]
-        (0,0) grid +(2,1);
-      \expandafter\@tempa\expandafter{\ychar\xchar};
-      \path (charnodey) +(0,-2) node (charnodey) {};
-    }
-    \path (charnodex) ++(+2,0) node (charnodex) {} node (charnodey) {};
-    }
-  \end{tikzpicture}
-}
-%    \end{macrocode}
-% \end{macro}
-%
-%    \begin{macrocode}
-%</examplecode>
-%<*package>
-%    \end{macrocode}
-%
 % \begin{macro}{\tikztiming@tablegrid}
 %    \begin{macrocode}
 \def\tikztiming@tablegrid{%
