@@ -79,11 +79,11 @@
 \NewEnviron{tikztimingexampletable}{%
   \begin{tikzpicture}[timing/table]%
   \def\tikztimingmaxwidth{0.0}%
-  \setcounter{tikztimingrows}{-1}%
-  \path (-1.0,1.5*\tikztimingrowpos) node [anchor=base east,timing/name] 
-  {Characters};
-  \path (+0.0,1.5*\tikztimingrowpos) node [anchor=base west,timing/name] 
-  {Resulting Diagram};
+  \coordinate (last row) at (0,-1);
+  \coordinate (label pos) at (-1,0);
+  \path (last row) +(-1,0.5) node [anchor=base east,timing/name] {Characters};
+  \path (last row) +(0,0.5)  node [anchor=base west,timing/name] {Resulting 
+  Diagram};
   \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
   \draw [line width=\lightrulewidth]
      (current bounding box.north west) +(-1,-2) --
@@ -103,80 +103,18 @@
 % \begin{macro}{\tikztimingexampletable@}
 %    \begin{macrocode}
 \def\tikztimingexampletable@#1\\{%
-  \addtocounter{tikztimingrows}{1}%
-  \path (-1,\tikztimingrowpos) node [anchor=base east,timing/name] 
-  {\tikztiming@texttt{#1}};
-  \timing (+0,\tikztimingrowpos) {#1};
+  \def\tikztiming@text{#1}%
+  \@onelevel@sanitize\tikztiming@text
+  \path (last row) +(0,-2) coordinate (last row);
+  \path (last row) +(-1,0) node [anchor=base east,timing/name]
+    {\ttfamily\tikztiming@text};
+  \timing (last row) {#1};
   \@ifnextchar\extracode
     {\tikztimingextracode}%
     {%
       \@ifnextchar\endtikztimingtable@
         {\@gobble}{\tikztimingexampletable@}%
     }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@texttt}
-%    \begin{macrocode}
-\def\tikztiming@texttt#1{%
-  \begingroup
-  \ttfamily
-  \let\orig@xifnch\@xifnch
-  \def\@xifnch{\space\orig@xifnch}%
-  \tikztiming@texttt@#1\tikztiming@texttt@ENDMARKER
-  \endgroup
-}
-\def\tikztiming@texttt@ENDMARKER{%
-  \@gobble{tikztiming@texttt@ENDMARKER}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@texttt@}
-%    \begin{macrocode}
-\def\tikztiming@texttt@{%
-  \@ifnextchar\bgroup
-    {\tikztiming@texttt@@}%
-    {\@ifnextchar\tikztiming@texttt@ENDMARKER
-      {}%
-      {\tikztiming@texttt@@@}%
-    }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@texttt@@}
-%    \begin{macrocode}
-\def\tikztiming@texttt@@#1{%
-  \tikztiming@texttt@\tikztiming@braceopen#1\tikztiming@braceclose
-}
-\begingroup
-\catcode`\{=12
-\catcode`\}=12
-\global\let\tikztiming@braceopen={%
-\global\let\tikztiming@braceclose=}%
-\endgroup
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@texttt@@@}
-%    \begin{macrocode}
-\def\tikztiming@texttt@@@#1{%
-  \begingroup
-  \def\@tempa{#1}%
-  \def\@tempb{\tikztiming@braceopen}%
-  \ifx\@tempa\@tempb
-    #1%
-  \else
-  \def\@tempb{\tikztiming@braceclose}%
-  \ifx\@tempa\@tempb
-    #1%
-  \else
-    \string#1%
-  \fi\fi
-  \endgroup
-  \tikztiming@texttt@
 }
 %    \end{macrocode}
 % \end{macro}
@@ -202,8 +140,8 @@
          {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
          {\mbox{\rotatebox{45}{from}}}$}}%
     };
-    \node (charnodex) at (0.25,0) {};%
-    \node (charnodey) at (0,0) {};%
+    \coordinate (charnodex) at (0.25,0);%
+    \coordinate (charnodey) at (0,0);%
     \expandafter\foreach
     \expandafter\tchar
     \expandafter i\expandafter n\expandafter{\chars} {%
@@ -218,8 +156,8 @@
     (charnodex) $);
     %
     \path (1.5,-2) node (charnodex) {\strut};
-    \node (charnodex) at (charnodex.base) {};
-    \node (charnodey) at (charnodex.base) {};
+    \coordinate (charnodex) at (charnodex.base);
+    \coordinate (charnodey) at (charnodex.base);
     \def\@tempa{\timing (charnodey)}
     \expandafter\foreach
     \expandafter\xchar
