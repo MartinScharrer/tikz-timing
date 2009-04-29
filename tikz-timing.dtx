@@ -62,6 +62,7 @@
 \usepackage{array}
 \usepackage{flafter,fnpos}
 \usepackage{booktabs}
+\usepackage{amsmath}
 \usepackage{placeins}
 \makeFNbottom
 \makeFNbelow
@@ -648,7 +649,7 @@
 \makeatother
 
 \EnableCrossrefs
-\CodelineIndex
+%\CodelineIndex
 \RecordChanges
 %\OnlyDescription
 \listfiles
@@ -699,9 +700,11 @@
 % \DoNotIndex{\setcounter,\addtocounter,\advance,\afterassignment,\AtEndOfPackage}
 % \DoNotIndex{\ProvidesPackage,\providecommand,\RequirePackage,\empty,\begin,\end}
 % \DoNotIndex{\begingroup,\bgroup,\egroup,\endgroup,\csname,\endcsname,\@tempa}
-% \DoNotIndex{\ignorespaces,\lccode,\sffamily,\@gobble,\@ifundefined,\@for}
+% \DoNotIndex{\ignorespaces,\lccode,\sffamily,\@gobble,\@ifundefined,\@for,\or}
 % \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameuse,\@secondoftwo}
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
+% \DoNotIndex{\height,\width,\slope,\style,\draw,\path,\newdraw,\lastchar,\currentchar}
+% \DoNotIndex{\dslope,\zslope}
 %
 % \ifpdf
 % \hypersetup{%
@@ -955,8 +958,35 @@
 % |backgrounds| TikZ library (|\usetikzlibrary{backgrounds}|) which is loaded by 
 % |tikz-timing|.
 %
+% \DescribeMacro{rowdist}{}
+% \DescribeMacro*{coldist}{}
+% This macros can be used inside the table after \css{extracode} and return the 
+% row and column distance. There are useful for drawing additional material 
+% relative to the rows and columns. This values can be set (\eg in the optional 
+% argument of the table) using the \texttt{timing/rowdist} and 
+% \texttt{timing/coldist} settings which are explained in 
+% Section~\ref{sec:styles}.
+%
+% \subsubsection*{Positions \& Scalings inside the Table}
+% The first row starts at $y=0$ and the next rows are each
+% |-1*\rowdist| lower than the previous one. The very last one can be accessed 
+% by the tikz coordinate `\texttt{(last row)}'. The vertical unit is 1 
+% \textsf{bit height} and the default row distance is `2' (=$2\times$\textsf{bit 
+% height}).  This means that a normal table with three rows goes from $y=+1$ 
+% (base line at 0 + 1 \textsf{bit height}) to $y=-4$ (first row:~+0, second 
+% row:~-2, third row:~-4).  This are relative to the middle of the drawn lines, 
+% \ie the bounding box is $2\times\frac{\text{line width}}{2}=1\cdot 
+% $\textsf{line width} higher.
+%
+% The timing column starts at $x=0$ and goes into the positive range while 
+% scaled using the bit width. Example: |HHHh| has a width of 3.5.
+%
+% The label column starts at $x=-$|\coldist| and the text is right align with 
+% the right border at this position.
+%
+%
 % \newpage
-% \section{Styles}
+% \section{Styles}\label{sec:styles}
 % The generated logic signals are drawn using the style mechanism provided by 
 % \pkg{tikz} (which is based on \pkg[pgf]{pgfkeys}). This styles are defined and 
 % can be redefined using \css{tikzset}\marg{style name/.style=value,\ldots}.  
@@ -1134,6 +1164,7 @@
 % \centering
 % \lstset{basicstyle=\ttfamily\small}
 % \def\texta{}\def\textb{}^^A
+% \let\insertoriginalimageforcomparisionifpresent\relax
 % \ifpdf
 %   \IfFileExists{SR_FF_timing_diagram.png}{^^A
 %   \def\insertoriginalimageforcomparisionifpresent{^^A
@@ -2194,8 +2225,6 @@
 %
 % \begin{macro}{\tikztiminglet@}
 %    \begin{macrocode}
-\def\dotind{}
-
 \def\tikztiminglet@#1#2\relax#3#4\relax{%
   \tikztiming@namelet{#1#2}{#3#4}%
   \tikztiming@namelet{#1#2@general}{#3#4@general}%
