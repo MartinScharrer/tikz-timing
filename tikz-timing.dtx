@@ -1028,8 +1028,9 @@
 %     defined for `|D|'. \\
 %     \midrule
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
-%     Default: 0.1.\newline This also sets |dslope=2*slope|, |zslope=slope/2|.  
-%     \\
+%     \newline This also sets |dslope=2*slope|, |zslope=slope/2|.\\
+%     timing/lslope=\meta{0.0\en1.0} & Sets slope for logic transitions only.  
+%     Default: 0.1\\
 %     timing/dslope=\meta{0.0\en1.0} & Sets slope for data transitions.  
 %     Default: 0.2\\
 %     timing/zslope=\meta{0.0\en1.0} & Sets slope for Z transitions. Default: 
@@ -1311,7 +1312,12 @@
   c/.style={timing/slope=0.0},
   x/.style={red},
   table/grid/.style={timing/grid},
-  slope/.code={\tikztimingsetslope{#1}},
+  slope/.code={%
+    \tikztimingsetslope{#1}%
+    \tikztimingsetdslope{2*#1}%
+    \tikztimingsetzslope{#1/2}%
+  },
+  lslope/.code={\tikztimingsetslope{#1}},
   dslope/.code={\tikztimingsetdslope{#1}},
   zslope/.code={\tikztimingsetzslope{#1}},
   coldist/.store in=\tikztiming@coldist,
@@ -2199,8 +2205,6 @@
   \pgfmathparse{min(1.0,{max(0.0,#1)})}%
   \let\tikztiming@slope\pgfmathresult
   \edef\timingslope{\tikztiming@slope*\noexpand\timingwidth}%
-  \tikztimingsetdslope{\tikztiming@slope*2.0}%
-  \tikztimingsetzslope{\tikztiming@slope/2.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2226,6 +2230,8 @@
 % \end{macro}
 %    \begin{macrocode}
 \tikztimingsetslope{0.10}%
+\tikztimingsetdslope{0.20}%
+\tikztimingsetzslope{0.05}%
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiminguse}
