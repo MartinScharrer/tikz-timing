@@ -55,6 +55,8 @@
 \usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
+\usepackage{graphicx}
+\usepackage{ifpdf}
 \usepackage{xcolor}
 \usepackage{tabularx}
 \usepackage{array}
@@ -1130,36 +1132,53 @@
 %
 % \begin{example}
 % \centering
-% \lstset{basicstyle=\ttfamily\small}%
+% \lstset{basicstyle=\ttfamily\small}
+% \def\texta{}\def\textb{}^^A
+% \ifpdf
+%   \IfFileExists{SR_FF_timing_diagram.png}{^^A
+%   \def\insertoriginalimageforcomparisionifpresent{^^A
+%     \hspace{0.2\textwidth}\relax\includegraphics[width=28ex,trim=0 10pt 0 
+%     0,clip]{SR_FF_timing_diagram.png}^^A
+%   }^^A
+%   \def\texta{ (left)}\def\textb{ (right)}^^A
+%   }{}^^A
+% \fi
 % \begin{examplecode}
+%   \definecolor{bgblue}{rgb}{0.41961,0.80784,0.80784}
+%   \definecolor{bgred}{rgb}{1,0.61569,0.61569}
+%   \definecolor{fgblue}{rgb}{0,0,0.6}
+%   \definecolor{fgred}{rgb}{0.6,0,0}
 %   \begin{tikztimingtable}[timing/slope=0,
 %     timing/coldist=2pt,xscale=2,yscale=1.1,semithick]
 %     \scriptsize clock & 7{C}\\
-%     S & .75L h 2.25L H LLl [blue!80!black]\\
-%     R & 1.8L .8H 2.2L 1.4H 0.8L [blue!80!black]\\
+%     S & .75L h 2.25L H LLl [fgblue]\\
+%     R & 1.8L .8H 2.2L 1.4H 0.8L [fgblue]\\
 %     Q & L .8H 1.7L 1.5H LL\\
 %     $\overline{\mbox{Q}}$ & H .8L 1.7H 1.5L HH\\
-%     Q & LHHHHLL[red]\\
-%     $\overline{\mbox{Q}}$ & HLLLLHH[red]\\
+%     Q & LHHHHLL[fgred]\\
+%     $\overline{\mbox{Q}}$ & HLLLLHH[fgred]\\
 %   \extracode
 %    \begin{pgfonlayer}{background}
-%     \shade [right color=green,left color=white,
-%       semitransparent] (7,-8.4) rectangle (-2,-4.6);
-%     \shade
-%      [right color=red,left color=white,semitransparent]
-%         (7,-13) rectangle (-2,-8.6);
+%     \shade [right color=bgblue,left color=white]
+%        (7,-8.45) rectangle (-2,-4.6);
+%     \shade [right color=bgred,left color=white]
+%        (7,-12.8) rectangle (-2,-8.6);
 %     \foreach \x in {1,...,6}
-%       \draw [help lines] (\x,1) -- (\x,-13);
+%       \draw [help lines] (\x,1) -- (\x,-12.8);
 %     \foreach \y in {1,...,6}
 %       \draw [help lines] (0,-2*\y) -- +(7,0);
 %     \node [anchor=south east,inner sep=0pt]
-%       at (7,-8.4) {\tiny clocked};
-%     \node [anchor=south east,inner sep=0pt,red]
-%       at (7,-13) {\tiny positive edge triggered};
+%       at (7,-8.45) {\tiny clocked};
+%     \node [anchor=south east,inner sep=0pt,fgred]
+%       at (7,-12.8) {\tiny positive edge triggered};
 %    \end{pgfonlayer}
 %   \end{tikztimingtable}
+%   \insertoriginalimageforcomparisionifpresent
 % \end{examplecode}
-% \caption{Timing of different SR Registers.}
+% \caption[SR flip-flop timing diagram]{SR flip-flop timing diagram\texta.  
+% Redrawn from image\textb\\ {\small
+% \url{http://commons.wikimedia.org/wiki/File:SR_FF_timing_diagram.png}
+% }}
 % \end{example}
 %
 % \StopEventually{}
