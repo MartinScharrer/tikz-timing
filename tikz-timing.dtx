@@ -979,34 +979,42 @@
 %   \label{tab:styles}
 %   \def\en{\,\textsf{--}\,}
 %   \makebox[\textwidth][c]{^^A
-%   \begin{tabular}{>{\ttfamily}ll}
+%   \begin{tabularx}{1.15\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
 %     \toprule
 %     \normalfont Style/Setting & Description \\
 %     \midrule
-%     timing      & Base settings like line width and bit height\&width.  \\
+%     timing      & Base settings like line width and bit height \& width.  \\
 %     timing/intext & Used for \cs{texttiming}. Depends on |timing|.\\
 %     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
 %     \midrule
-%     timing/\meta{char (lowercase)} & Style for character \meta{char}. Not used 
+%     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
 %     for `|H|' and `|L|'. \\
-%     timing/\meta{char (lc)}/background & Background style for characters `|D|' 
+%     timing/\meta{lc char}/background & Background style for characters `|D|' 
 %     and `|U|'. \\
-%     timing/\meta{char (lc)}/text & Text style for character \meta{char}. Only 
+%     timing/\meta{lc char)}/text & Text style for character \meta{char}.  Only 
 %     defined for `|D|'. \\
 %     \midrule
-%     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions. \\
-%                  & This also sets |dslope=2*slope|, |zslope=slope/2|. \\
-%     timing/dslope=\meta{0.0\en1.0} & Sets slope for data transitions. \\
-%     timing/zslope=\meta{0.0\en1.0} & Sets slope for Z transitions. \\
+%     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
+%     Default: 0.1.\newline This also sets |dslope=2*slope|, |zslope=slope/2|.  
+%     \\
+%     timing/dslope=\meta{0.0\en1.0} & Sets slope for data transitions.  
+%     Default: 0.2\\
+%     timing/zslope=\meta{0.0\en1.0} & Sets slope for Z transitions. Default: 
+%     0.05\\
+%     timing/rowdist=\meta{distance} & Sets (baseline) distance between rows in 
+%     a tikztimingtable. Default: 2 (=$2\times$bit heights)\\
+%     timing/coldist=\meta{distance} & Sets distance between columns in a 
+%     tikztimingtable. Default: 1 (=$1\times$bit width)\\
 %     \bottomrule
-%   \end{tabular}
+%   \end{tabularx}
 %   }
 %   ^^A\\[\smallskipamount]
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
 % \end{table}
 %
+% \clearpage
 % \section{Examples}
 % This section shows some examples by putting either the full source code or 
 % only the needed characters beside the graphical result. Please note that the 
@@ -1014,11 +1022,61 @@
 % declared as optional argument (\oarg{char}) \emph{inside}/\emph{together} with 
 % the logic characters. The syntax of \cs{textttiming} is identical except the 
 % initial character is given as a normal optional argument before the characters 
-% argument.\\[\smallskipamount]
+% argument.
+% ^^A\\[\smallskipamount]
 % ^^A\emph{Example notation example:} `|[c]cccc|' means either 
 % ^^A|\timing{[c]cccc};| or |\texttiming[c]{cccc}|.
 %
-% \vspace{3cm}
+
+% \begin{exampletable}
+% \centering
+% \pgfmathsetbasenumberlength{2}
+% \newcounter{hexcount}
+% \addtocounter{hexcount}{+8}%
+% \newcommand{\hexcountmacro}{%
+%   \pgfmathdectoBase\thehexcount{\value{hexcount}}{16}%
+%   \hbox{\thehexcount}%
+%   \addtocounter{hexcount}{+1}%
+% }
+% \caption{Initial Characters, Modifiers, TikZ Settings}\label{exa:adv}
+% \def\somemacro{}%
+% \def\code{}%
+% \makebox[\textwidth][c]{%
+% \begin{tikztimingexampletable}
+%   HLZXDUTC \\
+%   cccc \\
+%   tttt \\
+%   [c]cccc \\
+%   4{c} \\
+%   4c4c \\
+%   4{1.8c} \\
+%   [d] 4{5D{Text}} 0.2D \\
+%   3.4H 0.6L \\
+%   DDDUUUDDD \\
+%   DDD{}DUUDD \\
+%   8{2D{\hexcountmacro}} \\
+%   3{2{0.25X 2.5D .25Z}} \\
+%   DDD{} 3{0.2D{}} DDD \\
+%   DDD{} 3{0.2D{}} 0.4D{} 0.6D{} DDD \\
+%   HHHLLH SSSS HLLHHL \\
+%   HHGHHGGHHLLGLLGH \\
+%   ZZ G ZZ G XX G X \\
+%   LLL 2{0.1H 0.1L} 0.6H HH \\
+%   LLL [timing/slope=0.05] 4{.05H .05L} 0.6H HH\\
+%   LLL 0.4U 0.6H HH \\
+%   [L][timing/slope=1.0] HL HL HL HL HL \\
+%   LLLLL !{-- +(.5,.5) -- ++(1,0)} HHHHHH \\
+%   LLLLL [/utils/exec={\somemacro\code}] HHHHHH \\
+%   LL [green] HH [brown] XX LL ZZ [orange] HH \\
+%   [][line width=1pt] HLXZDU  [line width=0.1pt] HLXZDU \\
+%   [][line width=1pt] HLXZDU ;[line width=0.1pt] HLXZDU \\
+% \end{tikztimingexampletable}%
+% }
+% \\\scriptsize
+% \emph{Note:} Optional argument must be placed before macro argument if 
+% \cs{texttiming} is used.
+% 
+% \end{exampletable}
 %
 % \begin{example}
 % \centering
@@ -1069,61 +1127,6 @@
 % \end{examplecode}
 % \caption{\cs{timing} inside general \envv{tikzpicture}.}
 % \end{example}
-
-% \begin{exampletable}
-% \centering
-% \pgfmathsetbasenumberlength{2}
-% \newcounter{hexcount}
-% \addtocounter{hexcount}{+8}%
-% \newcommand{\hexcountmacro}{%
-%   \pgfmathdectoBase\thehexcount{\value{hexcount}}{16}%
-%   \hbox{\thehexcount}%
-%   \addtocounter{hexcount}{+1}%
-% }
-% \caption{Initial Characters, Modifiers, TikZ Settings}\label{exa:adv}
-% \def\somemacro{}%
-% \def\code{}%
-% \makebox[\textwidth][c]{%
-% \begin{tikztimingexampletable}
-%   HLZXDUTC \\
-%   cccc \\
-%   tttt \\
-%   [c]cccc \\
-%   4{c} \\
-%   4c4c \\
-%   4{1.2c} \\
-%   4{1.8c} \\
-%   [d] 4{5D{Text}} 0.2D \\
-%   3.4H 0.6L \\
-%   DDDUUUDDD \\
-%   DDD{}DU{}UDD \\
-%   8{2D{\hexcountmacro}} \\
-%   3{2{0.25X 2.5D .25Z}} \\
-%   DDD{} 3{0.2D{}} DDD \\
-%   DDD{} 3{0.2D{}} 0.4D{} 0.6D{} DDD \\
-%   HHHLLH SSSS HLLHHL \\
-%   HHGHHGGHHLLGLLGH \\
-%   ZZ G ZZ G XX G X \\
-%   LLL 2{0.1H 0.1L} 0.6H HH \\
-%   LLL [timing/slope=0.05] 4{.05H .05L} 0.6H HH\\
-%   LLL 0.4U 0.6H HH \\
-%   [L][timing/slope=1.0] HL HL HL HL HL \\
-%   LLLLL !{-- +(.5,.5) -- ++(1,0)} HHHHHH \\
-%   LLLLL [/utils/exec={\somemacro\code}] HHHHHH \\
-%   LL [green] HH [brown] XX LL ZZ [orange] HH \\
-%   [][line width=1pt] HLXZDU  [line width=0.1pt] HLXZDU \\
-%   [][line width=1pt] HLXZDU ,[line width=0.1pt] HLXZDU \\
-%   [][line width=1pt] HLXZDU ;[line width=0.1pt] HLXZDU \\
-%   [][dashed] HLXZDU  [dotted] HLXZDU \\
-%   [][dashed] HLXZDU ,[dotted] HLXZDU \\
-%   [][dashed] HLXZDU ;[dotted] HLXZDU \\
-% \end{tikztimingexampletable}%
-% }
-% \\\scriptsize
-% \emph{Note:} Optional argument must be placed before macro argument if 
-% \cs{texttiming} is used.
-% 
-% \end{exampletable}
 %
 % \begin{example}
 % \centering
