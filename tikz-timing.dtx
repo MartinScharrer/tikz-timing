@@ -1786,6 +1786,7 @@
 % \begin{macro}{\tikztiming@handlecode}
 %    \begin{macrocode}
 \def\tikztiming@handlecode#1{%
+  \tikztiming@output@flush
   \tikztiming@addtostr{ #1 }%
   \tikztiming@
 }
