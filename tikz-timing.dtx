@@ -1194,10 +1194,10 @@
 %        (7,-8.45) rectangle (-2,-4.6);
 %     \shade [right color=bgred,left color=white]
 %        (7,-12.8) rectangle (-2,-8.6);
-%     \foreach \x in {1,...,6}
-%       \draw [help lines] (\x,1) -- (\x,-12.8);
-%     \foreach \y in {1,...,6}
-%       \draw [help lines] (0,-2*\y) -- +(7,0);
+%     \foreach \x/\y in {1,...,6} {%
+%       \draw [help lines,semitransparent,thin]
+%         (\x,1) -- (\x,-12.8)  (0,-2*\y) -- +(7,0);
+%     }%
 %     \node [anchor=south east,inner sep=0pt]
 %       at (7,-8.45) {\tiny clocked};
 %     \node [anchor=south east,inner sep=0pt,fgred]
