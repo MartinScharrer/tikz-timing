@@ -1985,16 +1985,16 @@
 % \begin{macro}{\tikztimingtable@row@}
 %    \begin{macrocode}
 \def\tikztimingtable@row@#1&#2&#3\\{%
-  \message{^^JDEBUG: '\noexpand#3' '\noexpand'^^J}%
   \ifx\\#3\\\else
-    \def\@tempa{\tikztiming@emptycell&}%
-    \def\@tempb{#3}%
-    \ifx\@tempa\@tempb\else
-      \PackageWarning{tikz-timing}{%
-        To many columns in tikztimingtable row! Only two are allowed%
-          '\string#3'
-      }%
-    \fi
+    \begingroup
+      \def\@tempa{\tikztiming@emptycell&}%
+      \def\@tempb{#3}%
+      \ifx\@tempa\@tempb\else
+        \PackageWarning{tikz-timing}{%
+          To many columns in tikztimingtable row! Only two are allowed%
+        }{}{}{}%
+      \fi
+    \endgroup
   \fi
   \ifx\tikztiming@emptycell#2%
     \def\next{\tikztimingtable@row@@{#1}{}}%
