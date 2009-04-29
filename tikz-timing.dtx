@@ -540,7 +540,6 @@
   \coordinate (last row) at (0,-1);
   \coordinate (label pos) at (-1,0);
   \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
-}[{%
   \path (0,-1) +(-\tikztiming@coldist,0.5*\tikztiming@rowdist) node
     [anchor=base east,timing/name] {Characters};
   \path (0,-1) +(0,0.5*\tikztiming@rowdist) node
@@ -553,9 +552,9 @@
      ($ (current bounding box.north east) +(0,0) $);
   \draw [line width=\heavyrulewidth]
      (current bounding box.south west) +(0,-1) --
-     ($ (current bounding box.south east) +(0,0) $);
-\end{tikzpicture}
-}]
+      ($ (current bounding box.south east) +(0,0) $);
+  \end{tikzpicture}
+}
 
 \def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
 %    \end{macrocode}
@@ -1952,8 +1951,9 @@
   \def\tikztimingwidth{0.0}%
   \coordinate (last row)  at (0,\rowdist);
   \coordinate (label pos) at (-1*\coldist,0);
-  \expandafter\tikztimingtable@\BODY\endtikztimingtable@
-}[\end{tikzpicture}]
+  \expandafter\tikztimingtable@row\BODY\endtikztimingtable@
+  \end{tikzpicture}
+}
 
 \def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
 %    \end{macrocode}
@@ -1965,9 +1965,50 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingtable@}
+% \begin{macro}{\tikztiming@emptycell}
+% Just used as marker. Needs unique definition.
 %    \begin{macrocode}
-\def\tikztimingtable@#1&#2\\{%
+\def\tikztiming@emptycell{%
+  \@gobble{tikztiming@emptycell}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@row}
+%    \begin{macrocode}
+\def\tikztimingtable@row#1\\{%
+  \tikztimingtable@row@#1&\tikztiming@emptycell&\\
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@row@}
+%    \begin{macrocode}
+\def\tikztimingtable@row@#1&#2&#3\\{%
+  \message{^^JDEBUG: '\noexpand#3' '\noexpand'^^J}%
+  \ifx\\#3\\\else
+    \def\@tempa{\tikztiming@emptycell&}%
+    \def\@tempb{#3}%
+    \ifx\@tempa\@tempb\else
+      \PackageWarning{tikz-timing}{%
+        To many columns in tikztimingtable row! Only two are allowed%
+          '\string#3'
+      }%
+    \fi
+  \fi
+  \ifx\tikztiming@emptycell#2%
+    \def\next{\tikztimingtable@row@@{#1}{}}%
+  \else
+    \def\next{\tikztimingtable@row@@{#1}{#2}}%
+  \fi
+  \next
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@row@@}
+%    \begin{macrocode}
+\def\tikztimingtable@row@@#1#2{%
   \path (last row) +(0,-1*\rowdist) coordinate (last row);
   \path (last row) +(-1*\coldist,0) node [anchor=base east,timing/name]
     {\tikztiminglabel{#1}};
@@ -1979,7 +2020,7 @@
     }%
     {%
       \@ifnextchar\endtikztimingtable@
-        {\@gobble}{\tikztimingtable@}%
+        {\@gobble}{\tikztimingtable@row}%
     }%
 }
 %    \end{macrocode}
