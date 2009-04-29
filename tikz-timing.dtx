@@ -1212,6 +1212,50 @@
 % }}
 % \end{example}
 %
+% \begin{example}
+% \centering
+% \lstset{basicstyle=\ttfamily\footnotesize}
+% \def\texta{}\def\textb{}^^A
+% \begin{examplecode}
+%   \newcounter{countup}
+%   \newcommand*{\countup}{\addtocounter{countup}{1}\thecountup}
+%   \newcommand*{\crst}{\setcounter{countup}{0}}
+%   \begin{tikztimingtable}
+%     [timing/d/background/.style={fill=white},
+%      timing/slope=0.2,timing/dslope=0.2]
+%             CPOL=0 & LL 15{T} LL \\
+%             CPOL=1 & HH 15{T} HH \\
+%                    & H 17L H     \\
+%     \\
+%     \crst Cycle \# & U     8{2D{\countup}} 2U    \\
+%     \crst     MISO & D{z}  8{2D{\countup}} 2D{z} \\
+%     \crst     MOSI & D{z}  8{2D{\countup}} 2D{z} \\
+%     \\
+%     \crst Cycle \# & UU    8{2D{\countup}}  U    \\
+%     \crst     MISO & D{z}U 8{2D{\countup}}  D{z} \\
+%     \crst     MOSI & D{z}U 8{2D{\countup}}  D{z} \\
+%   \extracode
+%     \begin{pgfonlayer}{background}
+%     \begin{scope}[semitransparent,semithick]
+%       \path (last row) +(0,-2) coordinate (lowb);
+%       \foreach \x in {2,4,...,17} {%
+%         \draw [red]  (\x+0.1,1.5) -- +(lowb);
+%         \draw [blue] (\x+1.1,1.5) -- +(lowb);
+%       }%
+%     \end{scope}
+%     \end{pgfonlayer}
+%     \begin{scope}
+%       [font=\sffamily\Large,shift={(-6em,-0.5)},anchor=east]
+%       \node at (  0, 0) {SCK};    \node at (  0,-3 ) {SS};
+%       \node at (1ex,-9) {CPHA=0}; \node at (1ex,-17) {CPHA=1};
+%     \end{scope}
+%   \end{tikztimingtable}%
+% \end{examplecode}
+% \caption[SPI Interface Timing]{SPI Interface Timing\texta.  Redrawn from 
+% image\textb\\ {\small
+% \url{http://en.wikipedia.org/wiki/File:SPI_timing_diagram.svg}}}
+% \end{example}
+%
 % \StopEventually{}
 % \FloatBarrier
 % \clearpage
