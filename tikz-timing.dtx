@@ -578,8 +578,10 @@
 %     \draw (0,0) circle (0.2pt);
 %     \begin{pgfonlayer}{background}
 %       \draw [help lines,densely dashed]
-%         (0,0) ++(0.5,1.5) -- +(0,-6)
-%         (0,0) ++(4.5,1.5) -- +(0,-6);
+%         (0.5,0) +(0,1.5)
+%           -- +($ (last row) + (0,-0.5) $)
+%         (4.5,0) +(0,1.5)
+%           -- +($ (last row) + (0,-0.5) $);
 %     \end{pgfonlayer}
 %   \end{tikztimingtable}
 % \end{examplecode}
