@@ -977,7 +977,8 @@
 %   \centering
 %   \caption{TikZ Styles and Settings provided and used by this Package.}
 %   \label{tab:styles}
-%   \makebox[\textwidth][c]{%
+%   \def\en{\,\textsf{--}\,}
+%   \makebox[\textwidth][c]{^^A
 %   \begin{tabular}{>{\ttfamily}ll}
 %     \toprule
 %     \normalfont Style/Setting & Description \\
@@ -995,15 +996,15 @@
 %     timing/\meta{char (lc)}/text & Text style for character \meta{char}. Only 
 %     defined for `|D|'. \\
 %     \midrule
-%     timing/slope=\meta{0.0--1.0} & Sets slope for logic transitions. \\
+%     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions. \\
 %                  & This also sets |dslope=2*slope|, |zslope=slope/2|. \\
-%     timing/dslope=\meta{0.0--1.0} & Sets slope for data transitions. \\
-%     timing/zslope=\meta{0.0--1.0} & Sets slope for Z transitions. \\
+%     timing/dslope=\meta{0.0\en1.0} & Sets slope for data transitions. \\
+%     timing/zslope=\meta{0.0\en1.0} & Sets slope for Z transitions. \\
 %     \bottomrule
 %   \end{tabular}
 %   }
-%   \\[\smallskipamount]
-%   \emph{Note:} As a convention all style names are completely in lowercase.
+%   ^^A\\[\smallskipamount]
+%   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
 % \end{table}
 %
 % \section{Examples}
