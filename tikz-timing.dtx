@@ -1133,7 +1133,7 @@
 % \lstset{basicstyle=\ttfamily\small}%
 % \begin{examplecode}
 %   \begin{tikztimingtable}[timing/slope=0,
-%     xscale=2,yscale=1.1,semithick]
+%     timing/coldist=2pt,xscale=2,yscale=1.1,semithick]
 %     \scriptsize clock & 7{C}\\
 %     S & .75L h 2.25L H LLl [blue!80!black]\\
 %     R & 1.8L .8H 2.2L 1.4H 0.8L [blue!80!black]\\
@@ -1221,6 +1221,8 @@
   slope/.code={\tikztimingsetslope{#1}},
   dslope/.code={\tikztimingsetdslope{#1}},
   zslope/.code={\tikztimingsetzslope{#1}},
+  coldist/.store in=\tikztiming@coldist,
+  rowdist/.store in=\tikztiming@rowdist,
 }
 %    \end{macrocode}
 %
