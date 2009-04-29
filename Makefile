@@ -17,6 +17,9 @@ RED   = \033[01;31m
 GREEN = \033[01;32m
 WHITE = \033[00m
 
+CP = cp -v
+MV = mv -v
+
 .PHONY: all doc package clean fullclean example testclean ${TESTS}
 
 all: package doc example
@@ -27,12 +30,17 @@ doc: ${PACKAGE}.pdf
 package: ${PACKAGE}.sty
 
 %.pdf: %.dtx
+	-${MV} $*.pdf $*_old.pdf
 	${LATEX} $*.dtx
+	${CP} $*.pdf $*_temp.pdf
 	${LATEX} $*.dtx
+	${CP} $*.pdf $*_temp.pdf
 	-makeindex -s gind.ist -o $*.ind $*.idx
 	-makeindex -s gglo.ist -o $*.gls $*.glo
 	${LATEX} $*.dtx
+	${CP} $*.pdf $*_temp.pdf
 	${LATEX} $*.dtx
+	${CP} $*.pdf $*_temp.pdf
 
 %.pdf: %.eps
 	epstopdf $<
