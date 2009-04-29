@@ -537,11 +537,12 @@
   \def\tikztimingmaxwidth{0.0}%
   \coordinate (last row) at (0,-1);
   \coordinate (label pos) at (-1,0);
-  \path (last row) +(-\tikztiming@coldist,0.5*\tikztiming@rowdist) node
-    [anchor=base east,timing/name] {Characters};
-  \path (last row) +(0,0.5*\tikztiming@rowdist) node
-    [anchor=base west,timing/name] {Resulting Diagram};
   \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
+}[{%
+  \path (0,-1) +(-\tikztiming@coldist,0.5*\tikztiming@rowdist) node
+    [anchor=base east,timing/name] {Characters};
+  \path (0,-1) +(0,0.5*\tikztiming@rowdist) node
+    [anchor=base west,timing/name] {Resulting Diagram};
   \draw [line width=\lightrulewidth]
      (current bounding box.north west) +(-1,-2) --
      ($ (current bounding box.north east) +(+1,-2) $);
@@ -551,7 +552,8 @@
   \draw [line width=\heavyrulewidth]
      (current bounding box.south west) +(0,-1) --
      ($ (current bounding box.south east) +(0,0) $);
-}[\end{tikzpicture}]
+\end{tikzpicture}
+}]
 
 \def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
 %    \end{macrocode}
@@ -1172,6 +1174,7 @@
 
 \def\tikztiming@rowdist{2}%
 \def\tikztiming@coldist{1}%
+\def\tikztiminglabel#1{#1}%
 
 \def\tikztiming@prefix{tikztiming@trans@}
 %    \end{macrocode}
@@ -1965,10 +1968,13 @@
 \def\tikztimingtable@#1&#2\\{%
   \path (last row) +(0,-1*\rowdist) coordinate (last row);
   \path (last row) +(-1*\coldist,0) node [anchor=base east,timing/name]
-    {\ignorespaces #1};
+    {\tikztiminglabel{#1}};
   \timing (last row) {#2};
   \@ifnextchar\extracode
-    {\tikztimingextracode}%
+    {%
+      \let\extracode\relax
+      \tikztimingextracode
+    }%
     {%
       \@ifnextchar\endtikztimingtable@
         {\@gobble}{\tikztimingtable@}%
