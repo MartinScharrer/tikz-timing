@@ -1006,6 +1006,12 @@
 % |backgrounds| TikZ library (|\usetikzlibrary{backgrounds}|) which is loaded by 
 % |tikz-timing|.
 %
+% \DescribeMacro{tablegrid}{\oarg{TikZ Settings}}
+% \DescribeMacro*{fulltablegrid}{\oarg{TikZ Settings}}
+% After \css{extracode} this macro draw a grid in the background of the table.
+% The first one draws a separate grid for each row the second one only one big 
+% grid over all rows.
+%
 % \DescribeMacro{rowdist}{}
 % \DescribeMacro*{coldist}{}
 % This macros can be used inside the table after \css{extracode} and return the 
@@ -2105,6 +2111,7 @@
   \setcounter{tikztiming@nrows}{0}%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
+  \let\fulltablegrid\tikztiming@fulltablegrid
   \def\rowdist{\tikztiming@rowdist}%
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
@@ -2204,10 +2211,10 @@
 
 % \begin{macro}{\tikztiming@fulltablegrid}
 %    \begin{macrocode}
-\def\tikztiming@fulltablegrid{%
+\newcommand*\tikztiming@fulltablegrid[1][]{%
   \begin{pgfonlayer}{background}
     \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},
-    shift={(timing/table/bottom left)},timing/table/grid]
+    shift={(timing/table/bottom left)},timing/table/grid,#1]
       \draw (0,0) grid
         ($ (timing/table/top right) - (timing/table/bottom left) $);
    \endscope
@@ -2218,9 +2225,9 @@
 %
 % \begin{macro}{\tikztiming@tablegrid}
 %    \begin{macrocode}
-\def\tikztiming@tablegrid{%
+\newcommand*\tikztiming@tablegrid[1][]{%
   \begin{pgfonlayer}{background}
-    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid]
+    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
       \foreach \y in {1,...,\nrows} {%
         \draw {[shift={($ (timing/table/bottom left) + (0,\y*\rowdist) - 
         (0,\rowdist) $)}] let \p1 = (timing/table/bottom right) in (0,0) grid 
