@@ -473,17 +473,20 @@
   Example \the\c@example:^^J^^J%
   \string\documentclass{article}^^J%
   \string\usepackage{tikz-timing}[\tikztiming@date]^^J%
+  \string\pagestyle{empty}^^J%
+  \exampleextraheader^^J%
   \string\begin{document}^^J\@percentchar
 }
 \def\ydoc@exafoot{%
   \@percentchar^^J%
   \string\end{document}%
 }
+\let\exampleextraheader\empty
 
 \def\writeexample{%
   \begingroup
     \advance\c@example by 1\relax%
-    \immediate\openout\ydoc@exawrite=\jobname.exb\relax
+    \immediate\openout\ydoc@exawrite=\jobname\the\c@example.exb\relax
     \openin\ydoc@exaread=\jobname.exa\relax
     \let\do\@makeother\dospecials
     \immediate\write\ydoc@exawrite{\ydoc@exahead}%
@@ -552,7 +555,7 @@
 
 \def\tikztiming@embedexample{%
   \embedfile[filespec=example\arabic{example}.tex,mimetype=text/x-tex,
-    desc={Source Code to Example \arabic{example}}]{\jobname.exb}%
+    desc={Source Code to Example \arabic{example}}]{\jobname\the\c@example.exb}%
 }
 
 \lstset{%
@@ -1102,7 +1105,8 @@
 % the logic characters. The syntax of \cs{textttiming} is identical except the 
 % initial character is given as a normal optional argument before the characters 
 % argument.
-% All code examples are attached as \LaTeX\ source files to this PDF.
+% All examples except Example~\ref{exa:adv} are attached in compilable form
+% to this PDF.
 % ^^A\\[\smallskipamount]
 % ^^A\emph{Example notation example:} `|[c]cccc|' means either 
 % ^^A|\timing{[c]cccc};| or |\texttiming[c]{cccc}|.
@@ -1221,6 +1225,10 @@
 %   }^^A
 %   \def\texta{ (left)}\def\textb{ (right)}^^A
 %   }{}^^A
+%  \def\exampleextraheader{%
+%    \string\let
+%    \string\insertoriginalimageforcomparisionifpresent\string\relax
+%  }%
 % \fi
 % \begin{examplecode}
 %   \definecolor{bgblue}{rgb}{0.41961,0.80784,0.80784}
