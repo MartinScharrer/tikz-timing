@@ -50,6 +50,8 @@
 %<examplecode>\RequirePackage{pgffor}%
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
+\GetFileInfoSVN*
+\let\tikztiming@date\filedate
 \makeatother
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
@@ -82,6 +84,7 @@
 \IfFileExists{hypdoc.sty}
   {\RequirePackage{hypdoc}}
   {\RequirePackage{hyperref}}
+\RequirePackage{embedfile}
 \hypersetup{bookmarksopen=true,bookmarksopenlevel=2}
 \RequirePackage{xspace}
 \newcommand{\ie}{i.e.\@\xspace}
@@ -461,6 +464,44 @@
 
 \newfloat{example}{tbph}{fle}
 \floatname{example}{Example}
+\newwrite\ydoc@exawrite
+\newread\ydoc@exaread
+
+\def\ydoc@exahead{%
+  \@percentchar\space
+  TikZ-Timing \tikztiming@version\space\tikztiming@date\space
+  Example \the\c@example:^^J^^J%
+  \string\documentclass{article}^^J%
+  \string\usepackage{tikz-timing}[\tikztiming@date]^^J%
+  \string\begin{document}^^J\@percentchar
+}
+\def\ydoc@exafoot{%
+  \@percentchar^^J%
+  \string\end{document}%
+}
+
+\def\writeexample{%
+  \begingroup
+    \advance\c@example by 1\relax%
+    \immediate\openout\ydoc@exawrite=\jobname.exb\relax
+    \openin\ydoc@exaread=\jobname.exa\relax
+    \let\do\@makeother\dospecials
+    \immediate\write\ydoc@exawrite{\ydoc@exahead}%
+    \copylines
+    \immediate\write\ydoc@exawrite{\ydoc@exafoot}%
+    \immediate\closeout\ydoc@exawrite
+    \closein\ydoc@exaread
+    \tikztiming@embedexample
+  \endgroup
+}
+
+\def\copylines{%
+  \read\ydoc@exaread to \line%
+  \ifeof\ydoc@exaread\else
+    \immediate\write\ydoc@exawrite{\line}%
+    \expandafter\copylines
+  \fi
+}
 
 \newenvironment{exampletable}{%
   \floatstyle{plaintop}%
@@ -470,7 +511,8 @@
 
 \newenvironment{examplecode}
   {\begingroup\VerbatimOut[gobble=4]{\jobname.exa}}
-  {\endVerbatimOut\endgroup\formatexample}
+  {\endVerbatimOut\endgroup\writeexample
+  \formatexample}
 
 \newsavebox{\examplecodebox}
 \newsavebox{\exampleresultbox}
@@ -506,6 +548,11 @@
     }%
   \endgroup
   \par
+}
+
+\def\tikztiming@embedexample{%
+  \embedfile[filespec=example\arabic{example}.tex,mimetype=text/x-tex,
+    desc={Source Code to Example \arabic{example}}]{\jobname.exb}%
 }
 
 \lstset{%
@@ -1055,6 +1102,7 @@
 % the logic characters. The syntax of \cs{textttiming} is identical except the 
 % initial character is given as a normal optional argument before the characters 
 % argument.
+% All code examples are attached as \LaTeX\ source files to this PDF.
 % ^^A\\[\smallskipamount]
 % ^^A\emph{Example notation example:} `|[c]cccc|' means either 
 % ^^A|\timing{[c]cccc};| or |\texttiming[c]{cccc}|.
