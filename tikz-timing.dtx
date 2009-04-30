@@ -1324,7 +1324,6 @@
 \usetikzlibrary{backgrounds}
 
 \def\tikztimingwidth{0.0}
-\def\tikztimingmaxwidth{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
 \def\tikztiming@num{1.0}%
@@ -1494,11 +1493,6 @@
     \begin{scope}[shift={#2},timing,#1]%
       \tikztiming@str;%
     \end{scope}%
-    \pgfmathparse{max(\tikztimingmaxwidth,\tikztimingwidth)}%
-    \ifx\tikztimingmaxwidth\pgfmathresult\else
-      \pgfmathparse{ceil(2.0*\tikztimingwidth)/2.0}%
-      \global\let\tikztimingmaxwidth\pgfmathresult
-    \fi
   \endgroup
   \timing@@@end
 }
@@ -1805,7 +1799,8 @@
   \tikztiming@output@flush
   \tikztiming@addtostr{ coordinate (timing/end)
     let \p1 = (timing/start base), \p2 = (timing/end) in
-      (\x2,\y1) coordinate (timing/end base)
+      coordinate (timing/end base) at (\x2,\y1)
+      coordinate (timing/end top)  at (\x2,1+\y1)
   }%
 }
 %    \end{macrocode}
@@ -2123,9 +2118,10 @@
   \let\tablegrid\tikztiming@tablegrid
   \let\rowdist\tikztiming@rowdist
   \let\coldist\tikztiming@coldist
-  \def\tikztimingwidth{0.0}%
   \coordinate (last row)  at (0,\rowdist);
   \coordinate (label pos) at (-1*\coldist,0);
+  \coordinate (timing/table/top left) at (0,1);
+  \coordinate (timing/table/bottom right) at (0,0);
   \expandafter\tikztimingtable@row\BODY\endtikztimingtable@
   \end{tikzpicture}
 }
@@ -2136,7 +2132,17 @@
 
 % \begin{macro}{\tikztimingextracode}
 %    \begin{macrocode}
-\long\def\tikztimingextracode#1\endtikztimingtable@{#1}
+\long\def\tikztimingextracode#1#2\endtikztimingtable@{%
+  \path let
+     \p1 = (timing/table/top left),
+     \p2 = (timing/table/bottom right)
+   in
+     coordinate (timing/table/bottom left) at (\x1,\y2)
+     coordinate (timing/table/top right) at (\x2,\y1)
+     coordinate (timing/table/size) at (\x2-\x1,\y1-\y2)
+   ;
+  #2%
+}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2188,6 +2194,8 @@
   \path (last row) +(-1*\coldist,0) node [anchor=base east,timing/name]
     {\tikztiminglabel{#1}};
   \timing (last row) {#2};
+  \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
+    coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
   \@ifnextchar\extracode
     {%
       \let\extracode\relax
@@ -2205,9 +2213,11 @@
 %    \begin{macrocode}
 \def\tikztiming@tablegrid{%
   \begin{pgfonlayer}{background}
-    \draw[timing/table/grid]
-    (0,\tikztimingrowpos) grid 
-    +(0.5*ceil(2*\tikztimingmaxwidth)),-1*\tikztimingrowpos+1);
+    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},
+    shift={(timing/table/bottom left)},timing/table/grid]
+      \draw (0,0) grid
+        ($ (timing/table/top right) - (timing/table/bottom left) $);
+   \endscope
   \end{pgfonlayer}
 }
 %    \end{macrocode}
