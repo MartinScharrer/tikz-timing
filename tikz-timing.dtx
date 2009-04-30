@@ -2092,18 +2092,6 @@
 \newcounter{tikztimingrows}
 %    \end{macrocode}
 %
-% \begin{macro}{\tikztimingrowdist}
-%    \begin{macrocode}
-\def\tikztimingrowdist{2}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingrowpos}
-%    \begin{macrocode}
-\def\tikztimingrowpos{-\tikztimingrowdist*\value{tikztimingrows}}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\tikztiming@extracode}
 %    \begin{macrocode}
 \def\tikztiming@extracode{\@gobble{EXTRACODE}}%
@@ -2117,8 +2105,8 @@
   \setcounter{tikztiming@nrows}{0}%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
-  \let\rowdist\tikztiming@rowdist
-  \let\coldist\tikztiming@coldist
+  \def\rowdist{\tikztiming@rowdist}%
+  \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
   \begin{tikzpicture}[timing/table,#1]%
     \coordinate (last row)  at (0,\rowdist);
