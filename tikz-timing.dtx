@@ -833,6 +833,7 @@
 % \end{tabular}
 % \end{table}
 %
+% \iffalse
 % \subsection{Similar Packages}
 % There a some packages which target the same application like the package 
 % presented by this document.
@@ -864,6 +865,7 @@
 %   diagram.  The logical levels must be provided using macros like 
 %   `|\bit|\marg{0 or 1}\marg{length}'.
 % \end{description}
+% \fi
 %
 % \section{Usage}
 %
@@ -982,18 +984,19 @@
 % gives `\tikz \timing [green] ++(1,2) {[L]HLZDZLH};'.
 %
 %
-% \newpage
+% ^^A\newpage
 % \subsection{Table for Timing Diagrams}
-% \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\Signal Name/Label\ \ \&\ \ 
-% Characters \textbackslash\textbackslash}
-% This environment can be used to typeset full timing diagrams not only a single 
-% line.  The syntax is like the one for a \envv{tabular} environment with two 
-% columns.  The first column is the signal name and the second one are the logic 
-% characters which would be placed inside the argument of a \cs{texttiming} or 
-% \cs{timing} macro.  The whole table will be drawn inside a \envv{tikzpicture} 
-% environment using multiple \cs{timing} and \cs{node} macros for the logic 
-% levels and their labels, respectively.  Additional \pkg{tikz} drawing code can 
-% be insert at the end of the table by using the \cs{extracode} macro.
+% \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\\meta{Signal Name}\ \ \&\ 
+% \ \meta{Characters} \textbackslash\textbackslash\\\dots\\
+% \hspace*{-1em}\cs{extracode}\ \% Optional\\\meta{additional code}}
+% This environment can be used to typeset multi-line timing diagrams.  The 
+% syntax is like the one for a \envv{tabular} environment with two columns.  The 
+% first column is for the signal name and the second one ar the logic characters 
+% which would be placed inside the argument of a \cs{texttiming} or \cs{timing} 
+% macro.  The whole table will be drawn inside a \envv{tikzpicture} environment 
+% using multiple \cs{timing} and \cs{node} macros for the timing signals and 
+% their names, respectively.  Additional \pkg{tikz} drawing code can be insert 
+% at the end of the table using \cs{extracode}.
 %
 % \DescribeMacro{extracode}{}
 % This macro is only defined inside a \env{tikztimingtable} environment and can 
@@ -1002,15 +1005,13 @@
 % \envv{tikzpicture}. This allows to add some drawing lines or a grid to the 
 % picture. It is also possible to draw something behind the timing diagram by 
 % using the PGF background layer:
-% |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|. This needs the 
-% |backgrounds| TikZ library (|\usetikzlibrary{backgrounds}|) which is loaded by 
-% |tikz-timing|.
+% |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|.
 %
 % \DescribeMacro{tablegrid}{\oarg{TikZ Settings}}
 % \DescribeMacro*{fulltablegrid}{\oarg{TikZ Settings}}
-% After \css{extracode} this macro draw a grid in the background of the table.
-% The first one draws a separate grid for each row the second one only one big 
-% grid over all rows.
+% After \css{extracode} this macros draw a grid in the background of the table.
+% The first one draws a separate grid for each row and the second one a big grid 
+% over all rows.
 %
 % \DescribeMacro{rowdist}{}
 % \DescribeMacro*{coldist}{}
@@ -1043,13 +1044,13 @@
 % \section{Styles}\label{sec:styles}
 % The generated logic signals are drawn using the style mechanism provided by 
 % \pkg{tikz} (which is based on \pkg[pgf]{pgfkeys}). This styles are defined and 
-% can be redefined using \css{tikzset}\marg{style name/.style=value,\ldots}.  
-% They can also be used in all places where \meta{TikZ Settings} is mentioned.  
-% Please note that path/draw specific settings might not survive the transition 
-% to characters which have there own color, because these start a new drawing 
-% path.  For a more detailed explanation why this is necessary see the 
-% \pkg{tikz} manual.  However, timing specific settings are saved and restored 
-% between internal paths.
+% can be redefined using \css{tikzset}|{|\meta{style 
+% name}|/.style=|{\meta{value}|,}|.  They can also be used in all places where 
+% \meta{TikZ Settings} is mentioned.  Please note that path/draw specific 
+% settings might not survive the transition to characters which have there own 
+% color, because these start a new drawing path.  For a more detailed 
+% explanation why this is necessary see the \pkg{tikz} manual.  However, timing 
+% specific settings are saved and restored between internal paths.
 %
 % The package follows the directory structures approach used by TikZ/PGF and 
 % places all styles and other settings under the ``subdirectory'' `|timing|' in 
