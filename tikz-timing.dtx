@@ -1486,7 +1486,7 @@
 \def\timing@@@#1#2#3{%
   \begingroup
     \tikztiming@init
-    \def\tikztiming@str{\draw (0,0) }%
+    \def\tikztiming@str{\draw (0,0) coordinate (timing/start base) }%
     \@ifnextchar{[}%
       {\timing@@@init}%
       {\timing@@@init[]}%
@@ -1494,6 +1494,8 @@
     %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{scope}[shift={#2},timing,#1]%
       \tikztiming@str;%
+      \draw let \p1 = (timing/start base), \p2 = (timing/end) in
+        (\x2,\y1) coordinate (timing/end base);
     \end{scope}%
     \pgfmathparse{max(\tikztimingmaxwidth,\tikztimingwidth)}%
     \ifx\tikztimingmaxwidth\pgfmathresult\else
