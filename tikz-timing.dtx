@@ -1329,6 +1329,7 @@
 \def\tikztiming@num{1.0}%
 %%\def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
 
+\newcounter{tikztiming@nrows}%
 \def\tikztiming@rowdist{2}%
 \def\tikztiming@coldist{1}%
 \def\tikztiminglabel#1{#1}%
@@ -2113,17 +2114,21 @@
 % \begin{environment}{tikztimingtable}
 %    \begin{macrocode}
 \NewEnviron{tikztimingtable}[1][]{%
-  \begin{tikzpicture}[timing/table,#1]%
+  \begingroup
+  \setcounter{tikztiming@nrows}{0}%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
   \let\rowdist\tikztiming@rowdist
   \let\coldist\tikztiming@coldist
-  \coordinate (last row)  at (0,\rowdist);
-  \coordinate (label pos) at (-1*\coldist,0);
-  \coordinate (timing/table/top left) at (0,1);
-  \coordinate (timing/table/bottom right) at (0,0);
-  \expandafter\tikztimingtable@row\BODY\endtikztimingtable@
+  \def\nrows{\the\c@tikztiming@nrows}%
+  \begin{tikzpicture}[timing/table,#1]%
+    \coordinate (last row)  at (0,\rowdist);
+    \coordinate (label pos) at (-1*\coldist,0);
+    \coordinate (timing/table/top left) at (0,1);
+    \coordinate (timing/table/bottom right) at (0,0);
+    \expandafter\tikztimingtable@row\BODY\endtikztimingtable@
   \end{tikzpicture}
+  \endgroup
 }
 
 \def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
@@ -2190,6 +2195,7 @@
 % \begin{macro}{\tikztimingtable@row@@}
 %    \begin{macrocode}
 \def\tikztimingtable@row@@#1#2{%
+  \addtocounter{tikztiming@nrows}{1}%
   \path (last row) +(0,-1*\rowdist) coordinate (last row);
   \path (last row) +(-1*\coldist,0) node [anchor=base east,timing/name]
     {\tikztiminglabel{#1}};
@@ -2209,14 +2215,29 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\tikztiming@tablegrid}
+% \begin{macro}{\tikztiming@fulltablegrid}
 %    \begin{macrocode}
-\def\tikztiming@tablegrid{%
+\def\tikztiming@fulltablegrid{%
   \begin{pgfonlayer}{background}
     \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},
     shift={(timing/table/bottom left)},timing/table/grid]
       \draw (0,0) grid
         ($ (timing/table/top right) - (timing/table/bottom left) $);
+   \endscope
+  \end{pgfonlayer}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablegrid}
+%    \begin{macrocode}
+\def\tikztiming@tablegrid{%
+  \begin{pgfonlayer}{background}
+    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid]
+      \foreach \y in {1,...,\nrows} {%
+      \draw {[shift={($ (timing/table/bottom left) + (0,\y*\rowdist) - 
+      (0,\rowdist) $)}] (0,0) grid +(1,1)};
+      }%
    \endscope
   \end{pgfonlayer}
 }
