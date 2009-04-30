@@ -589,7 +589,6 @@
 %    \begin{macrocode}
 \NewEnviron{tikztimingexampletable}{%
   \begin{tikzpicture}[timing/table]%
-  \def\tikztimingmaxwidth{0.0}%
   \coordinate (last row) at (0,-1);
   \coordinate (label pos) at (-1,0);
   \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
@@ -2235,10 +2234,11 @@
   \begin{pgfonlayer}{background}
     \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid]
       \foreach \y in {1,...,\nrows} {%
-      \draw {[shift={($ (timing/table/bottom left) + (0,\y*\rowdist) - 
-      (0,\rowdist) $)}] (0,0) grid +(1,1)};
+        \draw {[shift={($ (timing/table/bottom left) + (0,\y*\rowdist) - 
+        (0,\rowdist) $)}] let \p1 = (timing/table/bottom right) in (0,0) grid 
+        (\x1,1)};
       }%
-   \endscope
+    \endscope
   \end{pgfonlayer}
 }
 %    \end{macrocode}
