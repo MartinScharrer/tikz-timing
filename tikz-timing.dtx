@@ -977,11 +977,11 @@
 % at the very start of the mandatory argument, not before it. This is necessary 
 % because of several technical reasons.
 %
-% Example: |\tikz \timing [green] ++(1,2) {HLZDZLH};|\phantom{\texttt{[L]}} 
-% gives `\tikz \timing [green] ++(1,2) {HLZDZLH};'.
+% Example: |\tikz \timing [green] (1,2) {HLZDZLH};|\phantom{\texttt{[L]}} gives 
+% `\tikz \timing [green] (1,2) {HLZDZLH};'.
 % 
-% Example: |\tikz \timing [green] ++(1,2) {[L]HLZDZLH};| 
-% gives `\tikz \timing [green] ++(1,2) {[L]HLZDZLH};'.
+% Example: |\tikz \timing [green] (1,2) {[L]HLZDZLH};| gives `\tikz \timing 
+% [green] (1,2) {[L]HLZDZLH};'.
 %
 %
 % ^^A\newpage
@@ -1284,7 +1284,7 @@
 %   \newcommand*{\crst}{\setcounter{countup}{0}}
 %   \begin{tikztimingtable}
 %     [timing/d/background/.style={fill=white},
-%      timing/slope=0.2,timing/dslope=0.2]
+%      timing/lslope=0.2]
 %             CPOL=0 & LL 15{T} LL \\
 %             CPOL=1 & HH 15{T} HH \\
 %                    & H 17L H     \\
