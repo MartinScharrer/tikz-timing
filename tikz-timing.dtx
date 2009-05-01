@@ -2112,8 +2112,8 @@
   \setcounter{tikztiming@nrows}{0}%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
-  \let\tablegridy\tikztiming@tablegridy
-  \let\tablegridx\tikztiming@tablegridx
+  \let\rowlines\tikztiming@rowlines
+  \let\columnlines\tikztiming@columnlines
   \let\fulltablegrid\tikztiming@fulltablegrid
   \def\rowdist{\tikztiming@rowdist}%
   \def\coldist{\tikztiming@coldist}%
@@ -2242,9 +2242,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@tablegridy}
+% \begin{macro}{\tikztiming@rowlines}
 %    \begin{macrocode}
-\newcommand*\tikztiming@tablegridy[2][]{%
+\newcommand*\tikztiming@rowlines[2][]{%
   \begin{pgfonlayer}{background}
   \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
     \def\list{#2}%
@@ -2262,9 +2262,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@tablegridx}
+% \begin{macro}{\tikztiming@columnlines}
 %    \begin{macrocode}
-\newcommand*\tikztiming@tablegridx[2][]{%
+\newcommand*\tikztiming@columnlines[2][]{%
   \begin{pgfonlayer}{background}
   \scope[timing/table/grid,#1]
     \def\list{#2}%
