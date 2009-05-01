@@ -768,7 +768,8 @@
 % \null
 % \vspace*{-2em}
 % \begin{center}
-% \tikzset{timing/z/.style={black}}
+% \tikzset{timing/z/.style={black},timing/intext/.style={timing,line 
+% width=0.1ex}}
 %   {\LARGE\sffamily The \raisebox{-0.66ex}{\Huge\textsf
 %   {\texttiming[z]{3d{\strut tikz}z5d{\strut timing}0.2z}}} package}\\[3ex]
 %   {\large Martin Scharrer \\\normalsize 
@@ -1082,7 +1083,7 @@
 % The generated logic signals are drawn using the style mechanism provided by 
 % \pkg{tikz} (which is based on \pkg[pgf]{pgfkeys}). This styles are defined and 
 % can be redefined using \css{tikzset}|{|\meta{style 
-% name}|/.style=|{\meta{value}|,}|.  They can also be used in all places where 
+% name}|/.style=|\meta{value}|,}|.  They can also be used in all places where 
 % \meta{TikZ Settings} is mentioned.  Please note that path/draw specific 
 % settings might not survive the transition to characters which have there own 
 % color, because these start a new drawing path.  For a more detailed 
@@ -1390,7 +1391,7 @@
 \tikzset{%
   timing/.cd,
   grid/.style={timing,help lines},
-  intext/.style={timing},
+  intext/.style={timing,line width=0.15ex},
   table/.style={timing,line width=0.15ex,font=\sffamily},
   coord/.style={inner sep=0pt,outer sep=0pt},
   save/.style={inner sep=0pt,outer sep=0pt,/utils/exec=\tikztiming@savesettings},
