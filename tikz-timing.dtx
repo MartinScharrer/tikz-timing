@@ -1228,13 +1228,9 @@
 %     Clock    & 10{c}      \\
 %     Signal   & z4D{Text}z \\
 %    \extracode
-%     \draw (0,0) circle (0.2pt);
+%     \draw (0,0) circle (0.2pt); % Origin
 %     \begin{pgfonlayer}{background}
-%       \draw [help lines,densely dashed]
-%         (0.5,0) +(0,1.5)
-%           -- +($ (last row) + (0,-0.5) $)
-%         (4.5,0) +(0,1.5)
-%           -- +($ (last row) + (0,-0.5) $);
+%       \vertlines{0.5,4.5}
 %     \end{pgfonlayer}
 %   \end{tikztimingtable}
 % \end{examplecode}
