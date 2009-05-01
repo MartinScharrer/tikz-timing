@@ -2314,7 +2314,7 @@
         \p2 = (1,0)
       in
         \foreach \clk in \list {
-          (\clk,+1.5) -- +(0,\y1)
+          (\clk,+1.5) -- +(0,\y1-\y2)
           [/utils/exec={\pgfmathparse{\x1>\clk*\x2}%
           \ifnum0=\pgfmathresult
             \breakforeach
