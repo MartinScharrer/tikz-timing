@@ -1843,6 +1843,7 @@
 %    \begin{macrocode}
 \def\tikztiming@@end{%
   \tikztiming@output@flush
+  \global\let\tikztimingwidth\tikztimingwidth
   \tikztiming@addtostr{ coordinate (timing/end)
     let \p1 = (timing/start base), \p2 = (timing/end) in
       coordinate (timing/end base) at (\x2,\y1)
@@ -2149,6 +2150,7 @@
 \NewEnviron{tikztimingtable}[1][]{%
   \begingroup
   \setcounter{tikztiming@nrows}{0}%
+  \def\tikztiming@maxwidth{0.0}%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
   \let\horlines\tikztiming@horlines
@@ -2157,6 +2159,7 @@
   \def\rowdist{\tikztiming@rowdist}%
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
+  \def\twidth{\tikztiming@maxwidth}%
   \begin{tikzpicture}[timing/table,#1]%
     \coordinate (last row)  at (0,\rowdist);
     \coordinate (label pos) at (-1*\coldist,0);
@@ -2238,6 +2241,9 @@
   \timing (last row) {#2};
   \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
     coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
+  %
+  \pgfmathparse{max(\tikztiming@maxwidth,\tikztimingwidth)}%
+  \let\tikztiming@maxwidth\pgfmathresult
   \@ifnextchar\extracode
     {%
       \let\extracode\relax
@@ -2305,20 +2311,15 @@
   \begingroup
     \def\list{#2}%
     \ifx\list\empty
-      \def\list{0,1,...,16383}%
+      \def\list{0,1,...,\twidth}%
     \fi
-      \draw [timing/table/lines,#1] let
-        \p1 = ($ (timing/table/bottom right) - (0,2) $),
-        \p2 = (1,0)
+    \draw [timing/table/lines,#1] let
+        \p1 = ($ (timing/table/bottom right) - (0,2) $)
       in
         \foreach \clk in \list {
-          (\clk,+1.5) -- +(0,\y1-\y2)
-          [/utils/exec={\pgfmathparse{\x1>\clk*\x2}%
-          \ifnum0=\pgfmathresult
-            \breakforeach
-            \fi}]
+          (\clk,+1.5) -- +(0,\y1)
         }
-      ;
+    ;
   \endgroup
 }
 %    \end{macrocode}
