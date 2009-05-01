@@ -534,7 +534,7 @@
 \def\formatexample{%
   \begingroup
   \savebox{\examplecodebox}{\lstinputlisting{\jobname.exa}}
-  \savebox{\exampleresultbox}{\input{\jobname.exa}}%
+  \savebox{\exampleresultbox}{\catcode`\%=14\input{\jobname.exa}}%
   %
   \par\noindent
   \setlength{\@tempdima}{\wd\examplecodebox + \wd\exampleresultbox}%
