@@ -778,23 +778,24 @@
 % \vspace{1.5em}%
 %
 % ^^A\vfill
-% \textbf{Note:} This is a new package which might not yet behave fully as 
-% intended.  Some of the internal and user macros might still change in future 
-% versions. While the package runs stable it should be taken as a $\beta$ 
-% version.
+% \noindent
+% \textbf{Note to Advanced Users:} This is a new package which internal macros 
+% might still change.  Please only rely on the user macros for now.
 %
 % \section{Introduction}
-% The package \pkg{tikz-timing} uses the \pkg[pgf]{tikz} package to produce 
-% timing diagrams inside text or \envv{tikzpicture} environments.  Also a 
-% tabular-like environment is provided to produce a larger timing diagram with 
-% multiple labeled signals and the possibility to add own drawing material.
+% This package uses the \pkg[pgf]{tikz} package to produce timing diagrams 
+% inside text or \envv{tikzpicture} environments.  Also a tabular-like 
+% environment is provided to produce a larger timing diagram with multiple 
+% labeled signals and the possibility to add own drawing material.
 %
 % The signal levels of the timing diagram can be given by corresponding 
 % characters/letters like `|H|' for \emph{Logical High} or `|L|' for 
 % \emph{Logical Low}. So e.g.\ `|{HLZXD}|' gives `\texttiming{HLZXD}'.  
 % Lowercase characters only produce a signal with half the width while uppercase 
-% characters produce it with the ``full'' width which is by default identical to 
-% there height.
+% characters produce one with the ``full'' width, called the `\textsf{period 
+% width}' in this document and which is by default identical to there height, 
+% called `\textsf{signal height}', which defaults to 1.6ex (about the height of 
+% the uppercase `X' of the current font).
 % Table~\ref{tab:chars} shows all by default defined logic characters.  
 % Additional functionality is provided by the ``modifiers'' shown in 
 % Table~\ref{tab:modifiers}.
@@ -932,11 +933,12 @@
 % position of the signal so that the diagram line will start with a transition 
 % from the initial to the first character.
 %
-% Example: |\texttiming{HLZDZLH}|^^A
+% \par\bigskip\noindent
+% \textit{Examples:}\\
+% |\texttiming{HLZDZLH}|^^A
 % \phantom{\texttt{[L]}} gives `\texttiming{HLZDZLH}', with grid: 
-% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.
-%
-% Example: |\texttiming[L]{HLZDZLH}| ^^A
+% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.\\
+% |\texttiming[L]{HLZDZLH}| ^^A
 % gives `\texttiming{HLZDZLH}', with grid: 
 % `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.
 %
@@ -1007,6 +1009,11 @@
 % using the PGF background layer:
 % |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|.
 %
+% \subsubsection{Macros for \cs{extracode} Section}
+% The following macros are only defined inside a \env{tikztimingtable} after the 
+% macro \cs{extracode}. They are useful for drawing additional material.
+%
+%
 % \DescribeMacro{tablegrid}{\oarg{TikZ Settings}}
 % \DescribeMacro*{fulltablegrid}{\oarg{TikZ Settings}}
 % After \css{extracode} this macros draw a grid in the background of the table.
@@ -1015,12 +1022,42 @@
 %
 % \DescribeMacro{rowdist}{}
 % \DescribeMacro*{coldist}{}
-% This macros can be used inside the table after \css{extracode} and return the 
-% row and column distance. There are useful for drawing additional material 
-% relative to the rows and columns. This values can be set (\eg in the optional 
-% argument of the table) using the \texttt{timing/rowdist} and 
-% \texttt{timing/coldist} settings which are explained in 
+% This macros return the row and column distance.  There are useful for drawing 
+% additional material relative to the rows and columns.  This values can be set 
+% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
+% and \texttt{timing/coldist} settings which are explained in 
 % Section~\ref{sec:styles}.
+%
+%
+% \DescribeMacro{nrows}{}
+% Returns the number of rows in the current table. Useful for use in 
+% \cs{horlines}.
+%
+%
+% \DescribeMacro*{twidth}{}
+% Returns the width (as multiple of the `period width') of the longest timing 
+% diagram line in the table.\\Example: If the longest line would be
+% `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
+%
+%
+% \DescribeMacro*{horlines}{\oarg{TikZ Settings}\marg{list}}
+% Draws horizontal background lines, optionally with the given \meta{Settings}, 
+% at the base line of the rows given by \meta{list}. The PGF macro 
+% \css{foreach}\footnote{The the \texttt{pgf} manual for more details.} is 
+% internally used so the list can include not only row numbers as integer but 
+% also fractional numbers and the `|...|' operator to auto-increment the 
+% numbers. Please note that all numbers in the list are multiplied by 
+% \cs{rowdist}.
+% If the list is empty the default `|1,2,...,\nrows|' is used which draws lines 
+% for all rows.
+%
+%
+% \DescribeMacro*{vertlines}{\oarg{TikZ Settings}\marg{list}}
+% Like \cs{horlines} but draws vertical lines and the listed numbers a relative 
+% to the basic width.
+% If the list is empty the default `|1,2,...,\twidth|' is used which draws lines 
+% after every period width.
+%
 %
 % \subsubsection*{Positions \& Scalings inside the Table}
 % The first row starts at $y=0$ and the next rows are each
@@ -1034,7 +1071,7 @@
 % $\textsf{line width} higher.
 %
 % The timing column starts at $x=0$ and goes into the positive range while 
-% scaled using the bit width. Example: |HHHh| has a width of 3.5.
+% scaled using the period width. Example: |HHHh| has a width of 3.5.
 %
 % The label column starts at $x=-$|\coldist| and the text is right align with 
 % the right border at this position.
@@ -1092,9 +1129,9 @@
 %     timing/zslope=\meta{0.0\en1.0} & Sets slope for Z transitions. Default: 
 %     0.05\\
 %     timing/rowdist=\meta{distance} & Sets (baseline) distance between rows in 
-%     a tikztimingtable. Default: 2 (=$2\times$bit heights)\\
+%     a tikztimingtable. Default: 2 (=$2\times$signal height)\\
 %     timing/coldist=\meta{distance} & Sets distance between columns in a 
-%     tikztimingtable. Default: 1 (=$1\times$bit width)\\
+%     tikztimingtable. Default: 1 (=$1\times$period width)\\
 %     \bottomrule
 %   \end{tabularx}
 %   }
@@ -2112,8 +2149,8 @@
   \setcounter{tikztiming@nrows}{0}%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
-  \let\rowlines\tikztiming@rowlines
-  \let\columnlines\tikztiming@columnlines
+  \let\horlines\tikztiming@horlines
+  \let\vertlines\tikztiming@vertlines
   \let\fulltablegrid\tikztiming@fulltablegrid
   \def\rowdist{\tikztiming@rowdist}%
   \def\coldist{\tikztiming@coldist}%
@@ -2242,9 +2279,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@rowlines}
+% \begin{macro}{\tikztiming@horlines}
 %    \begin{macrocode}
-\newcommand*\tikztiming@rowlines[2][]{%
+\newcommand*\tikztiming@horlines[2][]{%
   \begin{pgfonlayer}{background}
   \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
     \def\list{#2}%
@@ -2262,9 +2299,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@columnlines}
+% \begin{macro}{\tikztiming@vertlines}
 %    \begin{macrocode}
-\newcommand*\tikztiming@columnlines[2][]{%
+\newcommand*\tikztiming@vertlines[2][]{%
   \begin{pgfonlayer}{background}
   \scope[timing/table/grid,#1]
     \def\list{#2}%
