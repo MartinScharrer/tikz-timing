@@ -1030,17 +1030,14 @@
 % and \texttt{timing/coldist} settings which are explained in 
 % Section~\ref{sec:styles}.
 %
-%
 % \DescribeMacro{nrows}{}
 % Returns the number of rows in the current table. Useful for use in 
 % \cs{horlines}.
-%
 %
 % \DescribeMacro{twidth}{}
 % Returns the width (as multiple of the `period width') of the longest timing 
 % diagram line in the table.\\Example: If the longest line would be
 % `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
-%
 %
 % \DescribeMacro{horlines}{\oarg{TikZ Settings}\marg{list}}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
@@ -1053,13 +1050,11 @@
 % If the list is empty the default `|1,2,...,\nrows|' is used which draws lines 
 % for all rows.
 %
-%
 % \DescribeMacro{vertlines}{\oarg{TikZ Settings}\marg{list}}
 % Like \cs{horlines} but draws vertical lines and the listed numbers a relative 
 % to the basic width.
 % If the list is empty the default `|0,1,...,\twidth|' is used which draws lines 
 % after every period width.
-%
 %
 % \subsubsection*{Positions \& Scalings inside the Table}
 % The first row starts at $y=0$ and the next rows are each
