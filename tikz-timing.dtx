@@ -490,6 +490,7 @@
     \openin\ydoc@exaread=\jobname.exa\relax
     \let\do\@makeother\dospecials
     \immediate\write\ydoc@exawrite{\ydoc@exahead}%
+    \endlinechar=-1%
     \copylines
     \immediate\write\ydoc@exawrite{\ydoc@exafoot}%
     \immediate\closeout\ydoc@exawrite
