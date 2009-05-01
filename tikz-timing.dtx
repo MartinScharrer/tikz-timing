@@ -940,7 +940,7 @@
 % \phantom{\texttt{[L]}} gives `\texttiming{HLZDZLH}', with grid: 
 % `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.\\
 % |\texttiming[L]{HLZDZLH}| ^^A
-% gives `\texttiming{HLZDZLH}', with grid: 
+% gives `\texttiming[L]{HLZDZLH}', with grid: 
 % `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.
 %
 % \DescribeMacro{texttimingbefore}{\hspace{15.5em}(\emph{defaults to}: 
@@ -1113,8 +1113,7 @@
 %     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
-%     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. Depends on 
-%     |timing/table/grid|.\\
+%     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
 %     \midrule
 %     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
 %     for `|H|' and `|L|'. \\
@@ -1292,8 +1291,7 @@
 %        (7,-8.45) rectangle (-2,-4.6);
 %     \shade [right color=bgred,left color=white]
 %        (7,-12.8) rectangle (-2,-8.6);
-%     \begin{scope}[timing/table/lines/.style={gray,
-%       semitransparent,semithick},timing/table/lines]
+%     \begin{scope}[gray,semitransparent,semithick]
 %       \horlines{}
 %       \foreach \x in {1,...,6}
 %         \draw (\x,1) -- (\x,-12.8);
@@ -1337,13 +1335,10 @@
 %     \crst     MOSI & D{z}U 8{2D{\countup}}  D{z} \\
 %   \extracode
 %     \begin{pgfonlayer}{background}
-%     \begin{scope}[semitransparent,semithick]
-%       \path (last row) +(0,-2) coordinate (lowb);
-%       \foreach \x in {2,4,...,17} {%
-%         \draw [red]  (\x+0.1,1.5) -- +(lowb);
-%         \draw [blue] (\x+1.1,1.5) -- +(lowb);
-%       }%
-%     \end{scope}
+%       \begin{scope}[semitransparent,semithick]
+%         \vertlines[red]{2.1,4.1,...,17.1}
+%         \vertlines[blue]{3.1,5.1,...,17.1}
+%       \end{scope}
 %     \end{pgfonlayer}
 %     \begin{scope}
 %       [font=\sffamily\Large,shift={(-6em,-0.5)},anchor=east]
@@ -1413,7 +1408,7 @@
   c/.style={timing/slope=0.0},
   x/.style={red},
   table/grid/.style={timing/grid},
-  table/lines/.style={timing/table/grid},
+  table/lines/.style={},
   slope/.code={%
     \tikztimingsetslope{#1}%
     \tikztimingsetdslope{2*#1}%
@@ -2270,7 +2265,7 @@
 %    \begin{macrocode}
 \newcommand*\tikztiming@tablegrid[1][]{%
   \begin{pgfonlayer}{background}
-    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/lines,#1]
+    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
       \foreach \y in {1,...,\nrows} {%
         \draw {[shift={($ (timing/table/bottom left) + (0,\y*\rowdist) - 
         (0,\rowdist) $)}] let \p1 = (timing/table/bottom right) in (0,0) grid 
