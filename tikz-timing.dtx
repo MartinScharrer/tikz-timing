@@ -2304,7 +2304,7 @@
 % \begin{macro}{\tikztiming@vertlines}
 %    \begin{macrocode}
 \newcommand*\tikztiming@vertlines[2][]{%
-  \scope[timing/table/grid,#1]
+  \scope[timing/table/lines,#1]
     \def\list{#2}%
     \ifx\list\empty
       \def\list{0,1,...,16383}%
