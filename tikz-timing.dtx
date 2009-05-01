@@ -1387,6 +1387,7 @@
   timing/.cd,
   grid/.style={timing,help lines},
   intext/.style={timing,line width=0.15ex},
+  inline node/.style={},
   table/.style={timing,line width=0.15ex,font=\sffamily},
   coord/.style={inner sep=0pt,outer sep=0pt},
   save/.style={inner sep=0pt,outer sep=0pt,/utils/exec=\tikztiming@savesettings},
@@ -1965,6 +1966,53 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@addnode}
+%    \begin{macrocode}
+\def\tikztiming@addnode#1{%
+  \@ifnextchar{[}%]
+    {\tikztiming@addnode@getoptions}%
+    {\tikztiming@addnode@getoptions[]}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@addnode}
+%    \begin{macrocode}
+\def\tikztiming@addnode@getoptions[#1]{%
+  \@ifnextchar{(}%)
+    {\tikztiming@addnode@getname{#1}}%
+    {\tikztiming@addnode@getname{#1}()}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@addnode@getname}
+%    \begin{macrocode}
+\def\tikztiming@addnode@getname#1(#2){%
+  \@ifnextchar\bgroup
+    {\tikztiming@addnode@{#1}{#2}}%
+    {\tikztiming@addnode@{#1}{#2}{}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@addnode@}
+%    \begin{macrocode}
+\def\tikztiming@addnode@#1#2#3{%
+  \tikztiming@output@flush
+  \begingroup
+    \def\@tempa{#2}%
+    \ifx\@tempa\empty
+      \def\@tempa{ node [timing/inline node,#1] }%
+    \else
+      \def\@tempa{ node [timing/inline node,#1] (#2) }%
+    \fi
+    \expandafter\tikztiming@addtostr\expandafter{\@tempa {#3} }%
+  \endgroup
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\tikztiming@testforcode}
 %    \begin{macrocode}
@@ -1977,7 +2025,10 @@
         {\tikztiming@stoppath@nosave}%
         {\@ifnextchar{,}%
           {\tikztiming@stoppath}%
-          {\tikztiming@@}%
+          {\@ifnextchar{N}%
+            {\tikztiming@addnode}%
+            {\tikztiming@@}%
+          }%
         }%
       }%
     }%
