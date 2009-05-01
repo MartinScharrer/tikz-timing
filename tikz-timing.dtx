@@ -1113,6 +1113,8 @@
 %     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
+%     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. Depends on 
+%     |timing/table/grid|.\\
 %     \midrule
 %     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
 %     for `|H|' and `|L|'. \\
@@ -1412,6 +1414,7 @@
   c/.style={timing/slope=0.0},
   x/.style={red},
   table/grid/.style={timing/grid},
+  table/lines/.style={timing/table/grid},
   slope/.code={%
     \tikztimingsetslope{#1}%
     \tikztimingsetdslope{2*#1}%
@@ -2268,7 +2271,7 @@
 %    \begin{macrocode}
 \newcommand*\tikztiming@tablegrid[1][]{%
   \begin{pgfonlayer}{background}
-    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
+    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/lines,#1]
       \foreach \y in {1,...,\nrows} {%
         \draw {[shift={($ (timing/table/bottom left) + (0,\y*\rowdist) - 
         (0,\rowdist) $)}] let \p1 = (timing/table/bottom right) in (0,0) grid 
@@ -2283,7 +2286,7 @@
 % \begin{macro}{\tikztiming@horlines}
 %    \begin{macrocode}
 \newcommand*\tikztiming@horlines[2][]{%
-  \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
+  \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/lines,#1]
     \def\list{#2}%
     \ifx\list\empty
       \def\list{1,2,...,\nrows}%
