@@ -1036,13 +1036,13 @@
 % \cs{horlines}.
 %
 %
-% \DescribeMacro*{twidth}{}
+% \DescribeMacro{twidth}{}
 % Returns the width (as multiple of the `period width') of the longest timing 
 % diagram line in the table.\\Example: If the longest line would be
 % `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
 %
 %
-% \DescribeMacro*{horlines}{\oarg{TikZ Settings}\marg{list}}
+% \DescribeMacro{horlines}{\oarg{TikZ Settings}\marg{list}}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
 % line of the rows given by \meta{list}. The PGF macro 
 % \css{foreach}\footnote{The the \texttt{pgf} manual for more details.} is 
@@ -1054,7 +1054,7 @@
 % for all rows.
 %
 %
-% \DescribeMacro*{vertlines}{\oarg{TikZ Settings}\marg{list}}
+% \DescribeMacro{vertlines}{\oarg{TikZ Settings}\marg{list}}
 % Like \cs{horlines} but draws vertical lines and the listed numbers a relative 
 % to the basic width.
 % If the list is empty the default `|0,1,...,\twidth|' is used which draws lines 
