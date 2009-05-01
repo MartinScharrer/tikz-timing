@@ -1056,7 +1056,7 @@
 % \DescribeMacro*{vertlines}{\oarg{TikZ Settings}\marg{list}}
 % Like \cs{horlines} but draws vertical lines and the listed numbers a relative 
 % to the basic width.
-% If the list is empty the default `|1,2,...,\twidth|' is used which draws lines 
+% If the list is empty the default `|0,1,...,\twidth|' is used which draws lines 
 % after every period width.
 %
 %
@@ -1296,10 +1296,13 @@
 %        (7,-8.45) rectangle (-2,-4.6);
 %     \shade [right color=bgred,left color=white]
 %        (7,-12.8) rectangle (-2,-8.6);
-%     \foreach \x/\y in {1,...,6} {%
-%       \draw [help lines,semitransparent,thin]
-%         (\x,1) -- (\x,-12.8)  (0,-2*\y) -- +(7,0);
-%     }%
+%     \begin{scope}[timing/table/lines/.style={gray,
+%       semitransparent,semithick},timing/table/lines]
+%       \horlines{}
+%       \foreach \x in {1,...,6}
+%         \draw (\x,1) -- (\x,-12.8);
+%       % similar: \vertlines{1,...,6}
+%     \end{scope}
 %     \node [anchor=south east,inner sep=0pt]
 %       at (7,-8.45) {\tiny clocked};
 %     \node [anchor=south east,inner sep=0pt,fgred]
@@ -2286,17 +2289,17 @@
 % \begin{macro}{\tikztiming@horlines}
 %    \begin{macrocode}
 \newcommand*\tikztiming@horlines[2][]{%
-  \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/lines,#1]
+  \begingroup
     \def\list{#2}%
     \ifx\list\empty
       \def\list{1,2,...,\nrows}%
     \fi
     \foreach \row in \list%
-      \draw let
+      \draw [timing/table/lines,#1] let
         \p1 = (timing/table/bottom right)
       in
         (0,\rowdist-\row*\rowdist) -- +(\x1,0);
-  \endscope
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2304,12 +2307,12 @@
 % \begin{macro}{\tikztiming@vertlines}
 %    \begin{macrocode}
 \newcommand*\tikztiming@vertlines[2][]{%
-  \scope[timing/table/lines,#1]
+  \begingroup
     \def\list{#2}%
     \ifx\list\empty
       \def\list{0,1,...,16383}%
     \fi
-      \draw let
+      \draw [timing/table/lines,#1] let
         \p1 = ($ (timing/table/bottom right) - (0,2) $),
         \p2 = (1,0)
       in
@@ -2321,7 +2324,7 @@
             \fi}]
         }
       ;
-  \endscope
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
