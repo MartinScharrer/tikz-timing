@@ -1062,14 +1062,16 @@
 %
 % \subsubsection*{Positions \& Scalings inside the Table}
 % The first row starts at $y=0$ and the next rows are each
-% |-1*\rowdist| lower than the previous one. The very last one can be accessed 
-% by the tikz coordinate `\texttt{(last row)}'. The vertical unit is 1 
-% \textsf{bit height} and the default row distance is `2' (=$2\times$\textsf{bit 
-% height}).  This means that a normal table with three rows goes from $y=+1$ 
-% (base line at 0 + 1 \textsf{bit height}) to $y=-4$ (first row:~+0, second 
-% row:~-2, third row:~-4).  This are relative to the middle of the drawn lines, 
-% \ie the bounding box is $2\times\frac{\text{\textsf{line width}}}{2}=1\cdot 
-% $\textsf{line width} higher.
+% |-1*\rowdist| lower than the previous one.
+% ^^A The very last one can be accessed by the tikz coordinate `\texttt{(last
+% ^^A row)}'.
+% The vertical unit is 1 \textsf{signal height} and the default row distance is 
+% `2' (=$2\times$\textsf{signal height}).  This means that a normal table with 
+% three rows goes from $y=+1$ (base line at 0 + 1 \textsf{signal height}) to 
+% $y=-4$ (first row:~+0, second row:~-2, third row:~-4).  This are relative to 
+% the middle of the drawn lines, \ie the bounding box is 
+% $2\times\frac{\text{\textsf{line width}}}{2}=1\cdot $\textsf{line width} 
+% higher.
 %
 % The timing column starts at $x=0$ and goes into the positive range while 
 % scaled using the period width. Example: |HHHh| has a width of 3.5.
@@ -1108,7 +1110,8 @@
 %     \toprule
 %     \normalfont Style/Setting & Description \\
 %     \midrule
-%     timing      & Base settings like line width and bit height \& width.  \\
+%     timing      & Base settings like line width and signal height \& period 
+%     width.  \\
 %     timing/intext & Used for \cs{texttiming}. Depends on |timing|.\\
 %     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
@@ -1229,7 +1232,7 @@
 %    \extracode
 %     \draw (0,0) circle (0.2pt); % Origin
 %     \begin{pgfonlayer}{background}
-%       \vertlines{0.5,4.5}
+%       \vertlines[help lines]{0.5,4.5}
 %     \end{pgfonlayer}
 %   \end{tikztimingtable}
 % \end{examplecode}
