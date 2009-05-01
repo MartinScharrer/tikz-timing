@@ -1042,8 +1042,8 @@
 %
 %
 % \DescribeMacro*{horlines}{\oarg{TikZ Settings}\marg{list}}
-% Draws horizontal background lines, optionally with the given \meta{Settings}, 
-% at the base line of the rows given by \meta{list}. The PGF macro 
+% Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
+% line of the rows given by \meta{list}. The PGF macro 
 % \css{foreach}\footnote{The the \texttt{pgf} manual for more details.} is 
 % internally used so the list can include not only row numbers as integer but 
 % also fractional numbers and the `|...|' operator to auto-increment the 
@@ -2283,7 +2283,6 @@
 % \begin{macro}{\tikztiming@horlines}
 %    \begin{macrocode}
 \newcommand*\tikztiming@horlines[2][]{%
-  \begin{pgfonlayer}{background}
   \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
     \def\list{#2}%
     \ifx\list\empty
@@ -2295,7 +2294,6 @@
       in
         (0,\rowdist-\row*\rowdist) -- +(\x1,0);
   \endscope
-  \end{pgfonlayer}
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2303,7 +2301,6 @@
 % \begin{macro}{\tikztiming@vertlines}
 %    \begin{macrocode}
 \newcommand*\tikztiming@vertlines[2][]{%
-  \begin{pgfonlayer}{background}
   \scope[timing/table/grid,#1]
     \def\list{#2}%
     \ifx\list\empty
@@ -2322,7 +2319,6 @@
         }
       ;
   \endscope
-  \end{pgfonlayer}
 }
 %    \end{macrocode}
 % \end{macro}
