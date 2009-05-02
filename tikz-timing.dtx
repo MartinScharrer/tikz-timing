@@ -896,11 +896,14 @@
 % \meta{\small number}\meta{\small character} & Sets width of next signal to 
 % given number.  Half of it if character is in lower case. & 2.6H5.2l & 
 % \texttiming{2.6H5.2l}\\
+% N\oarg{\tiny Settings}\parg{\tiny Name}\marg{\tiny Content} & Adds node at 
+% current position.  All three arguments are optional.  & H N(a1) L & 
+% \texttiming{H N(a1) L}\\
 %   \midrule
 % {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & H[blue]LH & 
 % \texttiming{H[blue]LH} \\
 % ;  & Renews the internal drawing path which ends the scope of all options 
-% given by \texttt{[ ]}. & H;[blue]L;H & \texttiming{H;[blue]L;H} \\
+% given by \texttt{[\,]}. & H;[blue]L;H & \texttiming{H;[blue]L;H} \\
 % ,  & Same as `\texttt{;}', but timing specific options (atm.: slopes and line 
 % width) are restored for the new path. & \small H,[lw=1pt]L;H & 
 % \texttiming{H,[line width=1pt]L;H} \\
@@ -1106,19 +1109,19 @@
 %     \toprule
 %     \normalfont Style/Setting & Description \\
 %     \midrule
-%     timing      & Base settings like line width and signal height \& period 
-%     width.  \\
+%     timing      & Base settings like signal height \& period width.\\
 %     timing/intext & Used for \cs{texttiming}. Depends on |timing|.\\
 %     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
+%     timing/inline node & Used for nodes created by the |N| character. \\
 %     \midrule
 %     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
 %     for `|H|' and `|L|'. \\
 %     timing/\meta{lc char}/background & Background style for characters `|D|' 
 %     and `|U|'. \\
-%     timing/\meta{lc char)}/text & Text style for character \meta{char}.  Only 
+%     timing/\meta{lc char}/text & Text style for character \meta{char}.  Only 
 %     defined for `|D|'. \\
 %     \midrule
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
