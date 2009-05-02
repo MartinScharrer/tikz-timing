@@ -1237,7 +1237,7 @@
 % \end{examplecode}
 % \caption{\env{tikztimingtable} with \cs{extracode}.}
 % \end{example}
-
+%
 % \begin{example}
 % \centering
 % \begin{examplecode}
@@ -1253,6 +1253,22 @@
 %   \end{tikzpicture}
 % \end{examplecode}
 % \caption{\cs{timing} inside general \envv{tikzpicture}.}
+% \end{example}
+%
+% \begin{example}
+% \centering
+% \begin{examplecode}
+%   \begin{tikzpicture}[timing,
+%     timing/inline node/.style={coordinate,shift={(0.05,-.5)}}]
+%     \timing (0,2) {hH N(A) LHLHL};
+%     \timing (0,0) {HLH N(B) LHLl};
+%     \draw [gray,very thin]
+%       (A) ellipse (.2 and .6) +(0,-0.6) coordinate (Ax)
+%       (B) ellipse (.2 and .6) +(0,+0.6) coordinate (Bx);
+%     \draw [gray,very thin,->] (Ax) parabola[bend pos=0.5] (Bx);
+%   \end{tikzpicture}
+% \end{examplecode}
+% \caption{Using In-Line Nodes to draw Relationships.}
 % \end{example}
 %
 % \begin{example}
