@@ -740,6 +740,9 @@
 % \changes{v0.4}{2009/04/29}{Added parser for rows in \env{tikztimingtable}.  
 % This makes the syntax much more stable. Also replaced row counter with TikZ 
 % coordinates which is more user-friendly.}
+% \changes{v0.4}{2009/04/30}{User macros to draw grids and lines inside table.}
+% \changes{v0.4}{2009/05/01}{In-line Nodes, \eg to mark positions inside the 
+% diagram.}
 %
 % \GetFileInfo{tikz-timing.dtx}
 %
@@ -774,10 +777,11 @@
 %   {\LARGE\sffamily The \raisebox{-0.66ex}{\Huge\textsf
 %   {\texttiming[z]{3d{\strut tikz}z5d{\strut timing}0.2z}}} package}\\[3ex]
 %   {\large Martin Scharrer \\\normalsize 
-%   \url{martin@scharrer-online.de}}\\[2.5ex]
+%   \url{martin@scharrer-online.de}\\[.8ex]
+%   \url{http://www.ctan.org/indexes/graphics/pgf/contrib/tikz-timing/}\\[1.2ex]}
 %   {\large Version \fileversion\ -- \filedate}\\
 % \end{center}
-% \vspace{1.5em}%
+% \vspace{1.2em}%
 %
 % ^^A\vfill
 % \noindent
@@ -1045,7 +1049,7 @@
 % \DescribeMacro{horlines}{\oarg{TikZ Settings}\marg{list}}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
 % line of the rows given by \meta{list}. The PGF macro 
-% \css{foreach}\footnote{The the \texttt{pgf} manual for more details.} is 
+% \css{foreach}\footnote{See the \texttt{pgf} manual for more details.} is 
 % internally used so the list can include not only row numbers as integer but 
 % also fractional numbers and the `|...|' operator to auto-increment the 
 % numbers. Please note that all numbers in the list are multiplied by 
@@ -1258,14 +1262,17 @@
 % \begin{example}
 % \centering
 % \begin{examplecode}
-%   \begin{tikzpicture}[timing,
-%     timing/inline node/.style={coordinate,shift={(0.05,-.5)}}]
+%   \Huge
+%   \begin{tikzpicture}[timing,thick,
+%     timing/inline node/.style={coordinate,
+%     shift={(0.05,-.5)}}]
 %     \timing (0,2) {hH N(A) LHLHL};
 %     \timing (0,0) {HLH N(B) LHLl};
-%     \draw [gray,very thin]
+%     \draw [orange,semithick]
 %       (A) ellipse (.2 and .6) +(0,-0.6) coordinate (Ax)
 %       (B) ellipse (.2 and .6) +(0,+0.6) coordinate (Bx);
-%     \draw [gray,very thin,->] (Ax) parabola[bend pos=0.5] (Bx);
+%     \draw [orange,semithick,->]
+%       (Ax) parabola[bend pos=0.5] (Bx);
 %   \end{tikzpicture}
 % \end{examplecode}
 % \caption{Using In-Line Nodes to draw Relationships.}
