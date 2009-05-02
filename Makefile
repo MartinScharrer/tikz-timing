@@ -1,17 +1,21 @@
 # $Id$
 
 PACKAGE=tikz-timing
-PACKFILES = ${PACKAGE}.dtx ${PACKAGE}.ins ${PACKAGE}.pdf README
+PACKAGE_STY = ${PACKAGE}.sty
+PACKAGE_DOC = ${PACKAGE}.pdf
+PACKAGE_SRC = ${PACKAGE}.dtx ${PACKAGE}.ins README Makefile
+PACKFILES = ${PACKAGE_SRC} ${PACKAGE_DOC}
 TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb
-TESTDIR = tests
-TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
-TESTARGS = -output-directory ${TESTDIR}
 INSGENERATED = ${PACKAGE}.sty
 GENERATED = ${INSGENERATED} ${PACKAGE}.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
 ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
+TDSZIPFILE = ${PACKAGE}-${ZIPVERSION}.tds.zip
+ZIPS = zip tdszip
 
 LATEX_OPTIONS = -interaction=batchmode
 LATEX = pdflatex ${LATEX_OPTIONS}
+
+TEXMFDIR = ${HOME}/texmf
 
 RED   = \033[01;31m
 GREEN = \033[01;32m
@@ -19,8 +23,10 @@ WHITE = \033[00m
 
 CP = cp -v
 MV = mv -v
+RMDIR = rm -rf
+MKDIR = mkdir -p
 
-.PHONY: all doc package clean fullclean example testclean ${TESTS}
+.PHONY: all doc package clean fullclean example testclean tds
 
 all: package doc example
 new: fullclean all
@@ -29,18 +35,15 @@ doc: ${PACKAGE}.pdf
 
 package: ${PACKAGE}.sty
 
+example:
+
 %.pdf: %.dtx
-	-${MV} $*.pdf $*_old.pdf
 	${LATEX} $*.dtx
-	${CP} $*.pdf $*_temp.pdf
 	${LATEX} $*.dtx
-	${CP} $*.pdf $*_temp.pdf
 	-makeindex -s gind.ist -o $*.ind $*.idx
 	-makeindex -s gglo.ist -o $*.gls $*.glo
 	${LATEX} $*.dtx
-	${CP} $*.pdf $*_temp.pdf
 	${LATEX} $*.dtx
-	${CP} $*.pdf $*_temp.pdf
 
 %.pdf: %.eps
 	epstopdf $<
@@ -60,15 +63,16 @@ fullclean:
 	rm -f ${TEXAUX} $(addprefix ${TESTDIR}/, ${TEXAUX}) ${GENERATED} *~ *.backup
 
 
-zip: fullclean package doc example tests ${ZIPFILE}
+zip: fullclean package doc example ${ZIPFILE}
 ${PACKAGE}.zip: zip
 
-zip: ZIPVERSION=$(shell grep "Package: ${PACKAGE} " ${PACKAGE}.log | \
+${ZIPS}: ZIPVERSION=$(shell grep "Package: ${PACKAGE} " ${PACKAGE}.log | \
 	sed -e "s/.*Package: ${PACKAGE} ....\/..\/..\s\+\(v\S\+\).*/\1/")
 
 ${ZIPFILE}: ${PACKFILES}
 	grep -q '\* Checksum passed \*' ${PACKAGE}.log
 	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
+	${RM} ${ZIPFILE}
 	zip ${ZIPFILE} ${PACKFILES}
 	@echo
 	@echo "ZIP file ${ZIPFILE} created!"
@@ -78,24 +82,21 @@ tar.gz: ${PACKAGE}.tar.gz
 ${PACKAGE}.tar.gz:
 	tar -czf $@ ${PACKFILES}
 
-# Make sure TeX finds the input files in TESTDIR
-tests ${TESTS}: export TEXINPUTS:=${TEXINPUTS}:${TESTDIR}
-tests ${TESTS}: LATEX_OPTIONS=
+tds: package doc
+	@grep -q '\* Checksum passed \*' ${PACKAGE}.log
+	${RMDIR} tds
+	${MKDIR} tds
+	${MKDIR} tds/tex tds/tex/latex/ tds/tex/latex/${PACKAGE}
+	${MKDIR} tds/doc tds/doc/latex/ tds/doc/latex/${PACKAGE}
+	${MKDIR} tds/source tds/source/latex/ tds/source/latex/${PACKAGE}
+	${CP} ${PACKAGE_STY} tds/tex/latex/${PACKAGE}/
+	${CP} ${PACKAGE_DOC} tds/doc/latex/${PACKAGE}/
+	${CP} ${PACKAGE_SRC} tds/source/latex/${PACKAGE}/
 
-testclean:
-	@${RM} $(foreach ext, aux log out pdf svn svx, tests/test*.${ext})
+tdszip: tds
+	${RM} ${TDSZIPFILE}
+	cd tds && zip -r ../${TDSZIPFILE} .
 
-tests: package testclean
-	@echo "Running tests: ${TESTS}:"
-	@${MAKE} -e -i --no-print-directory ${TESTS} \
-		TESTARGS="-interaction=batchmode -output-directory=${TESTDIR}"\
-		TESTPLOPT="-q"\
-		> /dev/null
-
-${TESTS}: % : ${TESTDIR}/%.tex package testclean
-	@-${LATEX} -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
-	@if (${LATEX} ${TESTARGS} $< && (test ! -e ${TESTDIR}/$*.pl || ${TESTDIR}/$*.pl ${TESTPLOPT})); \
-		then /bin/echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
-		else /bin/echo -e "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
-
+install: tds
+	test -d "${TEXMFDIR}" && ${CP} -a tds/* "${TEXMFDIR}/" && texhash ${TEXMFDIR}
 
