@@ -130,10 +130,10 @@
 }
 
 % link \cs to macro definitions
-\let\origmacro\macro
-\let\origendmacro\endmacro
-\let\origStopEventually\StopEventually
-\let\origPrintDescribeMacro\PrintDescribeMacro
+\let\ydoc@origmacro\macro
+\let\ydoc@origendmacro\endmacro
+\let\ydoc@origStopEventually\StopEventually
+\let\ydoc@origPrintDescribeMacro\PrintDescribeMacro
 \RequirePackage{xcolor}
 \definecolor{darkred}{rgb}{0.333.0.0,0.0}
 \hypersetup{colorlinks=true,linkcolor=darkred,urlcolor=darkred}
@@ -158,6 +158,30 @@
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[T1]{fontenc}
 \IfFileExists{lmodern.sty}{\RequirePackage{lmodern}}{}%
+
+\def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
+\def\DescribeMacroN{%
+  \bigskip\pagebreak[3]\par\noindent\DescribeMacroS*%
+}
+\def\DescribeMacroS*#1#2{%
+  \begingroup
+  \g@namedef{href@desc@#1}{}%
+  \immediate\write\@mainaux{%
+    \noexpand\g@namedef{href@desc@#1}{}%
+  }%
+  \@ifundefined{href@impl@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{impl@#1.3}}}%
+  \hypersetup{linkcolor=macrodesccolor}%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash #1}{desc@#1}}%
+  \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
+  \noindent\mbox{}\macroargformat{#2}\nopagebreak
+  \macroline*[0.2\baselineskip]%
+  \endgroup
+  \nopagebreak
+  \ignorespaces
+}
 
 \def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
 \def\DescribeMacroN{%
@@ -264,6 +288,32 @@
   \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
 }
 
+\renewenvironment{environment}[1]{%
+  \addtocounter{macrolevel}{1}%
+  \environmentX{#1}%
+}{%
+  \addtocounter{macrolevel}{-1}%
+}
+\newcommand*{\environmentX}[1]{%
+  \ifnum\c@macrolevel<2
+    \smallskip
+  \fi
+  \par\noindent
+  \g@namedef{href@impl@#1}{}%
+  \immediate\write\@mainaux{%
+    \noexpand\g@namedef{href@impl@#1}{}%
+  }%
+  \@ifundefined{href@desc@#1}%
+    {\let\macrolink\relax}%
+    {\def\macrolink{\hyperlink{desc@#1.3}}}%
+  \hspace*{\macrosep}%
+  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{impl@#1}}%
+  \macrolink{\macroformat{%
+    \textcolor{macroimplcolor}{#1}}}%
+  \\*[\smallskipamount]%
+  \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
+}
+
 \newcounter{macroargs}
 \newcounter{nmacroarg}
 
@@ -365,11 +415,12 @@
   \endgroup
 }
 
-\def\StopEventually#1{\origStopEventually{#1}%
+\def\StopEventually#1{\ydoc@origStopEventually{#1}%
 \let\cs\csi
 \let\env\envi
 }
 
+%%% Macrocode %%%
 \iffalse
 \RequirePackage{listings}
 
