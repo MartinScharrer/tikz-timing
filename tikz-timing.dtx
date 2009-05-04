@@ -772,8 +772,8 @@
 % \null
 % \vspace*{-2em}
 % \begin{center}
-% \tikzset{timing/z/.style={black},
-% timing/intext/.style={timing,line width=0.1ex}}
+%   \tikzset{timing/z/.style={black},
+%   timing/intext/.style={timing,line width=0.1ex}}
 %   {\LARGE\sffamily The \raisebox{-0.66ex}{\Huge\textsf
 %   {\texttiming[z]{3d{\strut tikz}z5d{\strut timing}0.2z}}} package}\\[3ex]
 %   {\large Martin Scharrer \\\normalsize 
@@ -1476,7 +1476,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\texttiming}
+% \begin{macro}{\texttiming}[2]{Optional initial character}{Timing characters}
 %    \begin{macrocode}
 \DeclareRobustCommand*\texttiming[2][]{%
   \begingroup
@@ -1527,7 +1527,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@}
+% \begin{macro}{\timing@}[1]{Optional TikZ Settings}
 %    \begin{macrocode}
 \def\timing@[#1]{%
   \@ifnextchar{+}%
@@ -1540,7 +1540,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@}
+% \begin{macro}{\timing@@}[3]{Optional TikZ Settings}{Potential `+' or 
+% empty}{Coordinate}
 %    \begin{macrocode}
 \def\timing@@#1#2(#3){%
   \timing@@@{#1}{#2(#3)}%
@@ -1548,7 +1549,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@}
+% \begin{macro}{\timing@@@}[3]{Optional TikZ Settings}{Coordinate}{Timing 
+% Characters}
 %    \begin{macrocode}
 \def\timing@@@#1#2#3{%
   \begingroup
@@ -1567,7 +1569,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@end}
+% \begin{macro}{\timing@@@end}[1]{Token behind \cs{timing} macro.}
 %    \begin{macrocode}
 \def\timing@@@end#1;{%
   \ifx;#1;\else
@@ -1578,7 +1580,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@init}
+% \begin{macro}{\timing@@@init}[1]{Initial character.}
 %    \begin{macrocode}
 \def\timing@@@init[#1]{%
   \uppercase{\def\lastchar{#1}}%
@@ -1723,7 +1725,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@eaddtostr}
+% \begin{macro}{\tikztiming@eaddtostr}[1]{Tokens to add to string.}
 %    \begin{macrocode}
 \def\tikztiming@eaddtostr#1{%
   \begingroup
@@ -1746,7 +1748,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@output}
+% \begin{macro}{\tikztiming@output}[2]{Character 1}{Character 2}
 %    \begin{macrocode}
 \def\tikztiming@output#1#2{%
   \ifx\relax#2\relax
@@ -1810,7 +1812,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@nameaddtostr}
+% \begin{macro}{\tikztiming@nameaddtostr}[1]{Name of macro without prefix
+% to add}
 %    \begin{macrocode}
 \def\tikztiming@nameaddtostr#1{%
   \begingroup
@@ -1825,7 +1828,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@nameedef}
+% \begin{macro}{\tikztiming@nameedef}[3]{Optional character to indicate 
+% character case}{Macro name to be defined (without prefix)}{Content of macro}
+% Defines internal tikztiming macro with name |\|\meta{prefix}\meta{name (\#2)}.  
+% The macro definition (\#3) is expanded while the internal drawing definitions 
+% are active.
 %    \begin{macrocode}
 \newcommand\tikztiming@nameedef[3][A]{%
   \def\@gtempa##1{#3}%
@@ -1840,7 +1847,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@namelet}
+% \begin{macro}{\tikztiming@namelet}[2]{Original Characters}{New Characters}
 % Only execute |\let| if the original macro is defined or the destination macro 
 % is defined and would now set to undefined.
 %    \begin{macrocode}
@@ -1875,7 +1882,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@@}
+% \begin{macro}{\tikztiming@@}[1]{Next Character}
 %    \begin{macrocode}
 \def\tikztiming@@#1{%
   \ifx\relax#1\empty
@@ -1924,7 +1931,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@handletext}
+% \begin{macro}{\tikztiming@handletext}[1]{Text}
 %    \begin{macrocode}
 \def\tikztiming@handletext#1{%
   \@ifnextchar{[}%
@@ -1935,7 +1942,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@handletext@}
+% \begin{macro}{\tikztiming@handletext@}[2]{Optional Settings}{Text}
 %    \begin{macrocode}
 \def\tikztiming@handletext@[#1]#2\relax{%
   \begingroup
@@ -1968,7 +1975,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@stoppath}
+% \begin{macro}{\tikztiming@stoppath}[1]{Character to gobble}
 %    \begin{macrocode}
 \def\tikztiming@stoppath#1{%
   \tikztiming@output@flush
@@ -1980,7 +1987,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@stoppath@nosave}
+% \begin{macro}{\tikztiming@stoppath@nosave}[1]{Character to gobble}
 %    \begin{macrocode}
 \def\tikztiming@stoppath@nosave#1{%
   \tikztiming@output@flush
@@ -1992,7 +1999,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@addnode}
+% \begin{macro}{\tikztiming@addnode}[1]{Character to gobble}
 %    \begin{macrocode}
 \def\tikztiming@addnode#1{%
   \@ifnextchar{[}%]
@@ -2002,17 +2009,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@addnode}
+% \begin{macro}{\tikztiming@addnode}[1]{Options}
 %    \begin{macrocode}
 \def\tikztiming@addnode@getoptions[#1]{%
-  \@ifnextchar{(}%)
+  \@ifnextchar{(}%)}
     {\tikztiming@addnode@getname{#1}}%
     {\tikztiming@addnode@getname{#1}()}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@addnode@getname}
+% \begin{macro}{\tikztiming@addnode@getname}[2]{Previous read options}{Node 
+% name}
 %    \begin{macrocode}
 \def\tikztiming@addnode@getname#1(#2){%
   \@ifnextchar\bgroup
@@ -2022,7 +2030,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@addnode@}
+% \begin{macro}{\tikztiming@addnode@}[3]{Options}{Node name}{Node text}
 %    \begin{macrocode}
 \def\tikztiming@addnode@#1#2#3{%
   \tikztiming@output@flush
@@ -2062,7 +2070,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@testforcode@}
+% \begin{macro}{\tikztiming@testforcode@}[1]{Character to gobble}
 %    \begin{macrocode}
 \def\tikztiming@testforcode@#1{%
   \@ifnextchar\bgroup
@@ -2076,7 +2084,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@handlecode}
+% \begin{macro}{\tikztiming@handlecode}[1]{Code to add to string}
 %    \begin{macrocode}
 \def\tikztiming@handlecode#1{%
   \tikztiming@output@flush
@@ -2086,7 +2094,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@handleoption}
+% \begin{macro}{\tikztiming@handleoption}[1]{Options to add to string}
 %    \begin{macrocode}
 \def\tikztiming@handleoption[#1]{%
   \tikztiming@addtostr{ [#1] }%
@@ -2190,7 +2198,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@testfornum@@@@}
+% \begin{macro}{\tikztiming@testfornum@@@@}[1]{Characters and other tokens to 
+% repeat}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@@@@#1{%
   \begingroup
@@ -2217,7 +2226,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{environment}{tikztimingtable}
+% \begin{environment}{tikztimingtable}[1]{Optional settings}
 %    \begin{macrocode}
 \NewEnviron{tikztimingtable}[1][]{%
   \begingroup
@@ -2246,7 +2255,7 @@
 %    \end{macrocode}
 % \end{environment}
 
-% \begin{macro}{\tikztimingextracode}
+% \begin{macro}{\tikztimingextracode}[2]{Token to gobble}{Extra drawing code}
 %    \begin{macrocode}
 \long\def\tikztimingextracode#1#2\endtikztimingtable@{%
   \path let
@@ -2271,7 +2280,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingtable@row}
+% \begin{macro}{\tikztimingtable@row}[1]{Row content}
 %    \begin{macrocode}
 \def\tikztimingtable@row#1\\{%
   \tikztimingtable@row@#1&\tikztiming@emptycell&\\
@@ -2279,7 +2288,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingtable@row@}
+% \begin{macro}{\tikztimingtable@row@}[3]{Cell 1}{Cell 2 or empty}{Potential 
+% further cells}
 %    \begin{macrocode}
 \def\tikztimingtable@row@#1&#2&#3\\{%
   \ifx\\#3\\\else
@@ -2303,7 +2313,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingtable@row@@}
+% \begin{macro}{\tikztimingtable@row@@}[2]{Name/Label}{Timing characters}
 %    \begin{macrocode}
 \def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
@@ -2329,7 +2339,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\tikztiming@fulltablegrid}
+% \begin{macro}{\tikztiming@fulltablegrid}[1]{Optional settings}
 %    \begin{macrocode}
 \newcommand*\tikztiming@fulltablegrid[1][]{%
   \begin{pgfonlayer}{background}
@@ -2343,7 +2353,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@tablegrid}
+% \begin{macro}{\tikztiming@tablegrid}[1]{Optional settings}
 %    \begin{macrocode}
 \newcommand*\tikztiming@tablegrid[1][]{%
   \begin{pgfonlayer}{background}
@@ -2359,7 +2369,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@horlines}
+% \begin{macro}{\tikztiming@horlines}[2]{Optional Settings}{Row numbers}
 %    \begin{macrocode}
 \newcommand*\tikztiming@horlines[2][]{%
   \begingroup
@@ -2377,7 +2387,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@vertlines}
+% \begin{macro}{\tikztiming@vertlines}[2]{Optional Settings}{Column numbers}
 %    \begin{macrocode}
 \newcommand*\tikztiming@vertlines[2][]{%
   \begingroup
@@ -2399,7 +2409,7 @@
 %
 % \subsection{Other Macros}
 %
-% \begin{macro}{\tikztiming@iflower}
+% \begin{macro}{\tikztiming@iflower}[1]{Character}
 %    \begin{macrocode}
 \def\tikztiming@iflower#1{%
   \begingroup
@@ -2426,7 +2436,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@internaldefs}
+% \begin{macro}{\tikztiming@internaldefs}[1]{Character}
 %    \begin{macrocode}
 \def\tikztiming@internaldefs#1{%
   \def\draw{\noexpand\draw}%
@@ -2450,7 +2460,7 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\tikztimingsetslope}
+% \begin{macro}{\tikztimingsetslope}[1]{Slope value}
 %    \begin{macrocode}
 \def\tikztimingsetslope#1{%
   \pgfmathparse{min(1.0,{max(0.0,#1)})}%
@@ -2460,7 +2470,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingsetdslope}
+% \begin{macro}{\tikztimingsetdslope}[1]{Slope value}
 %    \begin{macrocode}
 \def\tikztimingsetdslope#1{%
   \pgfmathparse{min(1.0,{max(0.0,#1)})}%
@@ -2470,7 +2480,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingsetzslope}
+% \begin{macro}{\tikztimingsetzslope}[1]{Slope value}
 %    \begin{macrocode}
 \def\tikztimingsetzslope#1{%
   \pgfmathparse{min(1.0,{max(0.0,#1)})}%
@@ -2485,7 +2495,7 @@
 \tikztimingsetzslope{0.05}%
 %    \end{macrocode}
 %
-% \begin{macro}{\tikztiminguse}
+% \begin{macro}{\tikztiminguse}[1]{Character(s)}
 %    \begin{macrocode}
 \def\tikztiminguse#1{%
   \@ifundefined{\tikztiming@prefix#1@general}%
@@ -2495,7 +2505,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingdef}
+% \begin{macro}{\tikztimingdef}[1]{One or two characters}
 %    \begin{macrocode}
 \def\tikztimingdef#1{%
   \tikztimingdef@#1\relax%
@@ -2503,7 +2513,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingdef@}
+% \begin{macro}{\tikztimingdef@}[3]{First character}{Second character or 
+% empty}{Definition code}
 %    \begin{macrocode}
 \def\tikztimingdef@#1#2\relax#3{%
   \ifx\relax#2\relax
@@ -2515,7 +2526,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiminglet}
+% \begin{macro}{\tikztiminglet}[2]{Original characters}{New characters}
 %    \begin{macrocode}
 \def\tikztiminglet#1#2{%
   \tikztiminglet@#1\relax#2\relax
@@ -2523,7 +2534,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiminglet@}
+% \begin{macro}{\tikztiminglet@}[4]{First original character}{Second original 
+% character}{First new character}{Second new character}
 %    \begin{macrocode}
 \def\tikztiminglet@#1#2\relax#3#4\relax{%
   \tikztiming@namelet{#1#2}{#3#4}%
@@ -2544,13 +2556,15 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@chars}
-%    \begin{macrocode}
+% \begin{macro}{\tikztiming@chars}[1]{Comma to gobble}
+% Initial definition of character list. Will gobble the separation comma in 
+% front of the first character which is added to the list.
+% \begin{macrocode}
 \def\tikztiming@chars#1{}
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@ifcharexists}
+% \begin{macro}{\tikztiming@ifcharexists}[1]{Character to check if in list}
 %    \begin{macrocode}
 \def\tikztiming@ifcharexists#1{%
   \def\tikztiming@ifcharexists@##1,#1,##2\relax{%
@@ -2567,7 +2581,7 @@
 % \end{macro}
 %
 %
-% \begin{macro}{\tikztiming@addchar}
+% \begin{macro}{\tikztiming@addchar}[1]{Character}
 %    \begin{macrocode}
 \def\tikztiming@addchar#1{%
   \tikztiming@ifcharexists{#1}{%
@@ -2577,7 +2591,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingchar}
+% \begin{macro}{\tikztimingchar}[1]{New character}
 %    \begin{macrocode}
 \def\tikztimingchar#1{%
   \uppercase{%
@@ -2591,7 +2605,8 @@
 \expandafter\def\csname\tikztiming@prefix @start\endcsname#1{}%
 %    \end{macrocode}
 %
-% \begin{macro}{\tikztimingchar@}
+% \begin{macro}{\tikztimingchar@}[3]{Character}{Start position}{Character 
+% drawing code}
 %    \begin{macrocode}
 \def\tikztimingchar@#1#2#3{%
   \tikztiming@nameedef[#1]{#1@start}{#2 coordinate (timing/start) }%
@@ -2601,7 +2616,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingalias}
+% \begin{macro}{\tikztimingalias}[2]{Original character}{New character}
 %    \begin{macrocode}
 \def\tikztimingalias#1#2{%
   \uppercase{\tikztimingalias@{#1}{#2}}%
@@ -2609,7 +2624,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingalias@}
+% \begin{macro}{\tikztimingalias@}[2]{New character}{Original character}
 %    \begin{macrocode}
 \def\tikztimingalias@#1#2{%
   \tikztiming@namelet{#1}{#2}%
@@ -2627,7 +2642,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingecopy}
+% \begin{macro}{\tikztimingecopy}[2]{New character}{Original character}
 %    \begin{macrocode}
 \def\tikztimingecopy#1#2{%
   \uppercase{\tikztimingecopy@{#1}{#2}}%
@@ -2635,7 +2650,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingecopy@}
+% \begin{macro}{\tikztimingecopy@}[2]{New character}{Original character}
 %    \begin{macrocode}
 \def\tikztimingecopy@#1#2{%
   \tikztimingchar{#1}{}{}%
@@ -2665,7 +2680,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiminglet@@}
+% \begin{macro}{\tikztiminglet@@}[3]{Character from list}{New 
+% character}{Original character}
 %    \begin{macrocode}
 \def\tikztiminglet@@#1#2#3{%
   \tikztiminglet@@@#1#2#3%
@@ -2677,7 +2693,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiminglet@@@}
+% \begin{macro}{\tikztiminglet@@@}[3]{Character from list}{New 
+% character}{Original character}
 %    \begin{macrocode}
 \def\tikztiminglet@@@#1#2#3{%
   \tikztiminglet{#1#2}{#1#3}%
@@ -2687,7 +2704,8 @@
 % \end{macro}
 
 %
-% \begin{macro}{\tikztimingdef@@}
+% \begin{macro}{\tikztimingdef@@}[3]{Character from list}{New 
+% character}{Original character}
 %    \begin{macrocode}
 \def\tikztimingdef@@#1#2#3{%
   \tikztimingdef{#1#2}{\tikztiminguse{#1#3}{##1}}%
@@ -2718,7 +2736,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@restoresettings@}
+% \begin{macro}{\tikztiming@restoresettings@}[4]{Slope}{D-Slope}{Z-Slope}{Line 
+% width}
 %    \begin{macrocode}
 \def\tikztiming@restoresettings@#1#2#3#4\relax{%
   \tikztimingsetslope{#1}%
@@ -2810,6 +2829,10 @@
 \tikztiming@namelet{D@edge@@start}{D@start}
 \tikztiming@namelet{d@edge@@start}{d@start}
 
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@trans@D@fill}[2]{Original width}{Width to subtract}
+%    \begin{macrocode}
 \def\tikztiming@trans@D@fill#1#2{%
   node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
   -- +(0.5*\dslope,-0.5*\height)
@@ -2821,7 +2844,10 @@
   \draw [timing/restore,\style] (timing@save) ++(0,0)
   node [timing/save] (timing@dstart) {}
 }
-
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
 \tikztimingdef{HH}{-- ++(#1,0)}
 \tikztimingdef{LL}{-- ++(#1,0)}
 \tikztimingdef{HL}{-- ++(\slope,-\height) \tikztiminguse{HH}{#1-\slope}}
