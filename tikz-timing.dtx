@@ -27,34 +27,32 @@
 %<*driver>
 \makeatletter
 %</driver>
-%<*!ydoc>
-\def\tikztiming@version{v0.4}
 \RequirePackage{svn-prov}
-%</!ydoc>
 %<package>\ProvidesPackageSVN
 %<examplecode>\ProvidesPackageSVN[tikz-timing-examplecode]
+%<ydoc>\ProvidesPackageSVN[ydoc]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
-%<*!ydoc>
- {$Id$}
-  [\tikztiming@version\space
-%</!ydoc>
+  {$Id$}
+  [v0.4
 %<package>   Digital Timing Diagrams using TikZ]
-%<examplecode>   Macros to produce examples for the tikz-timing package.]
+%<examplecode>   Macros to produce examples for the tikz-timing package]
+%<ydoc>   Documentation Macros for tikz-timing package]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
+%<*package|driver>
+\DefineFileInfoSVN[tikztiming]
+%</package|driver>
+%<!package>\DefineFileInfoSVN
 %<examplecode>\RequirePackage{tikz-timing}%
-%<examplecode>   [\csname ver@\@currname.\@currext\endcsname]
 %<examplecode>\RequirePackage{pgffor}%
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
-\GetFileInfoSVN*
-\let\tikztiming@date\filedate
-\makeatother
 \documentclass{ltxdoc}
-\usepackage{tikz-timing}[\csname ver@tikz-timing.dtx\endcsname]
+\usepackage{tikz-timing}[\tikztiming@date]
+\makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
 \usepackage{graphicx}
@@ -584,6 +582,7 @@
 %    \begin{macrocode}
 %</driver>
 %<*examplecode>
+\RequirePackage{environ}
 %    \end{macrocode}
 
 % \begin{environment}{tikztimingexampletable}
@@ -1387,6 +1386,7 @@
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{backgrounds}
+\RequirePackage{environ}
 
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
@@ -2216,7 +2216,6 @@
 % \subsection{Table environment}
 %    \begin{macrocode}
 %\usetikzlibrary{backgrounds}
-\RequirePackage{environ}
 \newcounter{tikztimingrows}
 %    \end{macrocode}
 %
