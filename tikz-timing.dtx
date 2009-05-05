@@ -1591,6 +1591,7 @@
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
       \tikztiming@str;%
+      \node [shape=tikztiming@shape,name=last texttiming] at (0,0) {};
       \texttimingafter
     \end{tikzpicture}%
   \endgroup
@@ -1655,6 +1656,7 @@
     %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{scope}[shift={#2},timing,#1]%
       \tikztiming@str;%
+      \node [shape=tikztiming@shape,#1] at (0,0) {};
     \end{scope}%
   \endgroup
   \timing@@@end
@@ -2515,6 +2517,38 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsection{Shape}
+%    \begin{macrocode}
+\pgfdeclareshape{tikztiming@shape}{%
+  \savedanchor\southwest{\pgfpointorigin
+  }%
+  \savedanchor\northeast{\pgfpointxy{\tikztimingwidth}{1}}%
+  \savedanchor\startpoint{\pgfpointanchor{timing/start}{center}}%
+  \savedanchor\endpoint{\pgfpointanchor{timing/end}{center}}%
+  \anchor{south west}{\southwest}%
+  \anchor{origin}{\pgfpointorigin}%
+  \anchor{center}{\pgfpointorigin}%
+  \anchor{start}{\startpoint}%
+  \anchor{end}{\endpoint}%
+  %
+  \anchor{north}{\northeast \pgf@x=.5\pgf@x }%
+  \anchor{north west}{\northeast \pgf@x=0pt }%
+  \anchor{north east}{\northeast}
+  \anchor{south}{\northeast \pgf@x=.5\pgf@x \pgf@y=0pt }%
+  \anchor{south west}{\pgfpointorigin}%
+  \anchor{south east}{\northeast \pgf@y=0pt }%
+  \anchor{west}{\northeast \pgf@y=.5\pgf@y \pgf@x=0pt }%
+  \anchor{east}{\northeast \pgf@y=.5\pgf@y }%
+  \anchor{mid}{\northeast \pgf@x=.5\pgf@x \pgf@y=.5\pgf@y }%
+  \anchor{mid west}{\northeast \pgf@y=.5\pgf@y \pgf@x=0pt }%
+  \anchor{mid east}{\northeast \pgf@y=.5\pgf@y }%
+  \anchor{base}{\northeast \pgf@x=.5\pgf@x \pgf@y=0pt }%
+  \anchor{base west}{\pgfpointorigin}%
+  \anchor{base east}{\northeast \pgf@y=0pt }%
+  \anchorborder{\pgfpointorigin}%
+}
+%    \end{macrocode}
 %
 % \subsection{Other Macros}
 %
