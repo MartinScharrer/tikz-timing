@@ -27,7 +27,7 @@
 %<*driver>
 \makeatletter
 %</driver>
-\RequirePackage{svn-prov}
+\RequirePackage{svn-prov}[2009/05/03]
 %<package>\ProvidesPackageSVN
 %<examplecode>\ProvidesPackageSVN[tikz-timing-examplecode]
 %<ydoc>\ProvidesPackageSVN[ydoc]
@@ -761,7 +761,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1734}
+% \CheckSum{1757}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1113,6 +1113,13 @@
 % If the list is empty the default `|0,1,...,\twidth|' is used which draws lines 
 % after every period width.
 %
+% \DescribeMacro{tablerules}{\oarg{TikZ Settings}}
+% This macro adds top and bottom rules to the table in the same (or at least 
+% very similar) way as the \texttt{booktabs} package is doing it for normal 
+% \texttt{tabular}s. The current bounding box is used to calculate the needed 
+% rule length, which makes this macro position dependent if further code is 
+% changing the bounding box.
+%
 % \subsubsection*{Positions \& Scalings inside the Table}
 % The first row starts at $y=0$ and the next rows are each
 % |-1*\rowdist| lower than the previous one.
@@ -1169,6 +1176,7 @@
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
+%     timing/table/rules & Used for \cs{tablerules}. \\
 %     timing/inline node & Used for nodes created by the |N| character. \\
 %     \midrule
 %     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
