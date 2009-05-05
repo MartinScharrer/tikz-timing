@@ -1177,7 +1177,8 @@
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
 %     timing/table/rules & Used for \cs{tablerules}. \\
-%     timing/inline node & Used for nodes created by the |N| character. \\
+%     timing/inline node & Used for nodes created by the |N| character. Default 
+%     to \texttt{coordinate}.  \\
 %     \midrule
 %     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
 %     for `|H|' and `|L|'. \\
@@ -1338,6 +1339,35 @@
 %
 % \begin{example}
 % \centering
+% \lstset{basicstyle=\footnotesize\ttfamily}
+% \begin{examplecode}
+%   \def\degr{${}^\circ$}
+%   \begin{tikztimingtable}
+%     Clock 128\,MHz 0\degr    & H 2C N(A1) 8{2C} N(A5) 3{2C} G\\
+%     Clock 128\,MHz 90\degr   & [C] 2{2C} N(A2) 8{2C} N(A6) 2{2C} C\\
+%     Clock 128\,MHz 180\degr  & C 2{2C} N(A3) 8{2C} N(A7) 2{2C} G\\
+%     Clock 128\,MHz 270\degr  & 3{2C} N(A4) 8{2C} N(A8) 2C C\\
+%     Coarse Pulse             & 3L 16H 6L \\
+%     Coarse Pulse - Delayed 1 & 4L N(B2) 16H N(B6) 5L \\
+%     Coarse Pulse - Delayed 2 & 5L N(B3) 16H N(B7) 4L \\
+%     Coarse Pulse - Delayed 3 & 6L 16H 3L \\
+%     \\
+%     Final Pulse Set          & 3L 16H N(B5) 6L \\
+%     Final Pulse $\overline{\text{Reset}}$ & 6L N(B4) 16H 3L \\
+%     Final Pulse              & 3L N(B1) 19H N(B8) 3L \\
+%   \extracode
+%     \tablerules
+%     \begin{pgfonlayer}{background}
+%       \foreach \n in {1,...,8}
+%         \draw [help lines] (A\n) -- (B\n);
+%     \end{pgfonlayer}
+%   \end{tikztimingtable}
+% \end{examplecode}
+% \caption{Using In-Line Nodes to draw Help Lines}
+% \end{example}
+%
+% \begin{example}
+% \centering
 % \lstset{basicstyle=\ttfamily\small}
 % \def\texta{}\def\textb{}^^A
 % \let\insertoriginalimageforcomparisionifpresent\relax
@@ -1472,7 +1502,7 @@
   timing/.cd,
   grid/.style={timing,help lines},
   intext/.style={timing,line width=0.15ex},
-  inline node/.style={inner sep=0pt,outer sep=0pt},
+  inline node/.style={shape=coordinate},
   table/.style={timing,line width=0.15ex,font=\sffamily},
   coord/.style={inner sep=0pt,outer sep=0pt},
   save/.style={inner sep=0pt,outer sep=0pt,/utils/exec=\tikztiming@savesettings},
