@@ -2415,7 +2415,7 @@
   \path ($ (last row) + (0,-1*\rowdist) $) coordinate (last row);
   \path ($ (last row) + (-1*\coldist,0) $) node [anchor=base east,timing/name]
     {\tikztiminglabel{#1}};
-  \timing (last row) {#2};
+  \timing [name=row\the\c@tikztiming@nrows] (last row) {#2};
   \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
     coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
   %
