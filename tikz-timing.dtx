@@ -1163,6 +1163,7 @@
 % `|/tikz/timing/slope|'.
 %
 % The Table~\ref{tab:styles} lists all styles defined by this package.
+% {\scriptsize
 % \begin{table}[b]
 %   \centering
 %   \caption{TikZ Styles and Settings provided and used by this Package.}
@@ -1175,13 +1176,15 @@
 %     \midrule
 %     timing      & Base settings like signal height \& period width.\\
 %     timing/intext & Used for \cs{texttiming}. Depends on |timing|.\\
+%     timing/picture & Usable for own \texttt{tikzpictures} to set timing 
+%     settings.\\
 %     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
 %     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
 %     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
 %     timing/table/rules & Used for \cs{tablerules}. \\
-%     timing/inline node & Used for nodes created by the |N| character. Default 
-%     to \texttt{coordinate}.  \\
+%     timing/inline node & Used for nodes created by the |N| character.  
+%     Defaults to \texttt{coordinate}.\\
 %     \midrule
 %     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
 %     for `|H|' and `|L|'. \\
@@ -1207,7 +1210,7 @@
 %   }
 %   ^^A\\[\smallskipamount]
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
-% \end{table}
+% \end{table}}
 %
 % \clearpage
 % \section{Examples}
