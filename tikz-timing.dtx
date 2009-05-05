@@ -2367,8 +2367,8 @@
 %    \begin{macrocode}
 \def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
-  \path (last row) +(0,-1*\rowdist) coordinate (last row);
-  \path (last row) +(-1*\coldist,0) node [anchor=base east,timing/name]
+  \path ($ (last row) + (0,-1*\rowdist) $) coordinate (last row);
+  \path ($ (last row) + (-1*\coldist,0) $) node [anchor=base east,timing/name]
     {\tikztiminglabel{#1}};
   \timing (last row) {#2};
   \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
