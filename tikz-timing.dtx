@@ -1486,6 +1486,7 @@
   x/.style={red},
   table/grid/.style={timing/grid},
   table/lines/.style={},
+  table/rules/.style={line width=0.08em,line cap=butt},
   slope/.code={%
     \tikztimingsetslope{#1}%
     \tikztimingsetdslope{2*#1}%
@@ -2284,9 +2285,10 @@
   \def\tikztiming@maxwidth{0.0}%
   \let\extracode\tikztiming@extracode
   \let\tablegrid\tikztiming@tablegrid
+  \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
   \let\vertlines\tikztiming@vertlines
-  \let\fulltablegrid\tikztiming@fulltablegrid
+  \let\tablerules\tikztiming@tablerules
   \def\rowdist{\tikztiming@rowdist}%
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
@@ -2415,6 +2417,22 @@
       }%
     \endscope
   \end{pgfonlayer}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablerules}[1]{Optional Settings}
+%    \begin{macrocode}
+\newcommand*\tikztiming@tablerules[1][]{%
+    \draw [timing/table/rules,#1] let
+      \p1 = (current bounding box.north west),
+      \p2 = (current bounding box.south east),
+      \p3 = (last row)
+    in
+      (\x1-\tabcolsep,\rowdist) -- (\x2+\tabcolsep,\rowdist)
+      ($ (\x1-\tabcolsep,\y3) - (0,\rowdist-1) $) --
+      ($ (\x2+\tabcolsep,\y3) - (0,\rowdist-1) $)
+    ;
 }
 %    \end{macrocode}
 % \end{macro}
