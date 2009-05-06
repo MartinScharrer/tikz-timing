@@ -1716,12 +1716,12 @@
 \def\timing@@@#1#2#3{%
   \begingroup
     \tikztiming@init
-    \@ifnextchar{[}%
-      {\timing@@@init}%
-      {\timing@@@init[]}%
-    #3\relax
-    %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{scope}[shift={#2},timing,#1]%
+      \@ifnextchar{[}%
+        {\timing@@@init}%
+        {\timing@@@init[]}%
+      #3\relax
+      %\message{^^J\meaning\tikztiming@str^^J}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
@@ -1745,7 +1745,9 @@
 % \begin{macro}{\timing@@@init}[1]{Initial character.}
 %    \begin{macrocode}
 \def\timing@@@init[#1]{%
-  \uppercase{\def\lastchar{#1}}%
+  \ifx\relax#1\relax\else
+    \uppercase{\def\lastchar{#1}}%
+  \fi
   \@ifundefined{tikztiming@initcode@\lastchar}%
     {}%
     {\@nameuse{tikztiming@initcode@\lastchar}}%
@@ -2482,7 +2484,10 @@
   \path ($ (last row) + (0,-1*\rowdist) $) coordinate (last row);
   \path ($ (last row) + (-1*\coldist,0) $) node [anchor=base east,timing/name]
     {\tikztiminglabel{#1}};
-  \timing [name=row\the\c@tikztiming@nrows] (last row) {#2};
+  \@ifnextchar{[}%
+    {\tikztiming@tabletiming}%
+    {\tikztiming@tabletiming[]}%
+  #2\relax
   \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
     coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
   %
@@ -2497,6 +2502,21 @@
       \@ifnextchar\endtikztimingtable@
         {\@gobble}{\tikztimingtable@row}%
     }%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\tikztiming@tabletiming}
+%    \begin{macrocode}
+\def\tikztiming@tabletiming[#1]#2\relax{%
+  \let\lastchar\empty
+  \let\settings\empty
+  \ifx\relax#1\relax\else
+    \tikztiming@testoptarg#1\relax\relax
+  \fi
+  \edef\@tempa{\noexpand\timing[\settings,name=row\the\c@tikztiming@nrows]
+    (last row)}%
+  \expandafter\@tempa\expandafter{\expandafter[\lastchar]#2};
 }
 %    \end{macrocode}
 % \end{macro}
