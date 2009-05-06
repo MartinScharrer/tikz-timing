@@ -761,7 +761,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1757}
+% \CheckSum{1758}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -3232,7 +3232,7 @@
 \tikztimingdef{ZT}{%
   \newdraw
   {[\style]
-  node [timing/save] {\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\slope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\slope,0) $)
   }
