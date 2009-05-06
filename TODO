@@ -1,2 +1,4 @@
 * Table head line macro
 * Allow to set node names for table rows.
+* Allow diagram line-wide tikz settings in first optional argument.
+* Define `\texttiming` to simply use `\timing`.
