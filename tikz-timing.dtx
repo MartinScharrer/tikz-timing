@@ -761,7 +761,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1911}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1550,6 +1550,8 @@
 }
 \tikzset{%
   timing/.cd,
+  initchar/.value required,
+  initchar/.code={\ifx\lastchar\empty\def\lastchar{#1}\fi},
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
@@ -1622,19 +1624,20 @@
 \DeclareRobustCommand*\texttiming[2][]{%
   \begingroup
     \tikztiming@init
-    \uppercase{\def\lastchar{#1}}%
-    \@ifundefined{tikztiming@initcode@\lastchar}%
-      {}%
-      {\@nameuse{tikztiming@initcode@\lastchar}}%
-    \ifx\lastchar\empty\else
-    \@ifundefined{\tikztiming@prefix\lastchar @start}%
-      {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
-      is not defined and will be ignored!}{}{}{}}%
-      {\tikztiming@nameaddtostr{\lastchar @start}{}}%
-    \fi
-    \tikztiming@#2\relax
-    %\message{^^J\meaning\tikztiming@str^^J}%
-    \begin{tikzpicture}[timing/intext]%
+    \tikztiming@testoptarg#1\relax\relax%
+    \def\@tempa{\begin{tikzpicture}[timing/intext,}%]}[
+    \expandafter\@tempa\settings]
+      \@ifundefined{tikztiming@initcode@\lastchar}%
+        {}%
+        {\@nameuse{tikztiming@initcode@\lastchar}}%
+      \ifx\lastchar\empty\else
+      \@ifundefined{\tikztiming@prefix\lastchar @start}%
+        {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
+        is not defined and will be ignored!}{}{}{}}%
+        {\tikztiming@nameaddtostr{\lastchar @start}{}}%
+      \fi
+      \tikztiming@#2\relax
+      %\message{^^J\meaning\tikztiming@str^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
@@ -1648,11 +1651,24 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@testoptarg}
+%    \begin{macrocode}
+\def\tikztiming@testoptarg#1#2\relax{%
+  \ifx\relax#2\relax
+    \def\lastchar{#1}%
+  \else
+    \def\settings{#1#2}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@init}
 %    \begin{macrocode}
 \def\tikztiming@init{%
-    \def\lastchar{}%
+    \let\lastchar\empty%
     \let\currentchar\empty
+    \let\settings\empty
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \def\tikztiming@str{\draw (0,0) coordinate (timing/start base) }%
