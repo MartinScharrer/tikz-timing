@@ -761,7 +761,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1840}
+% \CheckSum{1867}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -2562,29 +2562,25 @@
 %    \begin{macrocode}
 \pgfdeclareshape{tikztiming@shape}{%
   \savedanchor\northeast{\pgfpointxy{.5*\tikztimingwidth}{.5}}%
-  \savedanchor\startpoint{\pgfpointanchor{timing/start}{center}}%
-  \savedanchor\endpoint{\pgfpointanchor{timing/end}{center}}%
+  \savedanchor\startpoint{%
+    \pgfpointanchor{timing/start}{center}%
+    \@tempdima=\pgf@x
+    \@tempdimb=\pgf@y
+    \pgfpointxy{-.5*\tikztimingwidth}{-.5}%
+    \advance\pgf@x by \@tempdima
+    \advance\pgf@y by \@tempdimb
+  }%
+  \savedanchor\endpoint{%
+    \pgfpointanchor{timing/end}{center}%
+    \@tempdima=\pgf@x
+    \@tempdimb=\pgf@y
+    \pgfpointxy{-.5*\tikztimingwidth}{-.5}%
+    \advance\pgf@x by \@tempdima
+    \advance\pgf@y by \@tempdimb
+  }%
   \anchor{center}{\pgfpointorigin}%
-  \anchor{start}{%
-    \startpoint
-    \@tempdima=\pgf@x
-    \@tempdimb=\pgf@y
-    \northeast
-    \pgf@x=-\pgf@x
-    \pgf@y=-\pgf@y
-    \advance\pgf@x by \@tempdima
-    \advance\pgf@y by \@tempdimb
-  }%
-  \anchor{end}{%
-    \endpoint
-    \@tempdima=\pgf@x
-    \@tempdimb=\pgf@y
-    \northeast
-    \pgf@x=-\pgf@x
-    \pgf@y=-\pgf@y
-    \advance\pgf@x by \@tempdima
-    \advance\pgf@y by \@tempdimb
-  }%
+  \anchor{start}{\startpoint}%
+  \anchor{end}{\endpoint}%
   %
   \anchor{origin}{\northeast \pgf@x=-\pgf@x \pgf@y=-\pgf@y }%
   \anchor{east}{\northeast \pgf@y=0pt }%
