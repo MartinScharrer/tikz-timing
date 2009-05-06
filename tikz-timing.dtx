@@ -1071,7 +1071,7 @@
 % \centering
 % \begin{tikzpicture}[timing,y=1.5cm,x=1.5cm,timing/slope=0]
 %   \timing [y=1.5cm,x=1.5cm,gray,thick] (0,0) {HLHLHL};
-%   \node[name=s,shape=tikztiming@shape,anchor=south west] at (0,0) {};
+%   \node[name=s,shape=tikztiming@shape,anchor=origin] at (0,0) {};
 %   \foreach \anchor/\placement in
 %     {north west/above left, north/above, north east/above right,
 %     west/left, center/right, east/right,
@@ -1630,8 +1630,8 @@
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
       \tikztiming@str;%
-      \node [shape=tikztiming@shape,anchor=south west,name=last texttiming] at 
-      (0,0) {};
+      \node [shape=tikztiming@shape,anchor=origin,name=last texttiming] at (0,0) 
+      {};
       \texttimingafter
     \end{tikzpicture}%
   \endgroup
@@ -1696,7 +1696,7 @@
     %\message{^^J\meaning\tikztiming@str^^J}%
     \begin{scope}[shift={#2},timing,#1]%
       \tikztiming@str;%
-      \node [shape=tikztiming@shape,#1] at (0,0) {};
+      \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
   \endgroup
   \timing@@@end
