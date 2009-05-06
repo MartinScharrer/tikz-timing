@@ -1551,7 +1551,7 @@
 \tikzset{%
   timing/.cd,
   initchar/.value required,
-  initchar/.code={\ifx\lastchar\empty\def\lastchar{#1}\fi},
+  initchar/.code={\ifx\lastchar\empty\uppercase{\def\lastchar{#1}}\fi},
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
@@ -1657,7 +1657,7 @@
 %    \begin{macrocode}
 \def\tikztiming@testoptarg#1#2\relax{%
   \ifx\relax#2\relax
-    \def\lastchar{#1}%
+    \uppercase{\def\lastchar{#1}}%
   \else
     \def\settings{#1#2}%
   \fi
