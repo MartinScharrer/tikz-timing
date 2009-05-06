@@ -1,2 +1,2 @@
-* Table rules like in booktabs
 * Table head line macro
+* Allow to set node names for table rows.
