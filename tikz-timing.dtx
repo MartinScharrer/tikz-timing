@@ -2562,6 +2562,7 @@
 %    \begin{macrocode}
 \pgfdeclareshape{tikztiming@shape}{%
   \savedanchor\northeast{\pgfpointxy{.5*\tikztimingwidth}{.5}}%
+  \savedanchor\northeastborder{\pgfpointxy{.5*\tikztimingwidth+0.1}{.6}}%
   \savedanchor\startpoint{%
     \pgfpointanchor{timing/start}{center}%
     \@tempdima=\pgf@x
@@ -2598,7 +2599,9 @@
   \anchor{base west}{\northeast \pgf@x=-\pgf@x \pgf@y=-\pgf@y }%
   \anchor{base east}{\northeast \pgf@y=-\pgf@y }%
   \anchorborder{%
-  \pgfpointorigin
+    \@tempdima=\pgf@x
+    \@tempdimb=\pgf@y
+    \pgfpointborderrectangle{\pgfpoint{\@tempdima}{\@tempdimb}}{\northeastborder}%
   }%
 }
 %    \end{macrocode}
