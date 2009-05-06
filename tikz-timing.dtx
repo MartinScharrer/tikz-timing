@@ -1071,14 +1071,14 @@
 % \centering
 % \begin{tikzpicture}[timing,y=1.5cm,x=1.5cm,timing/slope=0]
 %   \timing [y=1.5cm,x=1.5cm,gray,thick] (0,0) {HLHLHL};
-%   \node[name=s,shape=tikztiming@shape] at (0,0) {};
+%   \node[name=s,shape=tikztiming@shape,anchor=south west] at (0,0) {};
 %   \foreach \anchor/\placement in
 %     {north west/above left, north/above, north east/above right,
 %     west/left, center/right, east/right,
-%     mid west/right, mid/right, mid east/left,
+%     mid west/right, mid/left, mid east/left,
 %     base west/left, base/left, base east/above right,
 %     south west/below left, south/below, south east/below right,
-%     start/left, end/right}
+%     start/left, end/right, origin/right}
 %   \draw[shift=(s.\anchor)] plot[mark=x] coordinates{(0,0)}
 %     node[\placement] {\tiny\texttt{(s.\anchor)}};
 % \end{tikzpicture}
@@ -1630,7 +1630,8 @@
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
       \tikztiming@str;%
-      \node [shape=tikztiming@shape,name=last texttiming] at (0,0) {};
+      \node [shape=tikztiming@shape,anchor=south west,name=last texttiming] at 
+      (0,0) {};
       \texttimingafter
     \end{tikzpicture}%
   \endgroup
@@ -2560,32 +2561,49 @@
 % \subsection{Shape}
 %    \begin{macrocode}
 \pgfdeclareshape{tikztiming@shape}{%
-  \savedanchor\southwest{\pgfpointorigin
-  }%
-  \savedanchor\northeast{\pgfpointxy{\tikztimingwidth}{1}}%
+  \savedanchor\northeast{\pgfpointxy{.5*\tikztimingwidth}{.5}}%
   \savedanchor\startpoint{\pgfpointanchor{timing/start}{center}}%
   \savedanchor\endpoint{\pgfpointanchor{timing/end}{center}}%
-  \anchor{south west}{\southwest}%
-  \anchor{origin}{\pgfpointorigin}%
   \anchor{center}{\pgfpointorigin}%
-  \anchor{start}{\startpoint}%
-  \anchor{end}{\endpoint}%
+  \anchor{start}{%
+    \startpoint
+    \@tempdima=\pgf@x
+    \@tempdimb=\pgf@y
+    \northeast
+    \pgf@x=-\pgf@x
+    \pgf@y=-\pgf@y
+    \advance\pgf@x by \@tempdima
+    \advance\pgf@y by \@tempdimb
+  }%
+  \anchor{end}{%
+    \endpoint
+    \@tempdima=\pgf@x
+    \@tempdimb=\pgf@y
+    \northeast
+    \pgf@x=-\pgf@x
+    \pgf@y=-\pgf@y
+    \advance\pgf@x by \@tempdima
+    \advance\pgf@y by \@tempdimb
+  }%
   %
-  \anchor{north}{\northeast \pgf@x=.5\pgf@x }%
-  \anchor{north west}{\northeast \pgf@x=0pt }%
+  \anchor{origin}{\northeast \pgf@x=-\pgf@x \pgf@y=-\pgf@y }%
+  \anchor{east}{\northeast \pgf@y=0pt }%
+  \anchor{west}{\northeast \pgf@y=0pt \pgf@x=-\pgf@x }%
+  \anchor{north}{\northeast \pgf@x=0pt }%
+  \anchor{north west}{\northeast \pgf@x=-\pgf@x }%
   \anchor{north east}{\northeast}
-  \anchor{south}{\northeast \pgf@x=.5\pgf@x \pgf@y=0pt }%
-  \anchor{south west}{\pgfpointorigin}%
-  \anchor{south east}{\northeast \pgf@y=0pt }%
-  \anchor{west}{\northeast \pgf@y=.5\pgf@y \pgf@x=0pt }%
-  \anchor{east}{\northeast \pgf@y=.5\pgf@y }%
-  \anchor{mid}{\northeast \pgf@x=.5\pgf@x \pgf@y=.5\pgf@y }%
-  \anchor{mid west}{\northeast \pgf@y=.5\pgf@y \pgf@x=0pt }%
-  \anchor{mid east}{\northeast \pgf@y=.5\pgf@y }%
-  \anchor{base}{\northeast \pgf@x=.5\pgf@x \pgf@y=0pt }%
-  \anchor{base west}{\pgfpointorigin}%
-  \anchor{base east}{\northeast \pgf@y=0pt }%
-  \anchorborder{\pgfpointorigin}%
+  \anchor{south}{\northeast \pgf@x=0pt \pgf@y=-\pgf@y }%
+  \anchor{south west}{\northeast \pgf@x=-\pgf@x \pgf@y=-\pgf@y }%
+  \anchor{south east}{\northeast \pgf@y=-\pgf@y }%
+  \anchor{mid}{\pgfpointorigin}%
+  \anchor{mid east}{\northeast \pgf@y=0pt }%
+  \anchor{mid west}{\northeast \pgf@y=0pt \pgf@x=-\pgf@x }%
+  \anchor{base}{\northeast \pgf@x=0pt \pgf@y=-\pgf@y }%
+  \anchor{base west}{\northeast \pgf@x=-\pgf@x \pgf@y=-\pgf@y }%
+  \anchor{base east}{\northeast \pgf@y=-\pgf@y }%
+  \anchorborder{%
+  \pgfpointorigin
+  }%
 }
 %    \end{macrocode}
 %
