@@ -949,7 +949,7 @@
 % material into a data signal using the given settings.  & D\{[blue]A\} & 
 % \texttiming{D{[blue]A}} \\
 % \meta{\small integer}\{\meta{\small characters}\} &  Repeats the given 
-% characters by the given number.  & 5\{hl\} & \texttiming{5{hl}}\\
+% characters \texttt{\meta{int}} times.  & 5\{hl\} & \texttiming{5{hl}}\\
 % \meta{\small number}\meta{\small character} & Sets width of next signal to 
 % given number.  Half of it if character is in lower case. & 2.6H5.2l & 
 % \texttiming{2.6H5.2l}\\
@@ -981,31 +981,37 @@
 % \end{table}
 %
 % \subsection{Macro for use in Text Mode}
-% \vspace{-\medskipamount}%
-% \DescribeMacro{texttiming}{\oarg{initial character}\marg{characters}}
+% \vspace{-\bigskipamount}%
+% \DescribeMacro{texttiming}{\oarg{initial~character/TikZ 
+% Settings}\marg{characters}}
 % This macro places a single timing diagram line into the current text. The 
 % signals have the same height as a uppercase letter (like `X') of the current 
 % font, \ie they scale with the font size.
-%
-% The macro argument must contain only valid logic characters which define the 
-% logical levels of the diagram line.
+% The macro argument must contain only valid logic characters and modifiers 
+% which define the logical levels of the diagram line.
 %
 % An initial character can be given as an optional argument. No logic level will 
 % be drawn for this character. Instead it will be used to define the initial 
 % position of the signal so that the diagram line will start with a transition 
-% from the initial to the first character.
+% from the initial to the first character. However, if the optional argument 
+% holds more than a single character it is taken as TikZ settings for the 
+% diagram. The initial character can then be given using the key 
+% `|timing/initchar=|\meta{char}'.
 %
-% \textit{Examples:}\\
-% |\texttiming{HLZDZLH}|^^A
+% \par\medskip\noindent
+% \textit{Examples:}\\*[\smallskipamount]\hspace*{\parindent}%
+% \begin{minipage}{\textwidth-4\parindent}
+% \small |\texttiming{HLZDZLH}|^^A
 % \phantom{\texttt{[L]}} gives `\texttiming{HLZDZLH}', with grid: 
-% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.\\*
+% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.\\
 % |\texttiming[L]{HLZDZLH}| ^^A
 % gives `\texttiming[L]{HLZDZLH}', with grid: 
-% `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.\\*
+% `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.\\
 % |\texttiming[green]{HLZDZLH}| ^^A
-% gives `\texttiming[green]{HLZDZLH}'\\*
+% gives `\texttiming[green]{HLZDZLH}'\\
 % |\texttiming[green,timing/initchar=L]{HLZDZLH}| ^^A
-% gives `\texttiming[green,timing/initchar=L]{HLZDZLH}'\\*
+% gives `\texttiming[green,timing/initchar=L]{HLZDZLH}'
+% \end{minipage}
 %
 % \DescribeMacro{texttimingbefore}{\hspace{15.5em}(\emph{defaults to}: 
 % \meta{empty})}
@@ -1210,11 +1216,12 @@
 % The package follows the directory structures approach used by TikZ/PGF and 
 % places all styles and other settings under the ``subdirectory'' `|timing|' in 
 % the main ``directory'' `tikz', which is the default when \css{tikzset} is 
-% used.\\Example: The slope of the transitions can be changed using the key 
-% `|timing/slope|', which can also written in the absolute form 
-% `|/tikz/timing/slope|'.
+% used.\\
+% ^^AExample: The slope of the transitions can be changed using the key 
+% ^^A`|timing/slope|', which can also written in the absolute form 
+% ^^A`|/tikz/timing/slope|'.
 %
-% The Table~\ref{tab:styles} lists all styles defined by this package.
+% ^^AThe Table~\ref{tab:styles} lists all styles defined by this package.
 % {\scriptsize
 % \begin{table}[b]
 %   \centering
@@ -1245,6 +1252,8 @@
 %     timing/\meta{lc char}/text & Text style for character \meta{char}.  Only 
 %     defined for `|D|'. \\
 %     \midrule
+%     timing/initchar=\meta{char} & Sets initial character. Only valid as first  
+%     optional argument in table rows or \cs{texttiming}.\\
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
 %     \newline This also sets |dslope=2*slope|, |zslope=slope/2|.\\
 %     timing/lslope=\meta{0.0\en1.0} & Sets slope for logic transitions only.  
