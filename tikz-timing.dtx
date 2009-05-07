@@ -981,7 +981,7 @@
 % \end{table}
 %
 % \subsection{Macro for use in Text Mode}
-%
+% \vspace{-\medskipamount}%
 % \DescribeMacro{texttiming}{\oarg{initial character}\marg{characters}}
 % This macro places a single timing diagram line into the current text. The 
 % signals have the same height as a uppercase letter (like `X') of the current 
@@ -995,14 +995,17 @@
 % position of the signal so that the diagram line will start with a transition 
 % from the initial to the first character.
 %
-% \par\bigskip\noindent
 % \textit{Examples:}\\
 % |\texttiming{HLZDZLH}|^^A
 % \phantom{\texttt{[L]}} gives `\texttiming{HLZDZLH}', with grid: 
-% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.\\
+% `{\let\texttimingbefore\texttiminggrid\texttiming{HLZDZLH}}'.\\*
 % |\texttiming[L]{HLZDZLH}| ^^A
 % gives `\texttiming[L]{HLZDZLH}', with grid: 
-% `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.
+% `{\let\texttimingbefore\texttiminggrid\texttiming[L]{HLZDZLH}}'.\\*
+% |\texttiming[green]{HLZDZLH}| ^^A
+% gives `\texttiming[green]{HLZDZLH}'\\*
+% |\texttiming[green,timing/initchar=L]{HLZDZLH}| ^^A
+% gives `\texttiming[green,timing/initchar=L]{HLZDZLH}'\\*
 %
 % \DescribeMacro{texttimingbefore}{\hspace{15.5em}(\emph{defaults to}: 
 % \meta{empty})}
@@ -1094,17 +1097,22 @@
 %
 % ^^A\newpage
 % \subsection{Table for Timing Diagrams}
-% \DescribeEnv{tikztimingtable}{\oarg{TikZ settings}\\\meta{Signal Name}\ \ \&\ 
-% \ \meta{Characters} \textbackslash\textbackslash\\\dots\\
+% \DescribeEnv{tikztimingtable}{\oarg{TikZ settings for whole 
+% table}\\\meta{Signal Name}\ \ \&\ \ \oarg{\small Init.~Char./TikZ Settings for 
+% Row}\ \meta{Characters} \textbackslash\textbackslash\\\dots\\
 % \hspace*{-1em}\cs{extracode}\ \% Optional\\\meta{additional code}}
 % This environment can be used to typeset multi-line timing diagrams.  The 
 % syntax is like the one for a \envv{tabular} environment with two columns.  The 
-% first column is for the signal name and the second one ar the logic characters 
-% which would be placed inside the argument of a \cs{texttiming} or \cs{timing} 
-% macro.  The whole table will be drawn inside a \envv{tikzpicture} environment 
-% using multiple \cs{timing} and \cs{node} macros for the timing signals and 
-% their names, respectively.  Additional \pkg{tikz} drawing code can be insert 
-% at the end of the table using \cs{extracode}.
+% first column is for the signal name and the second one are the logic 
+% characters which would be placed inside the argument of a \cs{texttiming} or 
+% \cs{timing} macro.
+% If the second column starts with an optional argument it is either taken as 
+% initial character if it holds only a single character or as row wide settings 
+% otherwise.
+% The whole table will be drawn inside a \envv{tikzpicture} environment using 
+% multiple \cs{timing} and \cs{node} macros for the timing signals and their 
+% names, respectively.  Additional \pkg{tikz} drawing code can be insert at the 
+% end of the table using \cs{extracode}.
 %
 % \DescribeMacro{extracode}{}
 % This macro is only defined inside a \env{tikztimingtable} environment and can 
