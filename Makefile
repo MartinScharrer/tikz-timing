@@ -51,7 +51,7 @@ clean:
 fullclean:
 	rm -f ${TEXAUX} $(addprefix ${TESTDIR}/, ${TEXAUX}) ${GENERATED} *~ *.backup
 	rm -f ${PACKAGE}*.zip
-	rm -rf tds/
+	rm -rf tds/ .tds
 
 ${PACKAGE}.zip: zip
 
