@@ -2408,7 +2408,7 @@
 
 % \begin{environment}{tikztimingtable}[1]{Optional settings}
 %    \begin{macrocode}
-\NewEnviron{tikztimingtable}[1][]{%
+\newenvironment{tikztimingtable}[1][]{%
   \begingroup
   \setcounter{tikztiming@nrows}{0}%
   \def\tikztiming@maxwidth{0.0}%
@@ -2422,19 +2422,32 @@
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
   \def\twidth{\tikztiming@maxwidth}%
-  \begin{tikzpicture}[timing/table,#1]%
+  \tikzpicture[timing/table,#1]%
     \coordinate (last row)  at (0,\rowdist);
     \coordinate (label pos) at (-1*\coldist,0);
     \coordinate (timing/table/top left) at (0,1);
     \coordinate (timing/table/bottom right) at (0,0);
-    \expandafter\tikztimingtable@row\BODY\endtikztimingtable@
-  \end{tikzpicture}
-  \endgroup
+  \collect@body\tikztiming@table
+}{%
 }
-
-\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
 %    \end{macrocode}
 % \end{environment}
+
+% \begin{macro}{\tikztiming@table}[1]{Table content}
+%    \begin{macrocode}
+\def\tikztiming@table#1{%
+  \tikztimingtable@row#1\endtikztimingtable@
+  \endtikzpicture
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\endtikztimingtable@}
+%    \begin{macrocode}
+\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
+%    \end{macrocode}
+% \end{macro}
 
 % \begin{macro}{\tikztimingextracode}[2]{Token to gobble}{Extra drawing code}
 %    \begin{macrocode}
