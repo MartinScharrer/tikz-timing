@@ -1747,6 +1747,7 @@
 \def\timing@@@#1#2#3{%
   \begingroup
     \tikztiming@init
+    \let\tikz@alias=\pgfutil@empty%
     \begin{scope}[shift={#2},timing,#1]%
       \@ifnextchar{[}%
         {\timing@@@init}%
@@ -1769,7 +1770,6 @@
     \PackageError{tikz-package}{Can not parse timing path}{}{}{}%
   \fi
 }
-%
 %    \end{macrocode}
 % \end{macro}
 %
