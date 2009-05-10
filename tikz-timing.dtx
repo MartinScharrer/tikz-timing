@@ -638,11 +638,19 @@
 
 % \begin{environment}{tikztimingexampletable}
 %    \begin{macrocode}
-\NewEnviron{tikztimingexampletable}{%
-  \begin{tikzpicture}[timing/table]%
+\newenvironment{tikztimingexampletable}[1][]{%
+  \tikzpicture[timing/table,#1]%
   \coordinate (last row) at (0,-1);
   \coordinate (label pos) at (-1,0);
-  \expandafter\tikztimingexampletable@\BODY\endtikztimingtable@
+  \collect@body\tikztimingexampletable@
+}{}%
+%    \end{macrocode}
+% \end{environment}
+
+% \begin{macro}{\tikztimingexampletable@}
+%    \begin{macrocode}
+\def\tikztimingexampletable@#1{%
+  \tikztimingexampletable@row#1\endtikztimingtable@
   \path (0,-1) +(-\tikztiming@coldist,0.5*\tikztiming@rowdist) node
     [anchor=base east,timing/name] {Characters};
   \path (0,-1) +(0,0.5*\tikztiming@rowdist) node
@@ -656,16 +664,14 @@
   \draw [line width=\heavyrulewidth]
      (current bounding box.south west) +(0,-1) --
       ($ (current bounding box.south east) +(0,0) $);
-  \end{tikzpicture}
+  \endtikzpicture
 }
-
-\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
 %    \end{macrocode}
-% \end{environment}
-%
-% \begin{macro}{\tikztimingexampletable@}
+% \end{macro}
+
+% \begin{macro}{\tikztimingexampletable@row}
 %    \begin{macrocode}
-\def\tikztimingexampletable@#1\\{%
+\def\tikztimingexampletable@row#1\\{%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
   \path (last row) +(0,-1*\tikztiming@rowdist) coordinate (last row);
@@ -677,7 +683,7 @@
     {\tikztimingextracode}%
     {%
       \@ifnextchar\endtikztimingtable@
-        {\@gobble}{\tikztimingexampletable@}%
+        {\@gobble}{\tikztimingexampletable@row}%
     }%
 }
 %    \end{macrocode}
