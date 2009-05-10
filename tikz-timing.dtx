@@ -633,7 +633,9 @@
 %    \begin{macrocode}
 %</driver>
 %<*examplecode>
-\RequirePackage{environ}
+\IfFileExists{environ.sty}
+  {\RequirePackage{environ}}
+  {\RequirePackage{amsmath}}
 %    \end{macrocode}
 
 % \begin{environment}{tikztimingexampletable}
@@ -1548,7 +1550,9 @@
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{backgrounds}
-\RequirePackage{environ}
+\IfFileExists{environ.sty}
+  {\RequirePackage{environ}}
+  {\RequirePackage{amsmath}}
 
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
