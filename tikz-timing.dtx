@@ -1724,7 +1724,11 @@
 \def\timing@[#1]{%
   \@ifnextchar{a}%
     {\timing@at{#1}}%
-    {\@ifnextchar{+}%
+    {\PackageWarning{tikz-timing}{The \string\timing\space command awaits now an 
+    `at' before the coordinate, like the \string\node\space command is doing.  
+    Please update your source code to ensure compatibility with newer 
+    versions}{}{}{}%
+     \@ifnextchar{+}%
       {\timing@@{#1}}%
       {\@ifnextchar(%)
         {\timing@@{#1}}%
