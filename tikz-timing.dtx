@@ -682,7 +682,7 @@
   \path (last row) +(-1*\tikztiming@coldist,0) node
     [anchor=base east,timing/name]
     {\ttfamily\tikztiming@text};
-  \timing (last row) {#1};
+  \timing at (last row) {#1};
   \@ifnextchar\extracode
     {\tikztimingextracode}%
     {%
@@ -732,7 +732,7 @@
     \path (1.5,-2) node (charnodex) {\strut};
     \coordinate (charnodex) at (charnodex.base);
     \coordinate (charnodey) at (charnodex.base);
-    \def\@tempa{\timing (charnodey)}
+    \def\@tempa{\timing at (charnodey)}
     \expandafter\foreach
     \expandafter\xchar
     \expandafter i\expandafter n\expandafter{\chars} {
@@ -1046,7 +1046,7 @@
 % \subsection{Macro for use inside TikZ-Pictures}
 %
 % \DescribeMacro{timing}{\oarg{TikZ Settings}\ ^^A
-% \parg{TikZ Coordinate}\ \{\oarg{initial character}\meta{characters}\};}
+% at \parg{TikZ Coordinate}\ \{\oarg{initial character}\meta{characters}\};}
 % This macro does the same as \cs{texttiming} but is designed to be used inside 
 % a \envv{tikzpicture} environment and only there. Like normal TikZ macros 
 % (\css{path}, \css{drawn}, \css{node}) it allows an optional argument with TikZ 
@@ -1060,11 +1060,11 @@
 % at the very start of the mandatory argument, not before it. This is necessary 
 % because of several technical reasons.
 %
-% Example: |\tikz \timing [green] (1,2) {HLZDZLH};|\phantom{\texttt{[L]}} gives 
-% `\tikz \timing [green] (1,2) {HLZDZLH};'.
+% Example: |\tikz \timing [green] at (1,2) {HLZDZLH};|\phantom{\texttt{[L]}} 
+% gives `\tikz \timing [green] at (1,2) {HLZDZLH};'.
 % 
-% Example: |\tikz \timing [green] (1,2) {[L]HLZDZLH};| gives `\tikz \timing 
-% [green] (1,2) {[L]HLZDZLH};'.
+% Example: |\tikz \timing [green] at (1,2) {[L]HLZDZLH};| gives `\tikz \timing 
+% [green] at (1,2) {[L]HLZDZLH};'.
 % 
 % \subsubsection*{Timing Shape Anchors}
 % Every timing diagram line produced by \cs{timing}, which includes the rows in 
@@ -1091,7 +1091,7 @@
 % \begin{figure}
 % \centering
 % \begin{tikzpicture}[timing,y=1.5cm,x=1.5cm,timing/slope=0]
-%   \timing [y=1.5cm,x=1.5cm,gray,thick] (0,0) {HLHLHL};
+%   \timing [y=1.5cm,x=1.5cm,gray,thick] at (0,0) {HLHLHL};
 %   \node[name=s,shape=tikztiming@shape,anchor=origin] at (0,0) {};
 %   \foreach \anchor/\placement in
 %     {north west/above left, north/above, north east/above right,
@@ -1386,10 +1386,10 @@
 %     \draw (0.2,0.7) circle (10pt);
 %     \begin{scope}[green]
 %       \draw (0.1,0.1) -- +(0.8,0.2);
-%       \timing (0.3,0.4) {hlzhhlhhl};
+%       \timing at (0.3,0.4) {hlzhhlhhl};
 %     \end{scope}
 %     \timing [rotate=-30]
-%         (0.4,0.7) {HLZHHLHHL};
+%         at (0.4,0.7) {HLZHHLHHL};
 %   \end{tikzpicture}
 % \end{examplecode}
 % \caption{\cs{timing} inside general \envv{tikzpicture}.}
@@ -1402,8 +1402,8 @@
 %   \begin{tikzpicture}[timing,thick,
 %     timing/inline node/.style={coordinate,
 %     shift={(0.05,-.5)}}]
-%     \timing (0,2) {hH N(A) LHLHL};
-%     \timing (0,0) {HLH N(B) LHLl};
+%     \timing at (0,2) {hH N(A) LHLHL};
+%     \timing at (0,0) {HLH N(B) LHLl};
 %     \draw [orange,semithick]
 %       (A) ellipse (.2 and .6) +(0,-0.6) coordinate (Ax)
 %       (B) ellipse (.2 and .6) +(0,+0.6) coordinate (Bx);
@@ -2574,7 +2574,7 @@
     \tikztiming@testoptarg#1\relax\relax
   \fi
   \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\settings]
-    (last row)}%
+    at (last row)}%
   \expandafter\@tempa\expandafter{\expandafter[\lastchar]#2};
 }
 %    \end{macrocode}
