@@ -1722,12 +1722,23 @@
 % \begin{macro}{\timing@}[1]{Optional TikZ Settings}
 %    \begin{macrocode}
 \def\timing@[#1]{%
-  \@ifnextchar{+}%
-    {\timing@@{#1}}%
-    {\@ifnextchar(%)
+  \@ifnextchar{a}%
+    {\timing@at{#1}}%
+    {\@ifnextchar{+}%
       {\timing@@{#1}}%
-      {\timing@@{#1}++(0,0)}%
+      {\@ifnextchar(%)
+        {\timing@@{#1}}%
+        {\timing@@{#1}++(0,0)}%
+      }%
     }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\timing@at}[1]{Optional TikZ Settings}
+%    \begin{macrocode}
+\def\timing@at#1at#2(#3){%
+  \timing@@@{#1}{#2(#3)}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2558,7 +2569,7 @@
   \ifx\relax#1\relax\else
     \tikztiming@testoptarg#1\relax\relax
   \fi
-  \edef\@tempa{\noexpand\timing[\settings,name=row\the\c@tikztiming@nrows]
+  \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\settings]
     (last row)}%
   \expandafter\@tempa\expandafter{\expandafter[\lastchar]#2};
 }
