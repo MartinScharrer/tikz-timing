@@ -1,3 +1,4 @@
 * Table head line macro
-* Allow to set node names for table rows.
 * Define `\texttiming` to simply use `\timing`.
+* Allow user definition of macro-letters, i.e. a letter which stands for 
+  multiple other characters.
