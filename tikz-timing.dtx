@@ -2401,8 +2401,27 @@
       \tikztiming@testfornum@@@@
     }%
     {%
-      \tikztiming@testforcode
+      \if@tikztiming@macrochar
+        {\def\@tempa{\expandafter\expandafter\expandafter
+        \tikztiming@testfornum@@@@
+        \expandafter\expandafter\expandafter{%
+        \csname tikztiming@macrochar@\meaning\@let@token\endcsname}}%
+        \expandafter\@tempa\@gobble
+        }%
+        {\tikztiming@testforcode}%
     }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@}
+%    \begin{macrocode}
+\def\tikztiming@macrochar#1#2{%
+  \@namedef{tikztiming@macrochar@\meaning#1}{#2}%
+}
+\tikztiming@macrochar{Y}{HLZDX}
+\def\if@tikztiming@macrochar#1#2{%
+  \@ifundefined{tikztiming@macrochar@\meaning\@let@token}{#2}{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
