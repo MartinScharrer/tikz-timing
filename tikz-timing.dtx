@@ -2421,12 +2421,17 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@}
+% \begin{macro}{\tikztimig@macrochar}[2]{Macro character}{Substituted 
+% Characters}
 %    \begin{macrocode}
-\def\tikztiming@macrochar#1#2{%
+\def\tikztimingmacrochar#1#2{%
   \@namedef{tikztiming@macrochar@\meaning#1}{#2}%
 }
-\tikztiming@macrochar{Y}{HLZDX}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@tikztimig@macrochar}[2]{True clause}{False clause}
+%    \begin{macrocode}
 \def\if@tikztiming@macrochar#1#2{%
   \@ifundefined{tikztiming@macrochar@\meaning\@let@token}{#2}{#1}%
 }
