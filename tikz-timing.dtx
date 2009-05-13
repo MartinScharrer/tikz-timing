@@ -2364,7 +2364,14 @@
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
           \def\tikztiming@num{1.0}%
-          \expandafter\tikztiming@testforcode
+          \if@tikztiming@macrochar
+            {\def\@tempa{\expandafter\expandafter\expandafter
+            \tikztiming@testfornum@@@@
+            \expandafter\expandafter\expandafter{%
+            \csname tikztiming@macrochar@\meaning\@let@token\endcsname}}%
+            \expandafter\@tempa\@gobble
+            }%
+            {\tikztiming@testforcode}%
         }%
     }%
   \fi
