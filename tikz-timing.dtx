@@ -1582,6 +1582,7 @@
   timing/.cd,
   initchar/.value required,
   initchar/.code={\ifx\lastchar\empty\uppercase{\def\lastchar{#1}}\fi},
+  metachar/.code 2 args={\tikztimingmetachar{#1}{#2}},
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
@@ -2364,11 +2365,11 @@
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
           \def\tikztiming@num{1.0}%
-          \if@tikztiming@macrochar
+          \if@tikztiming@metachar
             {\def\@tempa{\expandafter\expandafter\expandafter
             \tikztiming@testfornum@@@@
             \expandafter\expandafter\expandafter{%
-            \csname tikztiming@macrochar@\meaning\@let@token\endcsname}}%
+            \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
             \expandafter\@tempa\@gobble
             }%
             {\tikztiming@testforcode}%
@@ -2408,11 +2409,11 @@
       \tikztiming@testfornum@@@@
     }%
     {%
-      \if@tikztiming@macrochar
+      \if@tikztiming@metachar
         {\def\@tempa{\expandafter\expandafter\expandafter
         \tikztiming@testfornum@@@@
         \expandafter\expandafter\expandafter{%
-        \csname tikztiming@macrochar@\meaning\@let@token\endcsname}}%
+        \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
         \expandafter\@tempa\@gobble
         }%
         {\tikztiming@testforcode}%
@@ -2421,19 +2422,19 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimig@macrochar}[2]{Macro character}{Substituted 
+% \begin{macro}{\tikztimig@metachar}[2]{Macro character}{Substituted 
 % Characters}
 %    \begin{macrocode}
-\def\tikztimingmacrochar#1#2{%
-  \@namedef{tikztiming@macrochar@\meaning#1}{#2}%
+\def\tikztimingmetachar#1#2{%
+  \@namedef{tikztiming@metachar@\meaning#1}{#2}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\if@tikztimig@macrochar}[2]{True clause}{False clause}
+% \begin{macro}{\if@tikztimig@metachar}[2]{True clause}{False clause}
 %    \begin{macrocode}
-\def\if@tikztiming@macrochar#1#2{%
-  \@ifundefined{tikztiming@macrochar@\meaning\@let@token}{#2}{#1}%
+\def\if@tikztiming@metachar#1#2{%
+  \@ifundefined{tikztiming@metachar@\meaning\@let@token}{#2}{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
