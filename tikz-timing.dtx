@@ -1211,16 +1211,24 @@
 %
 % \subsection{Meta-Characters}
 % It is possible to define recurring groups of characters and modifiers as so 
-% called meta-characters. These are than expanded to the group whenever they 
-% appear inside the character list. Please note that like for groups a numeric 
-% factor before such a meta-character is taken as a repetition factor not a 
-% width.
+% called meta-characters. These characters are than expanded to the group 
+% whenever they appear inside the character list. Please note that like for 
+% groups a numeric factor before such a meta-character is taken as a repetition 
+% factor not as a width. The meta-character is case sensitive and the other case 
+% is not affected by the definition, \ie the lower- and uppercase versions of 
+% one character can have complete different meanings. It is possible to redefine 
+% normal characters (only one or both cases) as meta-characters, which 
+% suppresses its normal meaning. Using the meta-character in its own definition 
+% group causes a infinite loop which will lead to an \TeX\ error.
 % 
 % \DescribeMacro{tikztimingmetachar}{\marg{Meta-Character}\marg{Character 
 % Group}}
-% This macro sets the given meta-character identical to the given character 
-% group. The TikZ style `|timing/metachar=|\marg{Meta-Character}\marg{Character 
-% Group}' can also be used as an alternative.
+% This macro defines the given \meta{meta-character} to be identical to the 
+% given \meta{character group}. An empty group deletes the meta-character, which  
+% might be necessary in cases when normal character are temporary redefined as 
+% meta-characters.
+% The TikZ style `|timing/metachar=|\marg{Meta-Character}\marg{Character Group}' 
+% can also be used as an alternative.
 %
 % \bigskip
 % \noindent
@@ -1228,6 +1236,12 @@
 % |\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}|\\
 % gives:\\
 % {\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}}
+% \\[\bigskipamount]
+% |\tikztimingmetachar{Y}{2D{Text}}  \tikztimingmetachar{y}{1D{\tiny Text}}|
+% |\texttiming{ZZ Y Z 3y ZZ}|\\
+% gives:\\
+% {\tikztimingmetachar{Y}{2D{Text}}  \tikztimingmetachar{y}{1D{\tiny Text}}
+% \texttiming{ZZ Y Z 3y ZZ}}
 % \\[\bigskipamount]
 % |\newcounter{mycount}|\\
 % |\tikztimingmetachar{H}{2D{\stepcounter{mycount}\arabic{mycount}}}|\\
