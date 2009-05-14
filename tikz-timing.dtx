@@ -2237,9 +2237,17 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@stoppath}[1]{Character to gobble}
+% \begin{macro}{\tikztiming@defcode}[1]{Code Character}
 %    \begin{macrocode}
-\def\tikztiming@stoppath#1{%
+\def\tikztiming@defcode#1{%
+  \@namedef{tikztiming@code@\meaning#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@defcode{,}}
+%    \begin{macrocode}
+\tikztiming@defcode{,}{%
   \tikztiming@output@flush
   \tikztiming@eaddtostr{%
     \newdraw
@@ -2249,9 +2257,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@stoppath@nosave}[1]{Character to gobble}
+% \begin{macro}{\tikztiming@defcode{;}}
 %    \begin{macrocode}
-\def\tikztiming@stoppath@nosave#1{%
+\tikztiming@defcode{;}{%
   \tikztiming@output@flush
   \tikztiming@eaddtostr{%
     \newdrawns
@@ -2261,10 +2269,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@addnode}[1]{Character to gobble}
+% \begin{macro}{\tikztiming@defcode{N}}
 %    \begin{macrocode}
-\def\tikztiming@addnode#1{%
-  \@ifnextchar{[}%]
+\tikztiming@defcode{N}{%
+  \@ifnextchar[%]
     {\tikztiming@addnode@getoptions}%
     {\tikztiming@addnode@getoptions[]}%
 }
@@ -2274,7 +2282,7 @@
 % \begin{macro}{\tikztiming@addnode}[1]{Options}
 %    \begin{macrocode}
 \def\tikztiming@addnode@getoptions[#1]{%
-  \@ifnextchar{(}%)}
+  \@ifnextchar(%)
     {\tikztiming@addnode@getname{#1}}%
     {\tikztiming@addnode@getname{#1}()}%
 }
@@ -2315,32 +2323,11 @@
 \def\tikztiming@testforcode{%
   \@ifnextchar{!}%
     {\tikztiming@testforcode@}%
-    {\@ifnextchar{[}%
-      {\tikztiming@handleoption}%
-      {\@ifnextchar{;}%
-        {\tikztiming@stoppath@nosave}%
-        {\@ifnextchar{,}%
-          {\tikztiming@stoppath}%
-          {\@ifnextchar{N}%
-            {\tikztiming@addnode}%
-            {\@ifnextchar{B}%
-              {\tikztiming@stepback}%
-              {\tikztiming@@}%
-            }%
-          }%
-        }%
-      }%
+    {\@ifundefined{tikztiming@code@\meaning\@let@token}%
+      {\tikztiming@@}%
+      {\csname tikztiming@code@\meaning\@let@token\expandafter
+       \endcsname\@gobble}%
     }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@stepback}
-%    \begin{macrocode}
-\def\tikztiming@stepback#1{%
-  \pgfmathparse{\tikztiming@back+\tikztiming@num}%
-  \let\tikztiming@back\pgfmathresult
-  \tikztiming@
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2359,6 +2346,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@defcode{B}}
+%    \begin{macrocode}
+\tikztiming@defcode{B}{%
+  \pgfmathparse{\tikztiming@back+\tikztiming@num}%
+  \let\tikztiming@back\pgfmathresult
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@handlecode}[1]{Code to add to string}
 %    \begin{macrocode}
 \def\tikztiming@handlecode#1{%
@@ -2369,9 +2366,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@handleoption}[1]{Options to add to string}
+% \begin{macro}{\tikztiming@defcode []}[1]{Options to add to string}
 %    \begin{macrocode}
-\def\tikztiming@handleoption[#1]{%
+\tikztiming@defcode[#1]{%
   \tikztiming@addtostr{ [#1] }%
   \tikztiming@
 }
