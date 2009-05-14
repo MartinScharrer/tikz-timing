@@ -1224,11 +1224,12 @@
 % \DescribeMacro{tikztimingmetachar}{\marg{Meta-Character}\marg{Character 
 % Group}}
 % This macro defines the given \meta{meta-character} to be identical to the 
-% given \meta{character group}. An empty group deletes the meta-character, which  
-% might be necessary in cases when normal character are temporary redefined as 
-% meta-characters.
-% The TikZ style `|timing/metachar=|\marg{Meta-Character}\marg{Character Group}' 
-% can also be used as an alternative.
+% given \meta{character group}. Alternatively this can also be done using the 
+% TikZ style `|timing/metachar=|\marg{Meta-Character}\marg{Character~Group}'.
+%
+% An empty group deletes the meta-character, which  might be necessary in cases 
+% when normal characters are temporary redefined as meta-characters. However, if 
+% the group only contains spaces the meta-character is practically ignored.
 %
 % \bigskip
 % \noindent
