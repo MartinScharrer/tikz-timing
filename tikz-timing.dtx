@@ -1607,6 +1607,7 @@
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
 \def\tikztiming@num{1.0}%
+\let\tikztiming@back\empty
 %%\def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
 
 \newcounter{tikztiming@nrows}%
@@ -2148,6 +2149,11 @@
     \tikztiming@iflower{#1}%
       {\pgfmathparse{\tikztiming@num/2.0}\let\tikztiming@num\pgfmathresult}%
       {}%
+    \ifx\tikztiming@back\empty\else
+      \pgfmathparse{\tikztiming@num-\tikztiming@back}%
+      \let\tikztiming@num\pgfmathresult
+      \let\tikztiming@back\empty
+    \fi
     \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
     \let\tikztimingwidth\pgfmathresult
     \def\currentchar{#1}%
@@ -2317,11 +2323,24 @@
           {\tikztiming@stoppath}%
           {\@ifnextchar{N}%
             {\tikztiming@addnode}%
-            {\tikztiming@@}%
+            {\@ifnextchar{B}%
+              {\tikztiming@stepback}%
+              {\tikztiming@@}%
+            }%
           }%
         }%
       }%
     }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@stepback}
+%    \begin{macrocode}
+\def\tikztiming@stepback#1{%
+  \pgfmathparse{\tikztiming@back+\tikztiming@num}%
+  \let\tikztiming@back\pgfmathresult
+  \tikztiming@
 }
 %    \end{macrocode}
 % \end{macro}
