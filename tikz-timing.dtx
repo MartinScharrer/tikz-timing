@@ -848,8 +848,8 @@
 %
 % ^^A\vfill
 % \noindent
-% \textbf{Note to Advanced Users:} This is a new package which internal macros 
-% might still change.  Please only rely on the user macros for now.
+% ^^A\textbf{Note to Advanced Users:} This is a new package which internal
+% ^^Amacros might still change.  Please only rely on the user macros for now.
 %
 % \section{Introduction}
 % This package uses the \pkg[pgf]{tikz} package to produce timing diagrams 
@@ -865,7 +865,8 @@
 % width}' in this document and which is by default identical to there height, 
 % called `\textsf{signal height}', which defaults to 1.6ex (about the height of 
 % the uppercase `X' of the current font).
-% Table~\ref{tab:chars} shows all by default defined logic characters.  
+% Table~\ref{tab:chars} shows all by default defined logic characters and 
+% Table~\ref{tab:full} all possible transitions.
 % Additional functionality is provided by the ``modifiers'' shown in 
 % Table~\ref{tab:modifiers}.
 % 
@@ -941,6 +942,13 @@
 %
 % \begin{table}
 % \let\texttimingbefore\texttiminggrid
+% \sffamily
+% \caption{Overview over all transitions.}\label{tab:full}
+%  \makebox[\textwidth][c]{\tikztimingfullexampletable}
+% \end{table}
+%
+% \begin{table}
+% \let\texttimingbefore\texttiminggrid
 % \let\normalfont\sffamily
 % \sffamily\centering
 % \caption{Modifiers for Timing Characters}\label{tab:modifiers}
@@ -963,6 +971,8 @@
 % \meta{\small number}\meta{\small character} & Sets width of next signal to 
 % given number.  Half of it if character is in lower case. & 2.6H5.2l & 
 % \texttiming{2.6H5.2l}\\
+% \meta{\small number}B & Su\underline{b}tracts the given number from the width 
+% of the next character. & H .5B L & \texttiming{H.5BL}\\
 % N\oarg{\tiny Settings}\parg{\tiny Name}\marg{\tiny Content} & Adds node at 
 % current position.  All three arguments are optional.  & H N(a1) L & 
 % \texttiming{H N(a1) L}\\
@@ -979,15 +989,6 @@
 % page~\pageref{exa:adv}.} \\
 % \bottomrule
 % \end{tabularx}}
-% \end{table}
-%
-%
-%
-% \begin{table}
-% \let\texttimingbefore\texttiminggrid
-% \sffamily
-% \caption{Overview over all transitions.}\label{tab:full}
-%  \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
 %
 % \subsection{Macro for use in Text Mode}
@@ -1009,6 +1010,7 @@
 % `|timing/initchar=|\meta{char}'.
 %
 % \par\medskip\noindent
+% \begin{minipage}{\textwidth}\noindent
 % \textit{Examples:}\\*[\smallskipamount]\hspace*{\parindent}%
 % \begin{minipage}{\textwidth-4\parindent}
 % \small |\texttiming{HLZDZLH}|^^A
@@ -1021,6 +1023,7 @@
 % gives `\texttiming[green]{HLZDZLH}'\\
 % |\texttiming[green,timing/initchar=L]{HLZDZLH}| ^^A
 % gives `\texttiming[green,timing/initchar=L]{HLZDZLH}'
+% \end{minipage}
 % \end{minipage}
 %
 % \DescribeMacro{texttimingbefore}{\hspace{15.5em}(\emph{defaults to}: 
