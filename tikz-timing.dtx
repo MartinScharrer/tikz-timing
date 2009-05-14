@@ -1254,16 +1254,17 @@
 % \tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}%
 % \texttiming{ 5H R 3H R 10H }}
 %
+% \clearpage
 % \section{Styles}\label{sec:styles}
 % The generated logic signals are drawn using the style mechanism provided by 
-% \pkg{tikz} (which is based on \pkg[pgf]{pgfkeys}). This styles are defined and 
-% can be redefined using \css{tikzset}|{|\meta{style 
-% name}|/.style=|\meta{value}|,}|.  They can also be used in all places where 
-% \meta{TikZ Settings} is mentioned.  Please note that path/draw specific 
-% settings might not survive the transition to characters which have there own 
-% color, because these start a new drawing path.  For a more detailed 
-% explanation why this is necessary see the \pkg{tikz} manual.  However, timing 
-% specific settings are saved and restored between internal paths.
+% \pkg{tikz}. This styles are defined and can be redefined using 
+% \css{tikzset}|{|\meta{style name}|/.style=|\meta{value}|,}|.  They can also be 
+% used in all places where \meta{TikZ Settings} is mentioned.  Please note that 
+% path/draw specific settings might not survive the transition to characters 
+% which have there own color, because these start a new drawing path.  For a 
+% more detailed explanation why this is necessary see the \pkg{tikz} manual.  
+% However, timing specific settings are saved and restored between internal 
+% paths.
 %
 % The package follows the directory structures approach used by TikZ/PGF and 
 % places all styles and other settings under the ``subdirectory'' `|timing|' in 
