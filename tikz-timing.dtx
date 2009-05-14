@@ -2470,7 +2470,11 @@
 % Characters}
 %    \begin{macrocode}
 \def\tikztimingmetachar#1#2{%
-  \@namedef{tikztiming@metachar@\meaning#1}{#2}%
+  \ifx\relax#2\relax
+    \expandafter\let\csname tikztiming@metachar@\meaning#1\endcsname\@undefined
+  \else
+    \@namedef{tikztiming@metachar@\meaning#1}{#2}%
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
