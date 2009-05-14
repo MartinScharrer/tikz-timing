@@ -1209,8 +1209,36 @@
 % The label column starts at $x=-$|\coldist| and the text is right align with 
 % the right border at this position.
 %
+% \subsection{Meta-Characters}
+% It is possible to define recurring groups of characters and modifiers as so 
+% called meta-characters. These are than expanded to the group whenever they 
+% appear inside the character list. Please note that like for groups a numeric 
+% factor before such a meta-character is taken as a repetition factor not a 
+% width.
+% 
+% \DescribeMacro{tikztimingmetachar}{\marg{Meta-Character}\marg{Character 
+% Group}}
+% This macro sets the given meta-character identical to the given character 
+% group. The TikZ style `|timing/metachar=|\marg{Meta-Character}\marg{Character 
+% Group}' can also be used as an alternative.
 %
-% \newpage
+% \bigskip
+% \noindent
+% \textit{Examples:}\\[\medskipamount]
+% |\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}|\\
+% gives:\\
+% {\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}}
+% \\[\bigskipamount]
+% |\newcounter{mycount}|\\
+% |\tikztimingmetachar{H}{2D{\stepcounter{mycount}\arabic{mycount}}}|\\
+% |\tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}|\\
+% |\texttiming{ 5H R 3H R 10H }|\\
+% gives:\\
+% {\newcounter{mycount}%
+% \tikztimingmetachar{H}{2D{\stepcounter{mycount}\arabic{mycount}}}%
+% \tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}%
+% \texttiming{ 5H R 3H R 10H }}
+%
 % \section{Styles}\label{sec:styles}
 % The generated logic signals are drawn using the style mechanism provided by 
 % \pkg{tikz} (which is based on \pkg[pgf]{pgfkeys}). This styles are defined and 
@@ -1231,7 +1259,7 @@
 % ^^A`|/tikz/timing/slope|'.
 %
 % ^^AThe Table~\ref{tab:styles} lists all styles defined by this package.
-% {\scriptsize
+% {%
 % \begin{table}[b]
 %   \centering
 %   \caption{TikZ Styles and Settings provided and used by this Package.}
@@ -1263,6 +1291,8 @@
 %     \midrule
 %     timing/initchar=\meta{char} & Sets initial character. Only valid as first  
 %     optional argument in table rows or \cs{texttiming}.\\
+%     timing/metachar=\meta{C}\meta{G} & Sets meta-character \meta{C} to 
+%     character group \meta{G}.\\
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
 %     \newline This also sets |dslope=2*slope|, |zslope=slope/2|.\\
 %     timing/lslope=\meta{0.0\en1.0} & Sets slope for logic transitions only.  
@@ -1582,6 +1612,7 @@
   timing/.cd,
   initchar/.value required,
   initchar/.code={\ifx\lastchar\empty\uppercase{\def\lastchar{#1}}\fi},
+  metachar/.code 2 args={\tikztimingmetachar{#1}{#2}},
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
@@ -2364,7 +2395,14 @@
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
           \def\tikztiming@num{1.0}%
-          \expandafter\tikztiming@testforcode
+          \if@tikztiming@metachar
+            {\def\@tempa{\expandafter\expandafter\expandafter
+            \tikztiming@testfornum@@@@
+            \expandafter\expandafter\expandafter{%
+            \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
+            \expandafter\@tempa\@gobble
+            }%
+            {\tikztiming@testforcode}%
         }%
     }%
   \fi
@@ -2401,8 +2439,32 @@
       \tikztiming@testfornum@@@@
     }%
     {%
-      \tikztiming@testforcode
+      \if@tikztiming@metachar
+        {\def\@tempa{\expandafter\expandafter\expandafter
+        \tikztiming@testfornum@@@@
+        \expandafter\expandafter\expandafter{%
+        \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
+        \expandafter\@tempa\@gobble
+        }%
+        {\tikztiming@testforcode}%
     }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimig@metachar}[2]{Macro character}{Substituted 
+% Characters}
+%    \begin{macrocode}
+\def\tikztimingmetachar#1#2{%
+  \@namedef{tikztiming@metachar@\meaning#1}{#2}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@tikztimig@metachar}[2]{True clause}{False clause}
+%    \begin{macrocode}
+\def\if@tikztiming@metachar#1#2{%
+  \@ifundefined{tikztiming@metachar@\meaning\@let@token}{#2}{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
