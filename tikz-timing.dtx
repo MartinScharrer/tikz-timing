@@ -1253,6 +1253,18 @@
 % \tikztimingmetachar{H}{2D{\stepcounter{mycount}\arabic{mycount}}}%
 % \tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}%
 % \texttiming{ 5H R 3H R 10H }}
+% \\[\bigskipamount]
+% Redefining the glitch `|G|' character:\\
+% |\tikztimingmetachar{G}{.1T.1T .2B} \tikztimingmetachar{g}{.1T.1T}|\\
+% |\texttiming{ 10{H G L G} H } % With correction of width `.2B'|\\
+% |\texttiming{ 10{H g L g} H } % Without correction|\\
+% |\texttiming{ 10{H   L  } H } % For comparison|\\
+% gives:\\
+% {\let\texttimingbefore\texttiminggrid
+% \tikztimingmetachar{G}{.1T.1T .2B} \tikztimingmetachar{g}{.1T.1T}%
+% \texttiming{ 10{H G L G} H }\\
+% \texttiming{ 10{H g L g} H }\\
+% \texttiming{ 10{H   L  } H }}
 %
 % \clearpage
 % \section{Styles}\label{sec:styles}
