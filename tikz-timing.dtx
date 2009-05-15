@@ -35,7 +35,7 @@
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.4a
+  [v0.5
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
@@ -770,7 +770,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{1998}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -805,6 +805,11 @@
 % \changes{v0.4}{2009/05/03}{Released as v0.4}
 % \changes{v0.4a}{2009/05/05}{Added \cs{tablerules} macro. Changed default style 
 % of inline nodes to \texttt{coordinate}.}
+% \changes{v0.5}{2009/05/15}{Added PGF shape for timing diagrams. Added 
+% meta-characters. Changed `M' character to use PGF decorations. Added special 
+% `B' character to reduce width of next character. Changed \cs{timing} syntax to 
+% include an `at' before the coordinate. Bug fix for use with the `calc' 
+% package.}
 %
 % \GetFileInfo{tikz-timing.dtx}
 %
@@ -840,7 +845,7 @@
 %   {\texttiming[z]{3d{\strut tikz}z5d{\strut timing}0.2z}}} package}\\[3ex]
 %   {\large Martin Scharrer \\\normalsize 
 %   \url{martin@scharrer-online.de}\\[.8ex]
-%   \url{http://www.ctan.org/indexes/graphics/pgf/contrib/tikz-timing/}\\[1.2ex]}
+%   \url{http://www.ctan.org/pkg/tikz-timing}\\[1.2ex]}
 %   {\large Version \fileversion\ -- \filedate}\\
 % \end{center}
 % \vspace{1.2em}%
@@ -1611,7 +1616,7 @@
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{backgrounds}
-\usetikzlibrary{snakes}
+\usetikzlibrary{decorations.pathmorphing}
 \ifx\collect@body\@undefined
   \IfFileExists{environ.sty}
     {\RequirePackage{environ}}
