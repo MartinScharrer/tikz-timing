@@ -330,7 +330,6 @@
     {\\*[\smallskipamount]\ignorespaces}%
 }
 \newcommand*{\imacroargX}[1]{%
-  \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
   \ifnum\c@macroargs>1
     \newline
   \fi
@@ -1612,6 +1611,7 @@
 \RequirePackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{backgrounds}
+\usetikzlibrary{snakes}
 \ifx\collect@body\@undefined
   \IfFileExists{environ.sty}
     {\RequirePackage{environ}}
@@ -1623,7 +1623,10 @@
 \newcount\tikztiming@numfrac
 \def\tikztiming@num{1.0}%
 \let\tikztiming@back\empty
-%%\def\tikztiming@num{\the\tikztiming@numint.\the\tikztiming@numfrac}
+\newlength\tikztiming@xunit
+\newlength\tikztiming@yunit
+\setlength{\tikztiming@xunit}{1.6ex}
+\setlength{\tikztiming@yunit}{1.6ex}
 
 \newcounter{tikztiming@nrows}%
 \def\tikztiming@rowdist{2}%
@@ -1636,7 +1639,7 @@
 % \subsection{TikZ Style Settings}
 %    \begin{macrocode}
 \tikzset{timing/.style={%
-    x=1.6ex, y=1.6ex,
+    x=\tikztiming@xunit, y=\tikztiming@yunit,
     line cap=round, line join=round,
   }%
 }
@@ -1660,10 +1663,14 @@
   l/.style={},
   d/.style={},
   m/.style={black!40!brown},
+  m/decoration/.style={decorate,decoration={zigzag,segment 
+  length=.25\tikztiming@xunit,amplitude=.225\tikztiming@yunit}},
+  k/.style={black!40!blue,semitransparent},
   u/background/.style={fill=gray},
   u/.style={},
   o/background/.style={},
   o/.style={timing/d,line width=0.10ex,dotted},
+  g/.style={},
   z/.style={blue},
   t/.style={},
   c/.style={timing/slope=0.0},
@@ -3286,7 +3293,6 @@
   -- ++(\gslope,-\height/2.0)
 }
 \tikztiminglet{DG}{LG}
-\tikztiminglet{MG}{ZG}
 
 \tikztiminglet{HS}{S}
 \tikztiminglet{LS}{S}
@@ -3302,7 +3308,7 @@
   \newdraw [\style]
   -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
-  \tikztimingdef{ZH}{
+\tikztimingdef{ZH}{
     \newdraw
   -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
@@ -3367,133 +3373,46 @@
 
 \tikztimingalias{M}{Z}
 \tikztimingchar{M}{++(0,\height/2.)}{
-  [\style]
-  -- ++($ 1/16.*(#1,0) + (0,+\height*.225) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/16.*(#1,0) + (0,+\height*.225) $)
+  \newdraw [\style/decoration,\style]
+  -- ++(#1,0)
+}
+\tikztimingdef{MG}{
+  \newdraw [timing/m]
+  -- ++(\gslope,-\height/2.0)
+  -- ++(\gslope,+\height)
+  -- ++(\gslope,-\height/2.0)
 }
 
 \tikztimingdef{MZ}{
   \newdraw [\style]
-  -- ++(#1,0)
-}
-
-\tikztimingdef{m}{
-  [\style]
-     ++(0,+\height/2.)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.225) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/4.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.225) $)
+  \tikztiminguse{ZZ}{#1}
 }
 
 \tikztimingdef{ZM}{
   \newdraw [\style]
-  -- ++($ 1/16.*(#1,0) + (0,+\height*.075) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.30) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.35) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.40) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/16.*(#1,0) + (0,+\height*.225) $)
-}
-
-\tikztimingdef{Zm}{
-  \newdraw [\style]
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.075) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
-  -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.30) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.175) $)
-}
-
-\tikztimingdef{Mm}{
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.225) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/4.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.225) $)
+  \tikztiminguse{MM}{#1}
 }
 
 \tikztimingdef{LM}{
   \newdraw [\style]
-  -- ++($ 1/16.*(#1,0) + (0,+\height*.60) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.30) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.35) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.40) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/16.*(#1,0) + (0,+\height*.20) $)
-}
-\tikztimingdef{HM}{
-  \newdraw [\style]
-  -- ++($ 1/16.*(#1,0) + (0,-\height*.40) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.30) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.35) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.40) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/16.*(#1,0) + (0,+\height*.20) $)
-}
-\tikztimingdef{DM}{
-     ++($ -1/16.*(#1,0) + (0,0) $)
-  -- ++($  1/16.*(#1,0) + (0,0) $)
-  -- ++($  1/16.*(#1,0) + (0,+\height*.50) $)
-     ++($ -1/8.*(#1,0) + (0,+\height*.50) $)
-  -- ++($  1/16.*(#1,0) + (0,0) $)
-  -- ++($  1/16.*(#1,0) + (0,-\height*.50) $)
-  \newdraw [\style]
-  -- ++($  1/8.*(#1,0) + (0,-\height*.10) $)
-  -- ++($  1/8.*(#1,0) + (0,+\height*.25) $)
-  -- ++($  1/8.*(#1,0) + (0,-\height*.30) $)
-  -- ++($  1/8.*(#1,0) + (0,+\height*.35) $)
-  -- ++($  1/8.*(#1,0) + (0,-\height*.40) $)
-  -- ++($  1/8.*(#1,0) + (0,+\height*.45) $)
-  -- ++($  1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($  1/16.*(#1,0) + (0,+\height*.20) $)
+  -- ++($ (1/8,0) + (0,\height/2) $)
+  \newdraw [\style/decoration,\style]
+  -- ++($ (-1/8,0) + (#1,0) $)
 }
 
-\tikztimingdef{Lm}{
+\tikztimingdef{HM}{
   \newdraw [\style]
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.575) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
-  -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.30) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.175) $)
+  -- ++($ (1/8,0) + (0,-1*\height/2) $)
+  \newdraw [\style/decoration,\style]
+  -- ++($ (-1/8,0) + (#1,0) $)
 }
-\tikztimingdef{Hm}{
-  \newdraw [\style]
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.425) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
-  -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.30) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.175) $)
-}
-\tikztimingdef{Dm}{
-     ++($ -1/8.*(#1,0) + (0,0) $)
-  -- ++($  1/8.*(#1,0) + (0,0) $)
-  -- ++($  1/8.*(#1,0) + (0,+\height*.50) $)
-     ++($ -1/4.*(#1,0) + (0,+\height*.50) $)
-  -- ++($  1/8.*(#1,0) + (0,0) $)
-  -- ++($  1/8.*(#1,0) + (0,-\height*.50) $)
-  \newdraw [\style]
-  -- ++($  1/4.*(#1,0) + (0,-\height*.10) $)
-  -- ++($  1/4.*(#1,0) + (0,+\height*.25) $)
-  -- ++($  1/4.*(#1,0) + (0,-\height*.30) $)
-  -- ++($  1/8.*(#1,0) + (0,+\height*.15) $)
+
+\tikztimingdef{DM}{
+  --  +($  (1/8,0) + (0,\height*.50) $)
+      +(0,\height)
+  -- ++($  (1/8,0) + (0,\height*.50) $)
+  \newdraw [\style/decoration,\style]
+  -- ++($ (-1/8,0) + (#1,0) $)
 }
 
 \newcounter{tikztimingtrans}
@@ -3587,25 +3506,9 @@
 \tikztimingdef{TM}{%
   \newdraw [\style]
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++($ 1/16.*(#1,0) + (0,\value{tikztimingtrans}*\height*.50+\height*.10) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.20) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.25) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.30) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.35) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.40) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.45) $)
-  -- ++($ 1/8.*(#1,0) + (0,-\height*.45) $)
-  -- ++($ 1/16.*(#1,0) + (0,+\height*.20) $)
-}
-
-\tikztimingdef{Tm}{%
-  \newdraw [\style]
-  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++($ 1/8.*(#1,0) + (0,\value{tikztimingtrans}*\height*.50+\height*.075) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.20) $)
-  -- ++($ 1/4.*(#1,0) + (0,+\height*.25) $)
-  -- ++($ 1/4.*(#1,0) + (0,-\height*.30) $)
-  -- ++($ 1/8.*(#1,0) + (0,+\height*.175) $)
+  -- ++($ (1/8,0) + (0,\value{tikztimingtrans}*\height/2) $)
+  \newdraw [\style/decoration,\style]
+  -- ++($ (-1/8,0) + (#1,0) $)
 }
 
 \tikztimingecopy{C}{T}
