@@ -1625,8 +1625,6 @@
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
-\setlength{\tikztiming@xunit}{1.6ex}
-\setlength{\tikztiming@yunit}{1.6ex}
 
 \newcounter{tikztiming@nrows}%
 \def\tikztiming@rowdist{2}%
@@ -1639,8 +1637,9 @@
 % \subsection{TikZ Style Settings}
 %    \begin{macrocode}
 \tikzset{timing/.style={%
-    x=\tikztiming@xunit, y=\tikztiming@yunit,
+    x=1.6ex, y=1.6ex,
     line cap=round, line join=round,
+    /utils/exec={\setlength{\tikztiming@xunit}{1.6ex}\setlength{\tikztiming@yunit}{1.6ex}},
   }%
 }
 \tikzset{%
