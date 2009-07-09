@@ -1,0 +1,185 @@
+% Timing Diagram using the 'tikz-timing' package (v0.5 - 2009/05/15).
+%
+% (c) Copyright 2009 - Martin Scharrer <martin@scharrer-online.de>
+%
+% This code is open source under the GPLv3 and/or the LPPL v1.3 (or later).
+% Please feel free to use, change and copy it for your own benefit.
+%
+
+\documentclass{article}
+\usepackage{tikz-timing}[2009/05/15]
+\pagestyle{empty}
+\def\degr{${}^\circ$}
+
+\newif\ifcomment
+
+% Activate the following line to compile document with comments:
+%\commenttrue
+
+\begin{document}
+
+\ifcomment
+\newcommand{\qv}[1]{`\texttt{#1}'}
+
+\title{TikZ-Timing Example}
+\author{Martin Scharrer\\martin@scharrer-online.de}
+\maketitle
+
+\section{Step-By-Step Guide}
+\subsection{Intro}
+This example shows how to make a timing diagram with the \texttt{tikz-timing} 
+package. This timing diagram was used by the package author in a recent work and 
+shows several clock and pulse signals. The relationship between the clock and 
+signal edges is shown using horizontal lines.
+
+Timing diagrams like this can be done using the \texttt{tikztimingtable} 
+environment which has the same syntax as a \texttt{tabular} environment with two 
+columns. The first column holds the signal name, the second one the timing 
+characters. See the package manual for detailed information about them.
+
+\subsection{Clock Signals}
+Clock signals can be generated with the \qv{C} character.  Here we want a clock 
+signal which is two unit width wide and without slope, so we use \qv{2C} for 
+every half clock period.  We also use the \emph{repetition mode} to get the 
+number of clock periods we want: \qv{12\{2C\}}.
+
+To shift the different clocks horizontal we use single \qv{H} or \qv{L} 
+characters at the start. Also the \emph{initial character} is used so that the 
+clock signals start with an edge if needed. The \emph{glitch} character \qv{G} 
+is used at the end of two clocks so that the signal ends with an edge.
+
+\par\bigskip
+\begin{verbatim}
+\begin{tikztimingtable}
+  Clock 128\,MHz 0\degr    & H   12{2C} G \\ % ends with edge
+  Clock 128\,MHz 90\degr   & [C] 12{2C} C \\ % starts with edge
+  Clock 128\,MHz 180\degr  & C   12{2C} G \\ % ends with edge
+  Clock 128\,MHz 270\degr  &     12{2C} C \\
+\end{tikztimingtable}
+\end{verbatim}
+\begin{tikztimingtable}
+  Clock 128\,MHz 0\degr    & H   12{2C} G \\ % ends with edge
+  Clock 128\,MHz 90\degr   & [C] 12{2C} C \\ % starts with edge
+  Clock 128\,MHz 180\degr  & C   12{2C} G \\ % ends with edge
+  Clock 128\,MHz 270\degr  &     12{2C} C \\
+\end{tikztimingtable}
+
+\subsection{Pulse and other Signals}
+The pulses are simply set using \qv{H} (high) or \qv{L} (low) signals. The 
+number before the characters is the width. Note that \qv{LLL}, \qv{3L}, \qv{2LL} 
+or \qv{3\{L\}} all result in the same signal: a low signal with three times the 
+unit width.
+
+An empty line can be inserted to produce a vertical space between groups of 
+signals.
+
+\begin{verbatim}
+\begin{tikztimingtable}
+  Coarse Pulse                          & 3L 16H 6L \\
+  Coarse Pulse - Delayed 1              & 4L 16H 5L \\
+  Coarse Pulse - Delayed 2              & 5L 16H 4L \\
+  Coarse Pulse - Delayed 3              & 6L 16H 3L \\
+  \\ % Gives vertical space
+  Final Pulse Set                       & 3L 16H 6L \\
+  Final Pulse $\overline{\mbox{Reset}}$ & 6L 16H 3L \\
+  Final Pulse                           & 3L 19H 3L \\
+\end{tikztimingtable}
+\end{verbatim}
+\begin{tikztimingtable}
+  Coarse Pulse                          & 3L 16H 6L \\
+  Coarse Pulse - Delayed 1              & 4L 16H 5L \\
+  Coarse Pulse - Delayed 2              & 5L 16H 4L \\
+  Coarse Pulse - Delayed 3              & 6L 16H 3L \\
+  \\ % Gives vertical space
+  Final Pulse Set                       & 3L 16H 6L \\
+  Final Pulse $\overline{\mbox{Reset}}$ & 6L 16H 3L \\
+  Final Pulse                           & 3L 19H 3L \\
+\end{tikztimingtable}
+
+\subsection{Drawing Relationship Lines}
+To draw own lines inside the timing diagram use \verb+\extracode+ after the last 
+table line. Any kind of PGF/TikZ macros can be placed between this macro and the 
+end of the table environment. The coordinate origin is on the baseline of the 
+first timing line. See also the package manual for more information.
+
+To simplify the drawing process we simply add named notes into the timing line 
+using the \qv{N(\textit{name})} character. All start points are called 
+\qv{A\textit{number}} and all corresponding end points are called 
+\qv{B\textit{number}}. The notes are placed at the appropriate positions and do 
+not produce any graphic but only name the current position. Some repetition must 
+be spited in multiple parts to allow the notes to be set:
+
+\begin{verbatim}
+  Clock 128\,MHz 0\degr    & H         12{2C}             G \\ % without notes
+  Clock 128\,MHz 0\degr    & H 2C N(A1) 8{2C} N(A5) 3{2C} G \\ % with    notes
+\end{verbatim}
+
+The lines are then drawn using the \texttt{foreach} loop of the PGF package.
+The background layer is used to not overdraw the timing signals. The predefined 
+style \qv{help lines} is used to get gray thin lines.
+This code must be placed after the \verb+\extracode+ macro.
+
+\begin{verbatim}
+  \begin{pgfonlayer}{background}
+    \foreach \n in {1,...,8}
+      \draw [help lines] (A\n) -- (B\n);
+  \end{pgfonlayer}
+\end{verbatim}
+
+This shows that the consistent naming of the nodes makes the drawing code very 
+simple.
+
+\subsection{Adding Table Rules}
+To add \texttt{booktab} like table rules simply add the command 
+\verb+\tablerules+ to the \texttt{extracode} section.
+
+\section{Final Code and Result}
+
+\begin{verbatim}
+\def\degr{${}^\circ$}
+\begin{tikztimingtable}
+  Clock 128\,MHz 0\degr    & H 2C N(A1) 8{2C} N(A5) 3{2C} G\\
+  Clock 128\,MHz 90\degr   & [C] 2{2C} N(A2) 8{2C} N(A6) 2{2C} C\\
+  Clock 128\,MHz 180\degr  & C 2{2C} N(A3) 8{2C} N(A7) 2{2C} G\\
+  Clock 128\,MHz 270\degr  & 3{2C} N(A4) 8{2C} N(A8) 2C C\\
+  Coarse Pulse             & 3L 16H 6L \\
+  Coarse Pulse - Delayed 1 & 4L N(B2) 16H N(B6) 5L \\
+  Coarse Pulse - Delayed 2 & 5L N(B3) 16H N(B7) 4L \\
+  Coarse Pulse - Delayed 3 & 6L 16H 3L \\
+  \\
+  Final Pulse Set          & 3L 16H N(B5) 6L \\
+  Final Pulse $\overline{\mbox{Reset}}$ & 6L N(B4) 16H 3L \\
+  Final Pulse              & 3L N(B1) 19H N(B8) 3L \\
+\extracode
+  \tablerules
+  \begin{pgfonlayer}{background}
+    \foreach \n in {1,...,8}
+      \draw [help lines] (A\n) -- (B\n);
+  \end{pgfonlayer}
+\end{tikztimingtable}
+\end{verbatim}
+\fi % ifcomment
+
+\def\degr{${}^\circ$}
+\begin{tikztimingtable}
+  Clock 128\,MHz 0\degr    & H 2C N(A1) 8{2C} N(A5) 3{2C} G\\
+  Clock 128\,MHz 90\degr   & [C] 2{2C} N(A2) 8{2C} N(A6) 2{2C} C\\
+  Clock 128\,MHz 180\degr  & C 2{2C} N(A3) 8{2C} N(A7) 2{2C} G\\
+  Clock 128\,MHz 270\degr  & 3{2C} N(A4) 8{2C} N(A8) 2C C\\
+  Coarse Pulse             & 3L 16H 6L \\
+  Coarse Pulse - Delayed 1 & 4L N(B2) 16H N(B6) 5L \\
+  Coarse Pulse - Delayed 2 & 5L N(B3) 16H N(B7) 4L \\
+  Coarse Pulse - Delayed 3 & 6L 16H 3L \\
+  \\
+  Final Pulse Set          & 3L 16H N(B5) 6L \\
+  Final Pulse $\overline{\mbox{Reset}}$ & 6L N(B4) 16H 3L \\
+  Final Pulse              & 3L N(B1) 19H N(B8) 3L \\
+\extracode
+  \tablerules
+  \begin{pgfonlayer}{background}
+    \foreach \n in {1,...,8}
+      \draw [help lines] (A\n) -- (B\n);
+  \end{pgfonlayer}
+\end{tikztimingtable}
+%
+\end{document}
