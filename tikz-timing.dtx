@@ -1666,6 +1666,8 @@
   h/.style={},
   l/.style={},
   d/.style={},
+  a/.style={->},
+  w/.style={<-},
   m/.style={black!40!brown},
   m/decoration/.style={decorate,decoration={zigzag,segment 
   length=.25\tikztiming@xunit,amplitude=.225\tikztiming@yunit}},
@@ -3530,6 +3532,18 @@
 
 %\tikztimingecopy{O}{D}
 \tikztimingecopy{X}{Z}
+
+\tikztimingchar{A}{++(0,0)}{%
+  \newdraw [\style] -- ++(0,\height)
+  \newdraw ++(#1,-\height)
+}
+\tikztimingdef{AS}{
+  ++(#1,0)
+}
+\tikztimingdef{SA}{
+  \tikztiminguse{A}{#1}
+}
+\tikztimingecopy{W}{A}
 %    \end{macrocode}
 %
 % \Finale
