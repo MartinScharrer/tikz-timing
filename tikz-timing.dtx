@@ -1666,6 +1666,8 @@
   h/.style={},
   l/.style={},
   d/.style={},
+  e/.style={},
+  e/background/.style={},
   a/.style={->},
   w/.style={<-},
   m/.style={black!40!brown},
@@ -3517,6 +3519,51 @@
   -- ++($ (-1/8,0) + (#1,0) $)
 }
 
+\tikztimingecopy{E}{D}%
+\tikztimingdef{LE}{%
+  -- ++(#1,0)%
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+     ++($ -1*(#1,0) $)%
+  -- ++(\slope,\height)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+     ++(0,-\height)%
+}%
+\tikztimingdef{HE}{%
+  -- ++(#1,0)%
+  \code{\setcounter{tikztimingtranspos}{1}}%
+  \code{\setcounter{tikztimingtrans}{-1}}%
+     ++($ -1*(#1,0) $)%
+  -- ++(\slope,-\height)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+}%
+\tikztimingdef{EE}{%
+     ++(0,      \height * \value{tikztimingtranspos})%
+     ++(#1,0)%
+  -- ++($ -1*(#1,0) $)%
+  -- ++(\slope, \height * \value{tikztimingtrans})%
+  -- ++(-\slope,0)%
+  -- ++(#1,0)%
+     ++(0, -\height + \height * \value{tikztimingtranspos})%
+}%
+\tikztimingdef{EH}{%
+     ++(0,+\height)%
+  -- ++(\slope,0)%
+     ++(-\slope,-\height)%
+  -- ++(\slope/2.,+\height/2.)%
+  \newdraw [\style]%
+  -- ++(\slope/2.,+\height/2.)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+}%
+\tikztimingdef{EL}{%
+  -- ++(\slope,0)%
+     ++(-\slope,\height)%
+  -- ++(\slope/2.,-\height/2.)%
+  \newdraw [\style]%
+  -- ++(\slope/2.,-\height/2.)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+}%
+
 \tikztimingecopy{C}{T}
 \def\tikztiming@nocombine@T{}%
 \def\tikztiming@nocombine@C{}%
@@ -3524,6 +3571,8 @@
 \def\tikztiming@nocombine@c{}%
 \def\tikztiming@nocombine@M{}%
 \def\tikztiming@nocombine@m{}%
+\def\tikztiming@nocombine@E{}%%
+\def\tikztiming@nocombine@e{}%%
 
 \tikztimingecopy{U}{D}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
