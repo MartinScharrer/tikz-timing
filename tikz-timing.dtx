@@ -2386,6 +2386,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@defcode{F}}
+%    \begin{macrocode}
+\tikztiming@defcode{F}{%
+  \pgfmathparse{\tikztiming@back-\tikztiming@num}%
+  \let\tikztiming@back\pgfmathresult
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@handlecode}[1]{Code to add to string}
 %    \begin{macrocode}
 \def\tikztiming@handlecode#1{%
