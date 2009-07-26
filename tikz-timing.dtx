@@ -3525,7 +3525,6 @@
 \def\tikztiming@nocombine@M{}%
 \def\tikztiming@nocombine@m{}%
 
-
 \tikztimingecopy{U}{D}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
 \tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
@@ -3533,17 +3532,16 @@
 %\tikztimingecopy{O}{D}
 \tikztimingecopy{X}{Z}
 
+\iffalse
 \tikztimingchar{A}{++(0,0)}{%
-  \newdraw [\style] -- ++(0,\height)
-  \newdraw ++(#1,-\height)
+  \newdraw [\style] -- ++( 0, \height)
+  \newdraw             ++(#1,-\height)
 }
-\tikztimingdef{AS}{
-  ++(#1,0)
-}
-\tikztimingdef{SA}{
-  \tikztiminguse{A}{#1}
-}
+\tikztiminglet{AS}{S}
+\tikztiminglet{SA}{A}
+\tikztimingchar{W}{}{}
 \tikztimingecopy{W}{A}
+\fi
 %    \end{macrocode}
 %
 % \Finale
