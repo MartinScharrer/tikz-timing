@@ -46,12 +46,12 @@
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
 %<!package>\DefineFileInfoSVN
-%<examplecode>\RequirePackage{tikz-timing}%
+%<examplecode>\RequirePackage[all]{tikz-timing}%
 %<examplecode>\RequirePackage{pgffor}%
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
 \documentclass{ltxdoc}
-\usepackage{tikz-timing}[\tikztiming@date]
+\usepackage[all]{tikz-timing}[\tikztiming@date]
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -1337,6 +1337,76 @@
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
 % \end{table}}
 %
+% \section{Extensions / Further Characters}
+% All default timing characters described in Table~\ref{tab:chars} are always 
+% made available by this package. Further, less-common characters are provided 
+% by extensions which are enabled by package options. This is done to hold the 
+% memory usage of this package small and reduce the risk of collisions with 
+% user-defined (meta-)characters. The option `|all|' enables all extensions.
+%
+% \subsection{Arrows}
+% The option `|arrows|' (or `|arrows=true|') enables two characters `|A|' and 
+% `|W|' which draw vertical up and down \textit{A}rro\!\textit{W}s. Such arrows 
+% are used in timing diagrams to mark special polarized events, like clock edges 
+% of another signal.
+%
+% The width provided with these character is added as whitespace after the 
+% ``zero-width'' arrow: `|A2AA|' results in `\,\texttiming{A2AA}'. This space 
+% can be avoided by specifying the width to zero: `|0.A|'. Like the `|C|' and 
+% `|T|' characters the subsequent arrow characters are not combined into one.
+%
+% The arrow tips can be changed using the TikZ styles for this characters. See 
+% \ref{sec:styles} for more information. The `|A|' character should not be used 
+% together with any other characters except with `|S|' (space).
+%
+% \begin{table}[H]
+% \centering
+% \caption{Examples for Arrow Characters.}\label{tab:arrows}
+% \begin{tikztimingexampletable}
+%   AAA \\
+%   3A  \\
+%   3{A} \\
+%   3A 3A \\
+%   3a 3a \\
+%   AW AW \\
+%   3{AW} \\
+%   3{aw} \\
+%   2S 2A 3W A W \\
+% \end{tikztimingexampletable}
+% \end{table}
+%
+% \subsection{Either High or Low}
+% The option `|either|' (or `|either=true|') is enabling the `|E|' character 
+% which stands for `\textit{either high or low}'. This character is designed to 
+% be used with the `|H|' and `|L|' characters to display a uncertainty of a 
+% transition. Sometimes a, e.g.\ low signal can go either to high or stay at low 
+% for a certain time before it definitely goes to high. In this case both (or 
+% more) possible transitions can be drawn using this character.
+% Like the `|C|' and `|T|' characters subsequent `|E|' characters are not 
+% combined into one.
+%
+% \begin{table}[H]
+% \centering
+% \caption{Examples for the `\texttt{E}' Character.}\label{tab:either}
+% \begin{tikztimingexampletable}
+%   L E H \\
+%   L D H \\
+%   H E L \\
+%   H D L \\
+%   L E E H \\
+%   L 3{.25E} H \\
+%   H E E L \\
+%   L EEE HH EEE L \\
+%   l e e h \\
+%   h e e l \\
+%   H 2E  L \\
+%   H 2{E} L \\
+%   H 5{e} L \\
+%   H E E H \\
+%   L E E L \\
+% \end{tikztimingexampletable}
+% \end{table}
+%
 % \clearpage
 % \section{Examples}
 % This section shows some examples by putting either the full source code or 
@@ -1608,6 +1678,7 @@
 \newif\if@tikztiming@either
 \newif\if@tikztiming@arrows
 \pgfkeys{/tikz-timing/.cd,
+  all/.style={arrows=true,either=true},
   arrows/.is if=@tikztiming@arrows,
   either/.is if=@tikztiming@either,
   .unknown/.code={
