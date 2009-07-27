@@ -1740,8 +1740,8 @@
   intext/.style={timing,line width=0.15ex},
   inline node/.style={shape=coordinate},
   table/.style={timing,line width=0.15ex,font=\sffamily},
-  coord/.style={inner sep=0pt,outer sep=0pt},
-  save/.style={inner sep=0pt,outer sep=0pt,/utils/exec=\tikztiming@savesettings},
+  coord/.style={coordinate},
+  save/.style={coordinate,/utils/exec=\tikztiming@savesettings},
   restore/.style={/utils/exec=\tikztiming@restoresettings},
   name/.style={inner sep=0pt,outer sep=0pt},
   d/text/.style={timing,scale=0.6,font=\sffamily},
@@ -2476,6 +2476,36 @@
   \pgfmathparse{\tikztiming@back-\tikztiming@num}%
   \let\tikztiming@back\pgfmathresult
   \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@defcode{O}}
+%    \begin{macrocode}
+\tikztiming@defcode{O}{%
+  \@ifnextchar\relax
+    {\tikztiming@\relax}%
+    {\tikztiming@overlay}%
+}
+\def\tikztiming@overlay#1#2{%
+  \ifx\relax#1\relax
+    \tikztiming@output@flush
+    \def\next{\tikztiming@\relax}%
+  \else
+    \ifx\relax#2\relax
+      \def\next{\tikztiming@#1\relax}%
+    \else
+      \tikztiming@output@flush
+      \let\tikztiming@overlay@lastchar\lastchar
+      \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
+      \tikztiming@#1\relax
+      \tikztiming@output@flush
+      \let\lastchar\tikztiming@overlay@lastchar
+      \tikztiming@addtostr{ (timing@overlay@start) }%
+      \def\next{\tikztiming@#2}%
+    \fi
+  \fi
+  \next
 }
 %    \end{macrocode}
 % \end{macro}
