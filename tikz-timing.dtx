@@ -35,7 +35,7 @@
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.5
+  [v0.6
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
@@ -760,7 +760,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{2164}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -800,6 +800,8 @@
 % `B' character to reduce width of next character. Changed \cs{timing} syntax to 
 % include an `at' before the coordinate. Bug fix for use with the `calc' 
 % package.}
+% \changes{v0.6}{2009/07/27}{Added new optional characters 'A'/'W' for arrows 
+% and 'E' for uncertain low-to-high and high-to-low transitions.}
 %
 % \GetFileInfo{tikz-timing.dtx}
 %
@@ -1242,14 +1244,14 @@
 % \texttiming{ZZ Y Z 3y ZZ}}
 % \\[\bigskipamount]
 % |\newcounter{mycount}|\\
-% |\tikztimingmetachar{H}{2D{\stepcounter{mycount}\arabic{mycount}}}|\\
+% |\tikztimingmetachar{Q}{2D{\stepcounter{mycount}\arabic{mycount}}}|\\
 % |\tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}|\\
-% |\texttiming{ 5H R 3H R 10H }|\\
+% |\texttiming{ 5Q R 3Q R 10Q }|\\
 % gives:\\
 % {\newcounter{mycount}%
-% \tikztimingmetachar{H}{2D{\stepcounter{mycount}\arabic{mycount}}}%
+% \tikztimingmetachar{Q}{2D{\stepcounter{mycount}\arabic{mycount}}}%
 % \tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}%
-% \texttiming{ 5H R 3H R 10H }}
+% \texttiming{ 5Q R 3Q R 10Q }}
 % \\[\bigskipamount]
 % Redefining the glitch `|G|' character:\\
 % |\tikztimingmetachar{G}{.1T.1T .2B} \tikztimingmetachar{g}{.1T.1T}|\\
