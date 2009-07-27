@@ -1603,7 +1603,27 @@
 % \subsection{Package Header}
 %    \begin{macrocode}
 %<*package>
+\RequirePackage{pgfopts}
+
+\newif\if@tikztiming@either
+\newif\if@tikztiming@arrows
+\pgfkeys{/tikz-timing/.cd,
+  arrows/.is if=@tikztiming@arrows,
+  either/.is if=@tikztiming@either,
+  .unknown/.code={
+  \begingroup
+  \def\@tempa{\pgfkeysnovalue}
+  \ifx\pgfkeyscurrentvalue\@tempa
+    \let\CurrentOption\pgfkeyscurrentname
+  \else
+    \def\CurrentOption{\pgfkeyscurrentname=\pgfkeyscurrentvalue}%
+  \fi
+  \@unknownoptionerror\endgroup}%
+}
+
+\ProcessPgfOptions*
 \RequirePackage{tikz}
+
 \usetikzlibrary{calc}
 \usetikzlibrary{backgrounds}
 \usetikzlibrary{decorations.pathmorphing}
@@ -3522,6 +3542,8 @@
 
 \let\tikztiming@chars@default\tikztiming@chars
 
+\if@tikztiming@either
+
 \tikztimingecopy{E}{D}
 \tikztimingchar{E}{
   ++(0,0)
@@ -3590,6 +3612,9 @@
   \code{\setcounter{tikztimingtrans}{-1}}%
   \tikztiminguse{MD}{#1}%
 }
+\def\tikztiming@nocombine@E{}%%
+\def\tikztiming@nocombine@e{}%%
+\fi
 
 \tikztimingecopy{C}{T}
 \def\tikztiming@nocombine@T{}%
@@ -3598,12 +3623,8 @@
 \def\tikztiming@nocombine@c{}%
 \def\tikztiming@nocombine@M{}%
 \def\tikztiming@nocombine@m{}%
-\def\tikztiming@nocombine@A{}%
-\def\tikztiming@nocombine@a{}%
 \def\tikztiming@nocombine@W{}%
 \def\tikztiming@nocombine@w{}%
-\def\tikztiming@nocombine@E{}%%
-\def\tikztiming@nocombine@e{}%%
 
 \tikztimingecopy{U}{D}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
@@ -3612,10 +3633,13 @@
 %\tikztimingecopy{O}{D}
 \tikztimingecopy{X}{Z}
 
+\if@tikztiming@arrows
 \tikztimingchar{A}{++(0,0)}{%
   \newdraw [\style] -- ++(0,\height)
   \newdraw ++(#1,-\height)
 }
+\def\tikztiming@nocombine@A{}%
+\def\tikztiming@nocombine@a{}%
 \tikztiminglet{AS}{SS}
 \tikztiminglet{AH}{H}
 \tikztiminglet{AZ}{Z}
@@ -3647,6 +3671,7 @@
 \tikztiminglet{EA}{A}
 
 \tikztimingecopy{W}{A}
+\fi
 %    \end{macrocode}
 %
 % \Finale
