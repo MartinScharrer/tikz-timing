@@ -697,17 +697,7 @@
 \def\tikztimingfullexampletable{
   \begin{tikzpicture}[x=1em,y=1em,font=\sffamily]
     \tikzset{timing/d/background/.style={fill={gray!25},fill opacity=0.5}}%
-    \iffalse
-    \def\chars{\@gobble}%
-    \def\@tempa{}%
-    \@for\tchar:=\tikztiming@chars\do{%
-      \expandafter\lowercase\expandafter{\expandafter\def\expandafter\@tempa
-      \expandafter{\tchar}}%
-      \edef\chars{\chars,\tchar,\@tempa}%
-    }
-    \else
-    \let\chars\tikztiming@chars
-    \fi
+    \let\chars\tikztiming@chars@default
     \node (charnode) at (0,0) {%
        \scalebox{0.4}%
          {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
@@ -3529,6 +3519,8 @@
   \newdraw [\style/decoration,\style]
   -- ++($ (-1/8,0) + (#1,0) $)
 }
+
+\let\tikztiming@chars@default\tikztiming@chars
 
 \tikztimingecopy{E}{D}
 \tikztimingchar{E}{
