@@ -63,7 +63,7 @@
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
 \usetikztiminglibrary{arrows,either,overlays,clockarrows}
-\iffalse \tikzset{timing/c/disable arrows} \fi
+\tikzset{timing/c/disable arrows}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -1371,6 +1371,7 @@
 % the one for \cs{usepackage}. However, no library provides any options so far.  
 % The date is used as a version number like for packages.
 %
+% \clearpage
 % \subsection{Arrows}
 % The library `|arrows|' enables two characters `|A|' and `|W|' which draw 
 % vertical up and down \textit{A}rro\!\textit{W}s. Such arrows are used in 
@@ -1402,6 +1403,7 @@
 % \end{tikztimingexampletable}
 % \end{table}
 %
+% \clearpage
 % \subsection{Either High or Low}
 % The library `|either|' enables the `|E|' character which stands for 
 % `\textit{either high or low}'. This character is designed to be used with the 
@@ -1434,6 +1436,7 @@
 % \end{tikztimingexampletable}
 % \end{table}
 %
+% \clearpage
 % \subsection{Overlays}
 % The library `|overlays|' enables the `|O|' character which allows the 
 % overlaying of two different groups of timing characters. This character awaits 
@@ -1463,7 +1466,7 @@
 % \end{tikztimingexampletable}
 % \end{table}
 %
-%
+% \clearpage
 % \subsection{Clock Arrows}
 % The library `|clockarrows|' is changing the `|C|' clock character to contain 
 % arrows which mark the rising and/or falling clock edge. By default the rising 
@@ -1475,11 +1478,11 @@
 % Table~\ref{tab:clockarrowstyles} below. The default definition of the `|C|' 
 % character can also be restored on demand.
 
-% \begin{table}
+% \begin{table}[H]
 %   \centering
 %   \caption{TikZ Styles for Clock Arrows.}
 %   \label{tab:clockarrowstyles}
-%   \begin{tabularx}{1\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
+%   \begin{tabularx}{1.15\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
 %     \toprule
 %     \normalfont Style/Setting & Description \\
 %       \midrule
@@ -1490,33 +1493,37 @@
 %       \midrule
 %       timing/c/arrow & Style for arrows. Can be used to change arrow tip 
 %       etc.\\
-%       timing/c/arrow/pos & Position of arrow, i.e.\ its tip, on the edge. May    
+%       timing/c/arrow pos & Position of arrows, i.e.\ its tip, on the edge. May    
 %       needs adjustment if different arrow tip shapes are selected.\\
+%       timing/c/arrow tip & Tip shape of arrows. See the PGF manual for the 
+%       list of arrow tips. \\
 %       \midrule
 %       timing/c/disable arrows & Restores normal definition of the `\texttt{C}' 
 %       character. No arrows are drawn and above settings are ignored. This 
 %       definition compiles faster and results in a smaller output file.\\
-%       timing/c/enable arrows & Change the definition of the `\texttt{C}' 
-%       character to contain arrows. \\
+%       timing/c/enable arrows & Changes the `\texttt{C}' character to contain 
+%       arrows. \\
+%       \bottomrule
 %   \end{tabularx}
-%   \bigskip
+% \end{table}
+%
+% \begin{table}[H]
 %   \caption{Examples for the Clock Arrows.}\label{tab:clockarrows}
-%   \iffalse[timing/c/enable arrows]\fi
-%
-%   \texttiming[timing/c/falling arrows]{10{C}}
-%
-%   \texttiming{[timing/c/falling arrows]10{C}}
-%
-%   \texttiming{[timing/c/falling arrows]10{C}[timing/c/rising arrows]10{C}}
-%
-%   \begin{tikztimingexampletable}
-%     [][timing/c/rising arrows] 10{C} \\
-%     [][timing/c/falling arrows] 10{C} \\
-%     [][timing/c/arrows] 10{C} \\
-%     [][timing/c/no arrows] 10{C} \\
-%     [][timing/c/arrows,timing/c/arrow/pos=.5] 10{C} \\
-%     [][timing/c/arrows,timing/c/arrow/.style={>=latex'}] 10{C} \\
-%   \end{tikztimingexampletable}
+%   \tikzset{timing/c/enable arrows}%
+%   \centering
+%   \begin{tabular}{lc}
+%     \toprule
+%      Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{10\{C\}})
+%      \\\midrule
+%     \texttt{rising arrows} & \texttiming[timing/c/rising arrows]{10{C}} \\
+%     \texttt{falling arrows}& \texttiming[timing/c/falling arrows]{10{C}} \\
+%     \texttt{no arrows}     & \texttiming[timing/c/no arrows]{10{C}}\\
+%     \texttt{arrows}        & \texttiming[timing/c/arrows]{10{C}}\\
+%     \texttt{arrow pos=.5}  & \texttiming[timing/c/arrow pos=.5]{10{C}}\\
+%  \texttt{arrow tip=latex}  & \texttiming[timing/c/arrow tip=latex]{10{C}}\\
+%  \texttt{arrow tip=stealth}& \texttiming[timing/c/arrow tip=stealth]{10{C}}\\
+%     \bottomrule
+%   \end{tabular}
 % \end{table}
 %
 % \clearpage
@@ -1944,7 +1951,7 @@
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
       \tikztiming@#2\relax
-      \message{^^J\meaning\tikztiming@str^^J}%
+      %\message{^^J\meaning\tikztiming@str^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
@@ -1976,6 +1983,7 @@
     \let\lastchar\empty%
     \let\currentchar\empty
     \let\settings\empty
+    \gdef\tikztiming@saved@settings{}%
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \setcounter{tikztimingtranspos}{0}%
@@ -3873,66 +3881,63 @@
 %<*lib-clockarrows>
 %  \fi
 %    \begin{macrocode}
-\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC
+\let\tikztiming@transition@C@normal@C=\tikztiming@transition@CC
 
 \tikztimingdef{CC}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \newdraw [\style]
-  \noexpand\ifnum-1=\c@tikztimingtrans
-    [->,timing/c/arrow]
-  \noexpand\fi
+  [timing/c/save]
+  \newdraw 
+  [\style,timing/c/restore,>=\noexpand\tikztiming@c@arrow@tip,timing/c/arrow@style]
   -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
-  ; \draw [timing/restore] (timing@save) ++(0,0) [\style]
+  ; \draw [timing/restore,timing/c/restore] (timing@save) ++(0,0) [\style]
   -- ++(\slope,\value{tikztimingtrans}*\height)
   -- ++($ (#1,0) - (\slope,0) $)
 }
-\let\tikztiming@trans@C@falling@C\tikztiming@trans@CC
 
-\tikztimingdef{CC}{%
-  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \newdraw [\style]
-    [->,timing/c/arrow]
-  -- 
-  ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
-  ; \draw [timing/restore] (timing@save) ++(0,0) [\style]
-  -- ++(\slope,\value{tikztimingtrans}*\height)
-  -- ++($ (#1,0) - (\slope,0) $)
+\let\tikztiming@transition@C@arrow@C=\tikztiming@transition@CC
+
+\tikzset{timing/c/.cd,
+  rising arrows/.code={%
+    \def\tikztiming@clockarrow@style{\ifnum1=\c@tikztimingtrans\tikzset{->,timing/arrow}\fi}%
+  },%
+  falling arrows/.code={%
+    \def\tikztiming@clockarrow@style{\ifnum-1=\c@tikztimingtrans\tikzset{->,timing/arrow}\fi}%
+  },%
+  arrows/.code={%
+    \def\tikztiming@clockarrow@style{\tikzset{->,timing/arrow}}%
+  },%
+  no arrows/.code={%
+    \def\tikztiming@clockarrow@style{}%
+  },%
+  arrow@style/.code={\tikztiming@clockarrow@style},%
+  disable arrows/.code={%
+    \let\tikztiming@transition@CC\tikztiming@transition@C@normal@C
+  },%
+  enable arrows/.code={%
+    \let\tikztiming@transition@CC\tikztiming@transition@C@arrow@C
+  },%
+  arrow/.style={},%
+  arrow pos/.store in=\tikztiming@c@arrow@pos,
+  arrow tip/.store in=\tikztiming@c@arrow@tip,
+  save/.code={%
+    \global\let\tikztiming@clockarrow@savedstyle\tikztiming@clockarrow@style
+    \global\let\tikztiming@transition@saved@CC\tikztiming@transition@CC
+    \global\let\tikztiming@c@arrow@savedpos\tikztiming@c@arrow@pos
+    \global\let\tikztiming@c@arrow@savedtip\tikztiming@c@arrow@tip
+  },
+  restore/.code={%
+    \let\tikztiming@clockarrow@style\tikztiming@clockarrow@savedstyle
+    \let\tikztiming@transition@CC\tikztiming@transition@saved@CC
+    \let\tikztiming@c@arrow@pos\tikztiming@c@arrow@savedpos
+    \let\tikztiming@c@arrow@tip\tikztiming@c@arrow@savedtip
+  },
 }
-\let\tikztiming@trans@C@both@C\tikztiming@trans@CC
-
-\tikztimingdef{CC}{%
-  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \newdraw [\style]
-  \noexpand\ifnum1=\c@tikztimingtrans
-    [->,timing/c/arrow]
-  \noexpand\fi
-  -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
-  ; \draw [timing/restore] (timing@save) ++(0,0) [\style]
-  -- ++(\slope,\value{tikztimingtrans}*\height)
-  -- ++($ (#1,0) - (\slope,0) $)
+\tikzset{timing/c/.cd,
+  enable arrows,
+  rising arrows,
+  arrow pos=0.95,
+  arrow tip=to,
 }
-\let\tikztiming@trans@C@rising@C\tikztiming@trans@CC
-
-
-\tikzset{timing/.cd,
-  c/rising arrows/.code={%
-    \gdef\tikztiming@trans@CC{\tikztiming@trans@C@rising@C}%
-  },%
-  c/falling arrows/.code={%
-    \gdef\tikztiming@trans@CC{\tikztiming@trans@C@falling@C}%
-  },%
-  c/arrows/.code={%
-    \gdef\tikztiming@trans@CC{\tikztiming@trans@C@both@C}%
-  },%
-  c/no arrows/.code={%
-    \gdef\tikztiming@trans@CC{\tikztiming@trans@C@normal@C}%
-  },%
-  c/arrow/.style={},%
-  c/arrow/pos/.store in=\tikztiming@c@arrow@pos,
-}
-
-\tikzset{timing/c/rising arrows,timing/c/arrow/pos=0.80}
-
 %    \end{macrocode}
 % \iffalse
 %</lib-clockarrows>
