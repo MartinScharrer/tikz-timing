@@ -1421,16 +1421,17 @@
 % The library `|overlays|' is enabling the `|O|' character which allows the 
 % overlaying of two different groups of timing characters. This character awaits 
 % two groups enclosed by braces which are drawn in the given order. The position 
-% before the `|O|' character is saved and restored to draw the second group. It  
-% the responsibility of the user to make sure that the lines drawn by the first 
-% group reconnect to the main lines or do something else useful. The characters  
-% of the first group connect to the characters before the `|O|' modifier.
-% The modifier `|;|' can be used in the first group to restart the drawn line, 
-% e.g.\ to change to a different color. This is not done automatically to give 
-% the user the freedom if and where this should happen. It is recommended to 
-% start both groups with the same character to avoid ugly connection points. The 
-% characters following after the groups connect to the characters of the second 
-% group as normal.
+% before the `|O|' character is saved and restored to draw the second group.  
+% The characters of the first group connect to the characters before the `|O|' 
+% modifier but then simply end.
+% The characters following after the groups connect to the characters of the 
+% second group as normal.
+% It is the responsibility of the user to make sure that the lines drawn by the 
+% first group reconnect to the main lines or do something else useful.  The 
+% modifier `|;|' can be used in the first group to restart the drawn line, e.g.\ 
+% to change to a different color. This is not done automatically to give the 
+% user the freedom if and where this should happen. It is recommended to start 
+% and end both groups with the same character to avoid ugly connection points.  
 %
 % \begin{table}[H]
 % \centering
