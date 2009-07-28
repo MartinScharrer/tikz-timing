@@ -1371,7 +1371,6 @@
 % the one for \cs{usepackage}. However, no library provides any options so far.  
 % The date is used as a version number like for packages.
 %
-% \clearpage
 % \subsection{Arrows}
 % The library `|arrows|' enables two characters `|A|' and `|W|' which draw 
 % vertical up and down \textit{A}rro\!\textit{W}s. Such arrows are used in 
@@ -1488,7 +1487,7 @@
 %       \midrule
 %       timing/c/rising arrows & Mark (only) rising edges with arrows.\\
 %       timing/c/falling arrows & Mark (only) falling edges with arrows.\\
-%       timing/c/arrows & Mark both rising and falling edges with arrows.\\
+%       timing/c/dual arrows & Mark both rising and falling edges with arrows.\\
 %       timing/c/no arrows & Do not mark any edges with arrows.\\
 %       \midrule
 %       timing/c/arrow & Style for arrows. Can be used to change arrow tip 
@@ -1518,7 +1517,7 @@
 %     \texttt{rising arrows} & \texttiming[timing/c/rising arrows]{10{C}} \\
 %     \texttt{falling arrows}& \texttiming[timing/c/falling arrows]{10{C}} \\
 %     \texttt{no arrows}     & \texttiming[timing/c/no arrows]{10{C}}\\
-%     \texttt{arrows}        & \texttiming[timing/c/arrows]{10{C}}\\
+%     \texttt{dual arrows}   & \texttiming[timing/c/dual arrows]{10{C}}\\
 %     \texttt{arrow pos=.5}  & \texttiming[timing/c/arrow pos=.5]{10{C}}\\
 %  \texttt{arrow tip=latex}  & \texttiming[timing/c/arrow tip=latex]{10{C}}\\
 %  \texttt{arrow tip=stealth}& \texttiming[timing/c/arrow tip=stealth]{10{C}}\\
@@ -3881,7 +3880,7 @@
 %<*lib-clockarrows>
 %  \fi
 %    \begin{macrocode}
-\let\tikztiming@transition@C@normal@C=\tikztiming@transition@CC
+\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC
 
 \tikztimingdef{CC}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
@@ -3894,40 +3893,40 @@
   -- ++($ (#1,0) - (\slope,0) $)
 }
 
-\let\tikztiming@transition@C@arrow@C=\tikztiming@transition@CC
+\let\tikztiming@trans@C@arrow@C\tikztiming@trans@CC
 
 \tikzset{timing/c/.cd,
   rising arrows/.code={%
-    \def\tikztiming@clockarrow@style{\ifnum1=\c@tikztimingtrans\tikzset{->,timing/arrow}\fi}%
+    \def\tikztiming@clockarrow@style{\ifnum1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
   },%
   falling arrows/.code={%
-    \def\tikztiming@clockarrow@style{\ifnum-1=\c@tikztimingtrans\tikzset{->,timing/arrow}\fi}%
+    \def\tikztiming@clockarrow@style{\ifnum-1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
   },%
-  arrows/.code={%
-    \def\tikztiming@clockarrow@style{\tikzset{->,timing/arrow}}%
+  dual arrows/.code={%
+    \def\tikztiming@clockarrow@style{\tikzset{->,timing/c/arrow}}%
   },%
   no arrows/.code={%
     \def\tikztiming@clockarrow@style{}%
   },%
   arrow@style/.code={\tikztiming@clockarrow@style},%
   disable arrows/.code={%
-    \let\tikztiming@transition@CC\tikztiming@transition@C@normal@C
+    \let\tikztiming@trans@CC\tikztiming@trans@C@normal@C
   },%
   enable arrows/.code={%
-    \let\tikztiming@transition@CC\tikztiming@transition@C@arrow@C
+    \let\tikztiming@trans@CC\tikztiming@trans@C@arrow@C
   },%
   arrow/.style={},%
   arrow pos/.store in=\tikztiming@c@arrow@pos,
   arrow tip/.store in=\tikztiming@c@arrow@tip,
   save/.code={%
     \global\let\tikztiming@clockarrow@savedstyle\tikztiming@clockarrow@style
-    \global\let\tikztiming@transition@saved@CC\tikztiming@transition@CC
+    \global\let\tikztiming@trans@saved@CC\tikztiming@trans@CC
     \global\let\tikztiming@c@arrow@savedpos\tikztiming@c@arrow@pos
     \global\let\tikztiming@c@arrow@savedtip\tikztiming@c@arrow@tip
   },
   restore/.code={%
     \let\tikztiming@clockarrow@style\tikztiming@clockarrow@savedstyle
-    \let\tikztiming@transition@CC\tikztiming@transition@saved@CC
+    \let\tikztiming@trans@CC\tikztiming@trans@saved@CC
     \let\tikztiming@c@arrow@pos\tikztiming@c@arrow@savedpos
     \let\tikztiming@c@arrow@tip\tikztiming@c@arrow@savedtip
   },
