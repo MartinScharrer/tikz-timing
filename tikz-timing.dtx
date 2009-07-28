@@ -31,6 +31,9 @@
 %<package>\ProvidesPackageSVN
 %<examplecode>\ProvidesPackageSVN[tikz-timing-examplecode]
 %<ydoc>\ProvidesPackageSVN[ydoc]
+%<lib-arrows>\ProvidesPackageSVN[tikz-timing-arrows]
+%<lib-either>\ProvidesPackageSVN[tikz-timing-either]
+%<lib-overlays>\ProvidesPackageSVN[tikz-timing-overlays]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -39,6 +42,9 @@
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
+%<lib-arrows>   TikZ-Timing Library for timing arrows]
+%<lib-either>   TikZ-Timing Library for uncertain transitions]
+%<lib-overlays>   TikZ-Timing Library for timing overlays]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
@@ -170,7 +176,7 @@
     \noexpand\g@namedef{href@desc@#1}{}%
   }%
   \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax}%
+    {\let\macrolink\relax%
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
@@ -1675,26 +1681,6 @@
 % \subsection{Package Header}
 %    \begin{macrocode}
 %<*package>
-\RequirePackage{pgfopts}
-
-\newif\if@tikztiming@either
-\newif\if@tikztiming@arrows
-\pgfkeys{/tikz-timing/.cd,
-  all/.style={arrows=true,either=true},
-  arrows/.is if=@tikztiming@arrows,
-  either/.is if=@tikztiming@either,
-  .unknown/.code={
-  \begingroup
-  \def\@tempa{\pgfkeysnovalue}
-  \ifx\pgfkeyscurrentvalue\@tempa
-    \let\CurrentOption\pgfkeyscurrentname
-  \else
-    \def\CurrentOption{\pgfkeyscurrentname=\pgfkeyscurrentvalue}%
-  \fi
-  \@unknownoptionerror\endgroup}%
-}
-
-\ProcessPgfOptions*
 \RequirePackage{tikz}
 
 \usetikzlibrary{calc}
@@ -1705,6 +1691,21 @@
     {\RequirePackage{environ}}
     {\RequirePackage{amsmath}}
 \fi
+
+\newcommand*\usetikztiminglibrary[2][]{%
+  \edef\tikztiming@library@options{#1}%
+  \tikztiming@library#2,\relax
+}
+
+\def\tikztiming@library#1,{%
+  \IfFileExists{tikz-timing-#1.sty}%
+    {\RequirePackage[\tikztiming@library@options]{tikz-timing-#1}}%
+    {\PackageError{tikz-timing}%
+      {No tikz-timing library `#1' found!}%
+      {}{}{}{}%
+    }%
+  \@ifnextchar\relax{}{\tikztiming@library}%
+}
 
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
@@ -2480,6 +2481,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
+%    \begin{macrocode}
+%</package>
+%<*lib-overlays>
+%    \end{macrocode}
 % \begin{macro}{\tikztiming@defcode{O}}
 %    \begin{macrocode}
 \tikztiming@defcode{O}{%
@@ -2487,6 +2492,11 @@
     {\tikztiming@\relax}%
     {\tikztiming@overlay}%
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@overlays}
+%    \begin{macrocode}
 \def\tikztiming@overlay#1#2{%
   \ifx\relax#1\relax
     \tikztiming@output@flush
@@ -2509,6 +2519,11 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%    \begin{macrocode}
+%</lib-overlays>
+%<*package>
+%    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@handlecode}[1]{Code to add to string}
 %    \begin{macrocode}
@@ -3645,7 +3660,12 @@
 
 \let\tikztiming@chars@default\tikztiming@chars
 
-\if@tikztiming@either
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%<*lib-either>
+%    \end{macrocode}
+%    \begin{macrocode}
 
 \tikztimingecopy{E}{D}
 \tikztimingchar{E}{
@@ -3717,7 +3737,12 @@
 }
 \def\tikztiming@nocombine@E{}%%
 \def\tikztiming@nocombine@e{}%%
-\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+%</lib-either>
+%<*package>
+%    \end{macrocode}
+%    \begin{macrocode}
 
 \tikztimingecopy{C}{T}
 \def\tikztiming@nocombine@T{}%
@@ -3736,7 +3761,12 @@
 %\tikztimingecopy{O}{D}
 \tikztimingecopy{X}{Z}
 
-\if@tikztiming@arrows
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%<*lib-arrows>
+%    \end{macrocode}
+%    \begin{macrocode}
 \tikztimingchar{A}{++(0,0)}{%
   \newdraw [\style] -- ++(0,\height)
   \newdraw ++(#1,-\height)
@@ -3774,7 +3804,10 @@
 \tikztiminglet{EA}{A}
 
 \tikztimingecopy{W}{A}
-\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+%</lib-arrows>
+%<*package>
 %    \end{macrocode}
 %
 % \Finale
