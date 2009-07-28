@@ -31,6 +31,9 @@
 %<package>\ProvidesPackageSVN
 %<examplecode>\ProvidesPackageSVN[tikz-timing-examplecode]
 %<ydoc>\ProvidesPackageSVN[ydoc]
+%<lib-arrows>\ProvidesPackageSVN[tikz-timing-arrows]
+%<lib-either>\ProvidesPackageSVN[tikz-timing-either]
+%<lib-overlays>\ProvidesPackageSVN[tikz-timing-overlays]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -39,6 +42,9 @@
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
+%<lib-arrows>   TikZ-Timing Library for timing arrows]
+%<lib-either>   TikZ-Timing Library for uncertain transitions]
+%<lib-overlays>   TikZ-Timing Library for timing overlays]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
@@ -46,12 +52,13 @@
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
 %<!package>\DefineFileInfoSVN
-%<examplecode>\RequirePackage[all]{tikz-timing}%
+%<examplecode>\RequirePackage{tikz-timing}%
 %<examplecode>\RequirePackage{pgffor}%
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
 \documentclass{ltxdoc}
-\usepackage[all]{tikz-timing}[\tikztiming@date]
+\usepackage{tikz-timing}[\tikztiming@date]
+\usetikztiminglibrary{arrows,either,overlays}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -760,7 +767,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{2164}
+% \CheckSum{2201}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1342,15 +1349,16 @@
 % \section{Extensions / Further Characters}
 % All default timing characters described in Table~\ref{tab:chars} are always 
 % made available by this package. Further, less-common characters are provided 
-% by extensions which are enabled by package options. This is done to hold the 
-% memory usage of this package small and reduce the risk of collisions with 
-% user-defined (meta-)characters. The option `|all|' enables all extensions.
+% by libraries which are loaded with the macro 
+% \cs{usetikztiminglibrary}\marg{library}.  This is done to hold the memory 
+% usage of this package small and reduce the risk of collisions with 
+% user-defined (meta-)characters.
 %
 % \subsection{Arrows}
-% The option `|arrows|' (or `|arrows=true|') enables two characters `|A|' and 
-% `|W|' which draw vertical up and down \textit{A}rro\!\textit{W}s. Such arrows 
-% are used in timing diagrams to mark special polarized events, like clock edges 
-% of another signal.
+% The library `|arrows|' enables two characters `|A|' and `|W|' which draw 
+% vertical up and down \textit{A}rro\!\textit{W}s. Such arrows are used in 
+% timing diagrams to mark special polarized events, like clock edges of another 
+% signal.
 %
 % The width provided with these character is added as whitespace after the 
 % ``zero-width'' arrow: `|A2AA|' results in `\,\texttiming{A2AA}'. This space 
@@ -1378,12 +1386,12 @@
 % \end{table}
 %
 % \subsection{Either High or Low}
-% The option `|either|' (or `|either=true|') is enabling the `|E|' character 
-% which stands for `\textit{either high or low}'. This character is designed to 
-% be used with the `|H|' and `|L|' characters to display a uncertainty of a 
-% transition. Sometimes a, e.g.\ low signal can go either to high or stay at low 
-% for a certain time before it definitely goes to high. In this case both (or 
-% more) possible transitions can be drawn using this character.
+% The library `|either|' is enabling the `|E|' character which stands for 
+% `\textit{either high or low}'. This character is designed to be used with the 
+% `|H|' and `|L|' characters to display a uncertainty of a transition.  
+% Sometimes a, e.g.\ low signal can go either to high or stay at low for a 
+% certain time before it definitely goes to high. In this case both (or more) 
+% possible transitions can be drawn using this character.
 % Like the `|C|' and `|T|' characters subsequent `|E|' characters are not 
 % combined into one.
 %
@@ -1408,6 +1416,36 @@
 %   L E E L \\
 % \end{tikztimingexampletable}
 % \end{table}
+%
+% \subsection{Overlays}
+% The library `|overlays|' is enabling the `|O|' character which allows the 
+% overlaying of two different groups of timing characters. This character awaits 
+% two groups enclosed by braces which are drawn in the given order. The position 
+% before the `|O|' character is saved and restored to draw the second group.  
+% The characters of the first group connect to the characters before the `|O|' 
+% modifier but then simply end.
+% The characters following after the groups connect to the characters of the 
+% second group as normal.
+% It is the responsibility of the user to make sure that the lines drawn by the 
+% first group reconnect to the main lines or do something else useful.  The 
+% modifier `|;|' can be used in the first group to restart the drawn line, e.g.\ 
+% to change to a different color. This is not done automatically to give the 
+% user the freedom if and where this should happen. It is recommended to start 
+% and end both groups with the same character to avoid ugly connection points.  
+%
+% \begin{table}[H]
+% \centering
+% \caption{Examples for the `\texttt{O}' Overlay Character.}\label{tab:overlays}
+% \begin{tikztimingexampletable}
+%   LLL O{HH}{LL} HHH \\
+%   LLL O{HHH}{LL} HHH \\
+%   LLL O{[gray]HHH}{LLH} HH \\
+%   LLL O{;[gray]HH.1H;}{LLH} HH \\
+%   LL  O{L;[gray]HH.1H;}{LLLH} HH \\
+%   HHH O{;[gray]HH.1L;}{LL} LLL \\
+% \end{tikztimingexampletable}
+% \end{table}
+%
 %
 % \clearpage
 % \section{Examples}
@@ -1675,26 +1713,6 @@
 % \subsection{Package Header}
 %    \begin{macrocode}
 %<*package>
-\RequirePackage{pgfopts}
-
-\newif\if@tikztiming@either
-\newif\if@tikztiming@arrows
-\pgfkeys{/tikz-timing/.cd,
-  all/.style={arrows=true,either=true},
-  arrows/.is if=@tikztiming@arrows,
-  either/.is if=@tikztiming@either,
-  .unknown/.code={
-  \begingroup
-  \def\@tempa{\pgfkeysnovalue}
-  \ifx\pgfkeyscurrentvalue\@tempa
-    \let\CurrentOption\pgfkeyscurrentname
-  \else
-    \def\CurrentOption{\pgfkeyscurrentname=\pgfkeyscurrentvalue}%
-  \fi
-  \@unknownoptionerror\endgroup}%
-}
-
-\ProcessPgfOptions*
 \RequirePackage{tikz}
 
 \usetikzlibrary{calc}
@@ -1705,6 +1723,28 @@
     {\RequirePackage{environ}}
     {\RequirePackage{amsmath}}
 \fi
+
+\newcommand*\usetikztiminglibrary[2][]{%
+  \edef\tikztiming@library@options{#1}%
+  \@ifnextchar{[}%]
+    {\tikztiming@library{#2}}%
+    {\tikztiming@library{#2}[]}%
+}
+\def\tikztiming@library#1[#2]{%
+  \edef\tikztiming@library@date{#2}%
+  \tikztiming@library@#1,\relax
+}
+
+\def\tikztiming@library@#1,{%
+  \IfFileExists{tikz-timing-#1.sty}%
+    {\RequirePackage[\tikztiming@library@options]{tikz-timing-#1}%
+      [\tikztiming@library@date]}%
+    {\PackageError{tikz-timing}%
+      {No tikz-timing library `#1' found!}%
+      {}{}{}{}%
+    }%
+  \@ifnextchar\relax{}{\tikztiming@library@}%
+}
 
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
@@ -1740,8 +1780,8 @@
   intext/.style={timing,line width=0.15ex},
   inline node/.style={shape=coordinate},
   table/.style={timing,line width=0.15ex,font=\sffamily},
-  coord/.style={inner sep=0pt,outer sep=0pt},
-  save/.style={inner sep=0pt,outer sep=0pt,/utils/exec=\tikztiming@savesettings},
+  coord/.style={coordinate},
+  save/.style={coordinate,/utils/exec=\tikztiming@savesettings},
   restore/.style={/utils/exec=\tikztiming@restoresettings},
   name/.style={inner sep=0pt,outer sep=0pt},
   d/text/.style={timing,scale=0.6,font=\sffamily},
@@ -2479,6 +2519,50 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%<*lib-overlays>
+%    \end{macrocode}
+% \begin{macro}{\tikztiming@defcode{O}}
+%    \begin{macrocode}
+\tikztiming@defcode{O}{%
+  \@ifnextchar\relax
+    {\tikztiming@\relax}%
+    {\tikztiming@overlay}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@overlays}
+%    \begin{macrocode}
+\def\tikztiming@overlay#1#2{%
+  \ifx\relax#1\relax
+    \tikztiming@output@flush
+    \def\next{\tikztiming@\relax}%
+  \else
+    \ifx\relax#2\relax
+      \def\next{\tikztiming@#1\relax}%
+    \else
+      \tikztiming@output@flush
+      \let\tikztiming@overlay@lastchar\lastchar
+      \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
+      \tikztiming@#1\relax
+      \tikztiming@output@flush
+      \let\lastchar\tikztiming@overlay@lastchar
+      \tikztiming@addtostr{ (timing@overlay@start) }%
+      \def\next{\tikztiming@#2}%
+    \fi
+  \fi
+  \next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</lib-overlays>
+%<*package>
+%    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@handlecode}[1]{Code to add to string}
 %    \begin{macrocode}
@@ -3615,7 +3699,12 @@
 
 \let\tikztiming@chars@default\tikztiming@chars
 
-\if@tikztiming@either
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%<*lib-either>
+%    \end{macrocode}
+%    \begin{macrocode}
 
 \tikztimingecopy{E}{D}
 \tikztimingchar{E}{
@@ -3687,7 +3776,12 @@
 }
 \def\tikztiming@nocombine@E{}%%
 \def\tikztiming@nocombine@e{}%%
-\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+%</lib-either>
+%<*package>
+%    \end{macrocode}
+%    \begin{macrocode}
 
 \tikztimingecopy{C}{T}
 \def\tikztiming@nocombine@T{}%
@@ -3706,7 +3800,12 @@
 %\tikztimingecopy{O}{D}
 \tikztimingecopy{X}{Z}
 
-\if@tikztiming@arrows
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%<*lib-arrows>
+%    \end{macrocode}
+%    \begin{macrocode}
 \tikztimingchar{A}{++(0,0)}{%
   \newdraw [\style] -- ++(0,\height)
   \newdraw ++(#1,-\height)
@@ -3744,7 +3843,10 @@
 \tikztiminglet{EA}{A}
 
 \tikztimingecopy{W}{A}
-\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+%</lib-arrows>
+%<*package>
 %    \end{macrocode}
 %
 % \Finale
