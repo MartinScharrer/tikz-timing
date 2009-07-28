@@ -1944,7 +1944,7 @@
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
       \tikztiming@#2\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \message{^^J\meaning\tikztiming@str^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
@@ -3873,36 +3873,65 @@
 %<*lib-clockarrows>
 %  \fi
 %    \begin{macrocode}
+\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC
+
+\tikztimingdef{CC}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \newdraw [\style]
+  \noexpand\ifnum-1=\c@tikztimingtrans
+    [->,timing/c/arrow]
+  \noexpand\fi
+  -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
+  ; \draw [timing/restore] (timing@save) ++(0,0) [\style]
+  -- ++(\slope,\value{tikztimingtrans}*\height)
+  -- ++($ (#1,0) - (\slope,0) $)
+}
+\let\tikztiming@trans@C@falling@C\tikztiming@trans@CC
+
+\tikztimingdef{CC}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \newdraw [\style]
+    [->,timing/c/arrow]
+  -- 
+  ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
+  ; \draw [timing/restore] (timing@save) ++(0,0) [\style]
+  -- ++(\slope,\value{tikztimingtrans}*\height)
+  -- ++($ (#1,0) - (\slope,0) $)
+}
+\let\tikztiming@trans@C@both@C\tikztiming@trans@CC
+
+\tikztimingdef{CC}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \newdraw [\style]
+  \noexpand\ifnum1=\c@tikztimingtrans
+    [->,timing/c/arrow]
+  \noexpand\fi
+  -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
+  ; \draw [timing/restore] (timing@save) ++(0,0) [\style]
+  -- ++(\slope,\value{tikztimingtrans}*\height)
+  -- ++($ (#1,0) - (\slope,0) $)
+}
+\let\tikztiming@trans@C@rising@C\tikztiming@trans@CC
+
+
 \tikzset{timing/.cd,
-  c/rising arrows/.style={%
-    timing/c/arrow@style/.code={\ifnum1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
+  c/rising arrows/.code={%
+    \gdef\tikztiming@trans@CC{\tikztiming@trans@C@rising@C}%
   },%
-  c/falling arrows/.style={%
-    timing/c/arrow@style/.code={\ifnum-1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
+  c/falling arrows/.code={%
+    \gdef\tikztiming@trans@CC{\tikztiming@trans@C@falling@C}%
   },%
-  c/arrows/.style={%
-    timing/c/arrow@style/.code={\tikzset{->,timing/c/arrow}}%
+  c/arrows/.code={%
+    \gdef\tikztiming@trans@CC{\tikztiming@trans@C@both@C}%
   },%
-  c/no arrows/.style={%
-    timing/c/arrow@style/.code={}%
-  },%
-  c/disable arrows/.code={%
-    \tikztimingdef{CC}{\tikztiminguse{TT}{#1}}%
-  },%
-  c/enable arrows/.code={%
-    \tikztimingdef{CC}{%
-      \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-      \newdraw [\style,timing/c/arrow@style]
-      -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
-      ; \draw [timing/restore] (timing@save) ++(0,0) [\style]
-      -- ++(\slope,\value{tikztimingtrans}*\height)
-      -- ++($ (#1,0) - (\slope,0) $)
-    }
+  c/no arrows/.code={%
+    \gdef\tikztiming@trans@CC{\tikztiming@trans@C@normal@C}%
   },%
   c/arrow/.style={},%
   c/arrow/pos/.store in=\tikztiming@c@arrow@pos,
 }
-\tikzset{timing/c/enable arrows,timing/c/rising arrows,timing/c/arrow/pos=0.95}
+
+\tikzset{timing/c/rising arrows,timing/c/arrow/pos=0.80}
 
 %    \end{macrocode}
 % \iffalse
