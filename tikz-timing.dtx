@@ -38,7 +38,7 @@
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.6
+  [v0.6a
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
@@ -767,7 +767,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{2201}
+% \CheckSum{2221}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -807,8 +807,12 @@
 % `B' character to reduce width of next character. Changed \cs{timing} syntax to 
 % include an `at' before the coordinate. Bug fix for use with the `calc' 
 % package.}
-% \changes{v0.6}{2009/07/27}{Added new optional characters 'A'/'W' for arrows 
-% and 'E' for uncertain low-to-high and high-to-low transitions.}
+% \changes{v0.6}{2009/07/27}{Added ``forward'' modifier `\texttt{F}' as reverse 
+% version of the ``backward'' modifier `\texttt{B}'. Added support for 
+% lower-case modifiers ``\texttt{b}',`\texttt{f}' and \texttt{n}'.  Added new 
+% optional characters `\texttt{A}'/`\texttt{W}' for arrows and '\texttt{E}' for 
+% uncertain low-to-high and high-to-low transitions.}
+% \changes{v0.6a}{2009/07/28}{Added library for overlay modifier `\texttt{O}'.}
 %
 % \GetFileInfo{tikz-timing.dtx}
 %
@@ -975,7 +979,10 @@
 % given number.  Half of it if character is in lower case. & 2.6H5.2l & 
 % \texttiming{2.6H5.2l}\\
 % \meta{\small number}B & Su\underline{b}tracts the given number from the width 
-% of the next character. & H .5B L & \texttiming{H.5BL}\\
+% of the next character. ``\textit{\texttt{B}ackwards}''& H .5B L & 
+% \texttiming{H.5BL}\\
+% \meta{\small number}F & Adds the given number to the width of the next 
+% character.  ``\textit{\texttt{F}orwards}''& H .5F L & \texttiming{H.5FL}\\
 % N\oarg{\tiny Settings}\parg{\tiny Name}\marg{\tiny Content} & Adds node at 
 % current position.  All three arguments are optional.  & H N(a1) L & 
 % \texttiming{H N(a1) L}\\
@@ -2433,6 +2440,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@defcode{n}}
+%    \begin{macrocode}
+\tikztiming@defcode{n}{%
+  \@ifnextchar[%]
+    {\tikztiming@addnode@getoptions}%
+    {\tikztiming@addnode@getoptions[]}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@addnode}[1]{Options}
 %    \begin{macrocode}
 \def\tikztiming@addnode@getoptions[#1]{%
@@ -2510,10 +2527,30 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@defcode{b}}
+%    \begin{macrocode}
+\tikztiming@defcode{b}{%
+  \pgfmathparse{\tikztiming@back+\tikztiming@num/2}%
+  \let\tikztiming@back\pgfmathresult
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@defcode{F}}
 %    \begin{macrocode}
 \tikztiming@defcode{F}{%
   \pgfmathparse{\tikztiming@back-\tikztiming@num}%
+  \let\tikztiming@back\pgfmathresult
+  \tikztiming@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@defcode{f}}
+%    \begin{macrocode}
+\tikztiming@defcode{f}{%
+  \pgfmathparse{\tikztiming@back-\tikztiming@num/2}%
   \let\tikztiming@back\pgfmathresult
   \tikztiming@
 }
