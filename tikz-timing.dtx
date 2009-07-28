@@ -52,12 +52,13 @@
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
 %<!package>\DefineFileInfoSVN
-%<examplecode>\RequirePackage[all]{tikz-timing}%
+%<examplecode>\RequirePackage{tikz-timing}%
 %<examplecode>\RequirePackage{pgffor}%
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
 \documentclass{ltxdoc}
-\usepackage[all]{tikz-timing}[\tikztiming@date]
+\usepackage{tikz-timing}[\tikztiming@date]
+\usetikztiminglibrary{arrows,either,overlays}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -176,7 +177,7 @@
     \noexpand\g@namedef{href@desc@#1}{}%
   }%
   \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax%
+    {\let\macrolink\relax}%
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
@@ -766,7 +767,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{2164}
+% \CheckSum{2201}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1348,15 +1349,16 @@
 % \section{Extensions / Further Characters}
 % All default timing characters described in Table~\ref{tab:chars} are always 
 % made available by this package. Further, less-common characters are provided 
-% by extensions which are enabled by package options. This is done to hold the 
-% memory usage of this package small and reduce the risk of collisions with 
-% user-defined (meta-)characters. The option `|all|' enables all extensions.
+% by libraries which are loaded with the macro 
+% \cs{usetikztiminglibrary}\marg{library}.  This is done to hold the memory 
+% usage of this package small and reduce the risk of collisions with 
+% user-defined (meta-)characters.
 %
 % \subsection{Arrows}
-% The option `|arrows|' (or `|arrows=true|') enables two characters `|A|' and 
-% `|W|' which draw vertical up and down \textit{A}rro\!\textit{W}s. Such arrows 
-% are used in timing diagrams to mark special polarized events, like clock edges 
-% of another signal.
+% The library `|arrows|' enables two characters `|A|' and `|W|' which draw 
+% vertical up and down \textit{A}rro\!\textit{W}s. Such arrows are used in 
+% timing diagrams to mark special polarized events, like clock edges of another 
+% signal.
 %
 % The width provided with these character is added as whitespace after the 
 % ``zero-width'' arrow: `|A2AA|' results in `\,\texttiming{A2AA}'. This space 
@@ -1384,12 +1386,12 @@
 % \end{table}
 %
 % \subsection{Either High or Low}
-% The option `|either|' (or `|either=true|') is enabling the `|E|' character 
-% which stands for `\textit{either high or low}'. This character is designed to 
-% be used with the `|H|' and `|L|' characters to display a uncertainty of a 
-% transition. Sometimes a, e.g.\ low signal can go either to high or stay at low 
-% for a certain time before it definitely goes to high. In this case both (or 
-% more) possible transitions can be drawn using this character.
+% The library `|either|' is enabling the `|E|' character which stands for 
+% `\textit{either high or low}'. This character is designed to be used with the 
+% `|H|' and `|L|' characters to display a uncertainty of a transition.  
+% Sometimes a, e.g.\ low signal can go either to high or stay at low for a 
+% certain time before it definitely goes to high. In this case both (or more) 
+% possible transitions can be drawn using this character.
 % Like the `|C|' and `|T|' characters subsequent `|E|' characters are not 
 % combined into one.
 %
@@ -1414,6 +1416,35 @@
 %   L E E L \\
 % \end{tikztimingexampletable}
 % \end{table}
+%
+% \subsection{Overlays}
+% The library `|overlays|' is enabling the `|O|' character which allows the 
+% overlaying of two different groups of timing characters. This character awaits 
+% two groups enclosed by braces which are drawn in the given order. The position 
+% before the `|O|' character is saved and restored to draw the second group. It  
+% the responsibility of the user to make sure that the lines drawn by the first 
+% group reconnect to the main lines or do something else useful. The characters  
+% of the first group connect to the characters before the `|O|' modifier.
+% The modifier `|;|' can be used in the first group to restart the drawn line, 
+% e.g.\ to change to a different color. This is not done automatically to give 
+% the user the freedom if and where this should happen. It is recommended to 
+% start both groups with the same character to avoid ugly connection points. The 
+% characters following after the groups connect to the characters of the second 
+% group as normal.
+%
+% \begin{table}[H]
+% \centering
+% \caption{Examples for the `\texttt{O}' Overlay Character.}\label{tab:overlays}
+% \begin{tikztimingexampletable}
+%   LLL O{HH}{LL} HHH \\
+%   LLL O{HHH}{LL} HHH \\
+%   LLL O{[gray]HHH}{LLH} HH \\
+%   LLL O{;[gray]HH.1H;}{LLH} HH \\
+%   LL  O{L;[gray]HH.1H;}{LLLH} HH \\
+%   HHH O{;[gray]HH.1L;}{LL} LLL \\
+% \end{tikztimingexampletable}
+% \end{table}
+%
 %
 % \clearpage
 % \section{Examples}
@@ -1694,17 +1725,24 @@
 
 \newcommand*\usetikztiminglibrary[2][]{%
   \edef\tikztiming@library@options{#1}%
-  \tikztiming@library#2,\relax
+  \@ifnextchar{[}%]
+    {\tikztiming@library{#2}}%
+    {\tikztiming@library{#2}[]}%
+}
+\def\tikztiming@library#1[#2]{%
+  \edef\tikztiming@library@date{#2}%
+  \tikztiming@library@#1,\relax
 }
 
-\def\tikztiming@library#1,{%
+\def\tikztiming@library@#1,{%
   \IfFileExists{tikz-timing-#1.sty}%
-    {\RequirePackage[\tikztiming@library@options]{tikz-timing-#1}}%
+    {\RequirePackage[\tikztiming@library@options]{tikz-timing-#1}%
+      [\tikztiming@library@date]}%
     {\PackageError{tikz-timing}%
       {No tikz-timing library `#1' found!}%
       {}{}{}{}%
     }%
-  \@ifnextchar\relax{}{\tikztiming@library}%
+  \@ifnextchar\relax{}{\tikztiming@library@}%
 }
 
 \def\tikztimingwidth{0.0}
