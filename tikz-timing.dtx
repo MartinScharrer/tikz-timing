@@ -62,7 +62,8 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows}
+\iffalse \tikzset{timing/c/disable arrows} \fi
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -1402,7 +1403,7 @@
 % \end{table}
 %
 % \subsection{Either High or Low}
-% The library `|either|' is enabling the `|E|' character which stands for 
+% The library `|either|' enables the `|E|' character which stands for 
 % `\textit{either high or low}'. This character is designed to be used with the 
 % `|H|' and `|L|' characters to display a uncertainty of a transition.  
 % Sometimes a, e.g.\ low signal can go either to high or stay at low for a 
@@ -1434,7 +1435,7 @@
 % \end{table}
 %
 % \subsection{Overlays}
-% The library `|overlays|' is enabling the `|O|' character which allows the 
+% The library `|overlays|' enables the `|O|' character which allows the 
 % overlaying of two different groups of timing characters. This character awaits 
 % two groups enclosed by braces which are drawn in the given order. The position 
 % before the `|O|' character is saved and restored to draw the second group.  
@@ -1462,6 +1463,61 @@
 % \end{tikztimingexampletable}
 % \end{table}
 %
+%
+% \subsection{Clock Arrows}
+% The library `|clockarrows|' is changing the `|C|' clock character to contain 
+% arrows which mark the rising and/or falling clock edge. By default the rising 
+% edges are marked. To simplify the implementation only the transition from a 
+% `|C|' to another `|C|' character contains the arrows but not transitions from 
+% or to different characters, like `|HCH|' or `|LCL|'.
+%
+% The arrows can be controlled using the TikZ styles shown in 
+% Table~\ref{tab:clockarrowstyles} below. The default definition of the `|C|' 
+% character can also be restored on demand.
+
+% \begin{table}
+%   \centering
+%   \caption{TikZ Styles for Clock Arrows.}
+%   \label{tab:clockarrowstyles}
+%   \begin{tabularx}{1\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont Style/Setting & Description \\
+%       \midrule
+%       timing/c/rising arrows & Mark (only) rising edges with arrows.\\
+%       timing/c/falling arrows & Mark (only) falling edges with arrows.\\
+%       timing/c/arrows & Mark both rising and falling edges with arrows.\\
+%       timing/c/no arrows & Do not mark any edges with arrows.\\
+%       \midrule
+%       timing/c/arrow & Style for arrows. Can be used to change arrow tip 
+%       etc.\\
+%       timing/c/arrow/pos & Position of arrow, i.e.\ its tip, on the edge. May    
+%       needs adjustment if different arrow tip shapes are selected.\\
+%       \midrule
+%       timing/c/disable arrows & Restores normal definition of the `\texttt{C}' 
+%       character. No arrows are drawn and above settings are ignored. This 
+%       definition compiles faster and results in a smaller output file.\\
+%       timing/c/enable arrows & Change the definition of the `\texttt{C}' 
+%       character to contain arrows. \\
+%   \end{tabularx}
+%   \bigskip
+%   \caption{Examples for the Clock Arrows.}\label{tab:clockarrows}
+%   \iffalse[timing/c/enable arrows]\fi
+%
+%   \texttiming[timing/c/falling arrows]{10{C}}
+%
+%   \texttiming{[timing/c/falling arrows]10{C}}
+%
+%   \texttiming{[timing/c/falling arrows]10{C}[timing/c/rising arrows]10{C}}
+%
+%   \begin{tikztimingexampletable}
+%     [][timing/c/rising arrows] 10{C} \\
+%     [][timing/c/falling arrows] 10{C} \\
+%     [][timing/c/arrows] 10{C} \\
+%     [][timing/c/no arrows] 10{C} \\
+%     [][timing/c/arrows,timing/c/arrow/pos=.5] 10{C} \\
+%     [][timing/c/arrows,timing/c/arrow/.style={>=latex'}] 10{C} \\
+%   \end{tikztimingexampletable}
+% \end{table}
 %
 % \clearpage
 % \section{Examples}
