@@ -50,6 +50,8 @@
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows>\GetFileInfoSVN*%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows>\RequirePackage{tikz-timing}[\filedate]%
 %<*package|driver>
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
@@ -769,7 +771,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{2221}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1724,8 +1726,10 @@
 % \clearpage
 % \section{Implementation}
 % \subsection{Package Header}
-%    \begin{macrocode}
+% \iffalse
 %<*package>
+% \fi
+%    \begin{macrocode}
 \RequirePackage{tikz}
 
 \usetikzlibrary{calc}
@@ -1818,7 +1822,6 @@
   z/.style={blue},
   t/.style={},
   c/.style={timing/slope=0.0},
-  c/arrows/.style={->,>=latex},
   x/.style={red},
   table/grid/.style={timing/grid},
   table/lines/.style={},
@@ -2564,49 +2567,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-%    \begin{macrocode}
-%</package>
-%<*lib-overlays>
-%    \end{macrocode}
-% \begin{macro}{\tikztiming@defcode{O}}
-%    \begin{macrocode}
-\tikztiming@defcode{O}{%
-  \@ifnextchar\relax
-    {\tikztiming@\relax}%
-    {\tikztiming@overlay}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@overlays}
-%    \begin{macrocode}
-\def\tikztiming@overlay#1#2{%
-  \ifx\relax#1\relax
-    \tikztiming@output@flush
-    \def\next{\tikztiming@\relax}%
-  \else
-    \ifx\relax#2\relax
-      \def\next{\tikztiming@#1\relax}%
-    \else
-      \tikztiming@output@flush
-      \let\tikztiming@overlay@lastchar\lastchar
-      \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
-      \tikztiming@#1\relax
-      \tikztiming@output@flush
-      \let\lastchar\tikztiming@overlay@lastchar
-      \tikztiming@addtostr{ (timing@overlay@start) }%
-      \def\next{\tikztiming@#2}%
-    \fi
-  \fi
-  \next
-}
-%    \end{macrocode}
-% \end{macro}
-%
-%    \begin{macrocode}
-%</lib-overlays>
-%<*package>
-%    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@handlecode}[1]{Code to add to string}
 %    \begin{macrocode}
@@ -3762,10 +3722,16 @@
 
 \let\tikztiming@chars@default\tikztiming@chars
 %    \end{macrocode}
-%    \begin{macrocode}
+% \iffalse
 %</package>
+% \fi
+%
+% \subsection{Libraries}
+%
+% \subsubsection{Either High or Low}
+% \iffalse
 %<*lib-either>
-%    \end{macrocode}
+% \fi
 %    \begin{macrocode}
 
 \tikztimingecopy{E}{D}
@@ -3839,10 +3805,16 @@
 \def\tikztiming@nocombine@E{}%%
 \def\tikztiming@nocombine@e{}%%
 %    \end{macrocode}
-%    \begin{macrocode}
+%
+%  \iffalse
 %</lib-either>
+% \fi
+%
+% \subsubsection{Clock Arrows}
+%
+%  \iffalse
 %<*lib-clockarrows>
-%    \end{macrocode}
+%  \fi
 %    \begin{macrocode}
 \tikzset{timing/.cd,
   c/rising arrows/.style={%
@@ -3876,10 +3848,15 @@
 \tikzset{timing/c/enable arrows,timing/c/rising arrows,timing/c/arrow/pos=0.95}
 
 %    \end{macrocode}
-%    \begin{macrocode}
+% \iffalse
 %</lib-clockarrows>
+% \fi
+%
+% \subsubsection{Arrows}
+%
+% \iffalse
 %<*lib-arrows>
-%    \end{macrocode}
+% \fi
 %    \begin{macrocode}
 \tikztimingchar{A}{++(0,0)}{%
   \newdraw [\style] -- ++(0,\height)
@@ -3919,9 +3896,53 @@
 
 \tikztimingecopy{W}{A}
 %    \end{macrocode}
-%    \begin{macrocode}
-%</lib-arrows>
-%    \end{macrocode}
 %
+% \iffalse
+%</lib-arrows>
+% \fi
+%
+% \subsubsection{Overlays}
+%
+% \iffalse
+%<*lib-overlays>
+% \fi
+% \begin{macro}{\tikztiming@defcode{O}}
+%    \begin{macrocode}
+\tikztiming@defcode{O}{%
+  \@ifnextchar\relax
+    {\tikztiming@\relax}%
+    {\tikztiming@overlay}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@overlays}
+%    \begin{macrocode}
+\def\tikztiming@overlay#1#2{%
+  \ifx\relax#1\relax
+    \tikztiming@output@flush
+    \def\next{\tikztiming@\relax}%
+  \else
+    \ifx\relax#2\relax
+      \def\next{\tikztiming@#1\relax}%
+    \else
+      \tikztiming@output@flush
+      \let\tikztiming@overlay@lastchar\lastchar
+      \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
+      \tikztiming@#1\relax
+      \tikztiming@output@flush
+      \let\lastchar\tikztiming@overlay@lastchar
+      \tikztiming@addtostr{ (timing@overlay@start) }%
+      \def\next{\tikztiming@#2}%
+    \fi
+  \fi
+  \next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \iffalse
+%</lib-overlays>
+% \fi
 % \Finale
 \endinput
