@@ -34,6 +34,7 @@
 %<lib-arrows>\ProvidesPackageSVN[tikz-timing-arrows]
 %<lib-either>\ProvidesPackageSVN[tikz-timing-either]
 %<lib-overlays>\ProvidesPackageSVN[tikz-timing-overlays]
+%<lib-clockarrows>\ProvidesPackageSVN[tikz-timing-clockarrows]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -45,6 +46,7 @@
 %<lib-arrows>   TikZ-Timing Library for timing arrows]
 %<lib-either>   TikZ-Timing Library for uncertain transitions]
 %<lib-overlays>   TikZ-Timing Library for timing overlays]
+%<lib-clockarrows>   TikZ-Timing Library for timing clock arrows]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
@@ -1816,6 +1818,7 @@
   z/.style={blue},
   t/.style={},
   c/.style={timing/slope=0.0},
+  c/arrows/.style={->,>=latex},
   x/.style={red},
   table/grid/.style={timing/grid},
   table/lines/.style={},
@@ -3699,7 +3702,8 @@
 \tikztimingdef{TT}{%
   {[\style]
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++(\slope,\value{tikztimingtrans}*\height) -- ++($ (#1,0) - (\slope,0) $)
+  -- ++(\slope,\value{tikztimingtrans}*\height)
+  -- ++($ (#1,0) - (\slope,0) $)
   }
 }
 
@@ -3738,8 +3742,25 @@
   -- ++($ (-1/8,0) + (#1,0) $)
 }
 
-\let\tikztiming@chars@default\tikztiming@chars
+\tikztimingecopy{C}{T}
 
+\def\tikztiming@nocombine@T{}%
+\def\tikztiming@nocombine@C{}%
+\def\tikztiming@nocombine@t{}%
+\def\tikztiming@nocombine@c{}%
+\def\tikztiming@nocombine@M{}%
+\def\tikztiming@nocombine@m{}%
+\def\tikztiming@nocombine@W{}%
+\def\tikztiming@nocombine@w{}%
+
+\tikztimingecopy{U}{D}
+\tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
+\tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
+
+%\tikztimingecopy{O}{D}
+\tikztimingecopy{X}{Z}
+
+\let\tikztiming@chars@default\tikztiming@chars
 %    \end{macrocode}
 %    \begin{macrocode}
 %</package>
@@ -3820,30 +3841,43 @@
 %    \end{macrocode}
 %    \begin{macrocode}
 %</lib-either>
-%<*package>
+%<*lib-clockarrows>
 %    \end{macrocode}
 %    \begin{macrocode}
-
-\tikztimingecopy{C}{T}
-\def\tikztiming@nocombine@T{}%
-\def\tikztiming@nocombine@C{}%
-\def\tikztiming@nocombine@t{}%
-\def\tikztiming@nocombine@c{}%
-\def\tikztiming@nocombine@M{}%
-\def\tikztiming@nocombine@m{}%
-\def\tikztiming@nocombine@W{}%
-\def\tikztiming@nocombine@w{}%
-
-\tikztimingecopy{U}{D}
-\tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
-\tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
-
-%\tikztimingecopy{O}{D}
-\tikztimingecopy{X}{Z}
+\tikzset{timing/.cd,
+  c/rising arrows/.style={%
+    timing/c/arrow@style/.code={\ifnum1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
+  },%
+  c/falling arrows/.style={%
+    timing/c/arrow@style/.code={\ifnum-1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
+  },%
+  c/arrows/.style={%
+    timing/c/arrow@style/.code={\tikzset{->,timing/c/arrow}}%
+  },%
+  c/no arrows/.style={%
+    timing/c/arrow@style/.code={}%
+  },%
+  c/disable arrows/.code={%
+    \tikztimingdef{CC}{\tikztiminguse{TT}{#1}}%
+  },%
+  c/enable arrows/.code={%
+    \tikztimingdef{CC}{%
+      \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+      \newdraw [\style,timing/c/arrow@style]
+      -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
+      ; \draw [timing/restore] (timing@save) ++(0,0) [\style]
+      -- ++(\slope,\value{tikztimingtrans}*\height)
+      -- ++($ (#1,0) - (\slope,0) $)
+    }
+  },%
+  c/arrow/.style={},%
+  c/arrow/pos/.store in=\tikztiming@c@arrow@pos,
+}
+\tikzset{timing/c/enable arrows,timing/c/rising arrows,timing/c/arrow/pos=0.95}
 
 %    \end{macrocode}
 %    \begin{macrocode}
-%</package>
+%</lib-clockarrows>
 %<*lib-arrows>
 %    \end{macrocode}
 %    \begin{macrocode}
@@ -3887,9 +3921,7 @@
 %    \end{macrocode}
 %    \begin{macrocode}
 %</lib-arrows>
-%<*package>
 %    \end{macrocode}
 %
 % \Finale
 \endinput
-%</package>
