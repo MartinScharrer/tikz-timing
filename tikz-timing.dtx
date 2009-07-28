@@ -1353,13 +1353,17 @@
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
 % \end{table}}
 %
-% \section{Extensions / Further Characters}
+% \section{Libraries for Further Characters}
 % All default timing characters described in Table~\ref{tab:chars} are always 
 % made available by this package. Further, less-common characters are provided 
 % by libraries which are loaded with the macro 
 % \cs{usetikztiminglibrary}\marg{library}.  This is done to hold the memory 
 % usage of this package small and reduce the risk of collisions with 
 % user-defined (meta-)characters.
+% The full syntax for the above macro is
+% \cs{usetikztiminglibrary}\oarg{options}\marg{library,\dots}\oarg{date}, like 
+% the one for \cs{usepackage}. However, no library provides any options so far.  
+% The date is used as a version number like for packages.
 %
 % \subsection{Arrows}
 % The library `|arrows|' enables two characters `|A|' and `|W|' which draw 
