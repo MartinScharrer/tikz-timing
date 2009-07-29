@@ -1473,8 +1473,9 @@
 % or to different characters, like `|HCH|' or `|LCL|'.
 %
 % The arrows can be controlled using the TikZ styles shown in 
-% Table~\ref{tab:clockarrowstyles} below. The default definition of the `|C|' 
-% character can also be restored on demand.
+% Table~\ref{tab:clockarrowstyles} below. This styles can also be used as 
+% library options. The key ``directory'' `|timing/c|' must be dropped for 
+% options, e.g.\ \cs{usetikztiminglibrary}|[rising arrows]{clockarrows}|.
 
 % \begin{table}[H]
 %   \centering
@@ -1809,17 +1810,31 @@
   \edef\tikztiming@library@date{#2}%
   \tikztiming@library@#1,\relax
 }
+%    \end{macrocode}
+% Load the library as package. The \LaTeX\ core macro \cs{zap@space} is patched 
+% to a no-op to keep spaces in the option text. Otherwise the option keys may 
+% not contain spaces.
+%    \begin{macrocode}
+\def\tikztiming@zap@space#1 \@empty{#1}
 
 \def\tikztiming@library@#1,{%
   \IfFileExists{tikz-timing-#1.sty}%
-    {\RequirePackage[\tikztiming@library@options]{tikz-timing-#1}%
-      [\tikztiming@library@date]}%
+    { \let\tikztiming@orig@zap@space\zap@space
+      \let\zap@space\tikztiming@zap@space
+      \RequirePackage
+        [\tikztiming@library@options]%
+        {tikz-timing-#1}%
+        [\tikztiming@library@date]%
+      \let\zap@space\tikztiming@orig@zap@space
+    }%
     {\PackageError{tikz-timing}%
       {No tikz-timing library `#1' found!}%
       {}{}{}{}%
     }%
   \@ifnextchar\relax{}{\tikztiming@library@}%
 }
+%    \end{macrocode}
+%    \begin{macrocode}
 
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
@@ -3928,6 +3943,12 @@
   arrow pos=0.95,
   arrow tip=to,
 }
+
+%    \end{macrocode}
+% Use the \pkg{pgfopts} to handle the package options.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\ProcessPgfOptions{/tikz/timing/c}
 %    \end{macrocode}
 % \iffalse
 %</lib-clockarrows>
