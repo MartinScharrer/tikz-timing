@@ -63,7 +63,6 @@
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
 \usetikztiminglibrary{arrows,either,overlays,clockarrows}
-\tikzset{timing/c/disable arrows}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -1481,34 +1480,30 @@
 %   \centering
 %   \caption{TikZ Styles for Clock Arrows.}
 %   \label{tab:clockarrowstyles}
-%   \begin{tabularx}{1.15\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
+%   \makebox[\textwidth][c]{%
+%   \begin{tabularx}{1\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
 %     \toprule
 %     \normalfont Style/Setting & Description \\
 %       \midrule
 %       timing/c/rising arrows & Mark (only) rising edges with arrows.\\
 %       timing/c/falling arrows & Mark (only) falling edges with arrows.\\
 %       timing/c/dual arrows & Mark both rising and falling edges with arrows.\\
-%       timing/c/no arrows & Do not mark any edges with arrows.\\
+%       timing/c/no arrows & Do not mark any edges with arrows. (Default)\\
 %       \midrule
-%       timing/c/arrow & Style for arrows. Can be used to change arrow tip 
-%       etc.\\
-%       timing/c/arrow pos & Position of arrows, i.e.\ its tip, on the edge. May    
-%       needs adjustment if different arrow tip shapes are selected.\\
-%       timing/c/arrow tip & Tip shape of arrows. See the PGF manual for the 
-%       list of arrow tips. \\
-%       \midrule
-%       timing/c/disable arrows & Restores normal definition of the `\texttt{C}' 
-%       character. No arrows are drawn and above settings are ignored. This 
-%       definition compiles faster and results in a smaller output file.\\
-%       timing/c/enable arrows & Changes the `\texttt{C}' character to contain 
-%       arrows. \\
+%       timing/c/arrow & Style for arrows. Can be modified to change arrow tip 
+%       etc.  (Default: \{\})\\
+%       timing/c/arrow pos=\meta{0.\!-\!\!-1.} & Position of arrows, i.e.\ its 
+%       tip, on the edge.  May needs adjustment if different arrow tip shapes 
+%       are selected.  (Default: 0.95)\\
+%       timing/c/arrow tip=\meta{name} & Tip shape of arrows. See the PGF manual 
+%       for the list of arrow tips. (Default: `\texttt{to}')\\
 %       \bottomrule
-%   \end{tabularx}
+%   \end{tabularx}}
 % \end{table}
 %
 % \begin{table}[H]
 %   \caption{Examples for the Clock Arrows.}\label{tab:clockarrows}
-%   \tikzset{timing/c/enable arrows}%
+%   \tikzset{timing/c/rising arrows}%
 %   \centering
 %   \begin{tabular}{lc}
 %     \toprule
@@ -3892,29 +3887,26 @@
   -- ++(\slope,\value{tikztimingtrans}*\height)
   -- ++($ (#1,0) - (\slope,0) $)
 }
-
 \let\tikztiming@trans@C@arrow@C\tikztiming@trans@CC
 
 \tikzset{timing/c/.cd,
   rising arrows/.code={%
+    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
     \def\tikztiming@clockarrow@style{\ifnum1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
   },%
   falling arrows/.code={%
+    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
     \def\tikztiming@clockarrow@style{\ifnum-1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
   },%
   dual arrows/.code={%
+    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
     \def\tikztiming@clockarrow@style{\tikzset{->,timing/c/arrow}}%
   },%
   no arrows/.code={%
+    \def\tikztiming@trans@CC{\tikztiming@trans@C@normal@C}%
     \def\tikztiming@clockarrow@style{}%
   },%
   arrow@style/.code={\tikztiming@clockarrow@style},%
-  disable arrows/.code={%
-    \let\tikztiming@trans@CC\tikztiming@trans@C@normal@C
-  },%
-  enable arrows/.code={%
-    \let\tikztiming@trans@CC\tikztiming@trans@C@arrow@C
-  },%
   arrow/.style={},%
   arrow pos/.store in=\tikztiming@c@arrow@pos,
   arrow tip/.store in=\tikztiming@c@arrow@tip,
@@ -3932,8 +3924,7 @@
   },
 }
 \tikzset{timing/c/.cd,
-  enable arrows,
-  rising arrows,
+  no arrows,
   arrow pos=0.95,
   arrow tip=to,
 }
