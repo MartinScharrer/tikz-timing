@@ -2655,6 +2655,7 @@
 % \begin{macro}{\tikztiming@defcode []}[1]{Options to add to string}
 %    \begin{macrocode}
 \tikztiming@defcode[#1]{%
+  \tikztiming@output@flush
   \tikztiming@addtostr{ [#1] }%
   \tikztiming@
 }
