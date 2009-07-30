@@ -2390,17 +2390,26 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@eaddtostr}[1]{Tokens to add to string.}
+% \begin{macro}{\tikztiming@eaddto}[2]{Macro name}{Tokens to add to macro}
 %    \begin{macrocode}
-\def\tikztiming@eaddtostr#1{%
+\def\tikztiming@eaddto#1#2{%
   \begingroup
     \tikztiming@internaldefs{}%
-    \@temptokena\expandafter{\tikztiming@str}%
-    \xdef\tikztiming@str{%
+    \@temptokena\expandafter{#1}%
+    \xdef#1{%
       \the\@temptokena
-      #1%
+      #2%
     }%
   \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tikztiming@eaddtostr}
+%    \begin{macrocode}
+\def\tikztiming@eaddtostr{%
+  \tikztiming@eaddto\tikztiming@str
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2416,6 +2425,9 @@
 % \begin{macro}{\tikztiming@output}[2]{Character 1}{Character 2}
 %    \begin{macrocode}
 \def\tikztiming@output#1#2{%
+  \edef\fromchar{#1}%
+  \edef\tochar{#2}%
+  \tikztiming@output@codeflush
   \ifx\relax#2\relax
     \tikztiming@nameaddtostr{#1}%
   \else
@@ -2433,7 +2445,7 @@
         1%
       \fi\fi
       \relax
-        \tikztiming@output@charflush
+        \tikztiming@output@flush
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
       \or
@@ -2456,23 +2468,33 @@
 \def\tikztiming@output@bufchara{}%
 \def\tikztiming@output@bufcharb{}%
 \def\tikztiming@output@bufnum{0}%
+\def\tikztiming@output@bufcode{}%
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@output@addcode}
 %    \begin{macrocode}
-\def\tikztiming@output@addcode{%
+\def\tikztiming@output@addcode#1{%
   \tikztiming@output@charflush
-  \tikztiming@addtostr%
+  \g@addto@macro\tikztiming@output@bufcode{\unexpanded{ #1 }}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@output@eaddcode}
 %    \begin{macrocode}
-\def\tikztiming@output@eaddcode{%
+\def\tikztiming@output@eaddcode#1{%
   \tikztiming@output@charflush
-  \tikztiming@eaddtostr%
+  \g@addto@macro\tikztiming@output@bufcode{ #1 }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@output@Eaddcode}
+%    \begin{macrocode}
+\def\tikztiming@output@Eaddcode{%
+  \tikztiming@output@charflush
+  \tikztiming@eaddto\tikztiming@output@bufcode%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2481,6 +2503,17 @@
 %    \begin{macrocode}
 \def\tikztiming@output@flush{%
   \tikztiming@output@charflush
+  \tikztiming@output@codeflush
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@output@codeflush}
+%    \begin{macrocode}
+\def\tikztiming@output@codeflush{%
+  \tikztiming@eaddtostr{\tikztiming@output@bufcode}%
+  \message{^^JBuf Code:^^J\meaning\tikztiming@output@bufcode^^J}%
+  \gdef\tikztiming@output@bufcode{}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2648,14 +2681,14 @@
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
-  \tikztiming@output@eaddcode{%
+  \tikztiming@output@Eaddcode{%
     node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
     node [%]
       shift={($ (timing@dstart)!0.5!(timing@dend) $)},%
       timing/\currentcharlc/text,%
   }%
   \endgroup
-  \tikztiming@addtostr{%[
+  \tikztiming@output@addcode{%[
       #1%
       ] {#2}%
   }%
@@ -2746,14 +2779,17 @@
 \def\tikztiming@addnode@#1#2#3{%
   \def\@tempa{#2}%
   \ifx\@tempa\empty
-    \edef\@tempa{ node [timing/inline node,%
-      timing/inline node/from char={\lastchar},\unexpanded{#1}] }%
+    \def\@tempa{ node [timing/inline node,%
+      timing/inline node/from char={\fromchar},%
+      timing/inline node/to char={\tochar},%
+      \unexpanded{#1}] }%
   \else
-    \edef\@tempa{ node [timing/inline node,%
-      timing/inline node/from char={\lastchar},\unexpanded{#1}]%
-      (\unexpanded{#2}) }%
+    \def\@tempa{ node [timing/inline node,%
+      timing/inline node/from char={\fromchar},%
+      timing/inline node/to char={\tochar},%
+      \unexpanded{#1}] (\unexpanded{#2}) }%
   \fi
-  \expandafter\tikztiming@output@addcode\expandafter{\@tempa {#3} }%
+  \expandafter\tikztiming@output@eaddcode\expandafter{\@tempa {#3} }%
   \tikztiming@
 }
 %    \end{macrocode}
