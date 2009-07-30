@@ -1006,149 +1006,6 @@
 % \end{tabularx}}
 % \end{table}
 %
-% \begin{figure}
-% \tikzset{%
-%   timing/inline node/.style={tikztiming coordinate},
-%   timing/lslope=.5,
-%   timing/dslope=.5,
-%   timing/zslope=.5,
-% }
-% \def\nx{4}
-% \def\ny{-3}
-% \begin{tikzpicture}[
-%     timing/.append style={x=1cm,y=1cm},
-%     timing/picture,
-%     font=\sffamily\scriptsize,
-%     ultra thick,
-%     step=.5,
-%     help lines/.style={thin,gray,semitransparent}
-%   ]
-% 
-%   \draw [help lines] (\nx,-1*\ny) grid +(2,1);
-%   \timing at (\nx,-1*\ny) {S N(x)};
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [yellow]   (x.mid)          circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \node [left] at (x.high)         {(x.high)};
-%   \node [left] at (x.mid)          {(x.mid)};
-%   \node [left] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\meta{any} \texttt{N(x)} \meta{any}};
-% 
-%   \draw [help lines] (0,0) grid +(2,1);
-%   \timing at (0,0) {H N(x) L};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [red]      (x.low lslope)   circle(1pt);
-%   \draw [yellow]   (x.mid lslope/2) circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \node [above] at (x)              {(x)};
-%   \node [right] at (x.high)         {(x.high)};
-%   \node [left]  at (x.mid lslope/2) {(x.mid lslope/2)};
-%   \node [left]  at (x.low lslope)   {(x.low lslope)};
-%   \node [below=3ex] at (x.low)      {\texttt{H N(x) L}};
-% 
-%   \draw [help lines] (\nx,0) grid +(2,1);
-%   \timing at (\nx,0) {H N(x) D};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \draw [orange]   (x.high dslope)  circle(1pt);
-%   \draw [red]      (x.low dslope)   circle(1pt);
-%   \node [above left] at (x)         {(x)~~~~};
-%   \node [above] at (x.high)         {(x.high)};
-%   \node [left]  at (x.mid dslope/2) {(x.mid zslope/2)};
-%   \node [below right] at (x.high dslope)  {(x.high dslope)};
-%   \node [above right] at (x.low dslope)   {(x.low dslope)};
-%   \node [below=3ex] at (x.low)      {\texttt{H N(x) D}};
-% 
-%   \draw [help lines] (2*\nx,0) grid +(2,1);
-%   \timing at (2*\nx,0) {H N(x) Z};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid zslope)   circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \node [above] at (x)              {(x)};
-%   \node [right] at (x.high)         {(x.high)};
-%   \node [left]  at (x.mid zslope)   {(x.mid zslope)};
-%   \node [below=3ex] at (x.low)      {\texttt{H N(x) Z}};
-% 
-%   \draw [help lines] (0,\ny) grid +(2,1);
-%   \timing at (0,\ny) {L N(x) H};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [green]    (x.high lslope)  circle(1pt);
-%   \draw [yellow]   (x.mid lslope/2) circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \node [below] at (x)              {(x)};
-%   \node [left]  at (x.high lslope)  {(x.high lslope)};
-%   \node [left]  at (x.mid lslope/2) {(x.mid lslope/2)};
-%   \node [right] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\texttt{L N(x) H}};
-% 
-%   \draw [help lines] (\nx,\ny) grid +(2,1);
-%   \timing at (\nx,\ny) {L N(x) D};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [orange]   (x.low dslope)   circle(1pt);
-%   \draw [green]    (x.high dslope)  circle(1pt);
-%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
-%   \node [below left] at (x)         {(x)~~~~};
-%   \node [below] at (x.low)          {(x.low)};
-%   \node [above right] at (x.low dslope)   {(x.low dslope)};
-%   \node [above] at (x.high dslope)  {(x.high dslope)};
-%   \node [below=3ex] at (x.low)      {\texttt{L N(x) D}};
-% 
-%   \draw [help lines] (2*\nx,\ny) grid +(2,1);
-%   \timing at (2*\nx,\ny) {L N(x) Z};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid zslope)   circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \node [below] at (x)              {(x)};
-%   \node [left]  at (x.mid zslope)   {(x.mid zslope)};
-%   \node [right] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\texttt{L N(x) Z}};
-% 
-%   \draw [help lines] (0,2*\ny) grid +(2,1);
-%   \timing at (0,2*\ny) {D N(x) H};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \draw [orange]   (x.high dslope)  circle(1pt);
-%   \node [below] at (x)              {(x)};
-%   \node [above left,inner xsep=0pt]  at (x.high)        {(x.high)};
-%   \node [above] at (x.high dslope) {~~~~~~~~~(x.high dslope)};
-%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
-%   \node [right] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\texttt{D N(x) H}};
-% 
-%   \draw [help lines] (\nx,2*\ny) grid +(2,1);
-%   \timing at (\nx,2*\ny) {D N(x) L};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \draw [orange]   (x.low dslope)   circle(1pt);
-%   \node [below left] at (x)         {(x)~~~~};
-%   \node [below] at (x.low)          {(x.low)};
-%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
-%   \node [above right] at (x.low dslope)   {(x.low dslope)};
-%   \node [above] at (x.high)         {(x.high)};
-%   \node [below=3ex] at (x.low)      {\texttt{D N(x) L}};
-% 
-%   \draw [help lines] (2*\nx,2*\ny) grid +(2,1);
-%   \timing at (2*\nx,2*\ny) {D N(x) Z};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \node [below] at (x)              {(x)};
-%   \node [left]  at (x.mid dslope/2) {(x.mid dslope/2)};
-%   \node [right] at (x.high)         {(x.high)};
-%   \node [right] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\texttt{D N(x) Z}};
-% 
-% \end{tikzpicture}
-% \caption{Anchors of In-Line Nodes.}\label{fig:nodeanchors}
-% \end{figure}
 %
 % \subsection{Macro for use in Text Mode}
 % \vspace{-\bigskipamount}%
@@ -1272,7 +1129,165 @@
 % signal.}\label{fig:shape}
 % \end{figure}
 %
-% ^^A\newpage
+% \subsubsection*{In-Line Nodes Shape Anchors}
+% A default shape for In-Line Nodes/Coordinates (`|N|' character) is provided 
+% which is named `\texttt{tikztiming coordinate}'. Like the PGF standard shape 
+% `\texttt{coordinate}' this shape does not draw anything. However, it provides 
+% anchors for the logical high, low and middle (`|mid|') levels, as well as for 
+% the three slopes |lslope|, |dslope| and |zslope| (full and half values). This 
+% anchors can be used to access all possible connection points of default 
+% transitions as shown in Figure~\ref{fig:coordnodeanchors}. This is useful for 
+% drawing relationship arrows or similar graphics between signals.
+%
+% Because the node modifier can not look-ahead to the next character it does not 
+% know which transition will occur. Therefore all anchors are provided for all 
+% nodes. The user can/must select the suitable anchor(s) for every nodes.
+%
+% See Example~\ref{exa:inlinenodes} for an demonstration.
+%
+% \begin{figure}
+% \tikzset{%
+%   timing/slope=.25,
+% }
+% \def\nx{4}
+% \def\ny{-3}
+% \begin{tikzpicture}[
+%     timing/.append style={x=1cm,y=1cm},
+%     timing/picture,
+%     font=\sffamily\scriptsize,
+%     ultra thick,
+%     step=.5,
+%     help lines/.style={thin,gray,semitransparent}
+%   ]
+% 
+%   \draw [help lines] (\nx,-1*\ny) grid +(2,1);
+%   \timing at (\nx,-1*\ny) {S N(x)};
+%   \draw [red]      (x.low)          circle(1pt);
+%   \draw [yellow]   (x.mid)          circle(1pt);
+%   \draw [green]    (x.high)         circle(1pt);
+%   \node [left] at (x.high)         {(x.high)};
+%   \node [left] at (x.mid)          {(x.mid)};
+%   \node [left] at (x.low)          {(x.low)};
+%   \node [below=3ex] at (x.low)      {\meta{any} \texttt{N(x)} \meta{any}};
+% 
+%   \draw [help lines] (0,0) grid +(2,1);
+%   \timing at (0,0) {H N(x) L};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [red]      (x.low lslope)   circle(1pt);
+%   \draw [yellow]   (x.mid lslope/2) circle(1pt);
+%   \draw [green]    (x.high)         circle(1pt);
+%   \node [above] at (x)              {(x)};
+%   \node [right] at (x.high)         {(x.high)};
+%   \node [left]  at (x.mid lslope/2) {(x.mid lslope/2)};
+%   \node [left]  at (x.low lslope)   {(x.low lslope)};
+%   \node [below=3ex] at (x.low)      {\texttt{H N(x) L}};
+% 
+%   \draw [help lines] (\nx,0) grid +(2,1);
+%   \timing at (\nx,0) {H N(x) D};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
+%   \draw [green]    (x.high)         circle(1pt);
+%   \draw [teal]     (x.high dslope)  circle(1pt);
+%   \draw [red]      (x.low dslope)   circle(1pt);
+%   \node [above left] at (x)         {(x)~~~~};
+%   \node [above] at (x.high)         {(x.high)};
+%   \node [left]  at (x.mid dslope/2) {(x.mid zslope/2)};
+%   \node [below right] at (x.high dslope)  {(x.high dslope)};
+%   \node [above right] at (x.low dslope)   {(x.low dslope)};
+%   \node [below=3ex] at (x.low)      {\texttt{H N(x) D}};
+% 
+%   \draw [help lines] (2*\nx,0) grid +(2,1);
+%   \timing at (2*\nx,0) {H N(x) Z};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [yellow]   (x.mid zslope)   circle(1pt);
+%   \draw [green]    (x.high)         circle(1pt);
+%   \node [above] at (x)              {(x)};
+%   \node [right] at (x.high)         {(x.high)};
+%   \node [left]  at (x.mid zslope)   {(x.mid zslope)};
+%   \node [below=3ex] at (x.low)      {\texttt{H N(x) Z}};
+% 
+%   \draw [help lines] (0,\ny) grid +(2,1);
+%   \timing at (0,\ny) {L N(x) H};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [green]    (x.high lslope)  circle(1pt);
+%   \draw [yellow]   (x.mid lslope/2) circle(1pt);
+%   \draw [red]      (x.low)          circle(1pt);
+%   \node [below] at (x)              {(x)};
+%   \node [left]  at (x.high lslope)  {(x.high lslope)};
+%   \node [left]  at (x.mid lslope/2) {(x.mid lslope/2)};
+%   \node [right] at (x.low)          {(x.low)};
+%   \node [below=3ex] at (x.low)      {\texttt{L N(x) H}};
+% 
+%   \draw [help lines] (\nx,\ny) grid +(2,1);
+%   \timing at (\nx,\ny) {L N(x) D};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
+%   \draw [red]      (x.low)          circle(1pt);
+%   \draw [orange]   (x.low dslope)   circle(1pt);
+%   \draw [green]    (x.high dslope)  circle(1pt);
+%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
+%   \node [below left] at (x)         {(x)~~~~};
+%   \node [below] at (x.low)          {(x.low)};
+%   \node [above right] at (x.low dslope)   {(x.low dslope)};
+%   \node [above] at (x.high dslope)  {(x.high dslope)};
+%   \node [below=3ex] at (x.low)      {\texttt{L N(x) D}};
+% 
+%   \draw [help lines] (2*\nx,\ny) grid +(2,1);
+%   \timing at (2*\nx,\ny) {L N(x) Z};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [yellow]   (x.mid zslope)   circle(1pt);
+%   \draw [red]      (x.low)          circle(1pt);
+%   \node [below] at (x)              {(x)};
+%   \node [left]  at (x.mid zslope)   {(x.mid zslope)};
+%   \node [right] at (x.low)          {(x.low)};
+%   \node [below=3ex] at (x.low)      {\texttt{L N(x) Z}};
+% 
+%   \draw [help lines] (0,2*\ny) grid +(2,1);
+%   \timing at (0,2*\ny) {D N(x) H};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [red]      (x.low)          circle(1pt);
+%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
+%   \draw [green]    (x.high)         circle(1pt);
+%   \draw [teal]     (x.high dslope)  circle(1pt);
+%   \node [below] at (x)              {(x)};
+%   \node [above left,inner xsep=0pt]  at (x.high)        {(x.high)};
+%   \node [above] at (x.high dslope) {~~~~~~~~~(x.high dslope)};
+%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
+%   \node [right] at (x.low)          {(x.low)};
+%   \node [below=3ex] at (x.low)      {\texttt{D N(x) H}};
+% 
+%   \draw [help lines] (\nx,2*\ny) grid +(2,1);
+%   \timing at (\nx,2*\ny) {D N(x) L};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
+%   \draw [red]      (x.low)          circle(1pt);
+%   \draw [green]    (x.high)         circle(1pt);
+%   \draw [orange]   (x.low dslope)   circle(1pt);
+%   \node [below left] at (x)         {(x)~~~~};
+%   \node [below] at (x.low)          {(x.low)};
+%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
+%   \node [above right] at (x.low dslope)   {(x.low dslope)};
+%   \node [above] at (x.high)         {(x.high)};
+%   \node [below=3ex] at (x.low)      {\texttt{D N(x) L}};
+% 
+%   \draw [help lines] (2*\nx,2*\ny) grid +(2,1);
+%   \timing at (2*\nx,2*\ny) {D N(x) Z};
+%   \draw [blue]     (x)              circle(3pt);
+%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
+%   \draw [red]      (x.low)          circle(1pt);
+%   \draw [green]    (x.high)         circle(1pt);
+%   \node [below] at (x)              {(x)};
+%   \node [left]  at (x.mid dslope/2) {(x.mid dslope/2)};
+%   \node [right] at (x.high)         {(x.high)};
+%   \node [right] at (x.low)          {(x.low)};
+%   \node [below=3ex] at (x.low)      {\texttt{D N(x) Z}};
+% 
+% \end{tikzpicture}
+% \caption{Anchors of In-Line Nodes.  
+% (\texttt{timing/slope=.25})}\label{fig:coordnodeanchors}
+% \end{figure}
+%
+% \newpage
 % \subsection{Table for Timing Diagrams}
 % \DescribeEnv{tikztimingtable}{\oarg{TikZ settings for whole 
 % table}\\\meta{Signal Name}\ \ \&\ \ \oarg{\small Init.~Char./TikZ Settings for 
@@ -1461,30 +1476,31 @@
 %     \normalfont Style/Setting & Description \\
 %     \midrule
 %     timing      & Base settings like signal height \& period width.\\
-%     timing/intext & Used for \cs{texttiming}. Depends on |timing|.\\
+%     timing/intext & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
 %     timing/picture & Usable for own \texttt{tikzpictures} to set timing 
 %     settings.\\
-%     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
-%     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
-%     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
+%     timing/grid   & Used for grids. Depends on \texttt{help lines} and \texttt{timing}.  \\
+%     timing/table & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
+%     timing/table/grid & Used for table grid. Depends on \texttt{timing/grid}.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
 %     timing/table/rules & Used for \cs{tablerules}. \\
-%     timing/inline node & Used for nodes created by the |N| character.  
-%     Defaults to \texttt{coordinate}.\\
+%     timing/inline node & Used for nodes created by the \texttt{N} character.  
+%     Defaults to \texttt{tikztiming coordinate}.\\
 %     \midrule
 %     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
-%     for `|H|' and `|L|'. \\
-%     timing/\meta{lc char}/background & Background style for characters `|D|' 
-%     and `|U|'. \\
+%     for `\texttt{H}' and `\texttt{L}'. \\
+%     timing/\meta{lc char}/background & Background style for characters `\texttt{D}' 
+%     and `\texttt{U}'. \\
 %     timing/\meta{lc char}/text & Text style for character \meta{char}.  Only 
-%     defined for `|D|'. \\
+%     defined for `\texttt{D}'. \\
 %     \midrule
 %     timing/initchar=\meta{char} & Sets initial character. Only valid as first  
 %     optional argument in table rows or \cs{texttiming}.\\
 %     timing/metachar=\meta{C}\meta{G} & Sets meta-character \meta{C} to 
 %     character group \meta{G}.\\
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
-%     \newline This also sets |dslope=2*slope|, |zslope=slope/2|.\\
+%     \newline This also sets \texttt{dslope=2*slope}, 
+%     \texttt{zslope=slope/2}.\\
 %     timing/lslope=\meta{0.0\en1.0} & Sets slope for logic transitions only.  
 %     Default: 0.1\\
 %     timing/dslope=\meta{0.0\en1.0} & Sets slope for data transitions.  
@@ -1782,8 +1798,7 @@
 % \begin{examplecode}
 %   \Huge
 %   \begin{tikzpicture}[timing,thick,
-%     timing/inline node/.style={coordinate,
-%     shift={(0.05,-.5)}}]
+%     timing/inline node/.style={shift={(0.05,-.5)}}]
 %     \timing at (0,2) {hH N(A) LHLHL};
 %     \timing at (0,0) {HLH N(B) LHLl};
 %     \draw [orange,semithick]
@@ -1793,7 +1808,7 @@
 %       (Ax) parabola[bend pos=0.5] (Bx);
 %   \end{tikzpicture}
 % \end{examplecode}
-% \caption{Using In-Line Nodes to draw Relationships.}
+% \caption{Using In-Line Nodes to draw Relationships.}\label{exa:inlinenodes}
 % \end{example}
 %
 % \begin{example}
@@ -2012,7 +2027,7 @@
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
-  inline node/.style={shape=coordinate},
+  inline node/.style={shape=tikztiming coordinate},
   table/.style={timing,line width=0.15ex,font=\sffamily},
   coord/.style={coordinate},
   save/.style={coordinate,/utils/exec=\tikztiming@savesettings},
@@ -3192,7 +3207,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Shape}
+% \subsection{Shapes}
 %    \begin{macrocode}
 \pgfdeclareshape{tikztiming@shape}{%
   \savedanchor\northeast{\pgfpointxy{.5*\tikztimingwidth}{.5}}%
