@@ -2232,10 +2232,10 @@
 %
 % \begin{macro}{\timing@@@end}[1]{Token behind \cs{timing} macro.}
 %    \begin{macrocode}
-\def\timing@@@end#1;{%
-  \ifx;#1;\else
-    \PackageError{tikz-package}{Can not parse timing path}{}{}{}%
-  \fi
+\def\timing@@@end{%
+  \@ifnextchar{;}%
+    {\@gobble}%
+    {\PackageError{tikz-package}{Can not parse timing path}{}{}{}}%
 }
 %    \end{macrocode}
 % \end{macro}
