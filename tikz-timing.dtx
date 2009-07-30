@@ -2225,7 +2225,7 @@
         {\timing@@@init}%
         {\timing@@@init[]}%
       #3\relax
-      \message{^^J\meaning\tikztiming@str^^J}%
+      %\message{^^J\meaning\tikztiming@str^^J}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
@@ -2473,6 +2473,8 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@output@addcode}
+% Adds code to the output code buffer. The code will not be expanded, i.e.\ will 
+% be protected from the expansion when the buffer is flushed.
 %    \begin{macrocode}
 \def\tikztiming@output@addcode#1{%
   \tikztiming@output@charflush
@@ -2482,6 +2484,8 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@output@eaddcode}
+% Adds code to the output code buffer. The code will be expanded when the buffer 
+% is flushed.
 %    \begin{macrocode}
 \def\tikztiming@output@eaddcode#1{%
   \tikztiming@output@charflush
@@ -2491,6 +2495,8 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@output@Eaddcode}
+% Adds code to the output code buffer. The code will be expanded immediately and 
+% again when the buffer is flushed.
 %    \begin{macrocode}
 \def\tikztiming@output@Eaddcode{%
   \tikztiming@output@charflush
@@ -2512,7 +2518,6 @@
 %    \begin{macrocode}
 \def\tikztiming@output@codeflush{%
   \tikztiming@eaddtostr{\tikztiming@output@bufcode}%
-  \message{^^JBuf Code:^^J\meaning\tikztiming@output@bufcode^^J}%
   \gdef\tikztiming@output@bufcode{}%
 }
 %    \end{macrocode}
