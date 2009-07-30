@@ -1797,15 +1797,16 @@
 % \centering
 % \begin{examplecode}
 %   \Huge
-%   \begin{tikzpicture}[timing,thick,
-%     timing/inline node/.style={shift={(0.05,-.5)}}]
+%   \begin{tikzpicture}[timing/picture,thick]
 %     \timing at (0,2) {hH N(A) LHLHL};
-%     \timing at (0,0) {HLH N(B) LHLl};
+%     \timing[timing/slope=.25] at (0,0) {HLL N(B) HHLl};
 %     \draw [orange,semithick]
-%       (A) ellipse (.2 and .6) +(0,-0.6) coordinate (Ax)
-%       (B) ellipse (.2 and .6) +(0,+0.6) coordinate (Bx);
+%       (A.mid lslope/2) ellipse (.2 and .6)
+%       (B.mid lslope/2) ellipse (.2 and .6);
 %     \draw [orange,semithick,->]
-%       (Ax) parabola[bend pos=0.5] (Bx);
+%       ($ (A.low lslope/2) - (0,.1) $)
+%       parabola [bend pos=0.5]
+%       ($ (B.high lslope/2) + (0,.1) $);
 %   \end{tikzpicture}
 % \end{examplecode}
 % \caption{Using In-Line Nodes to draw Relationships.}\label{exa:inlinenodes}
