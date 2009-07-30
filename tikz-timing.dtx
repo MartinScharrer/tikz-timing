@@ -1107,7 +1107,7 @@
 % Example: |\tikz \timing [green] at (1,2) {[L]HLZDZLH};| gives `\tikz \timing 
 % [green] at (1,2) {[L]HLZDZLH};'.
 % 
-% \subsubsection*{Timing Shape Anchors}
+% \subsubsection{Timing Shape Anchors}\label{sec:timingshape}
 % Every timing diagram line produced by \cs{timing}, which includes the rows in 
 % \env{tikztimingtable}, is also a PGF shape (node) with several anchors. These 
 % are shown in Figure~\ref{fig:shape}.
@@ -1152,7 +1152,7 @@
 % signal.}\label{fig:shape}
 % \end{figure}
 %
-% \subsubsection*{In-Line Nodes Shape Anchors}
+% \subsubsection{In-Line Nodes Shape Anchors}
 % A default shape for In-Line Nodes/Coordinates (`|N|' character) is provided 
 % which is named `\texttt{tikztiming coordinate}'. Like the PGF standard shape 
 % `\texttt{coordinate}' this shape does not draw anything. However, it provides 
@@ -1342,34 +1342,15 @@
 % The following macros are only defined inside a \env{tikztimingtable} after the 
 % macro \cs{extracode}. They are useful for drawing additional material.
 %
-%
-% \DescribeMacro{tablegrid}{\oarg{TikZ Settings}}
-% \DescribeMacro*{tablegrid}{*\oarg{TikZ Settings}}
-% After \css{extracode} this macros draw a grid in the background of the table.
-% A separate grid is drawn for each row. The normal macro draws all grids with 
+% \DescribeMacro{tablegrid}{\meta{*}\oarg{TikZ Settings}}
+% After \css{extracode} this macro draws a grid in the background of the table.
+% A separate grid is drawn for each row. The normal version draws all grids with 
 % the width of the widest row while the star version draws them with the width 
 % of the corresponding row.
 %
-% \DescribeMacro*{fulltablegrid}{\oarg{TikZ Settings}}
+% \DescribeMacro{fulltablegrid}{\oarg{TikZ Settings}}
 % After \css{extracode} this macro draws a big grid over all rows in the 
 % background of the table.
-%
-% \DescribeMacro{rowdist}{}
-% \DescribeMacro*{coldist}{}
-% This macros return the row and column distance.  There are useful for drawing 
-% additional material relative to the rows and columns.  This values can be set 
-% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
-% and \texttt{timing/coldist} settings which are explained in 
-% Section~\ref{sec:styles}.
-%
-% \DescribeMacro{nrows}{}
-% Returns the number of rows in the current table. Useful for use in 
-% \cs{horlines}.
-%
-% \DescribeMacro{twidth}{}
-% Returns the width (as multiple of the `period width') of the longest timing 
-% diagram line in the table.\\Example: If the longest line would be
-% `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
 %
 % \DescribeMacro{horlines}{\oarg{TikZ Settings}\marg{list}}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
@@ -1395,7 +1376,28 @@
 % rule length, which makes this macro position dependent if further code is 
 % changing the bounding box.
 %
+% \DescribeMacro{nrows}{}
+% Returns the number of rows in the current table. Useful for use in 
+% \cs{horlines}.
+%
+% \DescribeMacro{rowdist}{}
+% \DescribeMacro*{coldist}{}
+% This macros return the row and column distance.  There are useful for drawing 
+% additional material relative to the rows and columns.  This values can be set 
+% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
+% and \texttt{timing/coldist} settings which are explained in 
+% Section~\ref{sec:styles}.
+%
+% \DescribeMacro{twidth}{}
+% Returns the width (as multiple of the `period width') of the longest timing 
+% diagram line in the table. Example: If the longest line would be
+% `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
+%
 % \subsubsection*{Positions \& Scalings inside the Table}
+% \textbf{Note:} The anchors provided by the timing shape 
+% (Section~\ref{sec:timingshape}) should now be used to position additional 
+% graphics.
+%
 % The first row starts at $y=0$ and the next rows are each
 % |-1*\rowdist| lower than the previous one.
 % ^^A The very last one can be accessed by the tikz coordinate `\texttt{(last
