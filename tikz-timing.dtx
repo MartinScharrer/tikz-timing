@@ -1183,7 +1183,7 @@
 %     help lines/.style={thin,gray,semitransparent}
 %   ]
 % 
-%   \draw [help lines] (\nx,-1*\ny) grid +(2,1);
+%   \draw [help lines,shift={(\nx,-1*\ny)}] (0,0)  grid +(2,1);
 %   \timing at (\nx,-1*\ny) {S N(x)};
 %   \draw [red]      (x.low)          circle(1pt);
 %   \draw [yellow]   (x.mid)          circle(1pt);
@@ -1193,7 +1193,7 @@
 %   \node [left] at (x.low)          {(x.low)};
 %   \node [below=3ex] at (x.low)      {\meta{any} \texttt{N(x)} \meta{any}};
 % 
-%   \draw [help lines] (0,0) grid +(2,1);
+%   \draw [help lines,shift={(0,0)}] (0,0)  grid +(2,1);
 %   \timing at (0,0) {H N(x) L};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [red]      (x.low lslope)   circle(1pt);
@@ -1205,7 +1205,7 @@
 %   \node [left]  at (x.low lslope)   {(x.low lslope)};
 %   \node [below=3ex] at (x.low)      {\texttt{H N(x) L}};
 % 
-%   \draw [help lines] (\nx,0) grid +(2,1);
+%   \draw [help lines,shift={(\nx,0)}] (0,0) grid (2,1);
 %   \timing at (\nx,0) {H N(x) D};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [yellow]   (x.mid dslope/2) circle(1pt);
@@ -1219,7 +1219,7 @@
 %   \node [above right] at (x.low dslope)   {(x.low dslope)};
 %   \node [below=3ex] at (x.low)      {\texttt{H N(x) D}};
 % 
-%   \draw [help lines] (2*\nx,0) grid +(2,1);
+%   \draw [help lines,shift={(2*\nx,0)}] (0,0)  grid +(2,1);
 %   \timing at (2*\nx,0) {H N(x) Z};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [yellow]   (x.mid zslope)   circle(1pt);
@@ -1229,7 +1229,7 @@
 %   \node [left]  at (x.mid zslope)   {(x.mid zslope)};
 %   \node [below=3ex] at (x.low)      {\texttt{H N(x) Z}};
 % 
-%   \draw [help lines] (0,\ny) grid +(2,1);
+%   \draw [help lines,shift={(0,\ny)}] (0,0)  grid +(2,1);
 %   \timing at (0,\ny) {L N(x) H};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [green]    (x.high lslope)  circle(1pt);
@@ -1241,7 +1241,7 @@
 %   \node [right] at (x.low)          {(x.low)};
 %   \node [below=3ex] at (x.low)      {\texttt{L N(x) H}};
 % 
-%   \draw [help lines] (\nx,\ny) grid +(2,1);
+%   \draw [help lines,shift={(\nx,\ny)}] (0,0)  grid +(2,1);
 %   \timing at (\nx,\ny) {L N(x) D};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [yellow]   (x.mid dslope/2) circle(1pt);
@@ -1255,7 +1255,7 @@
 %   \node [above] at (x.high dslope)  {(x.high dslope)};
 %   \node [below=3ex] at (x.low)      {\texttt{L N(x) D}};
 % 
-%   \draw [help lines] (2*\nx,\ny) grid +(2,1);
+%   \draw [help lines,shift={(2*\nx,\ny)}] (0,0)  grid +(2,1);
 %   \timing at (2*\nx,\ny) {L N(x) Z};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [yellow]   (x.mid zslope)   circle(1pt);
@@ -1265,7 +1265,7 @@
 %   \node [right] at (x.low)          {(x.low)};
 %   \node [below=3ex] at (x.low)      {\texttt{L N(x) Z}};
 % 
-%   \draw [help lines] (0,2*\ny) grid +(2,1);
+%   \draw [help lines,shift={(0,2*\ny)}] (0,0)  grid +(2,1);
 %   \timing at (0,2*\ny) {D N(x) H};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [red]      (x.low)          circle(1pt);
@@ -1279,7 +1279,7 @@
 %   \node [right] at (x.low)          {(x.low)};
 %   \node [below=3ex] at (x.low)      {\texttt{D N(x) H}};
 % 
-%   \draw [help lines] (\nx,2*\ny) grid +(2,1);
+%   \draw [help lines,shift={(\nx,2*\ny)}] (0,0)  grid +(2,1);
 %   \timing at (\nx,2*\ny) {D N(x) L};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [yellow]   (x.mid dslope/2) circle(1pt);
@@ -1293,7 +1293,7 @@
 %   \node [above] at (x.high)         {(x.high)};
 %   \node [below=3ex] at (x.low)      {\texttt{D N(x) L}};
 % 
-%   \draw [help lines] (2*\nx,2*\ny) grid +(2,1);
+%   \draw [help lines,shift={(2*\nx,2*\ny)}] (0,0)  grid +(2,1);
 %   \timing at (2*\nx,2*\ny) {D N(x) Z};
 %   \draw [blue]     (x)              circle(3pt);
 %   \draw [yellow]   (x.mid dslope/2) circle(1pt);
@@ -1579,6 +1579,7 @@
 % \centering
 % \caption{Examples for Arrow Characters.}\label{tab:arrows}
 % \begin{tikztimingexampletable}
+%   0.A \\
 %   AAA \\
 %   3A  \\
 %   3{A} \\
