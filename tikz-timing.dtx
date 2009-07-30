@@ -1344,10 +1344,15 @@
 %
 %
 % \DescribeMacro{tablegrid}{\oarg{TikZ Settings}}
-% \DescribeMacro*{fulltablegrid}{\oarg{TikZ Settings}}
+% \DescribeMacro*{tablegrid}{*\oarg{TikZ Settings}}
 % After \css{extracode} this macros draw a grid in the background of the table.
-% The first one draws a separate grid for each row and the second one a big grid 
-% over all rows.
+% A separate grid is drawn for each row. The normal macro draws all grids with 
+% the width of the widest row while the star version draws them with the width 
+% of the corresponding row.
+%
+% \DescribeMacro*{fulltablegrid}{\oarg{TikZ Settings}}
+% After \css{extracode} this macro draws a big grid over all rows in the 
+% background of the table.
 %
 % \DescribeMacro{rowdist}{}
 % \DescribeMacro*{coldist}{}
