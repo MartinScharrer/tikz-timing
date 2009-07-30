@@ -715,6 +715,8 @@
   {\tikztiming@tabletiming}%
   {\tikztiming@tabletiming[]}%
   #1\relax%
+  \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
+    coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
   \@ifnextchar\extracode
     {\tikztimingextracode}%
     {%
@@ -1580,7 +1582,7 @@
 %   3{aw} \\
 %   2S 2A 3W A W \\
 %   \extracode
-%   \tablegrid
+%   \tablegrid*
 % \end{tikztimingexampletable}
 % \end{table}
 %
@@ -3165,11 +3167,31 @@
 % \begin{macro}{\tikztiming@tablegrid}[1]{Optional settings}
 %    \begin{macrocode}
 \newcommand*\tikztiming@tablegrid[1][]{%
+  \@ifnextchar{*}%
+    {\tikztiming@tablegrid@{row\row.high end}}%
+    {\tikztiming@tablegrid@{timing/table/top right}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablegrid@@}[2]{Optional settings}{End point}
+%    \begin{macrocode}
+\def\tikztiming@tablegrid@#1{%
+  \@ifnextchar{[}%]
+    {\tikztiming@tablegrid@@{#1}}%
+    {\tikztiming@tablegrid@@{#1}[]}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablegrid@@}[2]{Optional settings}{End point}
+%    \begin{macrocode}
+\def\tikztiming@tablegrid@@#1[#2]{%
   \begin{pgfonlayer}{background}
-    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
+    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#2]
       \foreach \row in {1,...,\nrows} {%
         \draw {[shift={(row\row.low start)}]
-          let \p1 = (row\row.high end) in (0,0) grid (\x1,1)};
+          let \p1 = (#1) in (0,0) grid (\x1,1)};
       }%
     \endscope
   \end{pgfonlayer}
