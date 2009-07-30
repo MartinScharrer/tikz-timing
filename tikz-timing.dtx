@@ -703,6 +703,7 @@
 % \begin{macro}{\tikztimingexampletable@row}
 %    \begin{macrocode}
 \def\tikztimingexampletable@row#1\\{%
+  \addtocounter{tikztiming@nrows}{1}%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
   \path (last row) +(0,-1*\tikztiming@rowdist) coordinate (last row);
@@ -1578,6 +1579,8 @@
 %   3{AW} \\
 %   3{aw} \\
 %   2S 2A 3W A W \\
+%   \extracode
+%   \tablegrid
 % \end{tikztimingexampletable}
 % \end{table}
 %
