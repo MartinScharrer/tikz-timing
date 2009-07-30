@@ -2029,6 +2029,8 @@
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
   inline node/.style={shape=tikztiming coordinate},
+  inline node/from char/.store in=\tikztiming@node@fromchar,
+  inline node/to char/.store in=\tikztiming@node@tochar,
   table/.style={timing,line width=0.15ex,font=\sffamily},
   coord/.style={coordinate},
   save/.style={coordinate,/utils/exec=\tikztiming@savesettings},
@@ -2069,6 +2071,9 @@
   zslope/.code={\tikztimingsetzslope{#1}},
   coldist/.store in=\tikztiming@coldist,
   rowdist/.store in=\tikztiming@rowdist,
+}
+\tikzset{timing/inline node/.cd,
+  from char={}, to char={}
 }
 %    \end{macrocode}
 %
@@ -2220,7 +2225,7 @@
         {\timing@@@init}%
         {\timing@@@init[]}%
       #3\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \message{^^J\meaning\tikztiming@str^^J}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
@@ -2272,7 +2277,6 @@
 % \begin{macro}{\tikztiming@aftercode@T}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@T{%
-  \tikztiming@output@flush
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2288,7 +2292,6 @@
 % \begin{macro}{\tikztiming@aftercode@C}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@C{%
-  %\tikztiming@output@flush
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2430,7 +2433,7 @@
         1%
       \fi\fi
       \relax
-        \tikztiming@output@flush
+        \tikztiming@output@charflush
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
       \or
@@ -2456,9 +2459,35 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@output@addcode}
+%    \begin{macrocode}
+\def\tikztiming@output@addcode{%
+  \tikztiming@output@charflush
+  \tikztiming@addtostr%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@output@eaddcode}
+%    \begin{macrocode}
+\def\tikztiming@output@eaddcode{%
+  \tikztiming@output@charflush
+  \tikztiming@eaddtostr%
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@output@flush}
 %    \begin{macrocode}
 \def\tikztiming@output@flush{%
+  \tikztiming@output@charflush
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@output@charflush}
+%    \begin{macrocode}
+\def\tikztiming@output@charflush{%
   \begingroup
     \let\tikztiming@num\tikztiming@output@bufnum
     \tikztiming@nameaddtostr{%
@@ -2619,8 +2648,7 @@
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
-  \tikztiming@output@flush
-  \tikztiming@eaddtostr{%
+  \tikztiming@output@eaddcode{%
     node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
     node [%]
       shift={($ (timing@dstart)!0.5!(timing@dend) $)},%
@@ -2653,8 +2681,7 @@
 % \begin{macro}{\tikztiming@defcode{,}}
 %    \begin{macrocode}
 \tikztiming@defcode{,}{%
-  \tikztiming@output@flush
-  \tikztiming@eaddtostr{%
+  \tikztiming@output@eaddcode{%
     \newdraw
   }%
   \tikztiming@
@@ -2665,8 +2692,7 @@
 % \begin{macro}{\tikztiming@defcode{;}}
 %    \begin{macrocode}
 \tikztiming@defcode{;}{%
-  \tikztiming@output@flush
-  \tikztiming@eaddtostr{%
+  \tikztiming@output@eaddcode{%
     \newdrawns
   }%
   \tikztiming@
@@ -2718,16 +2744,16 @@
 % \begin{macro}{\tikztiming@addnode@}[3]{Options}{Node name}{Node text}
 %    \begin{macrocode}
 \def\tikztiming@addnode@#1#2#3{%
-  \tikztiming@output@flush
-  \begingroup
-    \def\@tempa{#2}%
-    \ifx\@tempa\empty
-      \def\@tempa{ node [timing/inline node,#1] }%
-    \else
-      \def\@tempa{ node [timing/inline node,#1] (#2) }%
-    \fi
-    \expandafter\tikztiming@addtostr\expandafter{\@tempa {#3} }%
-  \endgroup
+  \def\@tempa{#2}%
+  \ifx\@tempa\empty
+    \edef\@tempa{ node [timing/inline node,%
+      timing/inline node/from char={\lastchar},\unexpanded{#1}] }%
+  \else
+    \edef\@tempa{ node [timing/inline node,%
+      timing/inline node/from char={\lastchar},\unexpanded{#1}]%
+      (\unexpanded{#2}) }%
+  \fi
+  \expandafter\tikztiming@output@addcode\expandafter{\@tempa {#3} }%
   \tikztiming@
 }
 %    \end{macrocode}
@@ -2805,8 +2831,7 @@
 % \begin{macro}{\tikztiming@handlecode}[1]{Code to add to string}
 %    \begin{macrocode}
 \def\tikztiming@handlecode#1{%
-  \tikztiming@output@flush
-  \tikztiming@addtostr{ #1 }%
+  \tikztiming@output@addcode{ #1 }%
   \tikztiming@
 }
 %    \end{macrocode}
@@ -2815,8 +2840,7 @@
 % \begin{macro}{\tikztiming@defcode []}[1]{Options to add to string}
 %    \begin{macrocode}
 \tikztiming@defcode[#1]{%
-  \tikztiming@output@flush
-  \tikztiming@addtostr{ [#1] }%
+  \tikztiming@output@addcode{ [#1] }%
   \tikztiming@
 }
 %    \end{macrocode}
@@ -3276,6 +3300,12 @@
   \saveddimen\height{%
     \pgfpointxy{0}{\timingheight}%
     \pgf@x=\pgf@y
+  }
+  \savedmacro\fromchar{%
+    \let\fromchar\tikztiming@node@fromchar
+  }
+  \savedmacro\tochar{%
+    \let\tochar\tikztiming@node@tochar
   }
   \savedanchor\lowpoint{%
     \pgfpointanchor{timing/start base}{center}%
@@ -4318,19 +4348,18 @@
 %    \begin{macrocode}
 \def\tikztiming@overlay#1#2{%
   \ifx\relax#1\relax
-    \tikztiming@output@flush
+    \tikztiming@output@addcode{}%
     \def\next{\tikztiming@\relax}%
   \else
     \ifx\relax#2\relax
       \def\next{\tikztiming@#1\relax}%
     \else
-      \tikztiming@output@flush
       \let\tikztiming@overlay@lastchar\lastchar
-      \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
+      \tikztiming@output@addcode
+        { node [timing/save] (timing@overlay@start) {} }%
       \tikztiming@#1\relax
-      \tikztiming@output@flush
       \let\lastchar\tikztiming@overlay@lastchar
-      \tikztiming@addtostr{ (timing@overlay@start) }%
+      \tikztiming@output@addcode{ (timing@overlay@start) }%
       \def\next{\tikztiming@#2}%
     \fi
   \fi
