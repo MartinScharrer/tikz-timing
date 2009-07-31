@@ -1605,6 +1605,10 @@
 % Like the `|C|' and `|T|' characters subsequent `|E|' characters are not 
 % combined into one.
 %
+% The drawing style can be changed using the |timing/e| and 
+% |timing/e/background| TikZ style. The latter should always include 
+% `|draw=none|' to avoid drawing the background border.
+%
 % \begin{table}[H]
 % \centering
 % \caption{Examples for the `\texttt{E}' Character.}\label{tab:either}
@@ -1625,6 +1629,20 @@
 %   H E E H \\
 %   L E E L \\
 % \end{tikztimingexampletable}
+% \medskip
+% \makebox[\textwidth][c]{%
+%   \begin{tabular}{lc}
+%     \toprule
+%      Settings (\texttt{timing/e/.cd}) & Resulting Diagram (\texttt{LL EE HH})
+%      \\\midrule
+%     \texttt{.style=\{dotted,gray\}} & 
+%     \texttiming[timing/e/.style={dotted,gray}]{LL EE HH} \\
+%     \texttt{background/.style=\{draw=none,fill=gray\}} & 
+%     \texttiming[timing/e/background/.style={draw=none,fill=gray}]
+%     {LL EE HH} \\
+%     \bottomrule
+%   \end{tabular}
+% }%
 % \end{table}
 %
 % \clearpage
