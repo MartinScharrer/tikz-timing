@@ -2071,21 +2071,21 @@
   restore/.style={/utils/exec=\tikztiming@restoresettings},
   name/.style={inner sep=0pt,outer sep=0pt},
   d/text/.style={timing,scale=0.6,font=\sffamily},
-  d/background/.style={},
+  d/background/.style={draw=none},
   h/.style={},
   l/.style={},
   d/.style={},
   e/.style={},
-  e/background/.style={},
+  e/background/.style={draw=none},
   a/.style={->},
   w/.style={<-},
   m/.style={black!40!brown},
   m/decoration/.style={decorate,decoration={zigzag,segment 
   length=.25\tikztiming@xunit,amplitude=.225\tikztiming@yunit}},
   k/.style={black!40!blue,semitransparent},
-  u/background/.style={fill=gray},
+  u/background/.style={draw=none,fill=gray},
   u/.style={},
-  o/background/.style={},
+  o/background/.style={draw=none},
   o/.style={timing/d,line width=0.10ex,dotted},
   g/.style={},
   z/.style={blue},
@@ -4239,23 +4239,67 @@
   \tikztiminguse{D}{#1}%
 }
 \tikztimingdef{LE}{%
-  -- ++(#1,0)%
-  \code{\setcounter{tikztimingtranspos}{0}}%
-  \code{\setcounter{tikztimingtrans}{1}}%
-     ++($ -1*(#1,0) $)%
+  \newdraw [\bgstyle]
   -- ++(\slope,\height)%
   -- ++($ (#1,0) - (\slope,0) $)%
-     ++(0,-\height)%
+  --   ++(0,-\height)%
+  -- ++($ -1*(#1,0) $)%
+  \newdraw [\style]
+  -- ++(\slope,\height)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+     ++($ -1*(#1,\height) $)%
+  -- ++($  1*(#1,0) $)%
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
 }%
 \tikztimingdef{HE}{%
-  -- ++(#1,0)%
-  \code{\setcounter{tikztimingtranspos}{1}}%
-  \code{\setcounter{tikztimingtrans}{-1}}%
-     ++($ -1*(#1,0) $)%
+  \newdraw [\bgstyle]
   -- ++(\slope,-\height)%
   -- ++($ (#1,0) - (\slope,0) $)%
+  --   ++(0,\height)%
+  -- ++($ -1*(#1,0) $)%
+  \newdraw [\style]
+  -- ++(\slope,-\height)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+     ++($ -1*(#1,-\height) $)%
+  -- ++($  1*(#1,0) $)%
+     ++(0,-\height)%
+  \code{\setcounter{tikztimingtranspos}{1}}%
+  \code{\setcounter{tikztimingtrans}{-1}}%
 }%
+\tikztimingdef{EL}{%
+  \newdraw [timing/e/background]%
+  -- ++(\slope,0)%
+  -- ++(-\slope,\height)%
+  -- ++(0,-\height)%
+  \newdraw [timing/e]%
+  -- ++(\slope,0)%
+     ++(-\slope,\height)%
+  -- ++(\slope,-\height)%
+  \newdraw [\style]%
+  -- ++($ (#1,0) - (\slope,0) $)%
+}%
+\tikztimingdef{EH}{%
+  \newdraw [timing/e/background]%
+  -- ++(0,\height)%
+  -- ++(\slope,0)%
+  -- ++(-\slope,-\height)%
+  \newdraw [timing/e]%
+     ++(0,\height)%
+  -- ++(\slope,0)%
+     ++(-\slope,-\height)%
+  -- ++(\slope,\height)%
+  \newdraw [\style]%
+  -- ++($ (#1,0) - (\slope,0) $)%
+}%
+
 \tikztimingdef{EE}{%
+  \newdraw [\bgstyle]
+  --  ++(0,\height)
+  --  ++(#1,0)
+  --  ++(0,-\height)
+  --  ++($ -1*(#1,0) $)
+  \newdraw [\style]
      ++(0,      \height * \value{tikztimingtranspos})%
      ++(#1,0)%
   -- ++($ -1*(#1,0) $)%
@@ -4263,23 +4307,6 @@
   -- ++(-\slope,0)%
   -- ++(#1,0)%
      ++(0, -\height + \height * \value{tikztimingtranspos})%
-}%
-\tikztimingdef{EH}{%
-     ++(0,+\height)%
-  -- ++(\slope,0)%
-     ++(-\slope,-\height)%
-  -- ++(\slope/2.,+\height/2.)%
-  \newdraw [\style]%
-  -- ++(\slope/2.,+\height/2.)%
-  -- ++($ (#1,0) - (\slope,0) $)%
-}%
-\tikztimingdef{EL}{%
-  -- ++(\slope,0)%
-     ++(-\slope,\height)%
-  -- ++(\slope/2.,-\height/2.)%
-  \newdraw [\style]%
-  -- ++(\slope/2.,-\height/2.)%
-  -- ++($ (#1,0) - (\slope,0) $)%
 }%
 \tikztimingdef{ZE}{%
   \code{\setcounter{tikztimingtranspos}{1}}%
