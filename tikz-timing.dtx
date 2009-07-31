@@ -2178,7 +2178,7 @@
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
       \tikztiming@#2\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \message{^^J\meaning\tikztiming@str^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
@@ -2278,7 +2278,7 @@
         {\timing@@@init}%
         {\timing@@@init[]}%
       #3\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \message{^^J\meaning\tikztiming@str^^J}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
@@ -2498,6 +2498,7 @@
         1%
       \fi\fi
       \relax
+        \edef\tikztiming@output@nextchar{#2}%
         \tikztiming@output@flush
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
@@ -2580,8 +2581,14 @@
 %    \begin{macrocode}
 \def\tikztiming@output@charflush{%
   \begingroup
+        \message{^^JDEBUG:
+          BufA: \tikztiming@output@bufchara, %
+          BufB: \tikztiming@output@bufcharb, %
+          Next: \tikztiming@output@nextchar ^^J} %
     \let\tikztiming@num\tikztiming@output@bufnum
-    \tikztiming@nameaddtostr{%
+    \tikztiming@nameaddtostr
+    [\tikztiming@output@nextchar]%
+    {%
       \tikztiming@output@bufchara
       \tikztiming@output@bufcharb
     }%
@@ -2594,15 +2601,19 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@nameaddtostr}[1]{Name of macro without prefix
+% \begin{macro}{\tikztiming@nameaddtostr}[2]{Optional next character}{Name of 
+% macro without prefix
 % to add}
 %    \begin{macrocode}
-\def\tikztiming@nameaddtostr#1{%
+\newcommand*\tikztiming@nameaddtostr[2][]{%
   \begingroup
     \edef\@tempa{\tikztiming@num}%
+    \@ifundefined{\tikztiming@prefix#2#1}%
+      {\def\@tempb{#2}}%
+      {\def\@tempb{#2#1}}%
     \expandafter\g@addto@macro
     \expandafter\tikztiming@str
-    \expandafter{\csname\tikztiming@prefix#1\expandafter\endcsname
+    \expandafter{\csname\tikztiming@prefix\@tempb\expandafter\endcsname
     \expandafter{\@tempa} }%
   \endgroup
   \def\tikztiming@num{1.0}%
@@ -2653,6 +2664,7 @@
 % \begin{macro}{\tikztiming@@end}
 %    \begin{macrocode}
 \def\tikztiming@@end{%
+  \edef\tikztiming@output@nextchar{}%
   \tikztiming@output@flush
   \global\let\tikztimingwidth\tikztimingwidth
   \tikztiming@addtostr{ coordinate (timing/end)
@@ -3985,6 +3997,7 @@
 %    \begin{macrocode}
 \tikztimingdef{HH}{-- ++(#1,0)}
 \tikztimingdef{LL}{-- ++(#1,0)}
+\tikztimingdef{LLH}{-- ++(#1,0)}
 \tikztimingdef{HL}{-- ++(\slope,-\height) \tikztiminguse{HH}{#1-\slope}}
 \tikztimingdef{LH}{-- ++(\slope, \height) \tikztiminguse{LL}{#1-\slope}}
 
@@ -4044,10 +4057,21 @@
   -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope,0) $)
 }
 
+\tikztimingdef{LDL}{
+  -- ++(\dslope/2,\height/2)
+  \newdraw [timing/d]
+     ++(-\dslope/2,-\height/2)
+     +(\dslope/2,\height/2)
+  -- +(\dslope,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\dslope/2,0) $)
+  -- +(#1,0)
+  -- +(\dslope,0)
+  -- +(\dslope/2,\height/2)
+     ++($ (#1,\height/2) + (\dslope/2,0) $)
+}
+
 \tikztimingdef{DL}{
-  -- ++( \dslope/2.,+\height/2.)
-     ++(-\dslope/2.,+\height/2.)
-  -- ++(\dslope/2.,-\height/2.)
   \newdraw [\style]
   -- ++(\dslope/2.,-\height/2.)
   -- ++($ (#1,0) - (\dslope,0) $)

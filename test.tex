@@ -1,0 +1,24 @@
+%&pdflatex
+\documentclass{article}
+\usepackage {tikz-timing}
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+
+\begin{document}
+
+\makeatletter
+\let\texttimingbefore\texttiminggrid
+\tikzset{timing/.cd,d/.style={fill=gray,path fading=west}}
+\texttiming[L]{3DL}
+\tikzset{timing/.cd,d/.style={fill=gray,pattern=north east lines}}
+\texttiming[L]{3DL}
+
+\texttiming[L]{L3D{A}L}
+
+\texttiming[L]{LHL}
+
+\texttiming[L]{LHLZD{}}
+
+\end{document}
+
+
