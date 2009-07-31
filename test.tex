@@ -1,23 +1,51 @@
 %&pdflatex
 \documentclass{article}
+\usepackage [margin=.1cm] {geometry}
 \usepackage {tikz-timing}
 \usetikzlibrary{fadings}
 \usetikzlibrary{patterns}
+\pagestyle{empty}
 
 \begin{document}
-
+\sffamily
 \makeatletter
 \let\texttimingbefore\texttiminggrid
-\tikzset{timing/.cd,d/.style={fill=gray,path fading=west}}
-\texttiming[L]{3DL}
-\tikzset{timing/.cd,d/.style={fill=gray,pattern=north east lines}}
-\texttiming[L]{3DL}
 
-\texttiming[L]{L3D{A}L}
+\def\chars{H,L,Z,X,U,D}
+\def\da{D{A}}
+\def\d{D}
+\edef\echars{\chars,D{A}}
 
-\texttiming[L]{LHL}
+\@tempdima=1.6ex
 
-\texttiming[L]{LHLZD{}}
+\foreach \a in \echars {%
+    \makebox[3\@tempdima][c]{\textbf{\ifx\a\da D\{A\}\else \a \fi}}%
+    \hspace{1.6ex}%
+    \foreach \c in \echars {%
+      \makebox[3\@tempdima][c]{\ifx\c\da D\{A\}\else \c \fi}%
+      \hspace{1.6ex}%
+    }%
+    \par
+    \par\smallskip
+    \foreach \b in \echars {%
+      \makebox[3\@tempdima][c]{\ifx\b\da D\{A\}\else \b \fi}%
+      \foreach \c in \echars {%
+        \edef\abc{\a\b\c}%
+        \hspace{1.6ex}%
+        \let\x\a
+        \ifx\a\da
+          \def\x{}%
+        \fi
+        \ifx\d\a
+          \def\x{}%
+        \fi
+        \expandafter\texttiming\expandafter[\expandafter\x\expandafter]\expandafter{\abc}%
+      }%
+      \par
+    }%
+  \bigskip
+}%
+
 
 \end{document}
 
