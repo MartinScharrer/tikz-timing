@@ -4367,7 +4367,6 @@
   -- +(\slope,-\height)
   -- +(0,0)
     ++($ (#1,-\height) + (\slope,0) $)%
-  \newdraw
   \code{\setcounter{tikztimingtranspos}{1}}%
   \code{\setcounter{tikztimingtrans}{-1}}%
 }%
@@ -4379,7 +4378,6 @@
   -- +(\slope,\height)
   -- +(0,0)
     ++($ (#1,\height) + (\slope,0) $)%
-  \newdraw
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
 }%
@@ -4525,6 +4523,51 @@
   -- ++($ (#1,0) - (\slope,0) $)%
 }%
 
+\tikztimingdef{ZEH}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\zslope, \height/2)
+  -- +($ (#1,0) + (\slope, \height/2) $)
+  -- +(#1,-\height/2)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+    ++($ (#1,0) + (\slope, \height/2) $)
+  \newdraw
+}
+
+\tikztimingdef{ZEL}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\zslope, \height/2)
+  -- +(#1,\height/2)
+  -- +($ (#1,0) + (\slope, -\height/2) $)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+    ++($ (#1,0) + (\slope, -\height/2) $)
+  \newdraw
+}
+
+\tikztimingdef{ZEZ}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\zslope, \height/2)
+  -- +(#1,\height/2)
+  -- +($ (#1,0) + (\zslope, 0) $)
+  -- +(#1,-\height/2)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+    ++($ (#1,0) + (\zslope, 0) $)
+  \newdraw
+}
+
+\tikztimingdef{ZED}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\zslope, \height/2)
+  -- +(#1,\height/2)
+  -- +($ (#1,0) + (\zslope, 0) $)
+  -- +(#1,-\height/2)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+    ++($ (#1,0) + (\zslope, 0) $)
+  \newdraw
+}
 
 \tikztimingdef{ZE}{%
   \code{\setcounter{tikztimingtranspos}{1}}%
