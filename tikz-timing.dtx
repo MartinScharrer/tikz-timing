@@ -2207,14 +2207,18 @@
 % \begin{macro}{\tikztiming@init}
 %    \begin{macrocode}
 \def\tikztiming@init{%
-    \let\lastchar\empty%
+    \def\lastchar{\currentchar}%
     \let\currentchar\empty
     \let\settings\empty
     \gdef\tikztiming@saved@settings{}%
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \setcounter{tikztimingtranspos}{0}%
-    \def\tikztiming@str{\draw (0,0) coordinate (timing/start base) }%
+    \def\tikztiming@str{%
+      \draw (0,0)
+        coordinate (timing/start base)
+        coordinate (timing@dend)
+    }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2523,6 +2527,7 @@
 \def\tikztiming@output@bufcharb{}%
 \def\tikztiming@output@bufnum{0}%
 \def\tikztiming@output@bufcode{}%
+\def\tikztiming@output@nextchar{}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2607,6 +2612,8 @@
 %    \begin{macrocode}
 \newcommand*\tikztiming@nameaddtostr[2][]{%
   \begingroup
+    \edef\@tempa{#2}%
+    \ifx\@tempa\empty\else
     \edef\@tempa{\tikztiming@num}%
     \@ifundefined{\tikztiming@prefix#2#1}%
       {\def\@tempb{#2}}%
@@ -2615,6 +2622,7 @@
     \expandafter\tikztiming@str
     \expandafter{\csname\tikztiming@prefix\@tempb\expandafter\endcsname
     \expandafter{\@tempa} }%
+    \fi
   \endgroup
   \def\tikztiming@num{1.0}%
 }
@@ -2752,7 +2760,6 @@
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
   \tikztiming@output@Eaddcode{%
-    node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
     node [%]
       shift={($ (timing@dstart)!0.5!(timing@dend) $)},%
       timing/\currentcharlc/text,%
@@ -4060,6 +4067,7 @@
 \tikztimingdef{LDL}{
   -- ++(\dslope/2,\height/2)
   \newdraw [timing/d]
+  coordinate (timing@dstart)
      ++(-\dslope/2,-\height/2)
      +(\dslope/2,\height/2)
   -- +(\dslope,\height)
@@ -4295,6 +4303,7 @@
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
 }%
+
 \tikztimingdef{HE}{%
   \newdraw [\bgstyle]
   -- ++(\slope,-\height)%
@@ -4310,31 +4319,165 @@
   \code{\setcounter{tikztimingtranspos}{1}}%
   \code{\setcounter{tikztimingtrans}{-1}}%
 }%
+
+\tikztimingdef{LEL}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\slope,\height)%
+  -- +(#1,\height)%
+  -- +($ (#1,0) + (\slope,0) $)%
+  -- +(0,0)
+    ++($ (#1,0) + (\slope,0) $)%
+  \newdraw
+}%
+
+\tikztimingdef{LEH}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\slope,\height)%
+  -- +($ (#1,\height) + (\slope,0) $)%
+  -- +(#1,0)%
+  -- +(0,0)
+    ++($ (#1,\height) + (\slope,0) $)%
+  \newdraw
+}%
+
+\tikztimingdef{HEH}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +($ (#1,0) + (\slope,0) $)%
+  -- +(#1,-\height)%
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++($ (#1,0) + (\slope,0) $)%
+  \newdraw
+}%
+
+\tikztimingdef{HEL}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(#1,0)
+  -- +($ (#1,-\height) + (\slope,0) $)%
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++($ (#1,-\height) + (\slope,0) $)%
+  \newdraw
+}%
+
+\tikztimingdef{HEZ}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(#1,0)
+  -- +($ (#1,-\height/2) + (\zslope,0) $)%
+  -- +(#1,-\height)
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++($ (#1,-\height/2) + (\zslope,0) $)%
+}%
+
+\tikztimingdef{HEX}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(#1,0)
+  -- +($ (#1,-\height/2) + (\zslope,0) $)%
+  -- +(#1,-\height)
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++($ (#1,-\height/2) + (\zslope,0) $)%
+}%
+
+\tikztimingdef{LEZ}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\slope,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\zslope,0) $)%
+  -- +(#1,0)
+  -- +(0,0)
+    ++($ (#1,\height/2) + (\zslope,0) $)%
+}%
+
+\tikztimingdef{LEX}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\slope,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\zslope,0) $)%
+  -- +(#1,0)
+  -- +(0,0)
+    ++($ (#1,\height/2) + (\zslope,0) $)%
+}%
+
+\tikztimingdef{LED}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\slope,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\dslope/2,0) $)%
+  -- +(#1,0)
+  -- +(0,0)
+    ++($ (#1,\height/2) + (\dslope/2,0) $)%
+}%
+
+\tikztimingdef{HED}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(#1,0)
+  -- +($ (#1,-\height/2) + (\dslope/2,0) $)%
+  -- +(#1,-\height)
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++($ (#1,-\height/2) + (\dslope/2,0) $)%
+}%
+
+
+\tikztimingdef{LEU}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\slope,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\dslope/2,0) $)%
+  -- +(#1,0)
+  -- +(0,0)
+    ++($ (#1,\height/2) + (\dslope/2,0) $)%
+}%
+
+\tikztimingdef{HEU}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(#1,0)
+  -- +($ (#1,-\height/2) + (\dslope/2,0) $)%
+  -- +(#1,-\height)
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++($ (#1,-\height/2) + (\dslope/2,0) $)%
+}%
+
+
+\tikztimingdef{EZ}{%
+  \newdraw [\style]
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\tikztimingdef{EX}{%
+  \tikztiminguse{EZ}{#1}%
+}%
+
 \tikztimingdef{EL}{%
-  \newdraw [timing/e/background]%
-  -- ++(\slope,0)%
-  -- ++(-\slope,\height)%
-  -- ++(0,-\height)%
-  \newdraw [timing/e]%
-  -- ++(\slope,0)%
-     ++(-\slope,\height)%
-  -- ++(\slope,-\height)%
-  \newdraw [\style]%
   -- ++($ (#1,0) - (\slope,0) $)%
 }%
 \tikztimingdef{EH}{%
-  \newdraw [timing/e/background]%
-  -- ++(0,\height)%
-  -- ++(\slope,0)%
-  -- ++(-\slope,-\height)%
-  \newdraw [timing/e]%
-     ++(0,\height)%
-  -- ++(\slope,0)%
-     ++(-\slope,-\height)%
-  -- ++(\slope,\height)%
-  \newdraw [\style]%
   -- ++($ (#1,0) - (\slope,0) $)%
 }%
+
+\tikztimingdef{ED}{%
+  \newdraw [\bgstyle]
+  -- +(\dslope/2,\height/2)
+  -- +($ (#1,\height/2) - (\dslope/2,0) $)%
+  -- +($ (#1,-\height/2) - (\dslope/2,0) $)%
+  -- +(\dslope/2,-\height/2)
+  -- +(0,0)
+  \newdraw [\style]
+     coordinate (timing@dstart)
+  -- +(\dslope/2,\height/2)
+  -- +($ (#1,\height/2) - (\dslope/2,0) $)%
+     +($ (#1,-\height/2) - (\dslope/2,0) $)%
+  -- +(\dslope/2,-\height/2)
+  -- +(0,0)
+     ++($ (#1,0) - (\dslope/2,0) $)%
+     coordinate [shift={(\dslope/2,0)}] (timing@dend)
+}
+\tikztimingdef{EU}{%
+  \tikztiminguse{ED}{#1}%
+}
 
 \tikztimingdef{EE}{%
   \newdraw [\bgstyle]
