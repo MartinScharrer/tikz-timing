@@ -3683,32 +3683,12 @@
 % \begin{macro}{\tikztiminglet}[2]{Original characters}{New characters}
 %    \begin{macrocode}
 \def\tikztiminglet#1#2{%
-  \tikztiminglet@#1\relax#2\relax
+  \tikztiming@namelet{#1}{#2}%
+  \tikztiming@namelet{#1@general}{#2@general}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiminglet@}[4]{First original character}{Second original 
-% character}{First new character}{Second new character}
-%    \begin{macrocode}
-\def\tikztiminglet@#1#2\relax#3#4\relax{%
-  \tikztiming@namelet{#1#2}{#3#4}%
-  \tikztiming@namelet{#1#2@general}{#3#4@general}%
-  \tikztiming@iflower{#1}{}%
-    {\tikztiming@iflower{#2}%
-      {%
-        \lowercase{\tikztiminglet@{#1}{#2}\relax{#3}{#4}}\relax
-      }%
-      {%
-        \uppercase{\lowercase{%
-        \uppercase{\lowercase{\tikztiminglet@{#1}}{#2}}\relax{#3}}{#4}}\relax
-        \lowercase{\uppercase{%
-        \lowercase{\uppercase{\tikztiminglet@{#1}}{#2}}\relax{#3}}{#4}}\relax
-      }%
-    }%
-}
-%    \end{macrocode}
-% \end{macro}
 %
 % \begin{macro}{\tikztiming@chars}[1]{Comma to gobble}
 % Initial definition of character list. Will gobble the separation comma in 
@@ -4392,15 +4372,7 @@
     ++($ (#1,-\height/2) + (\zslope,0) $)%
 }%
 
-\tikztimingdef{HEX}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
-  -- +(#1,0)
-  -- +($ (#1,-\height/2) + (\zslope,0) $)%
-  -- +(#1,-\height)
-  -- +(\slope,-\height)
-  -- +(0,0)
-    ++($ (#1,-\height/2) + (\zslope,0) $)%
-}%
+\tikztiminglet{HEX}{HEZ}
 
 \tikztimingdef{LEZ}{%
   \newdraw [timing/e,preaction={timing/e/background}]
@@ -4412,15 +4384,7 @@
     ++($ (#1,\height/2) + (\zslope,0) $)%
 }%
 
-\tikztimingdef{LEX}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
-  -- +(\slope,\height)
-  -- +(#1,\height)
-  -- +($ (#1,\height/2) + (\zslope,0) $)%
-  -- +(#1,0)
-  -- +(0,0)
-    ++($ (#1,\height/2) + (\zslope,0) $)%
-}%
+\tikztiminglet{LEX}{LEZ}
 
 \tikztimingdef{LED}{%
   \newdraw [timing/e,preaction={timing/e/background}]
@@ -4442,27 +4406,8 @@
     ++($ (#1,-\height/2) + (\dslope/2,0) $)%
 }%
 
-
-\tikztimingdef{LEU}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
-  -- +(\slope,\height)
-  -- +(#1,\height)
-  -- +($ (#1,\height/2) + (\dslope/2,0) $)%
-  -- +(#1,0)
-  -- +(0,0)
-    ++($ (#1,\height/2) + (\dslope/2,0) $)%
-}%
-
-\tikztimingdef{HEU}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
-  -- +(#1,0)
-  -- +($ (#1,-\height/2) + (\dslope/2,0) $)%
-  -- +(#1,-\height)
-  -- +(\slope,-\height)
-  -- +(0,0)
-    ++($ (#1,-\height/2) + (\dslope/2,0) $)%
-}%
-
+\tikztiminglet{LEU}{LED}
+\tikztiminglet{HEU}{HED}
 
 \tikztimingdef{EZ}{%
   \newdraw [\style]
@@ -4568,6 +4513,32 @@
     ++($ (#1,0) + (\zslope, 0) $)
   \newdraw
 }
+
+\tikztiminglet{XEH}{ZEH}
+\tikztiminglet{XED}{ZED}
+\tikztiminglet{XEZ}{ZEZ}
+\tikztiminglet{XEL}{ZEL}
+
+\tikztiminglet{XEX}{ZEZ}
+\tikztiminglet{XEZ}{ZEZ}
+\tikztiminglet{ZEX}{ZEZ}
+
+\tikztiminglet{ZEU}{ZED}
+\tikztiminglet{XEU}{ZED}
+
+\tikztimingdef{DEH}{%
+  \newdraw [timing/e,preaction={timing/e/background}]
+  -- +(\dslope/2, \height/2)
+  -- +($ (#1,0) + (\slope, \height/2) $)
+  -- +(#1,-\height/2)
+  -- +(\dslope/2, -\height/2)
+  -- +(0,0)
+    ++($ (#1,0) + (\slope, \height/2) $)
+  \newdraw
+}
+
+\tikztiminglet{UEH}{DEH}
+
 
 \tikztimingdef{ZE}{%
   \code{\setcounter{tikztimingtranspos}{1}}%
