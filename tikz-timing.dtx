@@ -4553,22 +4553,12 @@
   -- ++($ (#1,0) - (\slope,0) $)%
 }%
 
+\tikztimingdef{ED@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}
+
 \tikztimingdef{ED}{%
-  \newdraw [\bgstyle]
-  -- +(\dslope/2,\height/2)
-  -- +($ (#1,\height/2) - (\dslope/2,0) $)%
-  -- +($ (#1,-\height/2) - (\dslope/2,0) $)%
-  -- +(\dslope/2,-\height/2)
-  -- +(0,0)
-  \newdraw [\style]
-     coordinate (timing@dstart)
-  -- +(\dslope/2,\height/2)
-  -- +($ (#1,\height/2) - (\dslope/2,0) $)%
-     +($ (#1,-\height/2) - (\dslope/2,0) $)%
-  -- +(\dslope/2,-\height/2)
-  -- +(0,0)
-     ++($ (#1,0) - (\dslope/2,0) $)%
-     coordinate [shift={(\dslope/2,0)}] (timing@dend)
+  \tikztiming@chard{#1 - \dslope/2}%
 }
 
 \tikztimingdef{EU}{%
@@ -4636,6 +4626,22 @@
   -- +(0,0)
      +($ (#1,0) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
 }%
+
+\tikztimingdef{ZE}{
+  \newdraw [\bgstyle]
+  -- +(\dslope/2,\height/2)
+  -- +(#1,\height/2)%
+  -- +(#1,-\height/2)%
+  -- +(\dslope/2,-\height/2)
+  -- +(0,0)
+  \newdraw [\style]
+  -- +(\dslope/2,\height/2)
+  -- +(#1,\height/2)%
+     +(#1,-\height/2)%
+  -- +(\dslope/2,-\height/2)
+  -- +(0,0)
+    ++(#1,0)%
+}
 
 \tikztimingdef{ZEH}{%
   \newdraw [timing/e,preaction={timing/e/background}]
