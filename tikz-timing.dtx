@@ -2484,23 +2484,31 @@
       % not empty
       \edef\tikztiming@output@currentchar{#2}%
       \ifcase0%
-      \expandafter\ifx\csname tikztiming@nocombine@#2\endcsname\relax
-      \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
-        1%
-      \fi\fi
+       \ifx\tikztiming@output@bufcode\empty% Stop combining if code was inserted
+        \expandafter\ifx\csname tikztiming@nocombine@#2\endcsname\relax
+         \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
+           1%
+         \fi
+        \fi
+       \fi
       \relax
         \edef\tikztiming@output@nextchar{#2}%
         \tikztiming@output@flush
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
+        \message{^^JDEBUG:
+          BufA: \tikztiming@output@bufchara, %
+          BufB: \tikztiming@output@bufcharb = #1, %
+          Leng: \tikztiming@output@bufnum,
+          Code: \meaning\tikztiming@output@bufcode,
+          Next: #2 ^^J} %
       \or
-        %\tikztiming@output@codeflush
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
         \let\tikztiming@output@bufnum\pgfmathresult
         \def\tikztiming@num{1.0}%
       \fi
     \else % empty
-      %\tikztiming@output@codeflush
+      \tikztiming@output@codeflush
       \edef\tikztiming@output@bufchara{#1}%
       \edef\tikztiming@output@bufcharb{#2}%
       \let\tikztiming@output@bufnum\tikztiming@num
@@ -2524,7 +2532,7 @@
 %    \begin{macrocode}
 \def\tikztiming@output@codeflush{%
   \tikztiming@eaddtostr{\tikztiming@output@bufcode}%
-  \gdef\tikztiming@output@bufcode{}%
+  \global\let\tikztiming@output@bufcode\empty%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2533,10 +2541,6 @@
 %    \begin{macrocode}
 \def\tikztiming@output@charflush{%
   \begingroup
-        \message{^^JDEBUG:
-          BufA: \tikztiming@output@bufchara, %
-          BufB: \tikztiming@output@bufcharb, %
-          Next: \tikztiming@output@nextchar ^^J} %
     \let\tikztiming@num\tikztiming@output@bufnum
     \tikztiming@nameaddtostr
     [\tikztiming@output@nextchar]%
@@ -2681,8 +2685,6 @@
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
   \tikztiming@eaddto\tikztiming@output@bufcode{%
-    (timing@dstart) circle (.75pt)
-    (timing@dend)   circle (1.5pt)
     node [%]
       timing/\currentcharlc/text,%
   }%
@@ -3956,10 +3958,13 @@
   -- +(0,\height)
   -- cycle;
   \newdraw [\style]
+  node [timing/save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
   --  +(#1,0) ++(0,+\height)
   -- ++(#1,0) ++(0,-\height)
+  node [timing/save] (timing@dend) at +(\dslope/2.,\height/2.) {}
 }
 
+\def\tikztiming@nocombine@D@edge{}%
 \tikztiming@namelet{D@edge@@start}{D@start}
 \tikztiming@namelet{d@edge@@start}{d@start}
 
