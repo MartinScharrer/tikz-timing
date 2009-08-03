@@ -2161,9 +2161,7 @@
         is not defined and will be ignored!}{}{}{}}%
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
-      \tracingmacros=1
       \tikztiming@parser #2\relax
-      \tracingmacros=0
       \message{^^J\meaning\tikztiming@str^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
@@ -2473,8 +2471,8 @@
 \def\tikztiming@output#1#2{%
   \edef\fromchar{#1}%
   \edef\tochar{#2}%
-  \tikztiming@output@codeflush
   \ifx\relax#2\relax
+    %\tikztiming@output@codeflush
     \tikztiming@nameaddtostr{#1}%
   \else
     \ifcase0%
@@ -2496,11 +2494,13 @@
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
       \or
+        %\tikztiming@output@codeflush
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
         \let\tikztiming@output@bufnum\pgfmathresult
         \def\tikztiming@num{1.0}%
       \fi
     \else % empty
+      %\tikztiming@output@codeflush
       \edef\tikztiming@output@bufchara{#1}%
       \edef\tikztiming@output@bufcharb{#2}%
       \let\tikztiming@output@bufnum\tikztiming@num
@@ -2553,6 +2553,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
+%
+% \subsection{Macros for Character Definitions}
+%
 % \begin{macro}{\tikztiming@nameedef}[3]{Optional character to indicate 
 % character case}{Macro name to be defined (without prefix)}{Content of macro}
 % Defines internal tikztiming macro with name |\|\meta{prefix}\meta{name (\#2)}.  
@@ -2592,6 +2595,9 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%
+% \subsection{Parser}
 %
 % \begin{macro}{\tikztiming@parser@end}
 %    \begin{macrocode}
@@ -2675,10 +2681,8 @@
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
   \tikztiming@eaddto\tikztiming@output@bufcode{%
-   ++(0,0)
-   (timing@dstart) circle (1pt)
-   (timing@dend) circle (.5pt)
-   +(0,0)
+    (timing@dstart) circle (.75pt)
+    (timing@dend)   circle (1.5pt)
     node [%]
       timing/\currentcharlc/text,%
   }%
@@ -2687,7 +2691,7 @@
       #1%
       ] at ($ (timing@dstart) !.5! (timing@dend) $) {#2}
   }}%
-  %\def\lastchar{D@edge@}%
+  \def\lastchar{D@edge@}%
   }{%
     \endgroup
     \PackageWarning{tikz-timing}{Ignoring text for character 
@@ -3660,8 +3664,8 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\@namedef{\tikztiming@prefix  @start}#1{}%
-\@namedef{\tikztiming@prefix @@start}#1{}%
+\@namedef{\tikztiming@prefix  @start}#1{ coordinate (timing/start)}%
+\@namedef{\tikztiming@prefix @@start}#1{ coordinate (timing/start)}%
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztimingchar@}[3]{Character}{Start position}{Character 
@@ -3926,6 +3930,7 @@
   node [timing/save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
   --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
   --  +(\dslope,-\height) -- ++(#1,-\height)
+  node [timing/save] (timing@dend) at +(\dslope/2.,\height/2.) {}
 }
 \tikztiming@namelet{D@edge@D}{DD}
 \tikztiming@namelet{D@edge@D@general}{DD@general}
