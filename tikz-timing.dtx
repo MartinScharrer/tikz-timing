@@ -4345,7 +4345,6 @@
 %<*lib-either>
 % \fi
 %    \begin{macrocode}
-\tikztimingecopy{E}{D}
 \tikztimingchar{E}{
   ++(0,0)
   \code{\setcounter{tikztimingtranspos}{0}}%
@@ -4355,11 +4354,12 @@
   \code{\setcounter{tikztimingtrans}{1}}%
   \tikztiminguse{D}{#1}%
 }
+
 \tikztimingdef{LE}{%
   \newdraw [\bgstyle]
   -- ++(\slope,\height)%
   -- ++($ (#1,0) - (\slope,0) $)%
-  --   ++(0,-\height)%
+  -- ++(0,-\height)%
   -- ++($ -1*(#1,0) $)%
   \newdraw [\style]
   -- ++(\slope,\height)%
@@ -4374,7 +4374,7 @@
   \newdraw [\bgstyle]
   -- ++(\slope,-\height)%
   -- ++($ (#1,0) - (\slope,0) $)%
-  --   ++(0,\height)%
+  -- ++(0,\height)%
   -- ++($ -1*(#1,0) $)%
   \newdraw [\style]
   -- ++(\slope,-\height)%
@@ -4384,6 +4384,20 @@
      ++(0,-\height)%
   \code{\setcounter{tikztimingtranspos}{1}}%
   \code{\setcounter{tikztimingtrans}{-1}}%
+}%
+
+\tikztimingdef{TE}{%
+  \newdraw [\bgstyle]
+  -- ++(\slope,-\height * \value{tikztimingtrans})%
+  -- ++($ (#1,0) - (\slope,0) $)%
+  -- ++(0,\height * \value{tikztimingtrans})%
+  -- ++($ -1*(#1,0) $)%
+  \newdraw [\style]
+  -- ++(\slope,-\height * \value{tikztimingtrans})%
+  -- ++($ (#1,0) - (\slope,0) $)%
+     ++($ -1*(#1,-\height * \value{tikztimingtrans}) $)%
+  -- ++($  1*(#1,0) $)%
+     ++(0,-\height)%
 }%
 
 \tikztimingdef{LEL}{%
@@ -4446,6 +4460,20 @@
     ++(#1,0)
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
+}%
+
+\tikztimingdef{TEE}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   -- +(\slope, -\height * \value{tikztimingtrans})%
+   -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
+   -- +(#1,0)%
+   -- +(0,0)%
+     ++(#1,0)
+     ++(
+          .5 * \slope  + .5 * \value{tikztimingtrans} * \slope,
+         -.5 * \height - .5 * \value{tikztimingtrans} * \height
+       )
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }%
 
 \tikztimingdef{EEZ}{%
@@ -4598,15 +4626,15 @@
 \tikztimingdef{EE}{%
   \newdraw [\bgstyle]
   -- +(\slope * \value{tikztimingtrans}, \height)%
-  -- +($ (#1,\height) - (\slope * \value{tikztimingtranspos}, 0) $)%
-  -- +($ (#1,0) - (\slope * \value{tikztimingtranspos}, 0) $)%
+  -- +($ (#1,\height) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
+  -- +($ (#1,0) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
   -- +(0,0)
   \newdraw [\style]
   -- +(\slope * \value{tikztimingtrans}, \height)%
-  -- +($ (#1,\height) - (\slope * \value{tikztimingtranspos}, 0) $)%
-     +($ (#1,0) - (\slope * \value{tikztimingtranspos}, 0) $)%
+  -- +($ (#1,\height) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
+     +($ (#1,0) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
   -- +(0,0)
-     +($ (#1,0) - (\slope * \value{tikztimingtranspos}, 0) $)%
+     +($ (#1,0) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
 }%
 
 \tikztimingdef{ZEH}{%
@@ -4877,21 +4905,6 @@
   \code{\setcounter{tikztimingtrans}{1}}%
 }
 
-\tikztimingdef{ZE}{%
-  \code{\setcounter{tikztimingtranspos}{1}}%
-  \code{\setcounter{tikztimingtrans}{-1}}%
-  \tikztiminguse{ZD}{#1}%
-}
-\tikztimingdef{XE}{%
-  \code{\setcounter{tikztimingtranspos}{1}}%
-  \code{\setcounter{tikztimingtrans}{-1}}%
-  \tikztiminguse{XD}{#1}%
-}
-\tikztimingdef{ME}{%
-  \code{\setcounter{tikztimingtranspos}{1}}%
-  \code{\setcounter{tikztimingtrans}{-1}}%
-  \tikztiminguse{MD}{#1}%
-}
 \def\tikztiming@nocombine@E{}%%
 \def\tikztiming@nocombine@e{}%%
 %    \end{macrocode}
