@@ -4587,31 +4587,46 @@
 \tikztimingdef{EEE}{% OK
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope * \value{tikztimingtrans}, \height)%
-   -- +($ (#1,0) + (\slope * \value{tikztimingtrans}, \height) $)%
+   -- +($ (#1,\height) + (\slope * \value{tikztimingtrans}, 0) $)%
    -- +(#1,0)%
    -- +(0,0)%
-   -- ++(#1,0)%
+     ++(#1,0)%
+}%
+
+\tikztimingdef{EET}{% OK
+  \newdraw [\style,preaction={\bgstyle}]
+   -- +(\slope * \value{tikztimingtrans}, \height)%
+   -- +($ (#1,\height) + (\slope * \value{tikztimingtrans}, 0) $)%
+   circle (1pt)
+   -- +(#1,0)%
+   -- +(0,0)%
+   ++($ (#1,0) +
+      (\slope/2 + \value{tikztimingtrans} * \slope/2,
+        \height/2 + \value{tikztimingtrans} * \height/2)
+      $)%
+  \newdraw
 }%
 
 \tikztimingdef{EEL}{
   \newdraw [\style,preaction={\bgstyle}]
   -- +(\slope * \value{tikztimingtrans}, \height)%
-  -- +($ (#1,\height) - (\slope * \value{tikztimingtranspos} ,0)$)%
-  -- +($ (#1,0) + ( \slope - \slope * \value{tikztimingtranspos} ,0)$)%
+  -- +($ (#1,\height) - (\slope/2 - \slope/2 * \value{tikztimingtrans} ,0)$)%
+  -- +($ (#1,0) + (\slope/2 + \slope/2 * \value{tikztimingtrans} ,0)$)%
   -- +(0,0)
-    ++($ (#1,0) + ( \slope - \slope * \value{tikztimingtranspos} ,0)$)%
+    ++($ (#1,0) + (\slope/2 + \slope/2 * \value{tikztimingtrans} ,0)$)%
   \newdraw
 }
 
 \tikztimingdef{EEH}{
   \newdraw [\style,preaction={\bgstyle}]
-    -- +(\slope * \value{tikztimingtrans}, \height)%
-    -- +($ (#1,\height) + (\slope - \slope * \value{tikztimingtranspos}, 0) $)%
-    -- +($ (#1,0) - (\slope * \value{tikztimingtranspos}, 0) $)%
-    -- +(0, 0)%
-      ++($ (#1,\height) + (\slope - \slope * \value{tikztimingtranspos},0) $)%
+  -- +(\slope * \value{tikztimingtrans}, \height)%
+  -- +($ (#1,\height) + (\slope/2 + \slope/2 * \value{tikztimingtrans} ,0)$)%
+  -- +($ (#1,0) - (\slope/2 - \slope/2 * \value{tikztimingtrans} ,0)$)%
+  -- +(0,0)
+    ++($ (#1,\height) + (\slope/2 + \slope/2 * \value{tikztimingtrans} ,0)$)%
   \newdraw
 }
+
 
 \tikztimingdef{EE}{%
   \newdraw [\bgstyle]
@@ -4857,6 +4872,15 @@
    -- +(0,0)
      ++($ (#1,\height) + (\slope,0) $)
   \newdraw
+}
+
+\tikztimingdef{@ET}{%
+  \tikztiminguse{@EH}{#1}%
+  \code{\setcounter{tikztimingtrans}{-1}}
+}
+
+\tikztimingdef{ET}{%
+  -- ++($ (#1,0) - (\slope,0) $)%
 }
 
 \tikztimingdef{@EL}{%
