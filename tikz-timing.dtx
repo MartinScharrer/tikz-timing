@@ -4118,6 +4118,16 @@
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
+\tikztimingdef{TD@}{%
+  -- ++(\dslope/2, -\height/2 * \value{tikztimingtrans})
+  \tikztiming@chard@{#1 - \dslope/2}%
+}
+
+\tikztimingdef{TD}{%
+  -- ++(\dslope/2, -\height/2 * \value{tikztimingtrans})
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
 \tikztimingdef{LD@}{%
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard@{#1 - \dslope/2}%
@@ -4233,21 +4243,6 @@
   -- ++(\slope,\value{tikztimingtrans}*\height)
   -- ++($ (#1,0) - (\slope,0) $)
   }
-}
-
-\tikztimingdef{TD}{
-  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \code{\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
-  \addtocounter{tikztimingtranspos}{-1}}
-  -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
-  %\tikztiming@trans@D@fill{#1}{0.5*\dslope}%
-  -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
-  -- ++($ (#1,0) - (\dslope,0) $)
-     ++($ -1*(#1,\value{tikztimingtrans}*\height) $)
-     ++(\dslope/2.,+1*\value{tikztimingtrans}*\height/2.)
-  -- ++(\dslope/2.,-1*\value{tikztimingtrans}*\height/2.)
-  -- ++($ (#1,0) - (\dslope,0) $)
-     ++(0,\value{tikztimingtranspos}*\height/2.)
 }
 
 \tikztimingdef{DT}{
@@ -4775,6 +4770,9 @@
   \tikztiming@@chard{#1}%
 }
 \tikztimingdef{@DL}{%
+  \tikztiming@@chard{#1}%
+}
+\tikztimingdef{@DT}{%
   \tikztiming@@chard{#1}%
 }
 
