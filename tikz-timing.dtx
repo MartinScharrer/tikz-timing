@@ -2162,7 +2162,7 @@
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
       \tikztiming@parser #2\relax
-      \message{^^J\meaning\tikztiming@str^^J}%
+      %\message{^^J\meaning\tikztiming@str^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
@@ -2265,7 +2265,7 @@
         {\timing@@@init}%
         {\timing@@@init[]}%
       #3\relax
-      \message{^^J\meaning\tikztiming@str^^J}%
+      %\message{^^J\meaning\tikztiming@str^^J}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
@@ -3716,25 +3716,10 @@
   \tikztimingchar{#1}{}{}%
   \tikztimingdef{#1}{\tikztiminguse{#2}{##1}}%
   \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
-  \lowercase{%
-    \@ifundefined{\tikztiming@prefix#2}{}{%
-      \tikztimingdef{#1}{\tikztiminguse{#2}{##1}}%
-      \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
-    }%
-  }%
   \tikztimingdef{#1#1}{\tikztiminguse{#2#2}{##1}}%
   \@for\@tempa:=\tikztiming@chars\do{%
     \expandafter\tikztimingdef@@
     \expandafter{\@tempa}{#1}{#2}%
-%    \end{macrocode}
-%    Handle lowercase macros:
-%    \begin{macrocode}
-    \expandafter\lowercase\expandafter{\expandafter\def\expandafter\@tempb
-    \expandafter{\@tempa}}%
-    \@ifundefined{\tikztiming@prefix#2\@tempb}{}{%
-      \expandafter\tikztimingdef@@
-      \expandafter{\@tempb}{#1}{#2}%
-    }%
   }%
 }
 %    \end{macrocode}
@@ -3744,25 +3729,12 @@
 % character}{Original character}
 %    \begin{macrocode}
 \def\tikztiminglet@@#1#2#3{%
-  \tikztiminglet@@@#1#2#3%
-  % Should stay, cause no harm:
-  \lowercase{\tikztiminglet@@@#1}#2#3%
-  \lowercase{\tikztiminglet@@@#1#2#3}%
-  \lowercase{\uppercase{\tikztiminglet@@@#1}#2#3}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiminglet@@@}[3]{Character from list}{New 
-% character}{Original character}
-%    \begin{macrocode}
-\def\tikztiminglet@@@#1#2#3{%
   \tikztiminglet{#1#2}{#1#3}%
   \tikztiminglet{#2#1}{#3#1}%
 }
 %    \end{macrocode}
 % \end{macro}
-
+%
 %
 % \begin{macro}{\tikztimingdef@@}[3]{Character from list}{New 
 % character}{Original character}
