@@ -4386,7 +4386,7 @@
   \code{\setcounter{tikztimingtrans}{-1}}%
 }%
 
-\tikztimingdef{TE}{%
+\tikztimingdef{TE@}{%
   \newdraw [\bgstyle]
   -- ++(\slope,-\height * \value{tikztimingtrans})%
   -- ++($ (#1,0) - (\slope,0) $)%
@@ -4399,6 +4399,7 @@
   -- ++($  1*(#1,0) $)%
      ++(0,-\height)%
 }%
+
 
 \tikztimingdef{LEL}{%
   \newdraw [timing/e,preaction={timing/e/background}]
@@ -4463,6 +4464,70 @@
 }%
 
 \tikztimingdef{TEE}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   -- +(\slope, -\height * \value{tikztimingtrans})%
+   -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
+   -- +(#1,0)%
+   -- +(0,0)%
+     ++(#1,0)
+     ++(
+          .5 * \slope  + .5 * \value{tikztimingtrans} * \slope,
+         -.5 * \height - .5 * \value{tikztimingtrans} * \height
+       )
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+}%
+
+\tikztimingdef{TEH}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++(\slope,-\height * \value{tikztimingtrans})
+  -- ++($ (#1,0) - (\slope/2 + \slope/2 * \value{tikztimingtrans},0) $)
+  -- ++(\slope * \value{tikztimingtrans},
+        \height * \value{tikztimingtrans})
+  -- ++($ -1*(#1,0) - (\slope/2 + \slope/2 * \value{tikztimingtrans},0) $)
+     ++($ (#1,\height/2 - \height/2 * \value{tikztimingtrans})
+           + (\slope,0) $)
+  \newdraw
+}
+
+\tikztimingdef{TEL}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++(\slope,-\height * \value{tikztimingtrans})
+  -- ++($ (#1,0) - (\slope/2 - \slope/2 * \value{tikztimingtrans},0) $)
+  -- ++(-\slope * \value{tikztimingtrans},
+        \height * \value{tikztimingtrans})
+  -- ++($ -1*(#1,0) - (\slope/2 + -\slope/2 * \value{tikztimingtrans},0) $)
+     ++($ (#1,-\height/2 - \height/2 * \value{tikztimingtrans})
+           + (\slope,0) $)
+  \newdraw
+}
+
+\tikztimingdef{TEZ}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++(\slope,-\height * \value{tikztimingtrans})
+  -- ++($ (#1,0) - (\slope,0) $)
+  -- ++(\zslope,
+        \height/2 * \value{tikztimingtrans})
+  -- ++(-\zslope,
+        \height/2 * \value{tikztimingtrans})
+  -- ++($ -1*(#1,0) $)
+     ++($ (#1,0) + (\zslope,-\height/2 * \value{tikztimingtrans}) $)
+  \newdraw
+}
+
+\tikztimingdef{TED}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++(\slope,-\height * \value{tikztimingtrans})
+  -- ++($ (#1,0) - (\slope,0) $)
+  -- ++(\dslope/2,
+        \height/2 * \value{tikztimingtrans})
+  -- ++(-\dslope/2,
+        \height/2 * \value{tikztimingtrans})
+  -- ++($ -1*(#1,0) $)
+     ++($ (#1,0) + (\dslope/2,-\height/2 * \value{tikztimingtrans}) $)
+  \newdraw
+}
+
+\tikztimingdef{TE}{%
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope, -\height * \value{tikztimingtrans})%
    -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
@@ -4597,7 +4662,6 @@
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope * \value{tikztimingtrans}, \height)%
    -- +($ (#1,\height) + (\slope * \value{tikztimingtrans}, 0) $)%
-   circle (1pt)
    -- +(#1,0)%
    -- +(0,0)%
    ++($ (#1,0) +
@@ -4876,7 +4940,7 @@
 
 \tikztimingdef{@ET}{%
   \tikztiminguse{@EH}{#1}%
-  \code{\setcounter{tikztimingtrans}{-1}}
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }
 
 \tikztimingdef{ET}{%
