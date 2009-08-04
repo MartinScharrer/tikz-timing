@@ -3940,22 +3940,6 @@
   -- ++(#1,0)
 }
 
-\tikztimingdef{D@OLD@D}{
-  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
-     +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
-  -- +(#1,0)
-  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
-  -- +(#1,\height)
-  -- +(\dslope,\height) -- cycle;
-  \draw [timing/restore,\style] (timing@save) ++(0,0)
-  node [timing/save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
-  --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
-  --  +(\dslope,-\height) -- ++(#1,-\height)
-  node [timing/save] (timing@dend) at +(\dslope/2.,\height/2.) {}
-}
-\tikztiming@namelet{D@edge@D}{DD}
-\tikztiming@namelet{D@edge@D@general}{DD@general}
-
 \tikztimingchar{D}{++(0,0)}{
   node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
   -- +(#1,0)
@@ -4105,6 +4089,13 @@
   \newdraw
 }
 
+\tikztiming@nameedef[D]{D@edge@D}{%
+  \tikztiming@chard{#1 - \dslope/2}%
+}%
+
+\tikztiming@nameedef[D]{D@edge@D@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}%
 
 \tikztimingdef{ZDZ}{
   \tikztiming@chard{#1}
@@ -4119,6 +4110,10 @@
 
 \tikztimingdef{DD}{
   \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztimingdef{@DD}{%
+  \tikztiming@@chard{#1}%
 }
 
 \tikztimingdef{ZD@}{%
@@ -4303,7 +4298,7 @@
 \tikztimingdef{DT}{
   \code{\setcounter{tikztimingtrans}{-1}}
   \newdraw {[\style]
-  --  +(\slope/2.,-\height/2)
+  --  +(\dslope/2.,-\height/2)
   -- ++($ (#1,-\height/2) - (\dslope/2,0) $)
   }
 }
@@ -4339,8 +4334,31 @@
 % \subsubsection{Character `U'}
 %    \begin{macrocode}
 \tikztimingecopy{U}{D}
-\tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
-\tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
+
+\tikztimingdef{@UD}{%
+  \tikztiming@@chard{#1}%
+}
+
+\tikztimingdef{@DU}{%
+  \tikztiming@@chard{#1}%
+}
+
+\tikztimingdef{UD}{%
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztimingdef{DU}{%
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztimingdef{UD@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}
+
+\tikztimingdef{DU@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}
+
 %    \end{macrocode}
 %
 % \subsubsection{Character `X'}
