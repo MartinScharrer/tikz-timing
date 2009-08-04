@@ -4106,11 +4106,13 @@
   -- ++(\dslope/2, -\height/2 * \value{tikztimingtrans})
   \tikztiming@chard@{#1 - \dslope/2}%
 }
+\tikztimingdef{CD@}{\tikztiminguse{TD@}{#1}}
 
 \tikztimingdef{TD}{%
   -- ++(\dslope/2, -\height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1 - \dslope/2}%
 }
+\tikztimingdef{CD}{\tikztiminguse{TD}{#1}}
 
 \tikztimingdef{LD@}{%
   -- ++(\dslope/2, \height/2)
@@ -4148,6 +4150,15 @@
   \tikztiming@@chard{#1}%
 }
 \tikztimingdef{@DT}{%
+  \tikztiming@@chard{#1}%
+}
+\tikztimingdef{@UT}{%
+  \tikztiming@@chard{#1}%
+}
+\tikztimingdef{@DC}{%
+  \tikztiming@@chard{#1}%
+}
+\tikztimingdef{@UC}{%
   \tikztiming@@chard{#1}%
 }
 
@@ -4267,9 +4278,10 @@
 
 \tikztimingdef{DT}{
   \code{\setcounter{tikztimingtrans}{-1}}
-  \newdraw [\style]
+  \newdraw {[\style]
   --  +(\slope/2.,-\height/2)
   -- ++($ (#1,-\height/2) - (\dslope/2,0) $)
+  }
 }
 
 \tikztimingdef{MT}{%
@@ -5017,7 +5029,9 @@
 \tikztimingdef{@EC}{\tikztiminguse{@ET}{#1}}
 
 \tikztimingdef{ET}{%
+  {[\style]
   -- ++($ (#1,0) - (\slope,0) $)%
+  }
 }
 \tikztimingdef{EC}{\tikztiminguse{ET}{#1}}
 
