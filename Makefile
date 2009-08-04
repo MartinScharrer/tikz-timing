@@ -98,3 +98,19 @@ uninstall:
 	test -d "${TEXMFDIR}" && ${RM} -rv "${TEXMFDIR}/tex/latex/${PACKAGE}" \
 	"${TEXMFDIR}/doc/latex/${PACKAGE}" "${TEXMFDIR}/source/latex/${PACKAGE}" && texhash ${TEXMFDIR}
 
+test: test.pdf
+
+test.pdf: ${PACKAGE}.sty test.tex
+	pdflatex test
+	pdfcrop test.pdf
+
+compare: ${PACKAGE}.sty test.tex
+	pdflatex test
+	cp test.pdf new.pdf
+	rm ${PACKAGE}.sty
+	pdflatex test
+	cp test.pdf old.pdf
+	convert -density 500 new.pdf new-%02d.png
+	convert -density 500 old.pdf old-%02d.png
+	for N in `seq -w 00 10`; do compare old-$$N.png new-$$N.png diff-$$N.png; done
+
