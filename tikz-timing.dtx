@@ -4224,8 +4224,8 @@
 \tikztimingdef{TZ}{%
   \newdraw [\style]
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++(\slope,\value{tikztimingtrans}*\height/2.)
-  -- ++($ (#1,0) - (\slope,0) $)
+  -- ++(\zslope,\value{tikztimingtrans}*\height/2.)
+  -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 \tikztimingdef{ZT}{%
@@ -4402,7 +4402,7 @@
 
 
 \tikztimingdef{LEL}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\slope,\height)%
   -- +(#1,\height)%
   -- +($ (#1,0) + (\slope,0) $)%
@@ -4412,7 +4412,7 @@
 }%
 
 \tikztimingdef{LEH}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\slope,\height)%
   -- +($ (#1,\height) + (\slope,0) $)%
   -- +(#1,0)%
@@ -4422,7 +4422,7 @@
 }%
 
 \tikztimingdef{HEH}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +($ (#1,0) + (\slope,0) $)%
   -- +(#1,-\height)%
   -- +(\slope,-\height)
@@ -4432,7 +4432,7 @@
 }%
 
 \tikztimingdef{HEL}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(#1,0)
   -- +($ (#1,-\height) + (\slope,0) $)%
   -- +(\slope,-\height)
@@ -4452,7 +4452,7 @@
 }
 
 \tikztimingdef{HEE}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(#1,0)
   -- +($ (#1,-\height) + (\slope,0) $)%
   -- +(\slope,-\height)
@@ -4463,7 +4463,7 @@
 }%
 
 \tikztimingdef{LEE}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(#1,0)
   -- +($ (#1,\height) + (\slope,0) $)%
   -- +(\slope,\height)
@@ -4559,6 +4559,7 @@
    -- +(0,0)%
      ++($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \newdraw
 }%
 
 \tikztimingdef{EEZ}{%
@@ -4589,7 +4590,7 @@
 \tikztiminglet{EEU}{EED}
 
 \tikztimingdef{HEZ}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(#1,0)
   -- +($ (#1,-\height/2) + (\zslope,0) $)%
   -- +(#1,-\height)
@@ -4601,7 +4602,7 @@
 \tikztiminglet{HEX}{HEZ}
 
 \tikztimingdef{LEZ}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\slope,\height)
   -- +(#1,\height)
   -- +($ (#1,\height/2) + (\zslope,0) $)%
@@ -4613,7 +4614,7 @@
 \tikztiminglet{LEX}{LEZ}
 
 \tikztimingdef{LED}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\slope,\height)
   -- +(#1,\height)
   -- +($ (#1,\height/2) + (\dslope/2,0) $)%
@@ -4623,7 +4624,7 @@
 }%
 
 \tikztimingdef{HED}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(#1,0)
   -- +($ (#1,-\height/2) + (\dslope/2,0) $)%
   -- +(#1,-\height)
@@ -4756,7 +4757,7 @@
 }
 
 \tikztimingdef{ZEH}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
   -- +($ (#1,0) + (\slope, \height/2) $)
   -- +(#1,-\height/2)
@@ -4767,7 +4768,7 @@
 }
 
 \tikztimingdef{ZEL}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
   -- +(#1,\height/2)
   -- +($ (#1,0) + (\slope, -\height/2) $)
@@ -4778,7 +4779,7 @@
 }
 
 \tikztimingdef{ZET}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
   -- +($ (#1, \height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)
   -- +($ (#1,-\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)
@@ -4790,7 +4791,7 @@
 }
 
 \tikztimingdef{DET}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\dslope/2, \height/2)
   -- +($ (#1, \height/2) + (-\dslope/2 + \slope/2 - \slope/2 * 
   \value{tikztimingtrans}, 0) $)
@@ -4804,7 +4805,7 @@
 }
 
 \tikztimingdef{ZEZ}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
   -- +(#1,\height/2)
   -- +($ (#1,0) + (\zslope, 0) $)
@@ -4816,7 +4817,7 @@
 }
 
 \tikztimingdef{ZEE}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
   -- +($ (#1,0) + (\slope, \height/2) $)
   -- +(#1,-\height/2)
@@ -4831,10 +4832,23 @@
 \tikztimingdef{DEE}{%
   \tikztiminguse{ZEE}{#1-\dslope/2}%
 }
+
+\tikztimingdef{DEE}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\dslope/2, \height/2)
+  -- +($ (#1,0) + (-\dslope/2 + \slope, \height/2) $)
+  -- +($ (#1,-\height/2) - (\dslope/2,0) $)
+  -- +(\dslope/2, -\height/2)
+  -- +(0,0)
+    ++($ (#1,-\height/2) - (\dslope/2,0) $)
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+}
+
 \tikztiminglet{UEE}{DEE}
 
 \tikztimingdef{DED}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\dslope/2, \height/2)
   -- +($ (#1,\height/2) - (\dslope/2,0) $)
   -- +(#1,0)
@@ -4846,26 +4860,26 @@
 }
 
 \tikztimingdef{ZED}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
   -- +(#1,\height/2)
-  -- +($ (#1,0) + (\zslope, 0) $)
+  -- +($ (#1,0) + (\dslope/2, 0) $)
   -- +(#1,-\height/2)
   -- +(\zslope, -\height/2)
   -- +(0,0)
-    ++($ (#1,0) + (\zslope, 0) $)
+    ++($ (#1,0) + (\dslope/2, 0) $)
   \newdraw
 }
 
 \tikztimingdef{DEZ}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- +(\dslope/2, \height/2)
   -- +($ (#1,\height/2) - (\dslope/2,0) $)
-  -- +(#1,0)
+  -- +($ (#1,0) + (\zslope - \dslope/2, 0) $)
   -- +($ (#1,-\height/2) - (\dslope/2,0) $)
-  -- +(\zslope, -\height/2)
+  -- +(\dslope/2, -\height/2)
   -- +(0,0)
-    ++(#1,0)
+    ++($ (#1,0) + (\zslope - \dslope/2, 0) $)
   \newdraw
 }
 
@@ -4915,7 +4929,7 @@
 \tikztiminglet{UEL}{DEL}
 
 \tikztimingdef{\tikztiming@startchar D}{%
-  \newdraw [timing/e,preaction={timing/e/background}]
+  \newdraw [\style,preaction={\bgstyle}]
   -- ++($ (#1,\height/2) + (\dslope/2,0) $)
 }
 
@@ -5037,7 +5051,22 @@
      ++($ (#1,\height/2) + (\dslope/2,0) $)
 }
 
-\tikztiminglet{@EZ}{@ED}
+\tikztimingdef{@EZ}{%
+  [\bgstyle]
+  -- +(0,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\zslope,0) $)
+  -- +(#1,0)
+  -- +(0,0)
+  \newdraw [\style]
+      +(0,\height)
+   -- +(#1,\height)
+   -- +($ (#1,\height/2) + (\zslope,0) $)
+   -- +(#1,0)
+   -- +(0,0)
+     ++($ (#1,\height/2) + (\zslope,0) $)
+}
+
 \tikztiminglet{@EX}{@EZ}
 \tikztiminglet{@EU}{@ED}
 
