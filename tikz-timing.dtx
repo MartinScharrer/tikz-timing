@@ -4564,15 +4564,28 @@
 \tikztimingdef{EEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
   -- +(\slope * \value{tikztimingtrans}, \height)%
-  -- +($ (#1,\height) - (\slope * \value{tikztimingtranspos}, 0) $)%
-  -- +($ (#1,\height/2) + (\zslope - \slope * \value{tikztimingtranspos}, 0) $)%
-  -- +($ (#1,0) - (\slope * \value{tikztimingtranspos}, 0) $)%
+  -- +($ (#1,\height) - (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)%
+  -- +($ (#1,\height/2) + (\zslope,0) - (\slope/2 - \slope/2 * 
+  \value{tikztimingtrans}, 0) $)%
+  -- +($ (#1,0) - (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)%
   -- +(0,0)
-     +($ (#1,\height/2) + (\zslope - \slope * \value{tikztimingtranspos}, 0) $)%
+    ++($ (#1,\height/2) + (\zslope,0) - (\slope/2 - \slope/2 * 
+    \value{tikztimingtrans}, 0) $)%
+}%
+
+\tikztimingdef{EED}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\slope * \value{tikztimingtrans}, \height)%
+  -- +($ (#1,\height) - (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)%
+  -- +($ (#1,\height/2) + (\dslope/2,0) - (\slope/2 - \slope/2 * 
+  \value{tikztimingtrans}, 0) $)%
+  -- +($ (#1,0) - (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)%
+  -- +(0,0)
+    ++($ (#1,\height/2) + (\dslope/2,0) - (\slope/2 - \slope/2 * 
+    \value{tikztimingtrans}, 0) $)%
 }%
 
 \tikztiminglet{EEX}{EEZ}
-\tikztiminglet{EED}{EEZ}
 \tikztiminglet{EEU}{EED}
 
 \tikztimingdef{HEZ}{%
