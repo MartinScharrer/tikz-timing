@@ -3527,10 +3527,11 @@
   \def\zslope{\noexpand\timingzslope}%
   \def\dslope{\noexpand\timingdslope}%
   \def\gslope{0}%
-  \lowercase{%
-  \def\style{timing/#1}%
-  \def\bgstyle{timing/#1/background}%
+  \edef\style{%
+    \noexpand\def\noexpand\style{timing/#1}%
+    \noexpand\def\noexpand\bgstyle{timing/#1/background}%
   }%
+  \expandafter\lowercase\expandafter{\style}%
   \def\newdraw{\tikztiming@newdraw}%
   \def\newdrawns{\tikztiming@newdraw@nosave}%
   \def\code##1{ [/utils/exec={\unexpanded{##1}}] }%
@@ -3606,6 +3607,30 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\tikztimingcpy}[2]{New Character(s)}{Source Character(s)}
+%    \begin{macrocode}
+\def\tikztimingcpy#1#2{%
+  \begingroup
+  \edef\tikztimingcpy@a{#1}%
+  \edef\tikztimingcpy@b{#2}%
+  \ifx\tikztimingcpy@a\tikztimingcpy@b
+    \endgroup
+  \else
+    \endgroup
+    \@ifundefined{\tikztiming@prefix#2@general}{}%
+      {\message{^^J Copy macro '#2' to '#1'.^^J}%
+      % The following code is used to unsure that the used macroname is resolved 
+      % before it is used in the definition. Otherwise some macros in '#2' would 
+      % not be expanded and cause problems later.
+      \def\tikztimingcpy@a{\tikztimingdef{#1}}%
+      \expandafter\tikztimingcpy@a\expandafter{%
+      \csname\tikztiming@prefix#2@general\endcsname{##1}}}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \begin{macro}{\tikztiminglet}[2]{Original characters}{New characters}
 %    \begin{macrocode}
@@ -3726,11 +3751,9 @@
   }%
   \@for\@tempa:=\chars\do{%
     \@for\@tempb:=\chars\do{%
-        \@ifundefined{\tikztiming@prefix\@tempa#2\@tempb}{}%
-          {\tikztimingdef{\@tempa#1\@tempb}{\tikztiminguse{\@tempa#2\@tempb}{##1}}
-            \message{^^JCopy macro '\@tempa#2\@tempb' to '\@tempa#1\@tempb'
-            ^^J}%
-          }%
+      \tikztimingcpy{\@tempa#1\@tempb}{\@tempa#2\@tempb}%
+      \tikztimingcpy{#1\@tempa\@tempb}{#2\@tempa\@tempb}%
+      \tikztimingcpy{\@tempa\@tempb#2}{\@tempa\@tempb#2}%
       }%
   }%
 }
@@ -4317,7 +4340,6 @@
 \tikztimingecopy{U}{D}
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
 \tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
-
 %    \end{macrocode}
 %
 % \subsubsection{Character `X'}
@@ -5029,9 +5051,8 @@
 \tikztimingdef{@EC}{\tikztiminguse{@ET}{#1}}
 
 \tikztimingdef{ET}{%
-  {[\style]
+  % No scope because below slope belongs to 'E' not 'T'.
   -- ++($ (#1,0) - (\slope,0) $)%
-  }
 }
 \tikztimingdef{EC}{\tikztiminguse{ET}{#1}}
 
