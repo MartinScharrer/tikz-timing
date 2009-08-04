@@ -2089,7 +2089,7 @@
   g/.style={},
   z/.style={blue},
   t/.style={},
-  c/.style={timing/slope=0.0},
+  c/.style={timing/lslope=0.0},
   x/.style={red},
   table/grid/.style={timing/grid},
   table/lines/.style={},
@@ -2162,7 +2162,9 @@
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
       \tikztiming@parser #2\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \message{^^J\meaning\tikztiming@str^^J}%
+      %\edef\@tempa{\tikztiming@str}%
+      %\message{^^J\meaning\@tempa^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
@@ -2265,7 +2267,7 @@
         {\timing@@@init}%
         {\timing@@@init[]}%
       #3\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \message{^^J\meaning\tikztiming@str^^J}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
@@ -3717,9 +3719,19 @@
   \tikztimingdef{#1}{\tikztiminguse{#2}{##1}}%
   \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
   \tikztimingdef{#1#1}{\tikztiminguse{#2#2}{##1}}%
-  \@for\@tempa:=\tikztiming@chars\do{%
+  \edef\chars{\tikztiming@chars,@}%
+  \@for\@tempa:=\chars\do{%
     \expandafter\tikztimingdef@@
     \expandafter{\@tempa}{#1}{#2}%
+  }%
+  \@for\@tempa:=\chars\do{%
+    \@for\@tempb:=\chars\do{%
+        \@ifundefined{\tikztiming@prefix\@tempa#2\@tempb}{}%
+          {\tikztimingdef{\@tempa#1\@tempb}{\tikztiminguse{\@tempa#2\@tempb}{##1}}
+            \message{^^JCopy macro '\@tempa#2\@tempb' to '\@tempa#1\@tempb'
+            ^^J}%
+          }%
+      }%
   }%
 }
 %    \end{macrocode}
@@ -4105,6 +4117,42 @@
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
+\tikztimingdef{@D}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++($ (#1,\height/2) + (\dslope/2,0) $)
+}
+
+\tikztimingdef{@D@}{%
+  \tikztiming@@chard@{#1}%
+}
+
+\tikztimingdef{@D}{%
+  [\bgstyle]
+  -- +(0,\height)
+  -- +(#1,\height)
+  -- +(#1,0)
+  -- +(0,0)
+  \newdraw [\style]
+   +(0,\height) -- +(#1,\height)
+   +(0,0) -- ++(#1,0)
+  \newdraw
+}
+
+\tikztimingdef{@DZ}{%
+  \tikztiming@@chard{#1}%
+}
+\tikztimingdef{@DH}{%
+  \tikztiming@@chard{#1}%
+}
+\tikztimingdef{@DL}{%
+  \tikztiming@@chard{#1}%
+}
+\tikztimingdef{@DT}{%
+  \tikztiming@@chard{#1}%
+}
+
+\tikztiminglet{@U}{@D}
+
 \tikztimingdef{LD}{
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard{#1 - \dslope/2}
@@ -4219,7 +4267,9 @@
 
 \tikztimingdef{DT}{
   \code{\setcounter{tikztimingtrans}{-1}}
-  \tikztiminguse{DL}{#1}%
+  \newdraw [\style]
+  --  +(\slope/2.,-\height/2)
+  -- ++($ (#1,-\height/2) - (\dslope/2,0) $)
 }
 
 \tikztimingdef{MT}{%
@@ -4258,7 +4308,7 @@
 
 %    \end{macrocode}
 %
-% \subsubsection{Character `C'}
+% \subsubsection{Character `X'}
 %    \begin{macrocode}
 \tikztimingecopy{X}{Z}
 %    \end{macrocode}
@@ -4371,7 +4421,7 @@
   -- ++($  1*(#1,0) $)%
      ++(0,-\height)%
 }%
-
+\tikztimingdef{CE@}{\tikztiminguse{TE@}{#1}}
 
 \tikztimingdef{LEL}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4417,11 +4467,13 @@
   \tikztiminguse{HEL}{#1}
   \code{\setcounter{tikztimingtrans}{-1}}%
 }
+\tikztimingdef{HEC}{\tikztiminguse{HET}{#1}}
 
 \tikztimingdef{LET}{
   \tikztiminguse{LEH}{#1}
   \code{\setcounter{tikztimingtrans}{1}}%
 }
+\tikztimingdef{LEC}{\tikztiminguse{LET}{#1}}
 
 \tikztimingdef{HEE}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4458,6 +4510,7 @@
        )
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }%
+\tikztimingdef{CEE}{\tikztiminguse{TEE}{#1}}
 
 \tikztimingdef{TEH}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4470,6 +4523,7 @@
            + (\slope,0) $)
   \newdraw
 }
+\tikztimingdef{CEH}{\tikztiminguse{TEH}{#1}}
 
 \tikztimingdef{TEL}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4482,6 +4536,7 @@
            + (\slope,0) $)
   \newdraw
 }
+\tikztimingdef{CEL}{\tikztiminguse{TEL}{#1}}
 
 \tikztimingdef{TEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4495,6 +4550,7 @@
      ++($ (#1,0) + (\zslope,-\height/2 * \value{tikztimingtrans}) $)
   \newdraw
 }
+\tikztimingdef{CEZ}{\tikztiminguse{TEZ}{#1}}
 
 \tikztimingdef{TED}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4508,6 +4564,7 @@
      ++($ (#1,0) + (\dslope/2,-\height/2 * \value{tikztimingtrans}) $)
   \newdraw
 }
+\tikztimingdef{CED}{\tikztiminguse{TED}{#1}}
 
 \tikztimingdef{TE}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4522,6 +4579,7 @@
        )
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }%
+\tikztimingdef{CE}{\tikztiminguse{TE}{#1}}
 
 \tikztimingdef{TET}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4533,6 +4591,9 @@
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }%
+\tikztimingdef{CET}{\tikztiminguse{TET}{#1}}
+\tikztimingdef{CEC}{\tikztiminguse{TET}{#1}}
+\tikztimingdef{TEC}{\tikztiminguse{TET}{#1}}
 
 \tikztimingdef{EEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4654,7 +4715,6 @@
 
 \tikztiminglet{UE}{DE}%
 
-
 \tikztimingdef{EEE}{% OK
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope * \value{tikztimingtrans}, \height)%
@@ -4676,6 +4736,7 @@
       $)%
   \newdraw
 }%
+\tikztimingdef{EEC}{\tikztiminguse{EET}{#1}}
 
 \tikztimingdef{EEL}{
   \newdraw [\style,preaction={\bgstyle}]
@@ -4696,7 +4757,6 @@
     ++($ (#1,\height) + (\slope/2 + \slope/2 * \value{tikztimingtrans} ,0)$)%
   \newdraw
 }
-
 
 \tikztimingdef{EE}{%
   \newdraw [\bgstyle]
@@ -4761,6 +4821,7 @@
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }
+\tikztimingdef{ZEC}{\tikztiminguse{ZET}{#1}}
 
 \tikztimingdef{DET}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4775,6 +4836,7 @@
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }
+\tikztimingdef{DEC}{\tikztiminguse{DET}{#1}}
 
 \tikztimingdef{ZEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4900,41 +4962,6 @@
 \tikztiminglet{UEH}{DEH}
 \tikztiminglet{UEL}{DEL}
 
-\tikztimingdef{\tikztiming@startchar D}{%
-  \newdraw [\style,preaction={\bgstyle}]
-  -- ++($ (#1,\height/2) + (\dslope/2,0) $)
-}
-
-\tikztimingdef{@D@}{%
-  \tikztiming@@chard@{#1}%
-}
-
-\tikztimingdef{@D}{%
-  [\bgstyle]
-  -- +(0,\height)
-  -- +(#1,\height)
-  -- +(#1,0)
-  -- +(0,0)
-  \newdraw [\style]
-   +(0,\height) -- +(#1,\height)
-   +(0,0) -- ++(#1,0)
-  \newdraw
-}
-
-\tikztimingdef{@DZ}{%
-  \tikztiming@@chard{#1}%
-}
-\tikztimingdef{@DH}{%
-  \tikztiming@@chard{#1}%
-}
-\tikztimingdef{@DL}{%
-  \tikztiming@@chard{#1}%
-}
-\tikztimingdef{@DT}{%
-  \tikztiming@@chard{#1}%
-}
-
-\tikztiminglet{@U}{@D}
 \tikztimingdef{@E}{%
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
@@ -4987,10 +5014,12 @@
   \tikztiminguse{@EH}{#1}%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }
+\tikztimingdef{@EC}{\tikztiminguse{@ET}{#1}}
 
 \tikztimingdef{ET}{%
   -- ++($ (#1,0) - (\slope,0) $)%
 }
+\tikztimingdef{EC}{\tikztiminguse{ET}{#1}}
 
 \tikztimingdef{@EL}{%
   [\bgstyle]
