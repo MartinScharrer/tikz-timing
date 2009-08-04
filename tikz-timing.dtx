@@ -3616,9 +3616,11 @@
   \edef\tikztimingcpy@b{#2}%
   \ifx\tikztimingcpy@a\tikztimingcpy@b
     \endgroup
+    \message{^^J Copy macro '#2' to '#1' skipped.^^J}%
   \else
     \endgroup
-    \@ifundefined{\tikztiming@prefix#2@general}{}%
+    \@ifundefined{\tikztiming@prefix#2@general}%
+      {\message{^^J Copy macro '#2' to '#1' failed.^^J}}%
       {\message{^^J Copy macro '#2' to '#1'.^^J}%
       % The following code is used to unsure that the used macroname is resolved 
       % before it is used in the definition. Otherwise some macros in '#2' would 
@@ -3741,19 +3743,25 @@
 %    \begin{macrocode}
 \def\tikztimingecopy@#1#2{%
   \tikztimingchar{#1}{}{}%
-  \tikztimingdef{#1}{\tikztiminguse{#2}{##1}}%
+  \tikztimingcpy{#1}{#2}%
+  \tikztimingcpy{#1@}{#2@}%
+  \tikztimingcpy{@#1}{@#2}%
+  \tikztimingcpy{@#1@}{@#2@}%
   \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
   \tikztimingdef{#1#1}{\tikztiminguse{#2#2}{##1}}%
-  \edef\chars{\tikztiming@chars,@}%
-  \@for\@tempa:=\chars\do{%
-    \expandafter\tikztimingdef@@
-    \expandafter{\@tempa}{#1}{#2}%
+  \@for\@tempa:=\tikztiming@chars\do{%
+    \tikztimingcpy{\@tempa#1}{\@tempa#2}%
+    \tikztimingcpy{#1\@tempa}{#2\@tempa}%
+    \tikztimingcpy{@\@tempa#1}{@\@tempa#2}%
+    \tikztimingcpy{@#1\@tempa}{@#2\@tempa}%
+    \tikztimingcpy{\@tempa#1}{\@tempa#2@}%
+    \tikztimingcpy{#1\@tempa}{#2\@tempa @}%
   }%
-  \@for\@tempa:=\chars\do{%
-    \@for\@tempb:=\chars\do{%
-      \tikztimingcpy{\@tempa#1\@tempb}{\@tempa#2\@tempb}%
-      \tikztimingcpy{#1\@tempa\@tempb}{#2\@tempa\@tempb}%
-      \tikztimingcpy{\@tempa\@tempb#2}{\@tempa\@tempb#2}%
+  \@for\@tempa:=\tikztiming@chars\do{%
+    \@for\@tempb:=\tikztiming@chars\do{%
+        \tikztimingcpy{\@tempa#1\@tempb}{\@tempa#2\@tempb}%
+        \tikztimingcpy{#1\@tempa\@tempb}{#2\@tempa\@tempb}%
+        \tikztimingcpy{\@tempa\@tempb#2}{\@tempa\@tempb#2}%
       }%
   }%
 }
@@ -3775,8 +3783,6 @@
 % character}{Original character}
 %    \begin{macrocode}
 \def\tikztimingdef@@#1#2#3{%
-  \tikztimingdef{#1#2}{\tikztiminguse{#1#3}{##1}}%
-  \tikztimingdef{#2#1}{\tikztiminguse{#3#1}{##1}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4140,11 +4146,6 @@
 \tikztimingdef{LD@}{%
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard@{#1 - \dslope/2}%
-}
-
-\tikztimingdef{@D}{%
-  \newdraw [\style,preaction={\bgstyle}]
-  -- ++($ (#1,\height/2) + (\dslope/2,0) $)
 }
 
 \tikztimingdef{@D@}{%
@@ -4727,9 +4728,8 @@
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
-\tikztimingdef{EU}{%
-  \tikztiminguse{ED}{#1}%
-}
+\tikztimingcpy{EU}{ED}
+\tikztimingcpy{EU@}{ED@}
 
 \tikztimingdef{DE}{%
   \newdraw [\bgstyle]
@@ -4821,6 +4821,7 @@
   -- +(0,0)
     ++(#1,0)%
 }
+\tikztimingcpy{XE}{ZE}
 
 \tikztimingdef{ZEH}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -5003,31 +5004,13 @@
 }
 
 \tikztimingdef{@DE}{%
-  [\bgstyle]
-  -- +(0,\height)
-  -- +(#1,\height)
-  -- +($ (#1,\height/2) + (\dslope/2,0) $)
-  -- +(#1,0)
-  -- +(0,0)
-  \newdraw [\style]
-      +(-\dslope/2,\height/2) coordinate (timing@dstart)
-      +(0,\height)
-   -- +(#1,\height)
-   -- +($ (#1,\height/2) + (\dslope/2,0) $)
-   -- +(#1,0)
-   -- +(0,0)
-     ++($ (#1,\height/2) + (\dslope/2,0) $)
-      coordinate (timing@dend)
-}
-\tikztimingdef{@UE}{
-  \tikztiminguse{@DE}{#1}
-}
-\tikztimingdef{UUE}{
-  \tikztiminguse{@DE}{#1}
+  \tikztiming@@chard{#1}%
 }
 \tikztimingdef{DDE}{
-  \tikztiminguse{@DE}{#1}
+  \tikztiming@@chard{#1}%
 }
+\tikztimingcpy{@UE}{@DE}
+\tikztimingcpy{UUE}{DDE}
 
 \tikztimingdef{@EH}{%
   [\bgstyle]
