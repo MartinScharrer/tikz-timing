@@ -2162,9 +2162,7 @@
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
       \tikztiming@parser #2\relax
-      \message{^^J\meaning\tikztiming@str^^J}%
-      %\edef\@tempa{\tikztiming@str}%
-      %\message{^^J\meaning\@tempa^^J}%
+      %\message{^^J\meaning\tikztiming@str^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
       \texttimingbefore
@@ -2267,7 +2265,7 @@
         {\timing@@@init}%
         {\timing@@@init[]}%
       #3\relax
-      \message{^^J\meaning\tikztiming@str^^J}%
+      %\message{^^J\meaning\tikztiming@str^^J}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
@@ -3616,12 +3614,12 @@
   \edef\tikztimingcpy@b{#2}%
   \ifx\tikztimingcpy@a\tikztimingcpy@b
     \endgroup
-    \message{^^J Copy macro '#2' to '#1' skipped.^^J}%
+    %\message{^^J Copy macro '#2' to '#1' skipped.^^J}%
   \else
     \endgroup
     \@ifundefined{\tikztiming@prefix#2@general}%
-      {\message{^^J Copy macro '#2' to '#1' failed.^^J}}%
-      {\message{^^J Copy macro '#2' to '#1'.^^J}%
+      %{\message{^^J Copy macro '#2' to '#1' failed.^^J}}%
+      %{\message{^^J Copy macro '#2' to '#1'.^^J}%
       % The following code is used to unsure that the used macroname is resolved 
       % before it is used in the definition. Otherwise some macros in '#2' would 
       % not be expanded and cause problems later.
@@ -3754,8 +3752,8 @@
     \tikztimingcpy{#1\@tempa}{#2\@tempa}%
     \tikztimingcpy{@\@tempa#1}{@\@tempa#2}%
     \tikztimingcpy{@#1\@tempa}{@#2\@tempa}%
-    \tikztimingcpy{\@tempa#1}{\@tempa#2@}%
-    \tikztimingcpy{#1\@tempa}{#2\@tempa @}%
+    \tikztimingcpy{\@tempa#1@}{\@tempa#2@}%
+    \tikztimingcpy{#1\@tempa @}{#2\@tempa @}%
   }%
   \@for\@tempa:=\tikztiming@chars\do{%
     \@for\@tempb:=\tikztiming@chars\do{%
@@ -3940,7 +3938,7 @@
   -- ++(#1,0)
 }
 
-\tikztimingchar{D}{++(0,0)}{
+\tikztimingchar{D}{++(0,\height/2.)}{
   node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
   -- +(#1,0)
   -- +($ (#1,0) + 0.5*(\dslope,\height) $)
@@ -4015,7 +4013,6 @@
 \def\tikztiming@chard#1{%
   \newdraw [\style,preaction={\bgstyle}]
   coordinate (timing@dstart)
-   circle (1pt)
   -- +(\dslope/2,\height/2)
   -- +(#1,\height/2)
   -- +($ (#1,0) + (\dslope/2,0) $)
@@ -4023,7 +4020,6 @@
   -- +(\dslope/2,-\height/2)
   -- +(0,0)
     ++($ (#1,0) + (\dslope/2,0) $)
-   circle (1pt)
   coordinate (timing@dend)
 }
 
@@ -4036,7 +4032,6 @@
   -- +(0,0)
   \newdraw [\style]
      coordinate (timing@dstart)
-   circle (1pt)
   -- +(\dslope/2,\height/2)
   -- +(#1,\height/2)%
      +(#1,-\height/2)%
@@ -4044,7 +4039,6 @@
   -- +(0,0)
     ++(#1,0)%
      coordinate [shift={(\dslope/2,0)}] (timing@dend)
-     +(\dslope/2,0) circle (1pt)
 }
 
 \def\tikztiming@@chard#1{%
@@ -4057,7 +4051,6 @@
   \newdraw [\style]
      +(-\dslope/2,\height/2)
      coordinate (timing@dstart)
-     circle (1pt)
      +(0,\height)
   -- +(#1,\height)
   -- +($ (#1,\height/2) + (\dslope/2,0) $)
@@ -4065,7 +4058,6 @@
   -- +(0,0)
     ++($ (#1,\height/2) + (\dslope/2,0) $)
      coordinate (timing@dend)
-     circle (1pt)
   \newdraw
 }
 
@@ -4078,14 +4070,12 @@
   \newdraw [\style]
      +(-\dslope/2,\height/2)
      coordinate (timing@dstart)
-     circle (1pt)
      +(0,\height)
   -- +(#1,\height)
      +(#1,0)
   -- +(0,0)
     ++($ (#1,\height/2) + (\dslope/2,0) $)
      coordinate (timing@dend)
-     circle (1pt)
   \newdraw
 }
 
@@ -4119,7 +4109,6 @@
 \tikztimingdef{ZD@}{%
   \tikztiming@chard@{#1}%
 }
-\tikztiminglet{XD@}{ZD@}
 
 \tikztimingdef{HD@}{%
   -- ++(\dslope/2, -\height/2)
@@ -4282,8 +4271,8 @@
   \newdraw
   {[\style]
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++(\slope,\value{tikztimingtrans}*\height/2.)
-  -- ++($ (#1,0) - (\slope,0) $)
+  -- ++(\slope/2,\value{tikztimingtrans}*\height/2.)
+  -- ++($ (#1,0) - (\slope/2,0) $)
   }
 }
 
