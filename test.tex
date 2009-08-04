@@ -1,24 +1,41 @@
 %&pdflatex
 \documentclass{article}
-\usepackage [margin=.1cm] {geometry}
+\usepackage [margin=.1cm,paperwidth=11cm,paperheight=4.5cm] {geometry}
 \usepackage {tikz-timing}
-\usetikzlibrary{fadings}
-\usetikzlibrary{patterns}
+\usetikzlibrary {patterns}
+
+\ifx\usetikztimingpackage\undefined
+  \usepackage {tikz-timing-either}
+  \tikzset{timing/e/.style={fill=green},timing/e/background/.style={fill=green,draw=none}}
+\else
+  \usetikztiminglibrary {either}
+\fi
 \pagestyle{empty}
+\tikzset{%
+timing/.append style={orange,semitransparent},
+timing/e/.style={},timing/e/background/.style={fill=green,draw=none},
+timing/d/.style={},timing/d/background/.style={fill=yellow,draw=none},
+tt/.style={timing/initchar=T},
+ee/.style={},
+}
 
 \begin{document}
 \sffamily
+\tikzset{timing/slope=.4}
+\tikzset{timing/dslope=.4}
 \makeatletter
 \let\texttimingbefore\texttiminggrid
 
-\def\chars{H,L,Z,X,U,D}
+\def\chars{H,L,Z,D,T,tt,E,ee}
 \def\da{D{A}}
 \def\d{D}
-\edef\echars{\chars,D{A}}
+\def\e{E}
+\def\tt{tt}
+\edef\echars{\chars,}
 
 \@tempdima=1.6ex
 
-\foreach \a in \echars {%
+\foreach \a in {T,E} {%\echars {%
     \makebox[3\@tempdima][c]{\textbf{\ifx\a\da D\{A\}\else \a \fi}}%
     \hspace{1.6ex}%
     \foreach \c in \echars {%
@@ -30,22 +47,70 @@
     \foreach \b in \echars {%
       \makebox[3\@tempdima][c]{\ifx\b\da D\{A\}\else \b \fi}%
       \foreach \c in \echars {%
-        \edef\abc{\a\b\c}%
         \hspace{1.6ex}%
-        \let\x\a
-        \ifx\a\da
+        \let\x\b
+        \ifx\b\da
           \def\x{}%
         \fi
-        \ifx\d\a
+        \ifx\d\b
           \def\x{}%
         \fi
-        \expandafter\texttiming\expandafter[\expandafter\x\expandafter]\expandafter{\abc}%
+        \ifx\e\b
+          \def\x{}%
+        \fi
+        \ifx\tt\b
+          \def\x{T}%
+        \fi
+        \edef\abc{[\x]{\b\a\c}}%
+        \makebox[3\@tempdima][l]{\expandafter\texttiming\abc}%
       }%
       \par
     }%
-  \bigskip
+  \newpage
 }%
 
+\iffalse
+\texttiming[H]{HEEEEEELLLEEEEEHHHHEEEHHLLEEELLL}
+
+\texttiming[H]{HED}
+\texttiming[H]{HED{A}}
+{\tikzset{timing/slope=0}\texttiming[H]{HED{A}}}
+{\tikzset{timing/slope=0.5}\texttiming[H]{HED{A}3S}}
+{\tikzset{timing/slope=0.25}%
+\texttiming[H]{3H3E3D{A}S}}
+
+{\tikzset{timing/slope=0}\texttiming[H]{HEEEEL}}
+
+{\tikzset{timing/slope=0.25}\texttiming[H]{HEEEEL}}
+
+{\tikzset{timing/lslope=0}\texttiming{DEH}}
+
+\texttiming{DEH} \texttiming{D} \texttiming{DED} \texttiming[]{DED} \texttiming[D]{DED}
+\fi
+
+\texttiming{UEU}
+\texttiming[]{UEU}
+\texttiming[U]{UEU}
+
+\texttiming[H]{HEEEL}
+\texttiming[L]{LEEEL}
+\texttiming[H]{HEEEH}
+\texttiming[L]{LEEEH}
+
+\texttiming[H]{HEEE}
+\texttiming[L]{LEEE}
+\texttiming[]{DE}
+\texttiming[]{D{A}E}
+\texttiming{D{A}E}
+
+\texttiming{TEEET}
+\texttiming{LTEEETH}
+\texttiming{LTEEETL}
+\texttiming{HTEEETH}
+\texttiming{HTEEETL}
+
+\texttiming{TEH}
+\texttiming{TEL}
 
 \end{document}
 
