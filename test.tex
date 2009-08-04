@@ -1,18 +1,19 @@
 %&pdflatex
 \documentclass{article}
-\usepackage [margin=.1cm,paperwidth=11cm,paperheight=4.5cm] {geometry}
+\usepackage [margin=.1cm,paperwidth=14cm,paperheight=6.5cm] {geometry}
+
 \usepackage {tikz-timing}
 \usetikzlibrary {patterns}
 
 \ifx\usetikztimingpackage\undefined
-  \usepackage {tikz-timing-either}
-  \tikzset{timing/e/.style={fill=green},timing/e/background/.style={fill=green,draw=none}}
+%  \usepackage {tikz-timing-either}
+%  \tikzset{timing/e/.style={fill=green},timing/e/background/.style={fill=green,draw=none}}
 \else
-  \usetikztiminglibrary {either}
+%  \usetikztiminglibrary {either}
 \fi
 \pagestyle{empty}
 \tikzset{%
-timing/.append style={orange,semitransparent},
+timing/.append style={orange},
 timing/e/.style={},timing/e/background/.style={fill=green,draw=none},
 timing/d/.style={},timing/d/background/.style={fill=yellow,draw=none},
 tt/.style={timing/initchar=T},
@@ -21,52 +22,61 @@ ee/.style={},
 
 \begin{document}
 \sffamily
-\tikzset{timing/slope=.4}
+%\tikzset{timing/lslope=.4}
+%\tikzset{timing/dslope=.4}
+\tikzset{timing/zslope=0}
 \tikzset{timing/dslope=.4}
 \makeatletter
 \let\texttimingbefore\texttiminggrid
 
-\def\chars{H,L,Z,D,T,tt,E,ee}
 \def\da{D{A}}
+\def\db{D{B}}
+\def\dc{D{C}}
 \def\d{D}
 \def\e{E}
+\def\ee{ee}
 \def\tt{tt}
-\edef\echars{\chars,}
+\def\cc{cc}
+
+\def\achars{H,L,Z,X,U,D,D{A},T,tt,C,cc,}
+\def\bchars{H,L,Z,X,U,D,D{B},T,tt,C,cc,}
+\def\cchars{H,L,Z,X,U,D,D{C},T,tt,C,cc,}
 
 \@tempdima=1.6ex
 
-\foreach \a in {T,E} {%\echars {%
-    \makebox[3\@tempdima][c]{\textbf{\ifx\a\da D\{A\}\else \a \fi}}%
+\foreach \a in \achars {%
+    \framebox[3\@tempdima][c]{\textbf{\strut\ifx\a\da D{\scriptsize\{A\}}\else 
+    \a \fi}}%
     \hspace{1.6ex}%
-    \foreach \c in \echars {%
-      \makebox[3\@tempdima][c]{\ifx\c\da D\{A\}\else \c \fi}%
+    \foreach \c in \cchars {%
+      \makebox[3\@tempdima][c]{\ifx\c\dc D\{C\}\else \c \fi}%
       \hspace{1.6ex}%
     }%
-    \par
     \par\smallskip
-    \foreach \b in \echars {%
-      \makebox[3\@tempdima][c]{\ifx\b\da D\{A\}\else \b \fi}%
-      \foreach \c in \echars {%
+    \foreach \b in \bchars {%
+      \makebox[3\@tempdima][c]{\ifx\b\db D\{B\}\else \b \fi}%
+      \foreach \c in \cchars {%
         \hspace{1.6ex}%
         \let\x\b
-        \ifx\b\da
-          \def\x{}%
+        \ifx\b\db
+          \def\x{D}%
         \fi
-        \ifx\d\b
-          \def\x{}%
-        \fi
-        \ifx\e\b
-          \def\x{}%
+        \ifx\ee\b
+          \def\x{E}%
         \fi
         \ifx\tt\b
           \def\x{T}%
         \fi
-        \edef\abc{[\x]{\b\a\c}}%
+        \ifx\cc\b
+          \def\x{T}%
+        \fi
+        \edef\abc{%[\x]
+        {\b\a\c}}%
         \makebox[3\@tempdima][l]{\expandafter\texttiming\abc}%
       }%
       \par
     }%
-  \newpage
+    \newpage
 }%
 
 \iffalse
@@ -86,7 +96,6 @@ ee/.style={},
 {\tikzset{timing/lslope=0}\texttiming{DEH}}
 
 \texttiming{DEH} \texttiming{D} \texttiming{DED} \texttiming[]{DED} \texttiming[D]{DED}
-\fi
 
 \texttiming{UEU}
 \texttiming[]{UEU}
@@ -111,6 +120,7 @@ ee/.style={},
 
 \texttiming{TEH}
 \texttiming{TEL}
+\fi
 
 \end{document}
 
