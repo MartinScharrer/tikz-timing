@@ -2353,6 +2353,14 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@initcode@U}
+%    \begin{macrocode}
+\def\tikztiming@initcode@U{%
+  \def\lastchar{@}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@parser}
 % The |\@ifnextchar\bgroup| is a trick to remove following spaces which would 
 % break the number test.
@@ -3618,14 +3626,15 @@
   \else
     \endgroup
     \@ifundefined{\tikztiming@prefix#2@general}%
-      %{\message{^^J Copy macro '#2' to '#1' failed.^^J}}%
-      %{\message{^^J Copy macro '#2' to '#1'.^^J}%
+      {}%{\message{^^J Copy macro '#2' to '#1' failed.^^J}}%
+      {%{\message{^^J Copy macro '#2' to '#1'.^^J}%
       % The following code is used to unsure that the used macroname is resolved 
       % before it is used in the definition. Otherwise some macros in '#2' would 
       % not be expanded and cause problems later.
-      \def\tikztimingcpy@a{\tikztimingdef{#1}}%
-      \expandafter\tikztimingcpy@a\expandafter{%
-      \csname\tikztiming@prefix#2@general\endcsname{##1}}}%
+        \def\tikztimingcpy@a{\tikztimingdef{#1}}%
+        \expandafter\tikztimingcpy@a\expandafter{%
+        \csname\tikztiming@prefix#2@general\endcsname{##1}}%
+      }
   \fi
 }
 %    \end{macrocode}
@@ -3951,24 +3960,22 @@
   -- ++(#1,0) ++(0,-\height)
 }
 
-\tikztimingdef{DD}{
-  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
-  -- +(#1,0)
-  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
-  -- +(#1,\height)
-  -- +(0,\height)
-  -- cycle;
-  \newdraw [\style]
-  node [timing/save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
-  --  +(#1,0) ++(0,+\height)
-  -- ++(#1,0) ++(0,-\height)
-  node [timing/save] (timing@dend) at +(\dslope/2.,\height/2.) {}
-}
-
 \def\tikztiming@nocombine@D@edge{}%
-\tikztiming@namelet{D@edge@@start}{D@start}
-\tikztiming@namelet{d@edge@@start}{d@start}
 
+\tikztiming@nameedef[D]{D@edge@@start}{
+     ++(0, \height/2)
+     coordinate (timing/start)
+  \newdraw [\bgstyle]
+   -- +(0, \height/2)
+   -- +(\dslope/2,0)
+   -- +(0,-\height/2)
+   -- +(0,0)
+  \newdraw [\style]
+      +(0, \height/2)
+   -- +(\dslope/2,0)
+   -- +(0,-\height/2)
+     ++(\dslope/2,0)
+}
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@trans@D@fill}[2]{Original width}{Width to subtract}
@@ -4021,6 +4028,7 @@
   -- +(0,0)
     ++($ (#1,0) + (\dslope/2,0) $)
   coordinate (timing@dend)
+  \newdraw
 }
 
 \def\tikztiming@chard@#1{%
@@ -4039,6 +4047,7 @@
   -- +(0,0)
     ++(#1,0)%
      coordinate [shift={(\dslope/2,0)}] (timing@dend)
+  \newdraw
 }
 
 \def\tikztiming@@chard#1{%
