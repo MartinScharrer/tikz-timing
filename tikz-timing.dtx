@@ -2025,6 +2025,9 @@
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
 
+\def\tikztiming@xsep{0pt}
+\def\tikztiming@ysep{0pt}
+
 \newcounter{tikztiming@nrows}%
 \def\tikztiming@rowdist{2}%
 \def\tikztiming@coldist{1}%
@@ -2104,6 +2107,9 @@
   zslope/.code={\tikztimingsetzslope{#1}},
   coldist/.store in=\tikztiming@coldist,
   rowdist/.store in=\tikztiming@rowdist,
+  outer xsep/.store in=\tikztiming@xsep,
+  outer ysep/.store in=\tikztiming@ysep,
+  outer sep/.style={/tikz/timing/outer xsep=#1,/tikz/timing/outer ysep=#1},
 }
 \tikzset{timing/inline node/.cd,
   from char={}, to char={}
@@ -2150,7 +2156,7 @@
     \else
       \tikztiming@testoptarg#1\relax\relax%
     \fi
-    \def\@tempa{\begin{tikzpicture}[timing/intext,}%]}[
+    \def\@tempa{\begin{tikzpicture}[timing/intext,baseline={(0,0)},}%]}[
     \expandafter\@tempa\settings]
       \@ifundefined{tikztiming@initcode@\lastchar}%
         {}%
@@ -2163,8 +2169,10 @@
       \fi
       \tikztiming@parser #2\relax
       %\message{^^J\meaning\tikztiming@str^^J}%
-      \path[use as bounding box] (0,0) rectangle 
-      (\timingwidth*\tikztimingwidth,\timingheight);%
+      \path[use as bounding box]
+      (-\tikztiming@xsep,-\tikztiming@ysep) rectangle
+      ($ (\timingwidth*\tikztimingwidth,\timingheight) + 
+      (\tikztiming@xsep,\tikztiming@ysep) $);%
       \texttimingbefore
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,name=last texttiming] at (0,0) 
