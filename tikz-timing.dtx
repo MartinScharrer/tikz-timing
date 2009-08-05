@@ -4249,14 +4249,14 @@
   -- ++(\dslope/2, -\height/2 * \value{tikztimingtrans})
   \tikztiming@chard@{#1 - \dslope/2}%
 }
-\tikztimingdef{CD@}{\tikztiminguse{TD@}{#1}}
+\tikztimingcpy{CD@}{TD@}
 
 \tikztimingdef{TD}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1 - \dslope/2}%
 }
-\tikztimingdef{CD}{\tikztiminguse{TD}{#1}}
+\tikztimingcpy{CD}{TD}
 
 \tikztimingdef{LD@}{%
   -- ++(\dslope/2, \height/2)
@@ -4586,7 +4586,7 @@
   -- ++($  1*(#1,0) $)%
      ++(0,-\height)%
 }%
-\tikztimingdef{CE@}{\tikztiminguse{TE@}{#1}}
+\tikztimingcpy{CE@}{TE@}
 
 \tikztimingdef{LEL}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4632,13 +4632,13 @@
   \tikztiminguse{HEL}{#1}
   \code{\setcounter{tikztimingtrans}{-1}}%
 }
-\tikztimingdef{HEC}{\tikztiminguse{HET}{#1}}
+\tikztimingcpy{HEC}{HET}
 
 \tikztimingdef{LET}{
   \tikztiminguse{LEH}{#1}
   \code{\setcounter{tikztimingtrans}{1}}%
 }
-\tikztimingdef{LEC}{\tikztiminguse{LET}{#1}}
+\tikztimingcpy{LEC}{LET}
 
 \tikztimingdef{HEE}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4675,7 +4675,7 @@
        )
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }%
-\tikztimingdef{CEE}{\tikztiminguse{TEE}{#1}}
+\tikztimingcpy{CEE}{TEE}
 
 \tikztimingdef{TEH}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4688,7 +4688,7 @@
            + (\slope,0) $)
   \newdraw
 }
-\tikztimingdef{CEH}{\tikztiminguse{TEH}{#1}}
+\tikztimingcpy{CEH}{TEH}
 
 \tikztimingdef{TEL}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4701,7 +4701,7 @@
            + (\slope,0) $)
   \newdraw
 }
-\tikztimingdef{CEL}{\tikztiminguse{TEL}{#1}}
+\tikztimingcpy{CEL}{TEL}
 
 \tikztimingdef{TEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4731,9 +4731,9 @@
      ++($ (#1,0) + (\dslope/2,-\height/2 * \value{tikztimingtrans}) $)
   \newdraw
 }
-\tikztimingdef{CED}{\tikztiminguse{TED}{#1}}
-\tikztimingdef{CEU}{\tikztiminguse{TED}{#1}}
-\tikztimingdef{TEU}{\tikztiminguse{TED}{#1}}
+\tikztimingcpy{CED}{TED}
+\tikztimingcpy{CEU}{TED}
+\tikztimingcpy{TEU}{TED}
 
 \tikztimingdef{TE}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4748,7 +4748,7 @@
        )
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }%
-\tikztimingdef{CE}{\tikztiminguse{TE}{#1}}
+\tikztimingcpy{CE}{TE}
 
 \tikztimingdef{TET}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4760,9 +4760,9 @@
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }%
-\tikztimingdef{CET}{\tikztiminguse{TET}{#1}}
-\tikztimingdef{CEC}{\tikztiminguse{TET}{#1}}
-\tikztimingdef{TEC}{\tikztiminguse{TET}{#1}}
+\tikztimingcpy{CET}{TET}
+\tikztimingcpy{CEC}{TET}
+\tikztimingcpy{TEC}{TET}
 
 \tikztimingdef{EEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4788,8 +4788,8 @@
     \value{tikztimingtrans}, 0) $)%
 }%
 
-\tikztiminglet{EEX}{EEZ}
-\tikztiminglet{EEU}{EED}
+\tikztimingcpy{EEX}{EEZ}
+\tikztimingcpy{EEU}{EED}
 
 \tikztimingdef{HEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4801,7 +4801,7 @@
     ++($ (#1,-\height/2) + (\zslope,0) $)%
 }%
 
-\tikztiminglet{HEX}{HEZ}
+\tikztimingcpy{HEX}{HEZ}
 
 \tikztimingdef{LEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4813,7 +4813,7 @@
     ++($ (#1,\height/2) + (\zslope,0) $)%
 }%
 
-\tikztiminglet{LEX}{LEZ}
+\tikztimingcpy{LEX}{LEZ}
 
 \tikztimingdef{LED}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -4835,17 +4835,15 @@
     ++($ (#1,-\height/2) + (\dslope/2,0) $)%
 }%
 
-\tikztiminglet{LEU}{LED}
-\tikztiminglet{HEU}{HED}
+\tikztimingcpy{LEU}{LED}
+\tikztimingcpy{HEU}{HED}
 
 \tikztimingdef{EZ}{%
   \newdraw [\style]
   -- ++($ (#1,0) - (\zslope,0) $)
 }
 
-\tikztimingdef{EX}{%
-  \tikztiminguse{EZ}{#1}%
-}%
+\tikztimingcpy{EX}{EZ}
 
 \tikztimingdef{EL}{%
   -- ++($ (#1,0) - (\slope,0) $)%
@@ -4880,7 +4878,7 @@
   -- +(0,0)
      ++($ (#1,0) - (\dslope/2,0) $)%
 }
-\tikztiminglet{UE}{DE}%
+\tikztimingcpy{UE}{DE}%
 
 \tikztimingdef{EEE}{% OK
   \newdraw [\style,preaction={\bgstyle}]
@@ -4903,7 +4901,7 @@
       $)%
   \newdraw
 }%
-\tikztimingdef{EEC}{\tikztiminguse{EET}{#1}}
+\tikztimingcpy{EEC}{EET}
 
 \tikztimingdef{EEL}{
   \newdraw [\style,preaction={\bgstyle}]
@@ -4989,9 +4987,9 @@
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }
-\tikztimingdef{ZEC}{\tikztiminguse{ZET}{#1}}
-\tikztimingdef{XEC}{\tikztiminguse{ZET}{#1}}
-\tikztimingdef{XET}{\tikztiminguse{ZET}{#1}}
+\tikztimingcpy{ZEC}{ZET}
+\tikztimingcpy{XEC}{ZET}
+\tikztimingcpy{XET}{ZET}
 
 \tikztimingdef{DET}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -5006,9 +5004,9 @@
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }
-\tikztimingdef{DEC}{\tikztiminguse{DET}{#1}}
-\tikztimingdef{UEC}{\tikztiminguse{DET}{#1}}
-\tikztimingdef{UET}{\tikztiminguse{DET}{#1}}
+\tikztimingcpy{DEC}{DET}
+\tikztimingcpy{UEC}{DET}
+\tikztimingcpy{UET}{DET}
 
 \tikztimingdef{ZEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -5033,7 +5031,7 @@
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
 }
-\tikztiminglet{XEE}{ZEE}
+\tikztimingcpy{XEE}{ZEE}
 
 \tikztimingdef{DEE}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -5047,7 +5045,7 @@
   \code{\setcounter{tikztimingtrans}{1}}%
 }
 
-\tikztiminglet{UEE}{DEE}
+\tikztimingcpy{UEE}{DEE}
 
 \tikztimingdef{DED}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -5085,25 +5083,25 @@
   \newdraw
 }
 
-\tikztiminglet{DEX}{DEZ}
-\tikztiminglet{UEZ}{DEZ}
-\tikztiminglet{UEX}{DEZ}
+\tikztimingcpy{DEX}{DEZ}
+\tikztimingcpy{UEZ}{DEZ}
+\tikztimingcpy{UEX}{DEZ}
 
-\tikztiminglet{UED}{DED}
-\tikztiminglet{DEU}{DED}
-\tikztiminglet{UEU}{DED}
+\tikztimingcpy{UED}{DED}
+\tikztimingcpy{DEU}{DED}
+\tikztimingcpy{UEU}{DED}
 
-\tikztiminglet{XEH}{ZEH}
-\tikztiminglet{XED}{ZED}
-\tikztiminglet{XEZ}{ZEZ}
-\tikztiminglet{XEL}{ZEL}
+\tikztimingcpy{XEH}{ZEH}
+\tikztimingcpy{XED}{ZED}
+\tikztimingcpy{XEZ}{ZEZ}
+\tikztimingcpy{XEL}{ZEL}
 
-\tikztiminglet{XEX}{ZEZ}
-\tikztiminglet{XEZ}{ZEZ}
-\tikztiminglet{ZEX}{ZEZ}
+\tikztimingcpy{XEX}{ZEZ}
+\tikztimingcpy{XEZ}{ZEZ}
+\tikztimingcpy{ZEX}{ZEZ}
 
-\tikztiminglet{ZEU}{ZED}
-\tikztiminglet{XEU}{ZED}
+\tikztimingcpy{ZEU}{ZED}
+\tikztimingcpy{XEU}{ZED}
 
 \tikztimingdef{DEH}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -5127,8 +5125,8 @@
   \newdraw
 }
 
-\tikztiminglet{UEH}{DEH}
-\tikztiminglet{UEL}{DEL}
+\tikztimingcpy{UEH}{DEH}
+\tikztimingcpy{UEL}{DEL}
 
 \tikztimingdef{@E}{%
   \code{\setcounter{tikztimingtranspos}{0}}%
@@ -5164,13 +5162,13 @@
   \tikztiminguse{@EH}{#1}%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }
-\tikztimingdef{@EC}{\tikztiminguse{@ET}{#1}}
+\tikztimingcpy{@EC}{@ET}
 
 \tikztimingdef{ET}{%
   % No scope because below slope belongs to 'E' not 'T'.
   -- ++($ (#1,0) - (\slope,0) $)%
 }
-\tikztimingdef{EC}{\tikztiminguse{ET}{#1}}
+\tikztimingcpy{EC}{ET}
 
 \tikztimingdef{@EL}{%
   [\bgstyle]
@@ -5219,8 +5217,8 @@
      ++($ (#1,\height/2) + (\zslope,0) $)
 }
 
-\tikztiminglet{@EX}{@EZ}
-\tikztiminglet{@EU}{@ED}
+\tikztimingcpy{@EX}{@EZ}
+\tikztimingcpy{@EU}{@ED}
 
 \tikztimingdef{@EE}{%
   [\bgstyle]
