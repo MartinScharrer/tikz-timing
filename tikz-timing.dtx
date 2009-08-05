@@ -2466,18 +2466,17 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@nameaddtostr}[2]{Optional next character}{Name of 
-% macro without prefix
-% to add}
+% \begin{macro}{\tikztiming@nameaddtostr}[3]{Optional next character}
+% {First character}{Second character}
 %    \begin{macrocode}
-\newcommand*\tikztiming@nameaddtostr[2][]{%
+\newcommand*\tikztiming@nameaddtostr[3][]{%
   \begingroup
-    \edef\@tempa{#2}%
+    \edef\@tempa{#2#3}%
     \ifx\@tempa\empty\else
     \edef\@tempa{\tikztiming@num}%
-    \@ifundefined{\tikztiming@prefix#2#1}%
-      {\def\@tempb{#2}}%
-      {\def\@tempb{#2#1}}%
+    \@ifundefined{\tikztiming@prefix#2#3#1}%
+      {\edef\@tempb{#2#3}}%
+      {\edef\@tempb{#2#3#1}}%
     \expandafter\g@addto@macro
     \expandafter\tikztiming@str
     \expandafter{\csname\tikztiming@prefix\@tempb\expandafter\endcsname
@@ -2538,7 +2537,7 @@
   \edef\tochar{#2}%
   \ifx\relax#2\relax
     %\tikztiming@output@codeflush
-    \tikztiming@nameaddtostr{#1}%
+    \tikztiming@nameaddtostr{#1}{}%
   \else
     \ifcase0%
       \ifx\tikztiming@output@bufchara\empty
@@ -2619,11 +2618,9 @@
   \begingroup
     \let\tikztiming@num\tikztiming@output@bufnum
     \tikztiming@nameaddtostr
-    [\tikztiming@output@nextchar]%
-    {%
-      \tikztiming@output@bufchara
-      \tikztiming@output@bufcharb
-    }%
+      [\tikztiming@output@nextchar]%
+      {\tikztiming@output@bufchara}%
+      {\tikztiming@output@bufcharb}%
   \endgroup%
   \gdef\tikztiming@output@bufchara{}%
   \gdef\tikztiming@output@bufcharb{}%
@@ -3828,6 +3825,7 @@
 % \begin{macro}{\tikztimingecopy@}[2]{New character}{Original character}
 %    \begin{macrocode}
 \def\tikztimingecopy@#1#2{%
+  \@namedef{tikztiming@alias@#1}{#2}%
   \tikztimingchar{#1}{}{}%
   \tikztimingcpy{#1}{#2}%
   \tikztimingcpy{#1@}{#2@}%
