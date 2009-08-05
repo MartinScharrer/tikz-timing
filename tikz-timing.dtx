@@ -2177,9 +2177,9 @@
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
       \tikztiming@parser #2\relax
-      \ifnum\tikztiming@debug>1
+      \ifnum\tikztiming@debug>0
       \message{^^J\meaning\tikztiming@str^^J}%
-      \ifnum\tikztiming@debug>2
+      \ifnum\tikztiming@debug>1
       {
       \def\@protect##1{\def##1{\noexpand##1}}%
       \@protect\draw
@@ -2565,7 +2565,6 @@
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
       \or
-        \message{^^J Bufnum=\tikztiming@output@bufnum ^^J Num=\tikztiming@num ^^J}%
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
         \let\tikztiming@output@bufnum\pgfmathresult
         \def\tikztiming@num{1.0}%
@@ -4227,7 +4226,8 @@
 \tikztimingdef{CD@}{\tikztiminguse{TD@}{#1}}
 
 \tikztimingdef{TD}{%
-  -- ++(\dslope/2, -\height/2 * \value{tikztimingtrans})
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1 - \dslope/2}%
 }
 \tikztimingdef{CD}{\tikztiminguse{TD}{#1}}
