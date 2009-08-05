@@ -2032,6 +2032,8 @@
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
 
+\newcount\tikztiming@debug
+
 \def\tikztiming@xsep{0pt}
 \def\tikztiming@ysep{0pt}
 
@@ -2175,7 +2177,21 @@
         {\tikztiming@nameaddtostr{\lastchar @start}{}}%
       \fi
       \tikztiming@parser #2\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \ifnum\tikztiming@debug>1
+      \message{^^J\meaning\tikztiming@str^^J}%
+      \ifnum\tikztiming@debug>2
+      {
+      \def\@protect##1{\def##1{\noexpand##1}}%
+      \@protect\draw
+      \@protect\p
+      \@protect\n
+      \@protect\x
+      \@protect\y
+      \edef\@tempa{\tikztiming@str}
+      \message{^^J\meaning\@tempa^^J}%
+      }
+      \fi
+      \fi
       \path[use as bounding box]
       (-\tikztiming@xsep,-\tikztiming@ysep) rectangle
       ($ (\timingwidth*\tikztimingwidth,\timingheight) + 
@@ -2280,7 +2296,21 @@
         {\timing@@@init}%
         {\timing@@@init[]}%
       #3\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \ifnum\tikztiming@debug>1
+      \message{^^J\meaning\tikztiming@str^^J}%
+      \ifnum\tikztiming@debug>2
+      {
+      \def\@protect##1{\def##1{\noexpand##1}}%
+      \@protect\draw
+      \@protect\p
+      \@protect\n
+      \@protect\x
+      \@protect\y
+      \edef\@tempa{\tikztiming@str}
+      \message{^^J\meaning\@tempa^^J}%
+      }
+      \fi
+      \fi
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
@@ -2352,10 +2382,25 @@
 %    \begin{macrocode}
 \def\tikztiming@beforenextcode@D@edge@{%
   \if D\currentchar\else
-    \if d\currentchar\else
-      \def\lastchar{D}%
-    \fi
+    \def\lastchar{D}%
   \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@beforenextcode@U@edge@}
+%    \begin{macrocode}
+\def\tikztiming@beforenextcode@U@edge@{%
+  \def\lastchar{U}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@initcode@}
+% If empty init char was given, exchange it with `|@|'.
+%    \begin{macrocode}
+\def\tikztiming@initcode@{%
+  \def\lastchar{@}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2371,7 +2416,7 @@
 % \begin{macro}{\tikztiming@initcode@U}
 %    \begin{macrocode}
 \def\tikztiming@initcode@U{%
-  \def\lastchar{@}%
+  \def\lastchar{U@edge@}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2520,6 +2565,7 @@
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
       \or
+        \message{^^J Bufnum=\tikztiming@output@bufnum ^^J Num=\tikztiming@num ^^J}%
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
         \let\tikztiming@output@bufnum\pgfmathresult
         \def\tikztiming@num{1.0}%
@@ -2555,6 +2601,9 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@output@charflush}
+% A group is used to protect the current value of |num| which is the length of 
+% the new character after the flushed old character. This value will be assigned 
+% to the new buffer length |bufnum|.
 %    \begin{macrocode}
 \def\tikztiming@output@charflush{%
   \begingroup
@@ -3976,8 +4025,24 @@
 }
 
 \def\tikztiming@nocombine@D@edge{}%
+\def\tikztiming@nocombine@U@edge{}%
 
 \tikztiming@nameedef[D]{D@edge@@start}{
+     ++(0, \height/2)
+     coordinate (timing/start)
+  \newdraw [\bgstyle]
+   -- +(0, \height/2)
+   -- +(\dslope/2,0)
+   -- +(0,-\height/2)
+   -- +(0,0)
+  \newdraw [\style]
+      +(0, \height/2)
+   -- +(\dslope/2,0)
+   -- +(0,-\height/2)
+   ++(\dslope/2,0)
+}
+
+\tikztiming@nameedef[U]{U@edge@@start}{
      ++(0, \height/2)
      coordinate (timing/start)
   \newdraw [\bgstyle]
@@ -4060,8 +4125,8 @@
      +(#1,-\height/2)%
   -- +(\dslope/2,-\height/2)
   -- +(0,0)
-    ++(#1,0)%
-     coordinate [shift={(\dslope/2,0)}] (timing@dend)
+    ++($ (#1,0) + (\dslope/2,0) $)
+     coordinate (timing@dend)
   \newdraw
 }
 
@@ -4073,6 +4138,8 @@
   -- +(#1,0)
   -- +(0,0)
   \newdraw [\style]
+     +(0,\height/2)
+     coordinate (timing/start)
      +(-\dslope/2,\height/2)
      coordinate (timing@dstart)
      +(0,\height)
@@ -4092,6 +4159,8 @@
   -- +(#1,0)
   -- +(0,0)
   \newdraw [\style]
+     +(0,\height/2)
+     coordinate (timing/start)
      +(-\dslope/2,\height/2)
      coordinate (timing@dstart)
      +(0,\height)
@@ -4111,6 +4180,14 @@
   \tikztiming@chard@{#1 - \dslope/2}%
 }%
 
+\tikztiming@nameedef[U]{U@edge@U}{%
+  \tikztiming@chard{#1 - \dslope/2}%
+}%
+
+\tikztiming@nameedef[U]{U@edge@U@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}%
+
 \tikztimingdef{ZDZ}{
   \tikztiming@chard{#1}
 }
@@ -4124,6 +4201,10 @@
 
 \tikztimingdef{DD}{
   \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztimingdef{DD@}{
+  \tikztiming@chard@{#1 - \dslope/2}%
 }
 
 \tikztimingdef{@DD}{%
@@ -4161,15 +4242,7 @@
 }
 
 \tikztimingdef{@D}{%
-  [\bgstyle]
-  -- +(0,\height)
-  -- +(#1,\height)
-  -- +(#1,0)
-  -- +(0,0)
-  \newdraw [\style]
-   +(0,\height) -- +(#1,\height)
-   +(0,0) -- ++(#1,0)
-  \newdraw
+  \tikztiming@@chard@{#1}%
 }
 
 \tikztimingdef{@DZ}{%
