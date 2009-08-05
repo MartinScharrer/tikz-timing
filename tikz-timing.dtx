@@ -4868,19 +4868,18 @@
 \tikztimingdef{DE}{%
   \newdraw [\bgstyle]
   -- +(\slope/2,\height/2)
-  -- +($ (#1,\height/2) - (\slope/2,0) $)%
-  -- +($ (#1,-\height/2) - (\slope/2,0) $)%
+  -- +($ (#1,\height/2) - (\dslope/2,0) $)%
+  -- +($ (#1,-\height/2) - (\dslope/2,0) $)%
   -- +(\slope/2,-\height/2)
   -- +(0,0)
   \newdraw [\style]
   -- +(\slope/2,\height/2)
-  -- +($ (#1,\height/2) - (\slope/2,0) $)%
-     +($ (#1,-\height/2) - (\slope/2,0) $)%
+  -- +($ (#1,\height/2) - (\dslope/2,0) $)%
+     +($ (#1,-\height/2) - (\dslope/2,0) $)%
   -- +(\slope/2,-\height/2)
   -- +(0,0)
-     ++($ (#1,0) - (\slope/2,0) $)%
+     ++($ (#1,0) - (\dslope/2,0) $)%
 }
-
 \tikztiminglet{UE}{DE}%
 
 \tikztimingdef{EEE}{% OK
