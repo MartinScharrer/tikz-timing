@@ -2494,7 +2494,6 @@
 % be protected from the expansion when the buffer is flushed.
 %    \begin{macrocode}
 \def\tikztiming@output@addcode#1{%
-  \tikztiming@output@charflush
   \g@addto@macro\tikztiming@output@bufcode{\unexpanded{ #1 }}%
 }
 %    \end{macrocode}
@@ -2505,7 +2504,6 @@
 % is flushed.
 %    \begin{macrocode}
 \def\tikztiming@output@eaddcode#1{%
-  \tikztiming@output@charflush
   \g@addto@macro\tikztiming@output@bufcode{ #1 }%
 }
 %    \end{macrocode}
@@ -2516,7 +2514,6 @@
 % again when the buffer is flushed.
 %    \begin{macrocode}
 \def\tikztiming@output@Eaddcode{%
-  \tikztiming@output@charflush
   \tikztiming@eaddto\tikztiming@output@bufcode%
 }
 %    \end{macrocode}
@@ -2555,14 +2552,28 @@
        \ifx\tikztiming@output@bufcode\empty% Stop combining if code was inserted
         \expandafter\ifx\csname tikztiming@nocombine@#2\endcsname\relax
          \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
-           1%
+           2%
          \fi
         \fi
+       \else
+         1%
        \fi
       \relax
         \edef\tikztiming@output@nextchar{#2}%
         \tikztiming@output@flush
         \edef\tikztiming@output@bufchara{#1}%
+        \edef\tikztiming@output@bufcharb{#2}%
+      \or
+        \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
+          \def\tikztiming@output@nextchar{@}%
+          \tikztiming@output@flush
+          \tikztiming@addtostr{\tikztiming@baseline}%
+          \edef\tikztiming@output@bufchara{@}%
+        \else
+          \edef\tikztiming@output@nextchar{#2}%
+          \tikztiming@output@flush
+          \edef\tikztiming@output@bufchara{#1}%
+        \fi
         \edef\tikztiming@output@bufcharb{#2}%
       \or
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
@@ -3913,6 +3924,14 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@baseline}
+%    \begin{macrocode}
+\def\tikztiming@baseline{%
+  node [timing/save] (timing@save) {};%
+  \draw [timing/restore] let \p1 = (timing@save) in (\x1,0) ++(0,0)
+}
+%    \end{macrocode}
+% \end{macro}
 %
 % \subsection{Definition of Timing Characters}
 %
@@ -4124,8 +4143,9 @@
      +(#1,-\height/2)%
   -- +(\dslope/2,-\height/2)
   -- +(0,0)
-    ++($ (#1,0) + (\dslope/2,0) $)
+     +($ (#1,0) + (\dslope/2,0) $)
      coordinate (timing@dend)
+    ++(#1,0)
   \newdraw
 }
 
@@ -4166,8 +4186,9 @@
   -- +(#1,\height)
      +(#1,0)
   -- +(0,0)
-    ++($ (#1,\height/2) + (\dslope/2,0) $)
+     +($ (#1,\height/2) + (\dslope/2,0) $)
      coordinate (timing@dend)
+    ++(#1,0)
   \newdraw
 }
 
