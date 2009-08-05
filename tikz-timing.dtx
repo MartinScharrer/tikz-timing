@@ -2875,9 +2875,14 @@
 %
 %
 % \begin{macro}{\tikztiming@defcode []}[1]{Options to add to string}
+% Options do not flush the output buffer and are therefore added before the 
+% currently buffered character, e.g. `|HHH [blue] HHH|` is identical with 
+% `|[blue] HHHHHH|'.
+%
+% \textbf{TODO:} Add user option.
 %    \begin{macrocode}
 \tikztiming@defcode[#1]{%
-  \tikztiming@output@addcode{ [#1] }%
+  \tikztiming@addtostr{ [#1] }%
   \tikztiming@parser
 }
 %    \end{macrocode}
