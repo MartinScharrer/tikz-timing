@@ -9,8 +9,8 @@
   %\usepackage {tikz-timing-either}
   %\tikzset{timing/e/.style={fill=green},timing/e/background/.style={fill=green,draw=none}}
 \else
-  \usetikztiminglibrary {either}
 \fi
+  \usetikztiminglibrary {either}
 \pagestyle{empty}
 \tikzset{%
 timing/.append style={orange,},
@@ -24,10 +24,15 @@ ee/.style={},
 \sffamily
 %\tikzset{timing/lslope=.4}
 %\tikzset{timing/dslope=.4}
-\tikzset{timing/zslope=0}
-\tikzset{timing/dslope=.4}
-\tikzset{timing/lslope=.25}
+\tikzset{timing/zslope=0.45}
+\tikzset{timing/dslope=0}
+\tikzset{timing/lslope=.125}
 \makeatletter
+\def\asis#1{{%
+  \let\@tempa#1\empty
+  \@onelevel@sanitize\@tempa
+  \normalfont\texttt{\@tempa}
+}}
 \let\texttimingbefore\texttiminggrid
 
 \def\da{D{A}}
@@ -39,26 +44,26 @@ ee/.style={},
 \def\tt{tt}
 \def\cc{cc}
 
-\def\achars{H,L,Z,X,U,D,D{A},T,tt,C,cc,}
-\def\bchars{H,L,Z,X,U,D,D{B},T,tt,C,cc,}
-\def\cchars{H,L,Z,X,U,D,D{C},T,tt,C,cc,}
+\def\achars{H,L,Z,X,U,D,D{A},T,tt,C,cc,E,ee,}
+\def\bchars{H,L,Z,X,U,D,D{B},T,tt,C,cc,E,ee,}
+\def\cchars{H,L,Z,X,U,D,D{C},T,tt,C,cc,E,ee,}
 
 %\tikztiming@debug=0
 \@tempdima=1.6ex
 
 \foreach \a in \achars {%
-    \framebox[3\@tempdima][c]{\textbf{\strut\ifx\a\da D{\scriptsize\{A\}}\else 
-    \a \fi}}%
-    \hspace{1.6ex}%
+    \begin{tikzpicture}[timing/picture]
+      \node [black,anchor=base] (x) at (0,0)
+        {\strut\textbf{\asis\a}};%
     \foreach \c in \cchars {%
-      \makebox[3\@tempdima][c]{\ifx\c\dc D\{C\}\else \c \fi}%
-      \hspace{1.6ex}%
+      \node [black,right of=x] (x) {\strut\asis\c};%
     }%
-    \par\smallskip
+    \coordinate (y) at (0,0);
     \foreach \b in \bchars {%
-      \makebox[3\@tempdima][c]{\ifx\b\db D\{B\}\else \b \fi}%
+      \coordinate (y) at ($ (y) - (0,2) $);
+      \coordinate (x) at (y);
+      \node [black,anchor=base] at (x) {\strut\asis\b};%
       \foreach \c in \cchars {%
-        \hspace{1.6ex}%
         \let\x\b
         \ifx\b\db
           \def\x{D}%
@@ -72,59 +77,19 @@ ee/.style={},
         \ifx\cc\b
           \def\x{T}%
         \fi
-        \edef\abc{%[\x]
-        {\b\a\c}}%
-        \makebox[3\@tempdima][l]{\expandafter\texttiming\abc}%
+        %\node [right of=x] (x) {\expandafter\texttiming\abc};%
+        \coordinate (x) at ($ (x) + (4,0) $);
+        \coordinate (t) at ($ (x) - (1.5,0) $);
+        \draw [shift={(t)},help lines,step=.5] (0,0) grid (3,1);
+        \edef\temp{\noexpand\timing at (t) {\b\a\c};}%
+        \temp
       }%
-      \hspace{\@tempdima}\textcolor{white}{.}%
-      \par
     }%
-    \textcolor{white}{.}%
+     \draw [help lines] (-2,2) rectangle ($ (x) + (3,-1) $);
+    \end{tikzpicture}
     \newpage
 }%
 
-\iffalse
-\texttiming[H]{HEEEEEELLLEEEEEHHHHEEEHHLLEEELLL}
-
-\texttiming[H]{HED}
-\texttiming[H]{HED{A}}
-{\tikzset{timing/slope=0}\texttiming[H]{HED{A}}}
-{\tikzset{timing/slope=0.5}\texttiming[H]{HED{A}3S}}
-{\tikzset{timing/slope=0.25}%
-\texttiming[H]{3H3E3D{A}S}}
-
-{\tikzset{timing/slope=0}\texttiming[H]{HEEEEL}}
-
-{\tikzset{timing/slope=0.25}\texttiming[H]{HEEEEL}}
-
-{\tikzset{timing/lslope=0}\texttiming{DEH}}
-
-\texttiming{DEH} \texttiming{D} \texttiming{DED} \texttiming[]{DED} \texttiming[D]{DED}
-
-\texttiming{UEU}
-\texttiming[]{UEU}
-\texttiming[U]{UEU}
-
-\texttiming[H]{HEEEL}
-\texttiming[L]{LEEEL}
-\texttiming[H]{HEEEH}
-\texttiming[L]{LEEEH}
-
-\texttiming[H]{HEEE}
-\texttiming[L]{LEEE}
-\texttiming[]{DE}
-\texttiming[]{D{A}E}
-\texttiming{D{A}E}
-
-\texttiming{TEEET}
-\texttiming{LTEEETH}
-\texttiming{LTEEETL}
-\texttiming{HTEEETH}
-\texttiming{HTEEETL}
-
-\texttiming{TEH}
-\texttiming{TEL}
-\fi
 
 \end{document}
 
