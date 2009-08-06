@@ -2481,23 +2481,45 @@
       {\edef\charb{#3}}%
       {\edef\charb{#3,\csname tikztiming@alias@#3\endcsname}}%
     \@ifundefined{tikztiming@alias@#1}%
-      {\edef\charc{#1,\noexpand\empty}}%
-      {\edef\charc{#1,\csname tikztiming@alias@#1\endcsname,\noexpand\empty}}%
+      {\edef\charc{#1,}}%
+      {\edef\charc{#1,\csname tikztiming@alias@#1\endcsname,}}%
     \ifx\charb\empty
       \def\charb{\empty}%
     \fi
     \let\next\relax
     \let\g@tempb\relax
-    \foreach \a in \chara {%
-     \foreach \b in \charb {%
-      \foreach \c in \charc {%
-        \@ifundefined{\tikztiming@prefix\a\b\c}%
-          {}{\xdef\g@tempb{\a\b\c}\let\next\breakforeach\next}%
+    \@ifundefined{\tikztiming@prefix#2#3#1}%
+      {\@ifundefined{\tikztiming@prefix#2#3}%
+       {%
+        \foreach \a in \chara {%
+        \foreach \b in \charb {%
+          \foreach \c in \charc {%
+            \@ifundefined{\tikztiming@prefix\a\b\c}%
+              {}{%
+                \ifx\c\empty
+                  \xdef\g@tempb{#2#3}%
+                  \tikztimingcpy{#2#3}{\a\b}%
+                \else
+                  \xdef\g@tempb{#2#3#1}%
+                  \tikztimingcpy{#2#3#1}{\a\b\c}%
+                \fi
+                \expandafter\global\expandafter\let
+                \csname\tikztiming@prefix\g@tempb\expandafter\endcsname
+                \csname\tikztiming@prefix\g@tempb\endcsname
+                \let\next\breakforeach\next
+              }%
+          }%
+          \next
+        }%
+        \next
+        }%
+       }{%
+        \edef\g@tempb{#2#3}%
+       }%
+      }{%
+       \edef\g@tempb{#2#3#1}%
       }%
-      \next
-     }%
-     \next
-    }%
+    \message{^^J DEBUG: '#2#3#1' \meaning\g@tempb ^^J}%
     \ifx\g@tempb\relax
       \PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}
     \else
@@ -2735,12 +2757,7 @@
     \uppercase{\def\currentchar{#1}}%
     \@nameuse{tikztiming@beforenextcode@\lastchar}%
     \@nameuse{tikztiming@beforecode@\currentchar}%
-    \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
-      {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' is 
-      not defined and will be ignored!}{}{}{}%
-       \let\currentchar\lastchar
-      }%
-      {\tikztiming@output{\lastchar}{\currentchar}}%
+    \tikztiming@output{\lastchar}{\currentchar}%
     \let\secondlastchar\lastchar
     \let\lastchar\currentchar
     \@nameuse{tikztiming@aftercode@\currentchar}%
@@ -3732,7 +3749,7 @@
       % The following code is used to unsure that the used macroname is resolved 
       % before it is used in the definition. Otherwise some macros in '#2' would 
       % not be expanded and cause problems later.
-        \def\tikztimingcpy@a{\tikztimingdef{#1}}%
+        \def\tikztimingcpy@a{\global\tikztimingdef{#1}}%
         \expandafter\tikztimingcpy@a\expandafter{%
         \csname\tikztiming@prefix#2@general\endcsname{##1}}%
       }
@@ -3852,11 +3869,12 @@
 \def\tikztimingecopy@#1#2{%
   \@namedef{tikztiming@alias@#1}{#2}%
   \tikztimingchar{#1}{}{}%
+  \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
+  \iffalse
   \tikztimingcpy{#1}{#2}%
   \tikztimingcpy{#1@}{#2@}%
   \tikztimingcpy{@#1}{@#2}%
   \tikztimingcpy{@#1@}{@#2@}%
-  \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
   \tikztimingdef{#1#1}{\tikztiminguse{#2#2}{##1}}%
   \@for\@tempa:=\tikztiming@chars\do{%
     \tikztimingcpy{\@tempa#1}{\@tempa#2}%
@@ -3873,6 +3891,7 @@
         \tikztimingcpy{\@tempa\@tempb#2}{\@tempa\@tempb#2}%
       }%
   }%
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
