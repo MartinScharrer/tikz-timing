@@ -2494,9 +2494,16 @@
     \fi
     \let\next\relax
     \let\g@tempb\relax
+    % Use triple macros before double macros
     \@ifundefined{\tikztiming@prefix#2#3#1}%
-      %{\@ifundefined{\tikztiming@prefix#2#3}%
-       {%
+      {\@ifundefined{\tikztiming@prefix#2#3}%
+        {}%
+        {\edef\g@tempb{#2#3}}%
+      }{%
+       \edef\g@tempb{#2#3#1}%
+      }%
+    % If both do not exist, search for aliases:
+    \ifx\g@tempb\relax
         \foreach \a in \chara {%
         \foreach \b in \charb {%
           \foreach \c in \charc {%
@@ -2529,7 +2536,7 @@
                     \expandafter\meaning\csname\tikztiming@prefix\a\b\c\endcsname^^J}%
                   \fi
                 \fi
-                \let\next\breakforeach
+                \global\let\next\breakforeach
               }%
             \next
           }%
@@ -2537,12 +2544,7 @@
         }%
         \next
         }%
-       %}{%
-       % \edef\g@tempb{#2#3}%
-       %}%
-      }{%
-       \edef\g@tempb{#2#3#1}%
-      }%
+    \fi
     \ifx\g@tempb\relax
       \PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}
     \else
@@ -4606,7 +4608,7 @@
   \tikztiminguse{D}{#1}%
 }
 
-\tikztimingdef{LE}{%
+\tikztimingdef{LE@}{%
   \newdraw [\bgstyle]
   -- ++(\slope,\height)%
   -- ++($ (#1,0) - (\slope,0) $)%
@@ -4621,7 +4623,7 @@
   \code{\setcounter{tikztimingtrans}{1}}%
 }%
 
-\tikztimingdef{HE}{%
+\tikztimingdef{HE@}{%
   \newdraw [\bgstyle]
   -- ++(\slope,-\height)%
   -- ++($ (#1,0) - (\slope,0) $)%
@@ -4787,20 +4789,6 @@
   \newdraw
 }
 
-\tikztimingdef{TE}{%
-  \newdraw [\style,preaction={\bgstyle}]
-   -- +(\slope, -\height * \value{tikztimingtrans})%
-   -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
-   -- +(#1,0)%
-   -- +(0,0)%
-     ++(#1,0)
-     ++(
-          .5 * \slope  + .5 * \value{tikztimingtrans} * \slope,
-         -.5 * \height - .5 * \value{tikztimingtrans} * \height
-       )
-  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-}%
-
 \tikztimingdef{TET}{%
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope, -\height * \value{tikztimingtrans})%
@@ -4902,7 +4890,7 @@
 }
 
 
-\tikztimingdef{DE}{%
+\tikztimingdef{DE@}{%
   \newdraw [\bgstyle]
   -- +(\dslope/2,\height/2)
   -- +($ (#1,\height/2) - (\dslope/2,0) $)%
@@ -4960,7 +4948,7 @@
   \newdraw
 }
 
-\tikztimingdef{EE}{%
+\tikztimingdef{EE@}{%
   \newdraw [\bgstyle]
   -- +(\slope * \value{tikztimingtrans}, \height)%
   -- +($ (#1,\height) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
@@ -4974,7 +4962,7 @@
      +($ (#1,0) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
 }%
 
-\tikztimingdef{ZE}{
+\tikztimingdef{ZE@}{
   \newdraw [\bgstyle]
   -- +(\slope/2,\height/2)
   -- +(#1,\height/2)%
