@@ -2474,13 +2474,38 @@
     \edef\@tempa{#2#3}%
     \ifx\@tempa\empty\else
     \edef\@tempa{\tikztiming@num}%
-    \@ifundefined{\tikztiming@prefix#2#3#1}%
-      {\edef\@tempb{#2#3}}%
-      {\edef\@tempb{#2#3#1}}%
-    \expandafter\g@addto@macro
-    \expandafter\tikztiming@str
-    \expandafter{\csname\tikztiming@prefix\@tempb\expandafter\endcsname
-    \expandafter{\@tempa} }%
+    \@ifundefined{tikztiming@alias@#2}%
+      {\edef\chara{#2}}%
+      {\edef\chara{#2,\csname tikztiming@alias@#2\endcsname}}%
+    \@ifundefined{tikztiming@alias@#3}%
+      {\edef\charb{#3}}%
+      {\edef\charb{#3,\csname tikztiming@alias@#3\endcsname}}%
+    \@ifundefined{tikztiming@alias@#1}%
+      {\edef\charc{#1,\noexpand\empty}}%
+      {\edef\charc{#1,\csname tikztiming@alias@#1\endcsname,\noexpand\empty}}%
+    \ifx\charb\empty
+      \def\charb{\empty}%
+    \fi
+    \let\next\relax
+    \let\g@tempb\relax
+    \foreach \a in \chara {%
+     \foreach \b in \charb {%
+      \foreach \c in \charc {%
+        \@ifundefined{\tikztiming@prefix\a\b\c}%
+          {}{\xdef\g@tempb{\a\b\c}\let\next\breakforeach\next}%
+      }%
+      \next
+     }%
+     \next
+    }%
+    \ifx\g@tempb\relax
+      \PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}
+    \else
+      \expandafter\g@addto@macro
+      \expandafter\tikztiming@str
+      \expandafter{\csname\tikztiming@prefix\g@tempb\expandafter\endcsname
+        \expandafter{\@tempa} }%
+    \fi
     \fi
   \endgroup
   \def\tikztiming@num{1.0}%
