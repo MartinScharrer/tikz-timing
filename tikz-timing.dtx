@@ -2804,19 +2804,31 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@handletext}[1]{Text}
+% Looks ahead if the current character is the last one and sets the end-of-line 
+% marker if so.
 %    \begin{macrocode}
 \def\tikztiming@handletext#1{%
+  \@ifnextchar\relax
+    {\def\tikztiming@output@nextchar{@}\tikztiming@handletext@{#1}}%
+    {\def\tikztiming@output@nextchar{D}\tikztiming@handletext@{#1}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@handletext@}[1]{Text}
+%    \begin{macrocode}
+\def\tikztiming@handletext@#1{%
   \@ifnextchar{[}%
-    {\tikztiming@handletext@}%
-    {\tikztiming@handletext@[]}%
+    {\tikztiming@handletext@@}%
+    {\tikztiming@handletext@@[]}%
   #1\relax
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@handletext@}[2]{Optional Settings}{Text}
+% \begin{macro}{\tikztiming@handletext@@}[2]{Optional Settings}{Text}
 %    \begin{macrocode}
-\def\tikztiming@handletext@[#1]#2\relax{%
+\def\tikztiming@handletext@@[#1]#2\relax{%
   \begingroup
   \expandafter\lowercase\expandafter{%
     \expandafter\def\expandafter\currentcharlc
@@ -2824,15 +2836,16 @@
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
-  \tikztiming@eaddto\tikztiming@output@bufcode{%
+  \tikztiming@output@flush
+  \tikztiming@eaddtostr{%
     node [%]
       timing/\currentcharlc/text,%
   }%
   \endgroup
-  \g@addto@macro\tikztiming@output@bufcode{\unexpanded{%[
+  \tikztiming@addtostr{%[
       #1%
       ] at ($ (timing@dstart) !.5! (timing@dend) $) {#2}
-  }}%
+  }%
   \def\lastchar{D@edge@}%
   }{%
     \endgroup
@@ -3769,8 +3782,10 @@
   \else
     \endgroup
     \@ifundefined{\tikztiming@prefix#2@general}%
-      {\message{^^J Copy macro '#2' to '#1' failed.^^J}}%
-      {\message{^^J Copy macro '#2' to '#1'.^^J}%
+      {\ifnum\tikztiming@debug>0\relax\message{^^J Copy macro '#2' to '#1' 
+      failed.^^J}\fi}%
+      {\ifnum\tikztiming@debug>0\relax\message{^^J Copy macro '#2' to 
+      '#1'.^^J}\fi%
       % The following code is used to unsure that the used macroname is resolved 
       % before it is used in the definition. Otherwise some macros in '#2' would 
       % not be expanded and cause problems later.
