@@ -4379,16 +4379,10 @@
 %
 % \subsubsection{Character `M'}
 %    \begin{macrocode}
-\tikztimingalias{M}{Z}
+\tikztimingecopy{M}{Z}
 \tikztimingchar{M}{++(0,\height/2.)}{
-  \newdraw [\style/decoration,\style]
-  -- ++(#1,0)
-}
-\def\tikztiming@nocombine@M{}%
-
-\tikztimingdef{MZ}{
   \newdraw [\style]
-  \tikztiminguse{ZZ}{#1}
+  -- ++(#1,0)
 }
 
 \tikztimingdef{ZM}{
