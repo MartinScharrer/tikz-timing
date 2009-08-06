@@ -2090,14 +2090,12 @@
   e/background/.style={draw=none},
   a/.style={->},
   w/.style={<-},
-  m/.style={black!40!brown},
   m/decoration/.style={decorate,decoration={zigzag,segment 
   length=.25\tikztiming@xunit,amplitude=.225\tikztiming@yunit}},
-  k/.style={black!40!blue,semitransparent},
+  m/base/.style={black!40!brown},
+  m/.style={timing/m/base,timing/m/decoration},
   u/background/.style={draw=none,fill=gray},
   u/.style={},
-  o/background/.style={draw=none},
-  o/.style={timing/d,line width=0.10ex,dotted},
   g/.style={},
   z/.style={blue},
   t/.style={},
@@ -4395,25 +4393,25 @@
 
 \tikztimingdef{ZM}{
   \newdraw [\style]
-  \tikztiminguse{MM}{#1}
+  -- ++(#1,0)
 }
 
 \tikztimingdef{LM}{
-  \newdraw [\style]
+  \newdraw [\style/base]
   -- ++($ (1/8,0) + (0,\height/2) $)
-  \newdraw [\style/decoration,\style]
+  \newdraw [\style]
   -- ++($ (-1/8,0) + (#1,0) $)
 }
 
 \tikztimingdef{HM}{
-  \newdraw [\style]
+  \newdraw [\style/base]
   -- ++($ (1/8,0) + (0,-1*\height/2) $)
-  \newdraw [\style/decoration,\style]
+  \newdraw [\style]
   -- ++($ (-1/8,0) + (#1,0) $)
 }
 
 \tikztimingdef{DM}{
-  \newdraw [\style/decoration,\style]
+  \newdraw [\style]
   -- ++($ (-\dslope/2,0) + (#1,0) $)
 }
 
@@ -4495,10 +4493,10 @@
 }
 
 \tikztimingdef{TM}{%
-  \newdraw [\style]
+  \newdraw [\style/base]
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++($ (1/8,0) + (0,\value{tikztimingtrans}*\height/2) $)
-  \newdraw [\style/decoration,\style]
+  \newdraw [\style]
   -- ++($ (-1/8,0) + (#1,0) $)
 }
 
