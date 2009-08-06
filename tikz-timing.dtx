@@ -2499,13 +2499,16 @@
                 \ifx\c\empty
                   \xdef\g@tempb{#2#3}%
                   \tikztimingcpy{#2#3}{\a\b}%
+                  \message{^^J DEBUG: '#2#3' = '\a\b' ^^J}%
                 \else
                   \xdef\g@tempb{#2#3#1}%
                   \tikztimingcpy{#2#3#1}{\a\b\c}%
+                  \message{^^J DEBUG: '#2#3#1' = '\a\b\c' ^^J}%
                 \fi
                 \expandafter\global\expandafter\let
                 \csname\tikztiming@prefix\g@tempb\expandafter\endcsname
                 \csname\tikztiming@prefix\g@tempb\endcsname
+                \expandafter\show\csname\tikztiming@prefix\g@tempb\endcsname
                 \let\next\breakforeach\next
               }%
           }%
@@ -2519,7 +2522,6 @@
       }{%
        \edef\g@tempb{#2#3#1}%
       }%
-    \message{^^J DEBUG: '#2#3#1' \meaning\g@tempb ^^J}%
     \ifx\g@tempb\relax
       \PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}
     \else
@@ -3868,7 +3870,7 @@
 %    \begin{macrocode}
 \def\tikztimingecopy@#1#2{%
   \@namedef{tikztiming@alias@#1}{#2}%
-  \tikztimingchar{#1}{}{}%
+  \tikztiming@addchar{#1}%
   \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
   \iffalse
   \tikztimingcpy{#1}{#2}%
