@@ -44,17 +44,20 @@ ee/.style={},
 \def\tt{tt}
 \def\cc{cc}
 
-\def\achars{H,L,Z,X,U,D,D{A},T,tt,C,cc,E,ee,}
-\def\bchars{H,L,Z,X,U,D,D{B},T,tt,C,cc,E,ee,}
-\def\cchars{H,L,Z,X,U,D,D{C},T,tt,C,cc,E,ee,}
+\def\ichars{H,L,Z,X,M,U,D,T,C,E,@,}
+\def\achars{M}%H,L,Z,X,M,U,D,D{A},T,tt,C,cc,E,ee,}
+\def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,E,ee,}
+\def\cchars{H,L,Z,X,M,U,D,D{C},T,tt,C,cc,E,ee,}
 
 %\tikztiming@debug=0
 \@tempdima=1.6ex
 
+%\foreach \I in \ichars {%
+\def\I{}
 \foreach \a in \achars {%
     \begin{tikzpicture}[timing/picture]
       \node [black,anchor=base] (x) at (0,0)
-        {\strut\textbf{\asis\a}};%
+        {\strut\textbf{{\tiny[\asis\I]} \asis\a}};%
     \foreach \c in \cchars {%
       \node [black,right of=x] (x) {\strut\asis\c};%
     }%
@@ -89,7 +92,7 @@ ee/.style={},
     \end{tikzpicture}
     \newpage
 }%
-
+%}%
 
 \end{document}
 
