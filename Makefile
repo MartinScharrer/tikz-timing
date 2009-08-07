@@ -15,6 +15,8 @@ ZIPS = zip tdszip
 LATEX_OPTIONS = -interaction=batchmode
 LATEX = pdflatex ${LATEX_OPTIONS}
 
+SHELL=/bin/bash
+
 TEXMFDIR = ${HOME}/texmf
 
 CP = cp -v
@@ -104,13 +106,20 @@ test.pdf: ${PACKAGE}.sty test.tex
 	pdflatex test
 	pdfcrop test.pdf
 
+CHARS=H L Z X M U D T C ""
+
 compare: ${PACKAGE}.sty test.tex
-	pdflatex test
-	cp test.pdf new.pdf
-	rm ${PACKAGE}.sty
-	pdflatex test
-	cp test.pdf old.pdf
-	convert -density 500 new.pdf new-%02d.png
-	convert -density 500 old.pdf old-%02d.png
-	for N in `seq -w 00 10`; do compare old-$$N.png new-$$N.png diff-$$N.png; done
+	rm -f new-*.* old-*.* diff-*.*
+	for I in ${CHARS}; do \
+		pdflatex -jobname "new-$$I" "\\def\\I{$$I}\\input{test}";\
+	  mv ${PACKAGE}.sty ${PACKAGE}.sty.save; \
+		pdflatex -jobname "old-$$I" "\\def\\I{$$I}\\input{test}";\
+	  mv ${PACKAGE}.sty.save ${PACKAGE}.sty; \
+		P=$$(( $$(pdfinfo new-$$I.pdf | grep ^Pages: | cut -d: -f2) - 1 )); \
+		for N in $$(seq -w 0 $$P); do \
+		  compare -density 500 old-$$I.pdf[$$N] new-$$I.pdf[$$N] diff-$$I-$$N.png; \
+	  done; \
+	done
+
+a:
 
