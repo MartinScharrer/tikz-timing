@@ -20,6 +20,7 @@ tt/.style={timing/initchar=T},
 ee/.style={},
 }
 
+\usepackage[active,tightpage]{preview}
 \begin{document}
 \sffamily
 %\tikzset{timing/lslope=.4}
@@ -50,14 +51,16 @@ ee/.style={},
 \def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,}
 \def\cchars{H,L,Z,X,M,U,D,D{C},T,tt,C,cc,}
 
-%\tikztiming@debug=0
+\tikztiming@debug=0
 \@tempdima=1.6ex
 
 %\foreach \I in \ichars {%
 \foreach \a in \achars {%
+    \begin{preview}
     \message{ ^^J^^J ( [\I] \a ) }%
     \begin{tikzpicture}[timing/picture]
-      \node [black,anchor=base] (x) at (0,0)
+      \node [black]%,anchor=base]
+        (x) at (0,0)
         {\strut\textbf{{\tiny[\asis\I]} \asis\a}};%
     \foreach \c in \cchars {%
       \node [black,right of=x] (x) {\strut\asis\c};%
@@ -67,7 +70,8 @@ ee/.style={},
     \foreach \b in \bchars {%
       \coordinate (y) at ($ (y) - (0,2) $);
       \coordinate (x) at (y);
-      \node [black,anchor=base] at (x) {\strut\asis\b};%
+      \node [black]%,anchor=base]
+      at (x) {\strut\asis\b};%
       \message{^^J    \b    }%
       \foreach \c in \cchars {%
         \let\x\b
@@ -85,16 +89,18 @@ ee/.style={},
         \fi
         %\node [right of=x] (x) {\expandafter\texttiming\abc};%
         \coordinate (x) at ($ (x) + (4,0) $);
-        \coordinate (t) at ($ (x) - (1.5,0) $);
+        %\coordinate (t) at ($ (x) - (1.5,0) $);
         \message{ . }%
-        \draw [shift={(t)},help lines,step=.5] (0,0) grid (3,1);
-        \edef\temp{\noexpand\timing at (t) {[\I]\b\a\c};}%
+        %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
+        \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
+        {\noexpand\texttiming{[\I]\b\a\c}};}%
         \temp
       }%
     }%
      \draw [help lines] (-2.5,2) rectangle ($ (x) + (3,-1) $);
         \message{ ^^J^^J }%
-    \end{tikzpicture}
+    \end{tikzpicture}%
+    \end{preview}
     \newpage
 }%
 %}%
