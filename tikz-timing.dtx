@@ -2472,66 +2472,68 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@nameaddtostr}[3]{Optional next character}
+% \begin{macro}{\tikztiming@iftrans}
 % {First character}{Second character}
+% {Next character or empty}
 %    \begin{macrocode}
-\newcommand*\tikztiming@nameaddtostr[3][]{%
-  \begingroup
-    \edef\@tempa{#2#3}%
-    \ifx\@tempa\empty\else
-    \edef\@tempa{\tikztiming@num}%
-    \@ifundefined{tikztiming@alias@#2}%
-      {\edef\chara{#2}}%
-      {\edef\chara{#2,\csname tikztiming@alias@#2\endcsname}}%
-    \@ifundefined{tikztiming@alias@#3}%
-      {\edef\charb{#3}}%
-      {\edef\charb{#3,\csname tikztiming@alias@#3\endcsname}}%
-    \@ifundefined{tikztiming@alias@#1}%
-      {\edef\charc{#1,}}%
-      {\edef\charc{#1,\csname tikztiming@alias@#1\endcsname,}}%
-    \ifx\charb\empty
-      \def\charb{\empty}%
-    \fi
-    \let\next\relax
-    \let\g@tempb\relax
+\def\tikztiming@trans{}%
+\def\tikztiming@iftrans#1#2#3{%
+ %\tracingmacros=1
+ %\tracingonline=1
+  \edef\tikztiming@trans{#1#2}%
+  \ifx\tikztiming@trans\empty\else
+    \let\tikztiming@trans\relax
     % Use triple macros before double macros
-    \@ifundefined{\tikztiming@prefix#2#3#1}%
-      {\@ifundefined{\tikztiming@prefix#2#3}%
+    \@ifundefined{\tikztiming@prefix#1#2#3}%
+      {\@ifundefined{\tikztiming@prefix#1#2}%
         {}%
-        {\edef\g@tempb{#2#3}}%
+        {\edef\tikztiming@trans{#1#2}}%
       }{%
-       \edef\g@tempb{#2#3#1}%
+       \edef\tikztiming@trans{#1#2#3}%
       }%
     % If both do not exist, search for aliases:
-    \ifx\g@tempb\relax
+    \ifx\tikztiming@trans\relax
+      \@ifundefined{tikztiming@alias@#1}%
+        {\edef\chara{#1}}%
+        {\edef\chara{#1,\csname tikztiming@alias@#1\endcsname}}%
+      \@ifundefined{tikztiming@alias@#2}%
+        {\edef\charb{#2}}%
+        {\edef\charb{#2,\csname tikztiming@alias@#2\endcsname}}%
+      \@ifundefined{tikztiming@alias@#3}%
+        {\edef\charc{#3,}}%
+        {\edef\charc{#3,\csname tikztiming@alias@#3\endcsname,}}%
+      \ifx\charb\empty
+        \def\charb{\empty}%
+      \fi
+      \let\next\relax
         \foreach \a in \chara {%
         \foreach \b in \charb {%
           \foreach \c in \charc {%
             \@ifundefined{\tikztiming@prefix\a\b\c}%
               {}{%
                 \ifx\c\empty
-                  \xdef\g@tempb{#2#3}%
-                  \tikztimingcpy{#2#3}{\a\b}%
+                  \xdef\tikztiming@trans{#1#2}%
+                  \tikztimingcpy{#1#2}{\a\b}%
                   \ifnum\tikztiming@debug>0
-                    \message{^^J DEBUG: '#2#3' = '\a\b' ^^J}%
+                    \message{^^J DEBUG: '#1#2' = '\a\b' ^^J}%
                   \fi
                 \else
-                  \xdef\g@tempb{#2#3#1}%
-                  \tikztimingcpy{#2#3#1}{\a\b\c}%
+                  \xdef\tikztiming@trans{#1#2#3}%
+                  \tikztimingcpy{#1#2#3}{\a\b\c}%
                   \ifnum\tikztiming@debug>0
-                    \message{^^J DEBUG: '#2#3#1' = '\a\b\c' ^^J}%
+                    \message{^^J DEBUG: '#1#2#3' = '\a\b\c' ^^J}%
                   \fi
                 \fi
                 \expandafter\tikztiming@makeglobal
-                \csname\tikztiming@prefix\g@tempb\endcsname
+                \csname\tikztiming@prefix\tikztiming@trans\endcsname
                 \expandafter\tikztiming@makeglobal
-                \csname\tikztiming@prefix\g@tempb @general\endcsname
+                \csname\tikztiming@prefix\tikztiming@trans @general\endcsname
                 \ifnum\tikztiming@debug>1
                   \ifnum\tikztiming@debug>2
-                    \expandafter\show\csname\tikztiming@prefix\g@tempb\endcsname
+                    \expandafter\show\csname\tikztiming@prefix\tikztiming@trans\endcsname
                   \else
-                    \message{^^J\g@tempb: 
-                    \expandafter\meaning\csname\tikztiming@prefix\g@tempb\endcsname^^J}%
+                    \message{^^J\tikztiming@trans: 
+                    \expandafter\meaning\csname\tikztiming@prefix\tikztiming@trans\endcsname^^J}%
                     \message{^^J\a\b\c: 
                     \expandafter\meaning\csname\tikztiming@prefix\a\b\c\endcsname^^J}%
                   \fi
@@ -2545,17 +2547,31 @@
         \next
         }%
     \fi
-    \ifx\g@tempb\relax
-      \PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}
-    \else
-      \expandafter\g@addto@macro
-      \expandafter\tikztiming@str
-      \expandafter{\csname\tikztiming@prefix\g@tempb\expandafter\endcsname
-        \expandafter{\@tempa} }%
-    \fi
-    \fi
-  \endgroup
-  \def\tikztiming@num{1.0}%
+  \fi
+ %\tracingmacros=0
+ %\tracingonline=0
+  \ifx\tikztiming@trans\relax
+    \expandafter\@secondoftwo
+  \else
+    \expandafter\@firstoftwo
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@nameaddtostr}[3]{Optional next character}
+% {First character}{Second character}
+%    \begin{macrocode}
+\newcommand*\tikztiming@nameaddtostr[3][]{%
+  \tikztiming@iftrans{#2}{#3}{#1}%
+   {%
+     \expandafter\g@addto@macro
+     \expandafter\tikztiming@str
+     \expandafter{\csname\tikztiming@prefix\tikztiming@trans\expandafter\endcsname
+       \expandafter{\tikztiming@num} }%
+   }%
+   {\PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}}%
+   \def\tikztiming@num{1.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -5240,7 +5256,10 @@
 %<*lib-clockarrows>
 %  \fi
 %    \begin{macrocode}
-\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC
+\tikztiming@iftrans{C}{C}{}%
+  {\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC}%
+  {\PackageError{\@currname}{No 'CC' transition defined by the main tikz-timing 
+  package.}{}{}}%
 
 \tikztimingdef{CC}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
