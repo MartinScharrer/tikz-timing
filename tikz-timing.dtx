@@ -2472,12 +2472,20 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@iftrans}
-% {First character}{Second character}
-% {Next character or empty}
+% \begin{macro}{\tikztiming@iftrans}[1]{Characters}
 %    \begin{macrocode}
 \def\tikztiming@trans{}%
-\def\tikztiming@iftrans#1#2#3{%
+\def\tikztiming@iftrans#1{%
+  \tikztiming@iftrans@#1\empty\empty\empty\relax
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@iftrans}[4]
+% {First character}{Second character}
+% {Next character or empty}{Eats token till end marker}
+%    \begin{macrocode}
+\def\tikztiming@iftrans@#1#2#3#4\relax{%
  %\tracingmacros=1
  %\tracingonline=1
   \edef\tikztiming@trans{#1#2}%
@@ -2563,7 +2571,7 @@
 % {First character}{Second character}
 %    \begin{macrocode}
 \newcommand*\tikztiming@nameaddtostr[3][]{%
-  \tikztiming@iftrans{#2}{#3}{#1}%
+  \tikztiming@iftrans{{#2}{#3}{#1}}%
    {%
      \expandafter\g@addto@macro
      \expandafter\tikztiming@str
@@ -5256,7 +5264,7 @@
 %<*lib-clockarrows>
 %  \fi
 %    \begin{macrocode}
-\tikztiming@iftrans{C}{C}{}%
+\tikztiming@iftrans{CC}%
   {\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC}%
   {\PackageError{\@currname}{No 'CC' transition defined by the main tikz-timing 
   package.}{}{}}%
