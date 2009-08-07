@@ -10,7 +10,7 @@
   %\tikzset{timing/e/.style={fill=green},timing/e/background/.style={fill=green,draw=none}}
 \else
 \fi
-  \usetikztiminglibrary {either}
+%  \usetikztiminglibrary {either}
 \pagestyle{empty}
 \tikzset{%
 timing/.append style={orange,},
@@ -24,14 +24,14 @@ ee/.style={},
 \sffamily
 %\tikzset{timing/lslope=.4}
 %\tikzset{timing/dslope=.4}
-\tikzset{timing/zslope=0.45}
-\tikzset{timing/dslope=0}
-\tikzset{timing/lslope=.125}
+\tikzset{timing/zslope=0.2}
+\tikzset{timing/dslope=0.3}
+\tikzset{timing/lslope=.1}
 \makeatletter
 \def\asis#1{{%
   \let\@tempa#1\empty
   \@onelevel@sanitize\@tempa
-  \normalfont\texttt{\@tempa}
+  \normalfont\texttt{\@tempa}%
 }}
 \let\texttimingbefore\texttiminggrid
 
@@ -44,28 +44,31 @@ ee/.style={},
 \def\tt{tt}
 \def\cc{cc}
 
-\def\ichars{H,L,Z,X,M,U,D,T,C,E,@,}
-\def\achars{M}%H,L,Z,X,M,U,D,D{A},T,tt,C,cc,E,ee,}
-\def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,E,ee,}
-\def\cchars{H,L,Z,X,M,U,D,D{C},T,tt,C,cc,E,ee,}
+\providecommand\I{}
+\def\ichars{H,L,Z,X,M,U,D,T,C,E,}
+\def\achars{H,L,Z,X,M,U,D,D{A},T,tt,C,cc,}
+\def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,}
+\def\cchars{H,L,Z,X,M,U,D,D{C},T,tt,C,cc,}
 
 %\tikztiming@debug=0
 \@tempdima=1.6ex
 
 %\foreach \I in \ichars {%
-\def\I{}
 \foreach \a in \achars {%
+    \message{ ^^J^^J ( [\I] \a ) }%
     \begin{tikzpicture}[timing/picture]
       \node [black,anchor=base] (x) at (0,0)
         {\strut\textbf{{\tiny[\asis\I]} \asis\a}};%
     \foreach \c in \cchars {%
       \node [black,right of=x] (x) {\strut\asis\c};%
+      \message{ \c }%
     }%
     \coordinate (y) at (0,0);
     \foreach \b in \bchars {%
       \coordinate (y) at ($ (y) - (0,2) $);
       \coordinate (x) at (y);
       \node [black,anchor=base] at (x) {\strut\asis\b};%
+      \message{^^J    \b    }%
       \foreach \c in \cchars {%
         \let\x\b
         \ifx\b\db
@@ -83,12 +86,14 @@ ee/.style={},
         %\node [right of=x] (x) {\expandafter\texttiming\abc};%
         \coordinate (x) at ($ (x) + (4,0) $);
         \coordinate (t) at ($ (x) - (1.5,0) $);
+        \message{ . }%
         \draw [shift={(t)},help lines,step=.5] (0,0) grid (3,1);
-        \edef\temp{\noexpand\timing at (t) {\b\a\c};}%
+        \edef\temp{\noexpand\timing at (t) {[\I]\b\a\c};}%
         \temp
       }%
     }%
-     \draw [help lines] (-2,2) rectangle ($ (x) + (3,-1) $);
+     \draw [help lines] (-2.5,2) rectangle ($ (x) + (3,-1) $);
+        \message{ ^^J^^J }%
     \end{tikzpicture}
     \newpage
 }%
