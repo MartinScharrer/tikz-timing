@@ -4052,14 +4052,26 @@
 %    \end{macrocode}
 %
 % \subsubsection{Character `S'}
+% This character is now implemented as modifier to avoid hassle with triple 
+% character transitions.
 %    \begin{macrocode}
-\tikztimingchar{S}{++(0,0)}{++(#1,0)}
+\tikztiming@defcode{S}{%
+  \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
+  \let\tikztimingwidth\pgfmathresult
+  \tikztiming@output@Eaddcode{%
+    ++(\tikztiming@num,0)
+  }%
+  \tikztiming@parser
+}
 
-\tikztiminglet{HS}{S}
-\tikztiminglet{LS}{S}
-\tikztiminglet{ZS}{S}
-\tikztiminglet{DS}{S}
-\tikztiminglet{TS}{S}
+\tikztiming@defcode{s}{%
+  \pgfmathparse{\tikztimingwidth + \tikztiming@num/2}%
+  \let\tikztimingwidth\pgfmathresult
+  \tikztiming@output@Eaddcode{%
+    ++(\tikztiming@num/2,0)
+  }%
+  \tikztiming@parser
+}
 %    \end{macrocode}
 %
 % \subsubsection{Character `G'}
