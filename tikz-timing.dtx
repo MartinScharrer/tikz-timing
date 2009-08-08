@@ -3948,28 +3948,9 @@
   \expandafter\let
   \csname tikztiming@triple@#1\expandafter\endcsname
   \csname tikztiming@triple@#2\endcsname
-  \iffalse
-  \tikztimingcpy{#1}{#2}%
-  \tikztimingcpy{#1@}{#2@}%
-  \tikztimingcpy{@#1}{@#2}%
-  \tikztimingcpy{@#1@}{@#2@}%
-  \tikztimingdef{#1#1}{\tikztiminguse{#2#2}{##1}}%
-  \@for\@tempa:=\tikztiming@chars\do{%
-    \tikztimingcpy{\@tempa#1}{\@tempa#2}%
-    \tikztimingcpy{#1\@tempa}{#2\@tempa}%
-    \tikztimingcpy{@\@tempa#1}{@\@tempa#2}%
-    \tikztimingcpy{@#1\@tempa}{@#2\@tempa}%
-    \tikztimingcpy{\@tempa#1@}{\@tempa#2@}%
-    \tikztimingcpy{#1\@tempa @}{#2\@tempa @}%
-  }%
-  \@for\@tempa:=\tikztiming@chars\do{%
-    \@for\@tempb:=\tikztiming@chars\do{%
-        \tikztimingcpy{\@tempa#1\@tempb}{\@tempa#2\@tempb}%
-        \tikztimingcpy{#1\@tempa\@tempb}{#2\@tempa\@tempb}%
-        \tikztimingcpy{\@tempa\@tempb#2}{\@tempa\@tempb#2}%
-      }%
-  }%
-  \fi
+  \expandafter\let
+  \csname tikztiming@nocombine@#1\expandafter\endcsname
+  \csname tikztiming@nocombine@#2\endcsname
 }
 %    \end{macrocode}
 % \end{macro}
