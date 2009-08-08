@@ -5355,36 +5355,9 @@
   \newdraw ++(#1,-\height)
 }
 \def\tikztiming@nocombine@A{}%
-\def\tikztiming@nocombine@W{}%
-\tikztiminglet{AS}{SS}
-\tikztiminglet{AH}{H}
-\tikztiminglet{AZ}{Z}
-\tikztimingdef{ZA}{
-  ++(0,-0.5*\height)
-  \tikztiminguse{A}{#1}
-}
-\tikztimingdef{HA}{
-  ++(0,-\height)
-  \tikztiminguse{A}{#1}
-}
-\tikztiminglet{MA}{ZA}
-\tikztiminglet{AM}{AZ}
-\tikztiminglet{LA}{A}
-\tikztiminglet{AL}{LL}
-\tikztiminglet{AD}{DD}
-\tikztiminglet{AE}{LE}
-\tikztiminglet{AU}{UU}
-\tikztiminglet{SA}{A}
-\tikztiminglet{AG}{G}
-\tikztiminglet{AT}{LT}
-\tikztiminglet{AC}{LC}
-\tikztiminglet{DA}{A}
-\tikztiminglet{UA}{A}
-\tikztiminglet{TA}{A}
-\tikztiminglet{CA}{A}
-\tikztiminglet{EA}{A}
 
 \tikztimingecopy{W}{A}
+\def\tikztiming@nocombine@W{}%
 %    \end{macrocode}
 %
 % \iffalse
