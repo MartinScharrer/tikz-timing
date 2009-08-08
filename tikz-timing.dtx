@@ -2492,12 +2492,15 @@
   \ifx\tikztiming@trans\empty\else
     \let\tikztiming@trans\relax
     % Use triple macros before double macros
-    \@ifundefined{\tikztiming@prefix#1#2#3}%
+    \@ifundefined{tikztiming@triple@#2}%
       {\@ifundefined{\tikztiming@prefix#1#2}%
         {}%
         {\edef\tikztiming@trans{#1#2}}%
-      }{%
-       \edef\tikztiming@trans{#1#2#3}%
+      }%
+      {%
+      \@ifundefined{\tikztiming@prefix#1#2#3}%
+        {}%
+        {\edef\tikztiming@trans{#1#2#3}}%
       }%
     % If both do not exist, search for aliases:
     \ifx\tikztiming@trans\relax
@@ -2507,31 +2510,36 @@
       \@ifundefined{tikztiming@alias@#2}%
         {\edef\charb{#2}}%
         {\edef\charb{#2,\csname tikztiming@alias@#2\endcsname}}%
-      \@ifundefined{tikztiming@alias@#3}%
-        {\edef\charc{#3,}}%
-        {\edef\charc{#3,\csname tikztiming@alias@#3\endcsname,}}%
+      \@ifundefined{tikztiming@triple@#2}%
+        {\def\charc{\empty}}%
+        {%
+         \@ifundefined{tikztiming@alias@#3}%
+           {\edef\charc{#3,}}%
+           {\edef\charc{#3,\csname tikztiming@alias@#3\endcsname,}}%
+        }%
       \ifx\charb\empty
         \def\charb{\empty}%
       \fi
       \let\next\relax
+      \foreach \c in \charc {%
         \foreach \a in \chara {%
-        \foreach \b in \charb {%
-          \foreach \c in \charc {%
+          \foreach \b in \charb {%
+            %\message{ ^^J Testing: \a\b\c ^^J}%
             \@ifundefined{\tikztiming@prefix\a\b\c}%
               {}{%
-                \ifx\c\empty
-                  \xdef\tikztiming@trans{#1#2}%
-                  \tikztimingcpy{#1#2}{\a\b}%
-                  \ifnum\tikztiming@debug>0
-                    \message{^^J DEBUG: '#1#2' = '\a\b' ^^J}%
-                  \fi
-                \else
+                %\ifx\c\empty
+                %  \xdef\tikztiming@trans{#1#2}%
+                %  \tikztimingcpy{#1#2}{\a\b}%
+                %  \ifnum\tikztiming@debug>0
+                %    \message{^^J DEBUG: '#1#2' = '\a\b' ^^J}%
+                %  \fi
+                %\else
                   \xdef\tikztiming@trans{#1#2#3}%
                   \tikztimingcpy{#1#2#3}{\a\b\c}%
                   \ifnum\tikztiming@debug>0
                     \message{^^J DEBUG: '#1#2#3' = '\a\b\c' ^^J}%
                   \fi
-                \fi
+                %\fi
                 \expandafter\tikztiming@makeglobal
                 \csname\tikztiming@prefix\tikztiming@trans\endcsname
                 \expandafter\tikztiming@makeglobal
@@ -2553,7 +2561,7 @@
           \next
         }%
         \next
-        }%
+      }%
     \fi
   \fi
  %\tracingmacros=0
@@ -3937,6 +3945,9 @@
   \@namedef{tikztiming@alias@#1}{#2}%
   \tikztiming@addchar{#1}%
   \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
+  \expandafter\let
+  \csname tikztiming@triple@#1\expandafter\endcsname
+  \csname tikztiming@triple@#2\endcsname
   \iffalse
   \tikztimingcpy{#1}{#2}%
   \tikztimingcpy{#1@}{#2@}%
@@ -4156,6 +4167,7 @@
   -- ++(#1,0) ++(0,-\height)
 }
 
+\def\tikztiming@triple@D{}%
 \def\tikztiming@nocombine@D@edge{}%
 \def\tikztiming@nocombine@U@edge{}%
 
@@ -4631,6 +4643,7 @@
   \code{\setcounter{tikztimingtrans}{1}}%
   \tikztiminguse{D}{#1}%
 }
+\def\tikztiming@triple@E{}%
 
 \tikztimingdef{LE@}{%
   \newdraw [\bgstyle]
