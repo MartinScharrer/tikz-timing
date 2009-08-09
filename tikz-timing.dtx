@@ -2099,7 +2099,7 @@
   m/.style={timing/m/base,timing/m/decoration},
   u/background/.style={draw=none,fill=gray},
   u/.style={},
-  g/.style={},
+  g/.style={decorate=false},
   z/.style={blue},
   t/.style={},
   c/.style={timing/lslope=0.0},
@@ -4084,26 +4084,33 @@
 %
 % \subsubsection{Character `G'}
 %    \begin{macrocode}
-\tikztimingchar{G}{++(0,0)}{-- ++(\gslope,\height) -- ++(\gslope,-\height)}
+\tikztimingchar{G}{++(0,0)}{
+  {[\style] -- ++(\gslope,\height) -- ++(\gslope,-\height)}
+}
 
 \tikztimingdef{HG}{
-  -- ++(\gslope,-\height) -- ++(\gslope,+\height)
+  {[\style]-- ++(\gslope,-\height) -- ++(\gslope,+\height) }
 }
 \tikztimingdef{LG}{
+ {[\style]
   -- ++(\gslope,+\height) -- ++(\gslope,-\height)
+ }
 }
 \tikztimingdef{ZG}{
+ {[\style]
   -- ++(\gslope,-\height/2.0)
   -- ++(\gslope,+\height)
   -- ++(\gslope,-\height/2.0)
+ }
 }
-\tikztiminglet{DG}{LG}
+\tikztiminglet{DG}{ZG}
 
 \tikztimingdef{MG}{
-  \newdraw [timing/m]
+ {[\style]
   -- ++(\gslope,-\height/2.0)
   -- ++(\gslope,+\height)
   -- ++(\gslope,-\height/2.0)
+ }
 }
 
 %    \end{macrocode}
