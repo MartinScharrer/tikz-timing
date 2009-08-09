@@ -654,9 +654,24 @@
 % \begin{environment}{tikztimingexampletable}
 %    \begin{macrocode}
 \newenvironment{tikztimingexampletable}[1][]{%
+  \begingroup
+  \setcounter{tikztiming@nrows}{0}%
+  \def\tikztiming@maxwidth{0.0}%
+  \let\extracode\tikztiming@extracode
+  \let\tablegrid\tikztiming@tablegrid
+  \let\fulltablegrid\tikztiming@fulltablegrid
+  \let\horlines\tikztiming@horlines
+  \let\vertlines\tikztiming@vertlines
+  \let\tablerules\tikztiming@tablerules
+  \def\rowdist{\tikztiming@rowdist}%
+  \def\coldist{\tikztiming@coldist}%
+  \def\nrows{\the\c@tikztiming@nrows}%
+  \def\twidth{\tikztiming@maxwidth}%
   \tikzpicture[timing/table,#1]%
-  \coordinate (last row) at (0,-1);
-  \coordinate (label pos) at (-1,0);
+    \coordinate (last row)  at (0,-1);
+    \coordinate (label pos) at (-1,0);
+    \coordinate (timing/table/top left) at (0,1);
+    \coordinate (timing/table/bottom right) at (0,0);
   \collect@body\tikztimingexampletable@
 }{}%
 %    \end{macrocode}
@@ -680,6 +695,7 @@
      (current bounding box.south west) +(0,-1) --
       ($ (current bounding box.south east) +(0,0) $);
   \endtikzpicture
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -687,13 +703,20 @@
 % \begin{macro}{\tikztimingexampletable@row}
 %    \begin{macrocode}
 \def\tikztimingexampletable@row#1\\{%
+  \addtocounter{tikztiming@nrows}{1}%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
   \path (last row) +(0,-1*\tikztiming@rowdist) coordinate (last row);
   \path (last row) +(-1*\tikztiming@coldist,0) node
     [anchor=base east,timing/name]
     {\ttfamily\tikztiming@text};
-  \timing at (last row) {#1};
+  %\timing at (last row) {#1};
+  \@ifnextchar{[}%
+  {\tikztiming@tabletiming}%
+  {\tikztiming@tabletiming[]}%
+  #1\relax%
+  \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
+    coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
   \@ifnextchar\extracode
     {\tikztimingextracode}%
     {%
@@ -1083,7 +1106,7 @@
 % Example: |\tikz \timing [green] at (1,2) {[L]HLZDZLH};| gives `\tikz \timing 
 % [green] at (1,2) {[L]HLZDZLH};'.
 % 
-% \subsubsection*{Timing Shape Anchors}
+% \subsubsection{Timing Shape Anchors}\label{sec:timingshape}
 % Every timing diagram line produced by \cs{timing}, which includes the rows in 
 % \env{tikztimingtable}, is also a PGF shape (node) with several anchors. These 
 % are shown in Figure~\ref{fig:shape}.
@@ -1160,29 +1183,15 @@
 % The following macros are only defined inside a \env{tikztimingtable} after the 
 % macro \cs{extracode}. They are useful for drawing additional material.
 %
+% \DescribeMacro{tablegrid}{\meta{*}\oarg{TikZ Settings}}
+% After \css{extracode} this macro draws a grid in the background of the table.
+% A separate grid is drawn for each row. The normal version draws all grids with 
+% the width of the widest row while the star version draws them with the width 
+% of the corresponding row.
 %
-% \DescribeMacro{tablegrid}{\oarg{TikZ Settings}}
-% \DescribeMacro*{fulltablegrid}{\oarg{TikZ Settings}}
-% After \css{extracode} this macros draw a grid in the background of the table.
-% The first one draws a separate grid for each row and the second one a big grid 
-% over all rows.
-%
-% \DescribeMacro{rowdist}{}
-% \DescribeMacro*{coldist}{}
-% This macros return the row and column distance.  There are useful for drawing 
-% additional material relative to the rows and columns.  This values can be set 
-% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
-% and \texttt{timing/coldist} settings which are explained in 
-% Section~\ref{sec:styles}.
-%
-% \DescribeMacro{nrows}{}
-% Returns the number of rows in the current table. Useful for use in 
-% \cs{horlines}.
-%
-% \DescribeMacro{twidth}{}
-% Returns the width (as multiple of the `period width') of the longest timing 
-% diagram line in the table.\\Example: If the longest line would be
-% `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
+% \DescribeMacro{fulltablegrid}{\oarg{TikZ Settings}}
+% After \css{extracode} this macro draws a big grid over all rows in the 
+% background of the table.
 %
 % \DescribeMacro{horlines}{\oarg{TikZ Settings}\marg{list}}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
@@ -1208,7 +1217,28 @@
 % rule length, which makes this macro position dependent if further code is 
 % changing the bounding box.
 %
+% \DescribeMacro{nrows}{}
+% Returns the number of rows in the current table. Useful for use in 
+% \cs{horlines}.
+%
+% \DescribeMacro{rowdist}{}
+% \DescribeMacro*{coldist}{}
+% This macros return the row and column distance.  There are useful for drawing 
+% additional material relative to the rows and columns.  This values can be set 
+% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
+% and \texttt{timing/coldist} settings which are explained in 
+% Section~\ref{sec:styles}.
+%
+% \DescribeMacro{twidth}{}
+% Returns the width (as multiple of the `period width') of the longest timing 
+% diagram line in the table. Example: If the longest line would be
+% `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
+%
 % \subsubsection*{Positions \& Scalings inside the Table}
+% \textbf{Note:} The anchors provided by the timing shape 
+% (Section~\ref{sec:timingshape}) should now be used to position additional 
+% graphics.
+%
 % The first row starts at $y=0$ and the next rows are each
 % |-1*\rowdist| lower than the previous one.
 % ^^A The very last one can be accessed by the tikz coordinate `\texttt{(last
@@ -1398,6 +1428,8 @@
 %   3{AW} \\
 %   3{aw} \\
 %   2S 2A 3W A W \\
+%   \extracode
+%   \tablegrid*
 % \end{tikztimingexampletable}
 % \end{table}
 %
@@ -1475,7 +1507,8 @@
 % The arrows can be controlled using the TikZ styles shown in 
 % Table~\ref{tab:clockarrowstyles} below. This styles can also be used as 
 % library options. The key ``directory'' `|timing/c|' must be dropped for 
-% options, e.g.\ \cs{usetikztiminglibrary}|[rising arrows]{clockarrows}|.
+% options, e.g.\\\hspace*{2em}
+% \cs{usetikztiminglibrary}|[rising arrows]{clockarrows}|.
 
 % \begin{table}[H]
 %   \centering
@@ -2072,10 +2105,10 @@
 %
 % \begin{macro}{\timing@@@end}[1]{Token behind \cs{timing} macro.}
 %    \begin{macrocode}
-\def\timing@@@end#1;{%
-  \ifx;#1;\else
-    \PackageError{tikz-package}{Can not parse timing path}{}{}{}%
-  \fi
+\def\timing@@@end{%
+  \@ifnextchar{;}%
+    {\@gobble}%
+    {\PackageError{tikz-package}{Can not parse timing path}{}{}{}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2980,12 +3013,31 @@
 % \begin{macro}{\tikztiming@tablegrid}[1]{Optional settings}
 %    \begin{macrocode}
 \newcommand*\tikztiming@tablegrid[1][]{%
+  \@ifnextchar{*}%
+    {\tikztiming@tablegrid@{row\row.high end}}%
+    {\tikztiming@tablegrid@{timing/table/top right}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablegrid@@}[2]{Optional settings}{End point}
+%    \begin{macrocode}
+\def\tikztiming@tablegrid@#1{%
+  \@ifnextchar{[}%]
+    {\tikztiming@tablegrid@@{#1}}%
+    {\tikztiming@tablegrid@@{#1}[]}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablegrid@@}[2]{Optional settings}{End point}
+%    \begin{macrocode}
+\def\tikztiming@tablegrid@@#1[#2]{%
   \begin{pgfonlayer}{background}
-    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
-      \foreach \y in {1,...,\nrows} {%
-        \draw {[shift={($ (timing/table/bottom left) + (0,\y*\rowdist) - 
-        (0,\rowdist) $)}] let \p1 = (timing/table/bottom right) in (0,0) grid 
-        (\x1,1)};
+    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#2]
+      \foreach \row in {1,...,\nrows} {%
+        \draw {[shift={(row\row.low start)}]
+          let \p1 = (#1) in (0,0) grid (\x1,1)};
       }%
     \endscope
   \end{pgfonlayer}
