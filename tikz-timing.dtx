@@ -2369,6 +2369,7 @@
   \let\lastchar\secondlastchar
   \pgfmathparse{\tikztimingwidth-\tikztiming@num}%
   \let\tikztimingwidth\pgfmathresult
+  \def\tikztiming@num{0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2594,7 +2595,6 @@
        \expandafter{\tikztiming@num} }%
    }%
    {\PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}}%
-   \def\tikztiming@num{1.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2688,14 +2688,12 @@
       \or
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
         \let\tikztiming@output@bufnum\pgfmathresult
-        \def\tikztiming@num{1.0}%
       \fi
     \else % empty
       \tikztiming@output@codeflush
       \edef\tikztiming@output@bufchara{#1}%
       \edef\tikztiming@output@bufcharb{#2}%
       \let\tikztiming@output@bufnum\tikztiming@num
-      \def\tikztiming@num{1.0}%
     \fi
   \fi
 }
@@ -2737,7 +2735,6 @@
   \gdef\tikztiming@output@bufchara{}%
   \gdef\tikztiming@output@bufcharb{}%
   \global\let\tikztiming@output@bufnum\tikztiming@num
-  \gdef\tikztiming@num{1.0}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3105,6 +3102,7 @@
 % \begin{macro}{\tikztiming@testfornum}
 %    \begin{macrocode}
 \def\tikztiming@testfornum{%
+  \def\tikztiming@num{1 }%
   \let\tikztiming@numchars\empty
   \tikztiming@numfrac0\relax
   \afterassignment
@@ -3152,7 +3150,7 @@
         {%
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
-          \def\tikztiming@num{1.0}%
+          \def\tikztiming@num{1 }%
           \if@tikztiming@metachar
             {\def\@tempa{\expandafter\expandafter\expandafter
             \tikztiming@testfornum@@@@
