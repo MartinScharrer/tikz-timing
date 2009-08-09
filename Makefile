@@ -15,6 +15,8 @@ ZIPS = zip tdszip
 LATEX_OPTIONS = -interaction=batchmode
 LATEX = pdflatex ${LATEX_OPTIONS}
 
+SHELL=/bin/bash
+
 TEXMFDIR = ${HOME}/texmf
 
 CP = cp -v
@@ -97,4 +99,27 @@ install: .tds
 uninstall:
 	test -d "${TEXMFDIR}" && ${RM} -rv "${TEXMFDIR}/tex/latex/${PACKAGE}" \
 	"${TEXMFDIR}/doc/latex/${PACKAGE}" "${TEXMFDIR}/source/latex/${PACKAGE}" && texhash ${TEXMFDIR}
+
+test: test.pdf
+
+test.pdf: ${PACKAGE}.sty test.tex
+	pdflatex test
+	pdfcrop test.pdf
+
+CHARS=H L Z X M U D T C ""
+
+compare: ${PACKAGE}.sty test.tex
+	rm -f new-*.* old-*.* diff-*.*
+	for I in ${CHARS}; do \
+		pdflatex -jobname "new-$$I" "\\def\\I{$$I}\\input{test}";\
+	  mv ${PACKAGE}.sty ${PACKAGE}.sty.save; \
+		pdflatex -jobname "old-$$I" "\\def\\I{$$I}\\input{test}";\
+	  mv ${PACKAGE}.sty.save ${PACKAGE}.sty; \
+		P=$$(( $$(pdfinfo new-$$I.pdf | grep ^Pages: | cut -d: -f2) - 1 )); \
+		for N in $$(seq -w 0 $$P); do \
+		  compare -density 500 old-$$I.pdf[$$N] new-$$I.pdf[$$N] diff-$$I-$$N.png; \
+	  done; \
+	done
+
+a:
 
