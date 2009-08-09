@@ -2667,16 +2667,16 @@
         \edef\tikztiming@output@bufchara{#1}%
         \edef\tikztiming@output@bufcharb{#2}%
       \or
-        \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
-          \def\tikztiming@output@nextchar{@}%
-          \tikztiming@output@flush
-          \tikztiming@addtostr{\tikztiming@baseline}%
-          \edef\tikztiming@output@bufchara{@}%
-        \else
+        %\ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
+        %  \def\tikztiming@output@nextchar{@}%
+        %  \tikztiming@output@flush
+        %  \tikztiming@addtostr{\tikztiming@baseline}%
+        %  \edef\tikztiming@output@bufchara{@}%
+        %\else
           \edef\tikztiming@output@nextchar{#2}%
           \tikztiming@output@flush
           \edef\tikztiming@output@bufchara{#1}%
-        \fi
+        %\fi
         \edef\tikztiming@output@bufcharb{#2}%
       \or
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
@@ -2726,6 +2726,7 @@
       {\tikztiming@output@bufchara}%
       {\tikztiming@output@bufcharb}%
   \endgroup%
+  \gdef\tikztiming@output@nextchar{}%
   \gdef\tikztiming@output@bufchara{}%
   \gdef\tikztiming@output@bufcharb{}%
   \global\let\tikztiming@output@bufnum\tikztiming@num
@@ -2842,7 +2843,7 @@
 \def\tikztiming@handletext#1{%
   \@ifnextchar\relax
     {\def\tikztiming@output@nextchar{@}\tikztiming@handletext@{#1}}%
-    {\def\tikztiming@output@nextchar{D}\tikztiming@handletext@{#1}}%
+    {\def\tikztiming@output@nextchar{Z}\tikztiming@handletext@{#1}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2861,24 +2862,31 @@
 % \begin{macro}{\tikztiming@handletext@@}[2]{Optional Settings}{Text}
 %    \begin{macrocode}
 \def\tikztiming@handletext@@[#1]#2\relax{%
-  \begingroup
+  \@ifnextchar{\relax}%
+    {\def\tikztiming@output@nextchar{@}%
+     \tikztiming@handletext@@@{#1}{#2}}%
+    {\tikztiming@handletext@@@{#1}{#2}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@handletext@@@}[3]{Optional Settings}
+% {Text}
+%    \begin{macrocode}
+\def\tikztiming@handletext@@@#1#2{%
   \expandafter\lowercase\expandafter{%
     \expandafter\def\expandafter\currentcharlc
     \expandafter{\currentchar}%
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
-  \tikztiming@output@flush
-  \tikztiming@eaddtostr{%
-    node [%]
-      timing/\currentcharlc/text,%
-  }%
-  \endgroup
-  \tikztiming@addtostr{%[
-      #1%
-      ] at ($ (timing@dstart) !.5! (timing@dend) $) {#2}
-  }%
-  \def\lastchar{D@edge@}%
+    \tikztiming@output@flush
+    \tikztiming@eaddtostr{%
+      node [timing/\currentcharlc/text,%
+      \unexpanded{#1}] at ($ (timing@dstart) !.5! (timing@dend) $)
+      {\unexpanded{#2}}
+    }%
+    \def\lastchar{D@edge@}%
   }{%
     \endgroup
     \PackageWarning{tikz-timing}{Ignoring text for character 
@@ -2888,7 +2896,6 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
 %
 % \subsection{Definition of Modifiers}
 %
@@ -3723,7 +3730,7 @@
   \def\gslope{0}%
   \edef\style{%
     \noexpand\def\noexpand\style{timing/#1}%
-    \noexpand\def\noexpand\bgstyle{timing/#1/background}%
+    \noexpand\def\noexpand\bgstyle{draw=none,timing/#1/background}%
   }%
   \expandafter\lowercase\expandafter{\style}%
   \def\newdraw{\tikztiming@newdraw}%
@@ -4339,15 +4346,15 @@
 }
 
 \tikztimingdef{DD}{
-  \tikztiming@chard{#1 - \dslope/2}%
+  \tikztiming@@chard@{#1}%
 }
 
 \tikztimingdef{DD@}{
-  \tikztiming@chard@{#1 - \dslope/2}%
+  \tikztiming@@chard@{#1}%
 }
 
 \tikztimingdef{@DD}{%
-  \tikztiming@@chard{#1}%
+  \tikztiming@@chard@{#1}%
 }
 
 \tikztimingdef{ZD@}{%
@@ -4539,6 +4546,18 @@
 % \subsubsection{Character `U'}
 %    \begin{macrocode}
 \tikztimingecopy{U}{D}
+
+\tikztimingdef{UU@}{%
+  \tikztiming@@chard@{#1}%
+}
+
+\tikztimingdef{UU}{%
+  \tikztiming@@chard{#1}%
+}
+
+\tikztimingdef{@UU}{%
+  \tikztiming@@chard@{#1}%
+}
 
 \tikztimingdef{@UD}{%
   \tikztiming@@chard{#1}%
