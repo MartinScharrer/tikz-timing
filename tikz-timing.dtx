@@ -2394,7 +2394,9 @@
 % \begin{macro}{\tikztiming@beforenextcode@U@edge@}
 %    \begin{macrocode}
 \def\tikztiming@beforenextcode@U@edge@{%
-  \def\lastchar{U}%
+  \if U\currentchar\else
+    \def\lastchar{U}%
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2893,9 +2895,9 @@
       {\unexpanded{#2}}
     }%
     \if @\tikztiming@output@bufchara\relax
-      \def\tikztiming@output@bufcharb{D@edge@}%
+      \edef\tikztiming@output@bufcharb{\lastchar @edge@}%
     \fi
-    \def\lastchar{D@edge@}%
+    \edef\lastchar{\lastchar @edge@}%
   }{%
     \endgroup
     \PackageWarning{tikz-timing}{Ignoring text for character 
@@ -3950,14 +3952,6 @@
 % \begin{macro}{\tikztimingecopy}[2]{New character}{Original character}
 %    \begin{macrocode}
 \def\tikztimingecopy#1#2{%
-  \uppercase{\tikztimingecopy@{#1}{#2}}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingecopy@}[2]{New character}{Original character}
-%    \begin{macrocode}
-\def\tikztimingecopy@#1#2{%
   \@namedef{tikztiming@alias@#1}{#2}%
   \tikztiming@addchar{#1}%
   \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
@@ -4178,9 +4172,7 @@
 
 \def\tikztiming@triple@D{}%
 \def\tikztiming@triple@D@edge@{}%
-\def\tikztiming@triple@U@edge@{}%
 \def\tikztiming@nocombine@D@edge@{}%
-\def\tikztiming@nocombine@U@edge@{}%
 
 \tikztiming@nameedef[D]{D@edge@@start}{
      ++(0, \height/2)
@@ -4197,20 +4189,8 @@
    ++(\dslope/2,0)
 }
 
-\tikztiming@nameedef[U]{U@edge@@start}{
-     ++(0, \height/2)
-     coordinate (timing/start)
-  \newdraw [\bgstyle]
-   -- +(0, \height/2)
-   -- +(\dslope/2,0)
-   -- +(0,-\height/2)
-   -- +(0,0)
-  \newdraw [\style]
-      +(0, \height/2)
-   -- +(\dslope/2,0)
-   -- +(0,-\height/2)
-     ++(\dslope/2,0)
-}
+\tikztimingecopy{U@edge@}{D@edge@}
+
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@trans@D@fill}[2]{Original width}{Width to subtract}
@@ -4337,6 +4317,10 @@
   \tikztiming@@chard@{#1}%
 }%
 
+\tikztiming@nameedef[D]{@D@edge@D}{%
+  \tikztiming@@chard{#1}%
+}
+
 \tikztiming@nameedef[D]{D@edge@@}{%
   \tikztiming@chard@{#1 - \dslope/2}%
 }%
@@ -4354,14 +4338,6 @@
 }%
 
 \tikztiming@nameedef[D]{D@edge@D@}{%
-  \tikztiming@chard@{#1 - \dslope/2}%
-}%
-
-\tikztiming@nameedef[U]{U@edge@U}{%
-  \tikztiming@chard{#1 - \dslope/2}%
-}%
-
-\tikztiming@nameedef[U]{U@edge@U@}{%
   \tikztiming@chard@{#1 - \dslope/2}%
 }%
 
@@ -4398,10 +4374,6 @@
 }
 
 \tikztiminglet{DD@}{DD}
-
-\tikztimingdef{@D@edge@D}{%
-  \tikztiming@@chard{#1}%
-}
 
 \tikztimingdef{@DD}{%
   \tikztiming@@chard@{#1}%
@@ -4597,13 +4569,8 @@
 %    \begin{macrocode}
 \tikztimingecopy{U}{D}
 
-\tikztimingdef{UU@}{%
-  \tikztiming@@chard@{#1}%
-}
-
-\tikztimingdef{UU}{%
-  \tikztiming@@chard{#1}%
-}
+\tikztimingcpy{UU@}{DD@}%
+\tikztimingcpy{UU}{DD}%
 
 \tikztimingdef{@UU}{%
   \tikztiming@@chard@{#1}%
