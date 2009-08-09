@@ -2085,6 +2085,8 @@
   d/background/.style={draw=none},
   d@edge@/text/.style={timing/d/text},
   d@edge@/background/.style={timing/d/background},
+  u@edge@/text/.style={},
+  u@edge@/background/.style={},
   h/.style={},
   l/.style={},
   d/.style={},
@@ -4575,13 +4577,16 @@
 \tikztimingecopy{U}{D}
 
 \tikztimingcpy{UU@}{DD@}%
-\tikztimingcpy{UU}{DD}%
 
 \tikztimingdef{@UU}{%
   \tikztiming@@chard@{#1}%
 }
 
 \tikztimingdef{@UD}{%
+  \tikztiming@@chard{#1}%
+}
+
+\tikztimingdef{UU}{%
   \tikztiming@@chard{#1}%
 }
 
