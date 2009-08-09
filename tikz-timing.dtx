@@ -2083,9 +2083,12 @@
   name/.style={inner sep=0pt,outer sep=0pt},
   d/text/.style={timing,scale=0.6,font=\sffamily},
   d/background/.style={draw=none},
+  d@edge@/text/.style={timing/d/text},
+  d@edge@/background/.style={timing/d/background},
   h/.style={},
   l/.style={},
   d/.style={},
+  d@edge@/.style={timing/d},
   e/.style={},
   e/background/.style={draw=none},
   a/.style={->},
@@ -2223,6 +2226,8 @@
     \let\lastchar\tikztiming@startchar
     \let\currentchar\empty
     \let\settings\empty
+    \let\tikztiming@fromchar\empty
+    \let\tikztiming@tochar\empty
     \gdef\tikztiming@saved@settings{}%
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
@@ -2637,8 +2642,8 @@
 % \begin{macro}{\tikztiming@output}[2]{Character 1}{Character 2}
 %    \begin{macrocode}
 \def\tikztiming@output#1#2{%
-  \edef\fromchar{#1}%
-  \edef\tochar{#2}%
+  \edef\tikztiming@fromchar{#1}%
+  \edef\tikztiming@tochar{#2}%
   \ifx\relax#2\relax
     %\tikztiming@output@codeflush
     \tikztiming@nameaddtostr{#1}{}%
@@ -2880,12 +2885,16 @@
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
-    \tikztiming@output@flush
-    \tikztiming@eaddtostr{%
+    %\tikztiming@output@flush
+    %\tikztiming@eaddtostr{%
+    \tikztiming@output@Eaddcode{%
       node [timing/\currentcharlc/text,%
       \unexpanded{#1}] at ($ (timing@dstart) !.5! (timing@dend) $)
       {\unexpanded{#2}}
     }%
+    \if @\tikztiming@output@bufchara\relax
+      \def\tikztiming@output@bufcharb{D@edge@}%
+    \fi
     \def\lastchar{D@edge@}%
   }{%
     \endgroup
@@ -2998,7 +3007,7 @@
 % \textbf{TODO:} Add user option.
 %    \begin{macrocode}
 \tikztiming@defcode[#1]{%
-  \tikztiming@addtostr{ [#1] }%
+  \tikztiming@output@eaddcode{ [#1] }%
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3034,13 +3043,13 @@
   \def\@tempa{#2}%
   \ifx\@tempa\empty
     \def\@tempa{ node [timing/inline node,%
-      timing/inline node/from char={\fromchar},%
-      timing/inline node/to char={\tochar},%
+      timing/inline node/from char={\tikztiming@fromchar},%
+      timing/inline node/to char={\tikztiming@tochar},%
       \unexpanded{#1}] }%
   \else
     \def\@tempa{ node [timing/inline node,%
-      timing/inline node/from char={\fromchar},%
-      timing/inline node/to char={\tochar},%
+      timing/inline node/from char={\tikztiming@fromchar},%
+      timing/inline node/to char={\tikztiming@tochar},%
       \unexpanded{#1}] (\unexpanded{#2}) }%
   \fi
   \expandafter\tikztiming@output@eaddcode\expandafter{\@tempa {#3} }%
@@ -3567,11 +3576,11 @@
     \pgfpointxy{0}{\timingheight}%
     \pgf@x=\pgf@y
   }
-  \savedmacro\fromchar{%
-    \let\fromchar\tikztiming@node@fromchar
+  \savedmacro\tikztiming@fromchar{%
+    \let\tikztiming@fromchar\tikztiming@node@fromchar
   }
-  \savedmacro\tochar{%
-    \let\tochar\tikztiming@node@tochar
+  \savedmacro\tikztiming@tochar{%
+    \let\tikztiming@tochar\tikztiming@node@tochar
   }
   \savedanchor\lowpoint{%
     \pgfpointanchor{timing/start base}{center}%
@@ -4168,8 +4177,10 @@
 }
 
 \def\tikztiming@triple@D{}%
-\def\tikztiming@nocombine@D@edge{}%
-\def\tikztiming@nocombine@U@edge{}%
+\def\tikztiming@triple@D@edge@{}%
+\def\tikztiming@triple@U@edge@{}%
+\def\tikztiming@nocombine@D@edge@{}%
+\def\tikztiming@nocombine@U@edge@{}%
 
 \tikztiming@nameedef[D]{D@edge@@start}{
      ++(0, \height/2)
@@ -4318,6 +4329,26 @@
   \newdraw
 }
 
+\tikztiming@nameedef[D]{D@edge@D@edge@}{%
+  \tikztiming@chard{#1 - \dslope/2}%
+}%
+
+\tikztiming@nameedef[D]{@D@edge@@}{%
+  \tikztiming@@chard@{#1}%
+}%
+
+\tikztiming@nameedef[D]{D@edge@@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}%
+
+\tikztiming@nameedef[D]{D@edge@D@edge@@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}%
+
+\tikztiming@nameedef[D]{@D@edge@}{%
+  \tikztiming@@chard{#1}%
+}%
+
 \tikztiming@nameedef[D]{D@edge@D}{%
   \tikztiming@chard{#1 - \dslope/2}%
 }%
@@ -4368,7 +4399,15 @@
 
 \tikztiminglet{DD@}{DD}
 
+\tikztimingdef{@D@edge@D}{%
+  \tikztiming@@chard{#1}%
+}
+
 \tikztimingdef{@DD}{%
+  \tikztiming@@chard@{#1}%
+}
+
+\tikztimingdef{@D}{%
   \tikztiming@@chard@{#1}%
 }
 
@@ -4398,10 +4437,6 @@
 }
 
 \tikztimingdef{@D@}{%
-  \tikztiming@@chard@{#1}%
-}
-
-\tikztimingdef{@D}{%
   \tikztiming@@chard@{#1}%
 }
 
