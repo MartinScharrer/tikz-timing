@@ -108,7 +108,7 @@ test.pdf: ${PACKAGE}.sty test.tex
 
 CHARS=H L Z X M U D T C ""
 
-compare: ${PACKAGE}.sty test.tex
+icompare: ${PACKAGE}.sty test.tex
 	rm -f new-*.* old-*.* diff-*.*
 	for I in ${CHARS}; do \
 		pdflatex -jobname "new-$$I" "\\def\\I{$$I}\\input{test}";\
@@ -121,5 +121,17 @@ compare: ${PACKAGE}.sty test.tex
 	  done; \
 	done
 
-a:
+compare: ${PACKAGE}.sty test.tex
+	rm -f new*.* old*.* diff*.*
+	pdflatex test
+	pdfcrop test.pdf new.pdf
+	mv ${PACKAGE}.sty ${PACKAGE}.sty.save;
+	pdflatex test
+	pdfcrop test.pdf old.pdf
+	mv ${PACKAGE}.sty.save ${PACKAGE}.sty;
+	P=$$(( $$(pdfinfo new.pdf | grep ^Pages: | cut -d: -f2) - 1 )); \
+	for N in $$(seq -w 0 $$P); do \
+		echo -n "$$N: "; \
+		compare -density 500 -metric MAE old.pdf[$$N] new.pdf[$$N] diff-$$N.png; \
+	done
 
