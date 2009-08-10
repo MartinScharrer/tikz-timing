@@ -2551,8 +2551,8 @@
       \fi
       \let\next\relax
       \foreach \c in \charc {%
-        \foreach \a in \chara {%
-          \foreach \b in \charb {%
+        \foreach \b in \charb {%
+          \foreach \a in \chara {%
             %\message{ ^^J Testing: \a\b\c ^^J}%
             \@ifundefined{\tikztiming@prefix\a\b\c}%
               {}{%
@@ -4427,6 +4427,14 @@
 \tikztimingdef{ZDD}{
   \tikztiming@chard@{#1}
 }
+
+\tikztimingdef{ZDU}{
+  \tikztiming@chard{#1}
+}
+
+\tikztimingcpy{ZUD}{ZDU}
+\tikztimingcpy{ZUU}{ZDD}
+
 \tikztimingdef{ZD}{
   \tikztiming@chard{#1}
 }
@@ -4486,10 +4494,35 @@
   \tikztiming@chard{#1 - \dslope/2}
 }
 
+\tikztimingdef{LDD}{
+  -- ++(\dslope/2, \height/2)
+  \tikztiming@chard@{#1 - \dslope/2}
+}
+
+\tikztimingdef{LDU}{
+  -- ++(\dslope/2, \height/2)
+  \tikztiming@chard{#1 - \dslope/2}
+}
+
+\tikztimingcpy{LUD}{LDU}
+\tikztimingcpy{LUU}{LDD}
+
 \tikztimingdef{HD}{
   -- ++(\dslope/2, -\height/2)
   \tikztiming@chard{#1 - \dslope/2}
 }
+
+\tikztimingdef{HDD}{
+  -- ++(\dslope/2, -\height/2)
+  \tikztiming@chard@{#1 - \dslope/2}
+}
+
+\tikztimingdef{HDU}{
+  -- ++(\dslope/2, -\height/2)
+  \tikztiming@chard{#1 - \dslope/2}
+}
+\tikztimingcpy{HUD}{HDU}
+\tikztimingcpy{HUU}{HDD}
 
 %    \end{macrocode}
 %
