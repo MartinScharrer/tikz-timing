@@ -4094,11 +4094,13 @@
 \tikztimingdef{HG}{
   {[\style]-- ++(\gslope,-\height) -- ++(\gslope,+\height) }
 }
+
 \tikztimingdef{LG}{
  {[\style]
   -- ++(\gslope,+\height) -- ++(\gslope,-\height)
  }
 }
+
 \tikztimingdef{ZG}{
  {[\style]
   -- ++(\gslope,-\height/2.0)
@@ -4106,16 +4108,17 @@
   -- ++(\gslope,-\height/2.0)
  }
 }
+
 \tikztiminglet{DG}{ZG}
 
 \tikztimingdef{MG}{
- {[\style]
+ \newdraw [timing/m/base,\style]
   -- ++(\gslope,-\height/2.0)
   -- ++(\gslope,+\height)
   -- ++(\gslope,-\height/2.0)
- }
 }
 
+\def\tikztiming@alias@G{Z}
 %    \end{macrocode}
 %
 % \subsubsection{Character `H'}
