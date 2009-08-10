@@ -2876,7 +2876,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@handletext@@@}[3]{Optional Settings}
+% \begin{macro}{\tikztiming@handletext@@@}[2]{Optional Settings}
 % {Text}
 %    \begin{macrocode}
 \def\tikztiming@handletext@@@#1#2{%
@@ -2887,9 +2887,9 @@
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
     %\tikztiming@output@flush
-    %\tikztiming@eaddtostr{%
-    \tikztiming@output@Eaddcode{%
-      node [timing/\currentcharlc/text,%
+    \edef\tikztiming@temp{node [timing/\currentcharlc/text,}%
+    \expandafter\tikztiming@output@eaddcode\expandafter{%
+      \tikztiming@temp
       \unexpanded{#1}] at ($ (timing@dstart) !.5! (timing@dend) $)
       {\unexpanded{#2}}
     }%
@@ -3008,7 +3008,7 @@
 % \textbf{TODO:} Add user option.
 %    \begin{macrocode}
 \tikztiming@defcode[#1]{%
-  \tikztiming@output@eaddcode{ [#1] }%
+  \tikztiming@output@addcode{ [#1] }%
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3053,7 +3053,8 @@
       timing/inline node/to char={\tikztiming@tochar},%
       \unexpanded{#1}] (\unexpanded{#2}) }%
   \fi
-  \expandafter\tikztiming@output@eaddcode\expandafter{\@tempa {#3} }%
+  \expandafter\tikztiming@output@eaddcode\expandafter{\@tempa \unexpanded{{#3}} 
+  }%
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -4196,8 +4197,9 @@
    ++(\dslope/2,0)
 }
 
+\let\@tempa\tikztiming@chars
 \tikztimingecopy{U@edge@}{D@edge@}
-
+\let\tikztiming@chars\@tempa
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@trans@D@fill}[2]{Original width}{Width to subtract}
