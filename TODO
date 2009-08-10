@@ -1,2 +1,5 @@
 * Table head line macro
 * Define `\texttiming` to simply use `\timing`.
+* Transition dependent node anchors.
+* Support for arguments in macro-characters.
+* Extension for counter values incl. reset character.
