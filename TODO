@@ -2,4 +2,8 @@
 * Define `\texttiming` to simply use `\timing`.
 * Transition dependent node anchors.
 * Support for arguments in macro-characters.
+* Scalable macro-character.
 * Extension for counter values incl. reset character.
+* Grid macro for `\timing`.
+* Add `\timing` to internal tikz macro list, so that it is only defined 
+  inside a `tikzpicture` environment.
