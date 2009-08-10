@@ -2888,9 +2888,9 @@
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
     %\tikztiming@output@flush
-    \edef\tikztiming@temp{node [timing/\currentcharlc/text,}%
+    \edef\@tempa{node [timing/\currentcharlc/text,}%
     \expandafter\tikztiming@output@eaddcode\expandafter{%
-      \tikztiming@temp
+      \@tempa
       \unexpanded{#1}] at ($ (timing@dstart) !.5! (timing@dend) $)
       {\unexpanded{#2}}
     }%
