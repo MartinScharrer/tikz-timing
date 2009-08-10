@@ -5419,32 +5419,17 @@
 % \fi
 % \begin{macro}{\tikztiming@defcode{O}}
 %    \begin{macrocode}
-\tikztiming@defcode{O}{%
-  \@ifnextchar\relax
-    {\tikztiming@parser\relax}%
-    {\tikztiming@overlay}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@overlays}
-%    \begin{macrocode}
-\def\tikztiming@overlay#1#2{%
-  \ifx\relax#1\relax
-    \tikztiming@output@addcode{}%
+\tikztiming@defcode{O}#1{%
+  \ifx\relax#1\empty
     \def\next{\tikztiming@parser\relax}%
   \else
-    \ifx\relax#2\relax
-      \def\next{\tikztiming@parser #1\relax}%
-    \else
-      \let\tikztiming@overlay@lastchar\lastchar
-      \tikztiming@output@addcode
-        { node [timing/save] (timing@overlay@start) {} }%
-      \tikztiming@parser #1\relax
-      \let\lastchar\tikztiming@overlay@lastchar
-      \tikztiming@output@addcode{ (timing@overlay@start) }%
-      \def\next{\tikztiming@parser #2}%
-    \fi
+    \let\tikztiming@overlay@lastchar\lastchar
+    \tikztiming@output@addcode
+      { node [timing/save] (tikztiming@overlay@node) {} }%
+    \tikztiming@parser #1\relax
+    \tikztiming@output@addcode{ (tikztiming@overlay@node) }%
+    \let\lastchar\tikztiming@overlay@lastchar
+    \def\next{\expandafter\tikztiming@parser\@firstofone}%
   \fi
   \next
 }
