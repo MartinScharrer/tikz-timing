@@ -16,6 +16,7 @@
 timing/.append style={orange,},
 timing/e/.style={},timing/e/background/.style={fill=green,draw=none,},
 timing/d/.style={},timing/d/background/.style={fill=yellow,draw=none,},
+timing/u/text/.style={timing/d/text},
 tt/.style={timing/initchar=T},
 ee/.style={},
 }
@@ -47,9 +48,9 @@ ee/.style={},
 
 \providecommand\I{}
 \def\ichars{H,L,Z,X,M,U,D,T,C,E,}
-\def\achars{N(a),[],;,H,L,Z,X,M,U,D,D{A},T,tt,C,cc,}
-\def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,}
-\def\cchars{H,L,Z,X,M,U,D,D{C},T,tt,C,cc,}
+\def\achars{N(a),[],;,H,L,Z,X,M,U,U{A},D,D{A},G,T,tt,C,cc,}
+\def\bchars{H,L,Z,X,M,U,U{B},D,D{B},G,S,T,tt,C,cc,}
+\def\cchars{H,L,Z,X,M,U,U{C},D,D{C},G,S,T,tt,C,cc,}
 
 %\tikztiming@debug=0
 \@tempdima=1.6ex
