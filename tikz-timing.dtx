@@ -1667,7 +1667,10 @@
 % modifier `|;|' can be used in the first group to restart the drawn line, e.g.\ 
 % to change to a different color. This is not done automatically to give the 
 % user the freedom if and where this should happen. It is recommended to start 
-% and end both groups with the same character to avoid ugly connection points.  
+% and end both groups with the same character to avoid ugly connection points.
+%
+% At the moment overlays can not be cascaded, \ie an overlay can not include 
+% another overlay.
 %
 % \begin{table}[H]
 % \centering
@@ -1679,6 +1682,9 @@
 %   LLL O{;[gray]HH.1H;}{LLH} HH \\
 %   LL  O{L;[gray]HH.1H;}{LLLH} HH \\
 %   HHH O{;[gray]HH.1L;}{LL} LLL \\
+%   DD{} O{zd}{D}d 2D \\
+%   ZZ O{Z D Z}{Z 1.1M .9Z} ZZ \\
+%   ZZ   O{z O{d}{z} l}{D l} L  \\
 % \end{tikztimingexampletable}
 % \end{table}
 %

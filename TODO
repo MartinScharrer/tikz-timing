@@ -7,3 +7,4 @@
 * Grid macro for `\timing`.
 * Add `\timing` to internal tikz macro list, so that it is only defined 
   inside a `tikzpicture` environment.
+* Make overlays cascadable.
