@@ -1694,7 +1694,7 @@
 %   ZZ 3D O{dDZ}{DZ} ZZ  \\
 %   ZZ 3D O{dDZ}O{DZ}{dZ} ZZ  \\
 %   ZZ 3D O{3D} DZZ \\
-%   Z O{DD} ZDDD O{DDZZ} DZZ  \\
+%   Z O{DD} ZDDD O{DDZZ} DZ  \\
 %   Z O{6D Z}{Z 4D Z} Z  \\
 %   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z  \\
 % \end{tikztimingexampletable}
@@ -4424,8 +4424,11 @@
 \tikztiminglet{XDX}{ZDZ}
 \tikztiminglet{XDZ}{ZDZ}
 
-\tikztimingdef{ZD}{
+\tikztimingdef{ZDD}{
   \tikztiming@chard@{#1}
+}
+\tikztimingdef{ZD}{
+  \tikztiming@chard{#1}
 }
 
 \tikztimingdef{@DD}{%
