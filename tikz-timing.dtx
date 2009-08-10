@@ -1655,22 +1655,27 @@
 % \clearpage
 % \subsection{Overlays}
 % The library `|overlays|' enables the `|O|' character which allows the 
-% overlaying of two different groups of timing characters. This character awaits 
-% two groups enclosed by braces which are drawn in the given order. The position 
-% before the `|O|' character is saved and restored to draw the second group.  
-% The characters of the first group connect to the characters before the `|O|' 
-% modifier but then simply end.
-% The characters following after the groups connect to the characters of the 
-% second group as normal.
-% It is the responsibility of the user to make sure that the lines drawn by the 
-% first group reconnect to the main lines or do something else useful.  The 
-% modifier `|;|' can be used in the first group to restart the drawn line, e.g.\ 
-% to change to a different color. This is not done automatically to give the 
-% user the freedom if and where this should happen. It is recommended to start 
-% and end both groups with the same character to avoid ugly connection points.
+% overlaying of timing characters. This character awaits a set of character 
+% enclosed by braces which are drawn as normal. The position before the `|O|' 
+% character is then restored and the following characters are drawn over them.  
+% Older versions of this character awaited a second set of characters in braces 
+% but this braces are now optional. The exact syntax is:\\[\smallskipamount]
+% \hspace*{2em} \meta{chars before} |O|\marg{background chars} \marg{foreground 
+% chars} \meta{chars after}\\[\smallskipamount]
+% or, without second set of braces, but equal:\\[\smallskipamount]
+% \hspace*{2em} \meta{chars before} |O|\marg{background chars} \meta{foreground 
+% chars, \dots}\\
 %
-% At the moment overlays can not be cascaded, \ie an overlay can not include 
-% another overlay.
+% It is the responsibility of the user to make sure that the lines drawn by the 
+% first set reconnect to the main lines or do something else useful.  The 
+% modifier `|;|' can be used to restart the drawn line, e.g.\ to change to a 
+% different color. This is not done automatically to give the user the freedom 
+% if and where this should happen. It is recommended to start and end the set 
+% with characters identical with the main line to avoid ugly connection points.
+%
+% At the moment overlays can not be cascaded, \ie an overlay can not be included 
+% in the first argument of another overlay. However, it can be included in the 
+% second set of characters.
 %
 % \begin{table}[H]
 % \centering
@@ -1684,7 +1689,14 @@
 %   HHH O{;[gray]HH.1L;}{LL} LLL \\
 %   DD{} O{zd}{D}d 2D \\
 %   ZZ O{Z D Z}{Z 1.1M .9Z} ZZ \\
-%   ZZ   O{z O{d}{z} l}{D l} L  \\
+%   ZZ O{d Z}O{DZ}{dD} ZZ  \\
+%   ZZ O{dDZ}O{DZ}{dZ} ZZ  \\
+%   ZZ 3D O{dDZ}{DZ} ZZ  \\
+%   ZZ 3D O{dDZ}O{DZ}{dZ} ZZ  \\
+%   ZZ 3D O{3D} DZZ \\
+%   Z O{DD} ZDDD O{DDZZ} DZZ  \\
+%   Z O{6D Z}{Z 4D Z} Z  \\
+%   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z  \\
 % \end{tikztimingexampletable}
 % \end{table}
 %
