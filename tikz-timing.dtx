@@ -2680,8 +2680,8 @@
       \relax
         \edef\tikztiming@output@nextchar{#2}%
         \tikztiming@output@flush
-        \edef\tikztiming@output@bufchara{#1}%
-        \edef\tikztiming@output@bufcharb{#2}%
+        \xdef\tikztiming@output@bufchara{#1}%
+        \xdef\tikztiming@output@bufcharb{#2}%
       \or
         %\ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
         %  \def\tikztiming@output@nextchar{@}%
@@ -2691,18 +2691,18 @@
         %\else
           \edef\tikztiming@output@nextchar{#2}%
           \tikztiming@output@flush
-          \edef\tikztiming@output@bufchara{#1}%
+          \xdef\tikztiming@output@bufchara{#1}%
         %\fi
-        \edef\tikztiming@output@bufcharb{#2}%
+        \xdef\tikztiming@output@bufcharb{#2}%
       \or
         \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
-        \let\tikztiming@output@bufnum\pgfmathresult
+        \global\let\tikztiming@output@bufnum\pgfmathresult
       \fi
     \else % empty
       \tikztiming@output@codeflush
-      \edef\tikztiming@output@bufchara{#1}%
-      \edef\tikztiming@output@bufcharb{#2}%
-      \let\tikztiming@output@bufnum\tikztiming@num
+      \xdef\tikztiming@output@bufchara{#1}%
+      \xdef\tikztiming@output@bufcharb{#2}%
+      \global\let\tikztiming@output@bufnum\tikztiming@num
     \fi
   \fi
 }
@@ -2901,7 +2901,7 @@
       {\unexpanded{#2}}
     }%
     \if @\tikztiming@output@bufchara\relax
-      \edef\tikztiming@output@bufcharb{\lastchar @edge@}%
+      \xdef\tikztiming@output@bufcharb{\lastchar @edge@}%
     \fi
     \edef\lastchar{\lastchar @edge@}%
   }{%
