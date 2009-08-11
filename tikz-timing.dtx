@@ -3058,6 +3058,8 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@addnode@}[3]{Options}{Node name}{Node text}
+% The |fromchar| and |tochar| macros are to be expanded in the output routine, 
+% not inside this macro. They do not hold the correct values yet.
 %    \begin{macrocode}
 \def\tikztiming@addnode@#1#2#3{%
   \def\@tempa{#2}%
@@ -4668,8 +4670,43 @@
 \tikztimingcpy{DUD}{UDU}%
 
 \tikztimingdef{UDD}{%
-  \tikztiming@chard@{#1 - \dslope/2}%
+  \newdraw [\bgstyle]
+  -- +(\dslope/2,\height/2)
+  -- +(#1,\height/2)%
+  -- +(#1,-\height/2)%
+  -- +(\dslope/2,-\height/2)
+  -- +(0,0)
+  \newdraw [\style]
+  -- +(\dslope/2,\height/2)
+  -- +(#1,\height/2)%
+     +(#1,-\height/2)%
+  -- +(\dslope/2,-\height/2)
+  -- +(0,0)
+     +($ (#1,0) + (\dslope/2,0) $)
+     coordinate (timing@dend)
+    ++(#1,0)
+  \newdraw
 }
+
+\tikztiming@nameedef[D]{D@edge@DD}{
+  \newdraw [\bgstyle]
+  -- +(\dslope/2,\height/2)
+  -- +(#1,\height/2)%
+  -- +(#1,-\height/2)%
+  -- +(\dslope/2,-\height/2)
+  -- +(0,0)
+  \newdraw [\style]
+  -- +(\dslope/2,\height/2)
+  -- +(#1,\height/2)%
+     +(#1,-\height/2)%
+  -- +(\dslope/2,-\height/2)
+  -- +(0,0)
+     +($ (#1,0) + (\dslope/2,0) $)
+     coordinate (timing@dend)
+    ++(#1,0)
+  \newdraw
+}
+\tikztiminglet{U@edge@UU}{D@edge@DD}
 
 \tikztimingdef{DDU}{%
   \newdraw [\bgstyle]
