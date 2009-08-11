@@ -2923,8 +2923,8 @@
       \fi
     \relax
     \else
-      \xdef\tikztiming@output@bufcharb{\currentchar @edge@}%
     \fi
+      \xdef\tikztiming@output@bufcharb{\currentchar @edge@}%
     \edef\lastchar{\currentchar @edge@}%
   }{%
     \endgroup
@@ -4420,6 +4420,14 @@
   \tikztiming@dchardu{#1}%
 }
 
+\tikztiming@nameedef[D]{UD@edge@}{%
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztiming@nameedef[D]{UD@edge@@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}
+
 \tikztiming@nameedef[D]{DD@edge@@}{%
   \tikztiming@dchard@{#1}%
 }%
@@ -4504,6 +4512,11 @@
 \tikztimingdef{@D@}{%
   \tikztiming@@chard@{#1}%
 }
+
+\tikztiminglet{HD@edge@@}{HD@}
+\tikztiminglet{LD@edge@@}{LD@}
+\tikztiminglet{ZD@edge@@}{ZD@}
+\tikztiminglet{TD@edge@@}{TD@}
 
 \tikztimingdef{@DZ}{%
   \tikztiming@@chard{#1}%
@@ -4716,6 +4729,26 @@
 
 \tikztiminglet{D@edge@DD}{UDD}
 \tikztiminglet{U@edge@UU}{D@edge@DD}
+
+\tikztiming@nameedef[D]{HD@edge@}{
+  -- ++(\dslope/2, -\height/2)
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztiming@nameedef[D]{LD@edge@}{
+  -- ++(\dslope/2, \height/2)
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztiming@nameedef[D]{ZD@edge@}{
+  \tikztiming@chard{#1}%
+}
+
+\tikztiming@nameedef[D]{TD@edge@}{
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
+  \tikztiming@chard{#1 - \dslope/2}%
+}
 
 \tikztiming@nameedef[D]{D@edge@DU}{
   \tikztiming@chard{#1 - \dslope/2}
