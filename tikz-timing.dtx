@@ -4401,6 +4401,10 @@
   \tikztiming@@chard{#1}%
 }
 
+\tikztiming@nameedef[D]{DD@edge@D}{%
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
 \tikztiming@nameedef[D]{D@edge@@}{%
   \tikztiming@chard@{#1 - \dslope/2}%
 }%
@@ -4469,6 +4473,12 @@
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztimingdef{TDD}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
+  \tikztiming@chard@{#1 - \dslope/2}%
 }
 
 \tikztimingdef{LD@}{%
@@ -4665,48 +4675,37 @@
 \tikztimingcpy{UU@}{DD@}%
 
 \tikztimingdef{UDU}{%
-  \tikztiming@chard{#1}%
+  \tikztiming@chard{#1 - \dslope/2}%
 }
 \tikztimingcpy{DUD}{UDU}%
 
 \tikztimingdef{UDD}{%
   \newdraw [\bgstyle]
   -- +(\dslope/2,\height/2)
-  -- +(#1,\height/2)%
-  -- +(#1,-\height/2)%
+  -- +($ (#1,\height/2) - (\dslope/2,0) $)
+  -- +($ (#1,-\height/2) - (\dslope/2,0) $)
   -- +(\dslope/2,-\height/2)
   -- +(0,0)
   \newdraw [\style]
+     coordinate (timing@dstart)
   -- +(\dslope/2,\height/2)
-  -- +(#1,\height/2)%
-     +(#1,-\height/2)%
+  -- +($ (#1,\height/2) - (\dslope/2,0) $)
+     +($ (#1,-\height/2) - (\dslope/2,0) $)
   -- +(\dslope/2,-\height/2)
   -- +(0,0)
-     +($ (#1,0) + (\dslope/2,0) $)
+     +(#1,0)
      coordinate (timing@dend)
-    ++(#1,0)
+    ++($ (#1,0) - (\dslope/2,0) $)
   \newdraw
 }
 
-\tikztiming@nameedef[D]{D@edge@DD}{
-  \newdraw [\bgstyle]
-  -- +(\dslope/2,\height/2)
-  -- +(#1,\height/2)%
-  -- +(#1,-\height/2)%
-  -- +(\dslope/2,-\height/2)
-  -- +(0,0)
-  \newdraw [\style]
-  -- +(\dslope/2,\height/2)
-  -- +(#1,\height/2)%
-     +(#1,-\height/2)%
-  -- +(\dslope/2,-\height/2)
-  -- +(0,0)
-     +($ (#1,0) + (\dslope/2,0) $)
-     coordinate (timing@dend)
-    ++(#1,0)
-  \newdraw
-}
+\tikztiminglet{D@edge@DD}{UDD}
 \tikztiminglet{U@edge@UU}{D@edge@DD}
+
+\tikztiming@nameedef[D]{D@edge@DU}{
+  \tikztiming@chard{#1 - \dslope/2}
+}
+\tikztiminglet{U@edge@UD}{D@edge@DU}
 
 \tikztimingdef{DDU}{%
   \newdraw [\bgstyle]
