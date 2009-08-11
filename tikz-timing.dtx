@@ -2863,8 +2863,10 @@
 %
 % \begin{macro}{\tikztiming@handletext}[1]{Text}
 % Looks ahead if the current character is the last one and sets the end-of-line 
-% marker if so.
-%    \begin{macrocode}
+% marker if so. 
+%
+% This seems outdated because |handletext@| does not flush the output any more.
+%     \begin{macrocode}
 \def\tikztiming@handletext#1{%
   \@ifnextchar\relax
     {\def\tikztiming@output@nextchar{@}\tikztiming@handletext@{#1}}%
@@ -2905,17 +2907,25 @@
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
-    %\tikztiming@output@flush
     \edef\@tempa{node [timing/\currentcharlc/text,}%
     \expandafter\tikztiming@output@eaddcode\expandafter{%
       \@tempa
       \unexpanded{#1}] at ($ (timing@dstart) !.5! (timing@dend) $)
       {\unexpanded{#2}}
     }%
-    \if @\tikztiming@output@bufchara\relax
-      \xdef\tikztiming@output@bufcharb{\lastchar @edge@}%
+    \ifcase0%
+      \if @\tikztiming@output@bufchara
+        1%
+      \else
+        \ifx\tikztiming@output@bufchara\currentchar
+          1%
+        \fi
+      \fi
+    \relax
+    \else
+      \xdef\tikztiming@output@bufcharb{\currentchar @edge@}%
     \fi
-    \edef\lastchar{\lastchar @edge@}%
+    \edef\lastchar{\currentchar @edge@}%
   }{%
     \endgroup
     \PackageWarning{tikz-timing}{Ignoring text for character 
@@ -4346,7 +4356,7 @@
   \newdraw
 }
 
-\tikztimingdef{DD}{%
+\def\tikztiming@dchardu#1{%
   \newdraw [\bgstyle]
   -- +(0,\height/2)
   -- +(#1,\height/2)
@@ -4365,8 +4375,11 @@
   \newdraw
 }
 
+\tikztimingdef{DD}{%
+  \tikztiming@dchardu{#1}%
+}
 
-\tikztimingdef{DD@}{
+\def\tikztiming@dchard@#1{%
   \newdraw [\bgstyle]
   -- +(0,\height/2)
   -- +(#1,\height/2)
@@ -4384,6 +4397,10 @@
   \newdraw
 }
 
+\tikztimingdef{DD@}{
+  \tikztiming@dchard@{#1}%
+}
+
 \tikztiminglet{DDD}{DD@}
 \tikztimingcpy{UUU}{DDD}
 
@@ -4399,12 +4416,12 @@
   \tikztiming@@chard{#1}%
 }
 
-\tikztiming@nameedef[D]{DD@edge@D}{%
-  \tikztiming@chard{#1 - \dslope/2}%
+\tikztiming@nameedef[D]{DD@edge@}{%
+  \tikztiming@dchardu{#1}%
 }
 
-\tikztiming@nameedef[D]{D@edge@@}{%
-  \tikztiming@chard@{#1 - \dslope/2}%
+\tikztiming@nameedef[D]{DD@edge@@}{%
+  \tikztiming@dchard@{#1}%
 }%
 
 \tikztiming@nameedef[D]{D@edge@D@edge@@}{%
