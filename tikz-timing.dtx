@@ -2550,9 +2550,9 @@
         \def\charb{\empty}%
       \fi
       \let\next\relax
-      \foreach \c in \charc {%
-        \foreach \b in \charb {%
-          \foreach \a in \chara {%
+      \foreach \b in \charb {%
+        \foreach \a in \chara {%
+          \foreach \c in \charc {%
             %\message{ ^^J Testing: \a\b\c ^^J}%
             \@ifundefined{\tikztiming@prefix\a\b\c}%
               {}{%
@@ -4379,6 +4379,10 @@
   \tikztiming@dchardu{#1}%
 }
 
+\tikztimingdef{UU}{%
+  \tikztiming@dchardu{#1}%
+}
+
 \def\tikztiming@dchard@#1{%
   \newdraw [\bgstyle]
   -- +(0,\height/2)
@@ -4420,11 +4424,23 @@
   \tikztiming@dchardu{#1}%
 }
 
+\tikztiming@nameedef[U]{UU@edge@}{%
+  \tikztiming@dchardu{#1}%
+}
+
 \tikztiming@nameedef[D]{UD@edge@}{%
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
 \tikztiming@nameedef[D]{UD@edge@@}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}
+
+\tikztiming@nameedef[U]{DU@edge@}{%
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztiming@nameedef[U]{DU@edge@@}{%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
@@ -4782,10 +4798,6 @@
 }
 
 \tikztimingdef{@UD}{%
-  \tikztiming@@chard{#1}%
-}
-
-\tikztimingdef{UU}{%
   \tikztiming@@chard{#1}%
 }
 
