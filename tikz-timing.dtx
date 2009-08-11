@@ -4384,6 +4384,8 @@
   \newdraw
 }
 
+\tikztiminglet{DDD}{DD@}
+\tikztimingcpy{UUU}{DDD}
 
 \tikztiming@nameedef[D]{D@edge@D@edge@}{%
   \tikztiming@chard{#1 - \dslope/2}%
@@ -4659,6 +4661,22 @@
 \tikztimingecopy{U}{D}
 
 \tikztimingcpy{UU@}{DD@}%
+
+\tikztimingdef{UDU}{%
+  \tikztiming@chard{#1}%
+}
+\tikztimingcpy{DUD}{UDU}%
+
+\tikztimingdef{UDD}{%
+  \tikztiming@chard@{#1 - \dslope/2}%
+}
+
+\tikztimingdef{DDU}{%
+  \tikztiming@@chard{#1}%
+}
+
+\tikztimingcpy{DUU}{UDD}%
+\tikztimingcpy{UUD}{DDU}%
 
 \tikztimingdef{@UU}{%
   \tikztiming@@chard@{#1}%
