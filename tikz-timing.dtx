@@ -5222,26 +5222,26 @@
 
 \tikztimingdef{ZE@}{
   \newdraw [\bgstyle]
-  -- +(\slope/2,\height/2)
+  -- +(\zslope,\height/2)
   -- +(#1,\height/2)%
   -- +(#1,-\height/2)%
-  -- +(\slope/2,-\height/2)
+  -- +(\zslope,-\height/2)
   -- +(0,0)
   \newdraw [\style]
-  -- +(\slope/2,\height/2)
+  -- +(\zslope,\height/2)
   -- +(#1,\height/2)%
      +(#1,-\height/2)%
-  -- +(\slope/2,-\height/2)
+  -- +(\zslope,-\height/2)
   -- +(0,0)
     ++(#1,0)%
 }
 
 \tikztimingdef{ZEH}{%
   \newdraw [\style,preaction={\bgstyle}]
-  -- +(\slope/2, \height/2)
+  -- +(\zslope, \height/2)
   -- +($ (#1,0) + (\slope, \height/2) $)
   -- +(#1,-\height/2)
-  -- +(\slope/2, -\height/2)
+  -- +(\zslope, -\height/2)
   -- +(0,0)
     ++($ (#1,0) + (\slope, \height/2) $)
   \newdraw
@@ -5249,10 +5249,10 @@
 
 \tikztimingdef{ZEL}{%
   \newdraw [\style,preaction={\bgstyle}]
-  -- +(\slope/2, \height/2)
+  -- +(\zslope, \height/2)
   -- +(#1,\height/2)
   -- +($ (#1,0) + (\slope, -\height/2) $)
-  -- +(\slope/2, -\height/2)
+  -- +(\zslope, -\height/2)
   -- +(0,0)
     ++($ (#1,0) + (\slope, -\height/2) $)
   \newdraw
@@ -5260,10 +5260,10 @@
 
 \tikztimingdef{ZET}{%
   \newdraw [\style,preaction={\bgstyle}]
-  -- +(\slope/2, \height/2)
+  -- +(\zslope, \height/2)
   -- +($ (#1, \height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)
   -- +($ (#1,-\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)
-  -- +(\slope/2, -\height/2)
+  -- +(\zslope, -\height/2)
   -- +(0,0)
     ++($ (#1,-\height/2 * \value{tikztimingtrans}) + (\slope, 0) $)
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
@@ -5286,11 +5286,11 @@
 
 \tikztimingdef{ZEZ}{%
   \newdraw [\style,preaction={\bgstyle}]
-  -- +(\slope/2, \height/2)
+  -- +(\zslope, \height/2)
   -- +(#1,\height/2)
   -- +($ (#1,0) + (\zslope, 0) $)
   -- +(#1,-\height/2)
-  -- +(\slope/2, -\height/2)
+  -- +(\zslope, -\height/2)
   -- +(0,0)
     ++($ (#1,0) + (\zslope, 0) $)
   \newdraw
@@ -5298,10 +5298,10 @@
 
 \tikztimingdef{ZEE}{%
   \newdraw [\style,preaction={\bgstyle}]
-  -- +(\slope/2, \height/2)
+  -- +(\zslope, \height/2)
   -- +($ (#1,0) + (\slope, \height/2) $)
   -- +(#1,-\height/2)
-  -- +(\slope/2, -\height/2)
+  -- +(\zslope, -\height/2)
   -- +(0,0)
     ++(#1,-\height/2)
   \code{\setcounter{tikztimingtranspos}{0}}%
@@ -5335,11 +5335,11 @@
 
 \tikztimingdef{ZED}{%
   \newdraw [\style,preaction={\bgstyle}]
-  -- +(\slope/2, \height/2)
+  -- +(\zslope, \height/2)
   -- +(#1,\height/2)
   -- +($ (#1,0) + (\dslope/2, 0) $)
   -- +(#1,-\height/2)
-  -- +(\slope/2, -\height/2)
+  -- +(\zslope, -\height/2)
   -- +(0,0)
     ++($ (#1,0) + (\dslope/2, 0) $)
   \newdraw
