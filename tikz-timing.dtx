@@ -2209,6 +2209,7 @@
       \@protect\n
       \@protect\x
       \@protect\y
+      \@protect\tikztiming@overlay@save
       \edef\@tempa{\tikztiming@str}
       \message{^^J\meaning\@tempa^^J}%
       }
@@ -5589,16 +5590,27 @@
 %<*lib-overlays>
 % \fi
 % \begin{macro}{\tikztiming@defcode{O}}
-%    \begin{macrocode}
+% The last character before the `|O|' is saved and restored. Also the transition 
+% state (for `|T|', etc.) is saved and restored, but this is done in the output 
+% string.
+%     \begin{macrocode}
 \tikztiming@defcode{O}#1{%
   \ifx\relax#1\empty
     \def\next{\tikztiming@parser\relax}%
   \else
     \let\tikztiming@overlay@lastchar\lastchar
     \tikztiming@output@addcode
-      { node [timing/save] (tikztiming@overlay@node) {} }%
+      { node [timing/save] (tikztiming@overlay@node) {} [/utils/exec={%
+        \xdef\tikztiming@overlay@save{%
+          \setcounter{tikztimingtrans}{\the\value{tikztimingtrans}}%
+          \setcounter{tikztimingtranspos}{\the\value{tikztimingtranspos}}%
+        }%
+       }]%
+     }%
     \tikztiming@parser #1\relax
-    \tikztiming@output@addcode{ (tikztiming@overlay@node) }%
+    \tikztiming@output@addcode{%
+      (tikztiming@overlay@node) [/utils/exec=\tikztiming@overlay@save]
+    }%
     \let\lastchar\tikztiming@overlay@lastchar
     \def\next{\expandafter\tikztiming@parser\@firstofone}%
   \fi
