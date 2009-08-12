@@ -108,6 +108,20 @@ test.pdf: ${PACKAGE}.sty test.tex
 
 CHARS=H L Z X M U D T C ""
 
+ACHARS='N(a)' [] ';' H L Z X M U U{A} D D{A} G T tt C cc E ee
+
+acompare: ${PACKAGE}.sty test2.tex
+	for a in ${ACHARS}; do \
+		echo "$$a"; \
+		pdflatex -jobname "test-$$a" "\\def\\a{$$a}\\input{test2}";\
+		compare -density 500 "test-$$a.pdf[0]" "test-$$a.pdf[1]" "diff-$${a}_0x1.png"; \
+		compare -density 500 "test-$$a.pdf[0]" "test-$$a.pdf[2]" "diff-$${a}_0x2.png"; \
+		compare -density 500 "test-$$a.pdf[0]" "test-$$a.pdf[3]" "diff-$${a}_0x3.png"; \
+		compare -density 500 "test-$$a.pdf[1]" "test-$$a.pdf[2]" "diff-$${a}_1x2.png"; \
+		compare -density 500 "test-$$a.pdf[1]" "test-$$a.pdf[3]" "diff-$${a}_1x3.png"; \
+		compare -density 500 "test-$$a.pdf[2]" "test-$$a.pdf[3]" "diff-$${a}_2x3.png"; \
+	done
+
 icompare: ${PACKAGE}.sty test.tex
 	rm -f new-*.* old-*.* diff-*.*
 	for I in ${CHARS}; do \
