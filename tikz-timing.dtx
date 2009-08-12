@@ -4114,7 +4114,7 @@
 }
 
 \def\tikztiming@glitch{%
-  {[red] let \p1 = +(0,0) in (\x1,0) -- (\x1,\timingheight) (\x1,\y1) }
+  {[timing/g] let \p1 = +(0,0) in (\x1,0) -- (\x1,\timingheight) (\x1,\y1) }
 }
 %    \end{macrocode}
 %
@@ -4556,11 +4556,13 @@
 \tikztimingchar{M}{++(0,\height/2.)}{
   \newdraw [\style]
   -- ++(#1,0)
+  \newdraw [\style/base]
 }
 
 \tikztimingdef{ZM}{
   \newdraw [\style]
   -- ++(#1,0)
+  \newdraw [\style/base]
 }
 
 \tikztimingdef{LM}{
@@ -4568,6 +4570,7 @@
   -- ++($ (1/8,0) + (0,\height/2) $)
   \newdraw [\style]
   -- ++($ (-1/8,0) + (#1,0) $)
+  \newdraw [\style/base]
 }
 
 \tikztimingdef{HM}{
@@ -4575,11 +4578,13 @@
   -- ++($ (1/8,0) + (0,-1*\height/2) $)
   \newdraw [\style]
   -- ++($ (-1/8,0) + (#1,0) $)
+  \newdraw [\style/base]
 }
 
 \tikztimingdef{DM}{
   \newdraw [\style]
   -- ++($ (-\dslope/2,0) + (#1,0) $)
+  \newdraw [\style/base]
 }
 
 %    \end{macrocode}
