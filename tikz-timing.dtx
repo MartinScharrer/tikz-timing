@@ -2384,25 +2384,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@aftercode@G}
-%    \begin{macrocode}
-\def\tikztiming@aftercode@G{%
-  \let\lastchar\secondlastchar
-  \pgfmathparse{\tikztimingwidth-\tikztiming@num}%
-  \let\tikztimingwidth\pgfmathresult
-  \def\tikztiming@num{0}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@aftercode@S}
-%    \begin{macrocode}
-\def\tikztiming@aftercode@S{%
-  \let\lastchar\secondlastchar
-}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\tikztiming@beforenextcode@D@edge@}
 %    \begin{macrocode}
 \def\tikztiming@beforenextcode@D@edge@{%
@@ -4118,38 +4099,23 @@
 %
 % \subsubsection{Character `G'}
 %    \begin{macrocode}
-\tikztimingchar{G}{++(0,0)}{
-  {[\style] -- ++(\gslope,\height) -- ++(\gslope,-\height)}
+\tikztiming@defcode{G}{%
+  \tikztiming@output@addcode{%
+    \tikztiming@glitch
+  }%
+  \tikztiming@parser
 }
 
-\tikztimingdef{HG}{
-  {[\style]-- ++(\gslope,-\height) -- ++(\gslope,+\height) }
+\tikztiming@defcode{g}{%
+  \tikztiming@output@addcode{%
+    \tikztiming@glitch
+  }%
+  \tikztiming@parser
 }
 
-\tikztimingdef{LG}{
- {[\style]
-  -- ++(\gslope,+\height) -- ++(\gslope,-\height)
- }
+\def\tikztiming@glitch{%
+  {[red] let \p1 = +(0,0) in (\x1,0) -- (\x1,\timingheight) (\x1,\y1) }
 }
-
-\tikztimingdef{ZG}{
- {[\style]
-  -- ++(\gslope,-\height/2.0)
-  -- ++(\gslope,+\height)
-  -- ++(\gslope,-\height/2.0)
- }
-}
-
-\tikztiminglet{DG}{ZG}
-
-\tikztimingdef{MG}{
- \newdraw [timing/m/base,\style]
-  -- ++(\gslope,-\height/2.0)
-  -- ++(\gslope,+\height)
-  -- ++(\gslope,-\height/2.0)
-}
-
-\def\tikztiming@alias@G{Z}
 %    \end{macrocode}
 %
 % \subsubsection{Character `H'}
@@ -4700,11 +4666,6 @@
   \newdraw [\style]
   -- ++($ (-1/8,0) + (#1,0) $)
 }
-
-\tikztimingdef{TG}{%
-  -- +(\gslope,-1*\value{tikztimingtrans}*\height)
-  -- +(\gslope,0)
-}
 %    \end{macrocode}
 %
 % \subsubsection{Character `C'}
@@ -5174,6 +5135,7 @@
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
+\tikztiminglet{ED@edge@@}{ED@}
 
 \tikztimingdef{DE@}{%
   \newdraw [\bgstyle]
@@ -5422,7 +5384,7 @@
 }
 
 \tikztimingdef{@EH}{%
-  [\bgstyle]
+  \newdraw [\bgstyle]
   -- +(0,\height)
   -- +($ (#1,\height) + (\slope,0) $)
   -- +(#1,0)
@@ -5447,7 +5409,7 @@
 }
 
 \tikztimingdef{@EL}{%
-  [\bgstyle]
+  \newdraw [\bgstyle]
   -- +(0,\height)
   -- +(#1,\height)
   -- +($ (#1,0) + (\slope,0) $)
@@ -5462,7 +5424,7 @@
 }
 
 \tikztimingdef{@ED}{%
-  [\bgstyle]
+  \newdraw [\bgstyle]
   -- +(0,\height)
   -- +(#1,\height)
   -- +($ (#1,\height/2) + (\dslope/2,0) $)
@@ -5478,7 +5440,7 @@
 }
 
 \tikztimingdef{@EZ}{%
-  [\bgstyle]
+  \newdraw [\bgstyle]
   -- +(0,\height)
   -- +(#1,\height)
   -- +($ (#1,\height/2) + (\zslope,0) $)
@@ -5495,7 +5457,7 @@
 
 
 \tikztimingdef{@EE}{%
-  [\bgstyle]
+  \newdraw [\bgstyle]
   -- +(0,\height)
   -- +($ (#1,\height) + (\slope,0) $)
   -- +(#1,0)
