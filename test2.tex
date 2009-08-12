@@ -10,7 +10,7 @@
   %\tikzset{timing/e/.style={fill=green},timing/e/background/.style={fill=green,draw=none}}
 \else
 \fi
-%  \usetikztiminglibrary {either}
+\usetikztiminglibrary {either}
 \pagestyle{empty}
 \tikzset{%
 timing/.append style={orange,semitransparent,},
@@ -47,8 +47,9 @@ ee/.style={},
 \def\cc{cc}
 
 \@ifundefined{I}{\let\I\empty}{}
+\@ifundefined{a}{\let\I\empty}{}
 \def\ichars{H,L,Z,X,M,U,D,T,C,}
-\def\achars{N(a),[],;,H,L,Z,X,M,U,U{A},D,D{A},G,T,tt,C,cc,}
+\def\achars{N(a),[],;,H,L,Z,X,M,U,U{A},D,D{A},G,T,tt,C,cc,E,ee}
 \def\bchars{H,L,Z,X,M,U,U{B},D,D{B},G,S,T,tt,C,cc,}
 \def\cchars{H,L,Z,X,M,U,U{C},D,D{C},G,S,T,tt,C,cc,}
 
@@ -58,7 +59,7 @@ ee/.style={},
 \def\b{\@backslashchar b}
 
 
-\foreach \a in \achars {%
+%\foreach \a in \achars {%
 \foreach \X/\Y in {/,/;,;/,;/;} {%
     \begin{preview}
     \message{ ^^J^^J \X\a\Y }%
@@ -97,7 +98,7 @@ ee/.style={},
         \message{ . }%
         %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
         \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
-        {\noexpand\texttiming[\I]{\b\a\c}};}%
+        {\noexpand\texttiming[\I]{\b\X\a\Y\c}};}%
         \temp
       }%
     }%
@@ -107,7 +108,7 @@ ee/.style={},
     \end{preview}
     \newpage
 }%
-}%
+%}%
 
 \end{document}
 
