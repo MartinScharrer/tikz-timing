@@ -5602,8 +5602,8 @@
     \tikztiming@output@addcode
       { node [timing/save] (tikztiming@overlay@node) {} [/utils/exec={%
         \xdef\tikztiming@overlay@save{%
-          \setcounter{tikztimingtrans}{\the\value{tikztimingtrans}}%
-          \setcounter{tikztimingtranspos}{\the\value{tikztimingtranspos}}%
+          \noexpand\global\noexpand\c@tikztimingtrans\the\c@tikztimingtrans\relax%
+          \noexpand\global\noexpand\c@tikztimingtranspos\the\c@tikztimingtranspos\relax%
         }%
        }]%
      }%
