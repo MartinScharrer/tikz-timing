@@ -5140,12 +5140,13 @@
 \tikztimingdef{ED@}{%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
+\tikztiminglet{ED@edge@@}{ED@}
 
 \tikztimingdef{ED}{%
   \tikztiming@chard{#1 - \dslope/2}%
 }
+\tikztiminglet{ED@edge@}{ED}
 
-\tikztiminglet{ED@edge@@}{ED@}
 
 \tikztimingdef{DE@}{%
   \newdraw [\bgstyle]
