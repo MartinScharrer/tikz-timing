@@ -4492,6 +4492,14 @@
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
+\tikztimingdef{TUD}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
+  \tikztiming@chard{#1 - \dslope/2}%
+}
+
+\tikztiminglet{TDU}{TUD}
+
 \tikztimingdef{LD@}{%
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard@{#1 - \dslope/2}%
