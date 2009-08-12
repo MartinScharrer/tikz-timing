@@ -4114,7 +4114,8 @@
 }
 
 \def\tikztiming@glitch{%
-  {[timing/g] let \p1 = +(0,0) in (\x1,0) -- (\x1,\timingheight) (\x1,\y1) }
+  {[timing/g] let \p1 = +(0,0) in (\x1,0) -- (\x1,\timingheight)
+   coordinate (timing@dstart) at (\x1,\timingheight/2) (\x1,\y1) }
 }
 %    \end{macrocode}
 %
@@ -4411,6 +4412,10 @@
 }
 
 \tikztiming@nameedef[D]{DD@edge@@}{%
+  \tikztiming@dchard@{#1}%
+}%
+
+\tikztiming@nameedef[U]{UU@edge@@}{%
   \tikztiming@dchard@{#1}%
 }%
 
