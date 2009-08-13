@@ -35,6 +35,7 @@
 %<lib-either>\ProvidesPackageSVN[tikz-timing-either]
 %<lib-overlays>\ProvidesPackageSVN[tikz-timing-overlays]
 %<lib-clockarrows>\ProvidesPackageSVN[tikz-timing-clockarrows]
+%<lib-celltype>\ProvidesPackageSVN[tikz-timing-celltype]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -47,11 +48,12 @@
 %<lib-either>   TikZ-Timing Library for uncertain transitions]
 %<lib-overlays>   TikZ-Timing Library for timing overlays]
 %<lib-clockarrows>   TikZ-Timing Library for timing clock arrows]
+%<lib-celltype>   TikZ-Timing Library for timing cell types]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows>\GetFileInfoSVN*%
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows>\RequirePackage{tikz-timing}[\filedate]%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-celltype>\GetFileInfoSVN*%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-celltype>\RequirePackage{tikz-timing}[\filedate]%
 %<*package|driver>
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
@@ -2086,7 +2088,7 @@
 \tikzset{%
   timing/.cd,
   initchar/.value required,
-  initchar/.code={\ifx\lastchar\empty\uppercase{\def\lastchar{#1}}\fi},
+  initchar/.code={\if @\lastchar\relax\uppercase{\def\lastchar{#1}}\fi},
   metachar/.code 2 args={\tikztimingmetachar{#1}{#2}},
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
@@ -2799,7 +2801,9 @@
       coordinate (timing/end base) at (\x2,\y1)
       coordinate (timing/end top)  at (\x2,1+\y1)
   }%
+  \tikztiming@endhook%
 }
+\let\tikztiming@endhook\relax
 %    \end{macrocode}
 % \end{macro}
 %
@@ -3412,6 +3416,9 @@
   \let\settings\empty
   \ifx\relax#1\relax\else
     \tikztiming@testoptarg#1\relax\relax
+  \fi
+  \ifx\lastchar\empty
+    \def\lastchar{@}%
   \fi
   \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\settings]
     at (last row)}%
@@ -5635,6 +5642,59 @@
 %
 % \iffalse
 %</lib-overlays>
+%<*lib-celltype>
+% \fi
+%    \begin{macrocode}
+\RequirePackage{array}
+\newcolumntype{T}{>{\celltiming}l<{\endcelltiming}}
+
+\def\celltiming#1\ignorespaces{%
+  \begin{tikzpicture}[timing/picture]
+    %\coordinate (last row) at (0,0);
+    \def\tikztiming@endhook{%
+      \@ifnextchar\endcelltiming
+        {\endgroup\gdef\tikztiming@cell@endtoken{\unskip}}%
+        {\endgroup\\\gdef\tikztiming@cell@endtoken{}}%
+    }%
+    \tikztiming@init
+    \let\settings\empty
+    \@ifnextchar{[}%
+      {\tikztiming@celltiming}%
+      {\tikztiming@celltiming[]}%
+}
+
+\def\endcelltiming{%
+    \tikztiming@str;
+    \expandafter\node 
+    \expandafter[\settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
+  \endscope
+  \end{tikzpicture}%
+  \tikztiming@cell@endtoken
+}
+\let\tikztiming@cell@endtoken\relax
+
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@celltiming}
+%    \begin{macrocode}
+\def\tikztiming@celltiming[#1]{%
+  \ifx\relax#1\relax\else
+    \tikztiming@testoptarg#1\relax\relax
+  \fi
+  \ifx\lastchar\empty
+    \def\lastchar{@}%
+  \fi
+  \expandafter\scope\expandafter[\settings]%
+    \begingroup
+    \let\unskip\relax
+    \let\\\relax
+    \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \iffalse
+%</lib-celltype>
 % \fi
 % \Finale
 \endinput
