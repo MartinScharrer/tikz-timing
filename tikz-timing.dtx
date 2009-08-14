@@ -1772,28 +1772,44 @@
 % extra drawing code and the column type creates single pictures for each 
 % diagram line without common coordinate system.
 %
-% The column type is called `t` and is defined in the following 
-% way:\\[\medskipamount]
-% \hspace*{2em}|\newcolumntype{t}{>{\celltiming}l<{\endcelltiming}}|
-% \\[\medskipamount]
-% The resulting diagram is left aligned. A different alignment can be achieved 
-% by redefining the column type with the code above where the `|l|' is changed 
-% to `|c|' or `|r|'. Paragraph types like `|p|' do not make sense for timing 
-% diagrams.
+% By default the letter `|T|' and left alignment are used for the timing column 
+% type. The TikZ style |timing/columntype=|\marg{letter}\marg{alignment} can be 
+% used to select different column letters and alignments. The \meta{alignment} 
+% represents here the \emph{real} column letter like `|l|', `|c|' or `|r|'.  
+% Additional column code can be added using the `|>|\marg{code}' and 
+% `|<|\marg{code}' argument of the \pkg{array} package.
+% \iffalse
+% \noindent\textbf{Examples:}\\
+% \hspace*{1em}|\tikzset{timing/columntype={T}{r}}| \hspace{2em} Change to right 
+% alignment.\\
+% \hspace*{1em}|\tikzset{timing/columntype={I}{>{code}c<{code}}| \hspace{2em} 
+% Defines letter `|I|' to create centered timing diagrams with some code before   
+% and after it.
+% \fi
 %
-% Future versions of this library will provide a user interface to define the 
-% column type with an arbitrary character and alignment.
+% More complex column types (\eg one holding |@{..}| or |!{..}| arguments, 
+% multiple columns, etc.) must be defined manually using \pkg{array}'s 
+% \cs{newcolumntype} macro.  The default definition is equal 
+% to\\[\smallskipamount]
+% \hspace*{2em}|\newcolumntype{T}{>{\celltiming}l<{\endcelltiming}}|.
+%
+% \smallskip
+% The default `|T|' definition can be suppressed by using either the library 
+% option |notype| or a different |type| (equal to |timing/columntype|):
+% \\[\smallskipamount]
+% \hspace*{2em}|\usetikzlibrary[type={U}{l}]{columntype}|\\[\smallskipamount]
 %
 % \bigskip
 % \begin{example}
 % \centering
 % \begin{examplecode}
-%   \begin{tabular}{lct}
+%   \begin{tabular}{lcT}
 %     \toprule
 %       Description & Num & \multicolumn{1}{l}{Signal} \\
 %     \midrule
-%       Test    & 1  & HLHLHL \\
-%       Example & -6 & HLHLZ6D{[blue]Text}HL \\
+%       Example  & A  &           HLHZLHL \\
+%       Example  & B  & [][green] HLHZLHL \\
+%       Example  & C  &   [green] HLHZLHL \\
 %     \bottomrule
 %   \end{tabular}
 % \end{examplecode}
@@ -5679,15 +5695,35 @@
 %
 % \iffalse
 %</lib-overlays>
-%
-% \subsubsection{Column Type}
-%
 %<*lib-columntype>
 % \fi
+% \subsubsection{Column Type}
 % The \pkg{array} package is needed to define the columntype.
 %    \begin{macrocode}
 \RequirePackage{array}
-\newcolumntype{t}{>{\celltiming}l<{\endcelltiming}}
+
+\tikzset{timing/columntype/.code 2 args =
+  \newcolumntype{#1}{>{\celltiming}#2<{\endcelltiming}}%
+}%
+%    \end{macrocode}
+% 
+% The options |type| (calls |timing/columntype|) and |notype| are defined.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\tikzset{timing/columntype/.cd,
+  type/.style 2 args={/tikz/timing/columntype={#1}{#2}},%
+  notype/.code={},
+  notype/.value forbidden={},
+}
+
+\ProcessPgfOptions{/tikz/timing/columntype}
+%    \end{macrocode}
+% Use default settings if no options where given. This works because all options 
+% so far will change the default type.
+%    \begin{macrocode}
+\expandafter\ifx\csname opt@\@currname.\@currext\endcsname\empty
+  \tikzset{timing/columntype={T}{l}}%
+\fi
 %    \end{macrocode}
 %
 % \begin{macro}{\celltiming}
