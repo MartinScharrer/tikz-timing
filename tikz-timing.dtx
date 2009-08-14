@@ -64,7 +64,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays,clockarrows}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -1760,6 +1760,44 @@
 %     \bottomrule
 %   \end{tabular}
 % \end{table}
+%
+% \clearpage
+% \subsection{Column Type}
+% The library `|columntype|' uses the \pkg{array} package to define a new 
+% |tabular| column type for timing characters. The tabular column can then hold 
+% timing characters like the \env{tikztimingtable}. An initial option block 
+% `|[...]|' is taken as initial character or diagram line wide settings. The 
+% main difference between these two table type is that \env{tikztimingtable} 
+% creates a big common \env{tikzpicture} with one coordinate system with 
+% potential extra drawing code and the column type creates single pictures for 
+% each diagram line without common coordinate system.
+%
+% The column type is called `t` and is defined in the following 
+% way:\\[\medskipamount]
+% \hspace*{2em}|\newcolumntype{t}{>{\celltiming}l<{\endcelltiming}}|
+% \\[\medskipamount]
+% The resulting diagram is left aligned. A different alignment can be achieved 
+% by redefining the column type with the code above where the `|l|' is changed 
+% to `|c|' or `|r|'. Paragraph types like `|p|' do not make sense for timing 
+% diagrams.
+%
+% Future versions of this library will provide a user interface to define the 
+% column type with an arbitrary character and alignment.
+%
+% \begin{example}
+% \centering
+% \begin{examplecode}
+%   \begin{tabular}{lct}
+%     \toprule
+%       Description & Num & \multicolumn{1}{l}{Signal} \\
+%     \midrule
+%       Test    & 1  & HLHLHL \\
+%       Example & -6 & HLHLZ6D{[blue]Text}HL \\
+%     \bottomrule
+%   \end{tabular}
+% \end{examplecode}
+% \caption{Example for use of Timing Column Type.}\label{exa:columntype}
+% \end{example}
 %
 % \clearpage
 % \section{Examples}
