@@ -5703,7 +5703,7 @@
 %<*lib-columntype>
 % \fi
 % \subsubsection{Column Type}
-% The \pkg{array} package is needed to define the columntype.
+% The \pkg{array} package is needed to define the column type.
 %    \begin{macrocode}
 \RequirePackage{array}
 
@@ -5731,42 +5731,43 @@
 \fi
 %    \end{macrocode}
 %
-% \begin{macro}{\celltiming}
+% \begin{macro}{\celltiming}[1]{Some ignored tokens}
+% The macro first reads everything to the |\ignorespaces| placed by the 
+% |tabular|. After placing the tokens except |\ignorespaces| back a 
+% |tikzpicture| is started. The \cs{tikztiming@endhook} is defined to call 
+% \cs{end@celltiming}.
+% After the usual init process the input is tested for an optional argument and 
+% \cs{tikztiming@celltiming} is called accordantly.
 %    \begin{macrocode}
 \def\celltiming#1\ignorespaces{%
+  #1%
   \begin{tikzpicture}[timing/picture]
-    \def\tikztiming@endhook{%
-      \endcelltiming\let\endcelltiming\relax
-    }%
+    \def\tikztiming@endhook{\end@celltiming}
     \tikztiming@init
     \let\settings\empty
     \@ifnextchar{[}%
       {\tikztiming@celltiming}%
       {\tikztiming@celltiming[]}%
 }
+\let\endcelltiming\relax
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\endcelltiming}
-%    \begin{macrocode}
-\def\endcelltiming{%
-    \tikztiming@str;
-    \expandafter\node 
-    \expandafter[\settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
-  \endscope
-  \end{tikzpicture}%
-  \tikztiming@cell@endtoken
-}
-%    \end{macrocode}
-% \end{macro}
+% \begin{macro}{\tikztiming@celltiming}[1]{Optional Initial Character or 
+% Settings}
+% First the optional argument is tested to see if it is a single initial 
+% character or some settings. The \cs{tikztiming@testoptarg} macro sets the 
+% \cs{lastchar} and \cs{settings} macros to the appropriate values.
 %
-% \begin{macro}{\tikztiming@cell@endtoken}
-%    \begin{macrocode}
-\let\tikztiming@cell@endtoken\relax
-%    \end{macrocode}
-% \end{macro}
+% If the \cs{lastchar} is empty it is set to the normal start value.
 %
-% \begin{macro}{\tikztiming@celltiming}
+% Then a \pkg{pgf} scope with the potential user settings is started. The macros  
+% |\unskip| and |\\| which are used internally by the |tabular| environment are 
+% |\let| to |\relax| to work as end marker for the \cs{tikztiming@parser}.  This 
+% will not influence the table because they will revert to their original 
+% definition at the end of the |tikzpicture| environment.
+%
+% Finally the \cs{tikztiming@parser} is called.
 %    \begin{macrocode}
 \def\tikztiming@celltiming[#1]{%
   \ifx\relax#1\relax\else
@@ -5779,6 +5780,23 @@
     \let\unskip\relax
     \let\\\relax
     \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\end@celltiming}
+% This macro is called from the \cs{tikztiming@endhook} which is located in 
+% \cs{tikztiming@parser@end} when the end marker (|\relax| or alias) is 
+% encountered. It executes the accumulated \cs{tikztiming@str} and places the 
+% timing shape. Finally the |scope| and |tikzpicture| is 
+% closed.
+%     \begin{macrocode}
+\def\end@celltiming{%
+    \tikztiming@str;
+    \expandafter\node 
+    \expandafter[\settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
+  \endscope
+  \end{tikzpicture}%
 }
 %    \end{macrocode}
 % \end{macro}
