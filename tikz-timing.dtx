@@ -35,7 +35,7 @@
 %<lib-either>\ProvidesPackageSVN[tikz-timing-either]
 %<lib-overlays>\ProvidesPackageSVN[tikz-timing-overlays]
 %<lib-clockarrows>\ProvidesPackageSVN[tikz-timing-clockarrows]
-%<lib-celltype>\ProvidesPackageSVN[tikz-timing-celltype]
+%<lib-columntype>\ProvidesPackageSVN[tikz-timing-columntype]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -48,12 +48,12 @@
 %<lib-either>   TikZ-Timing Library for uncertain transitions]
 %<lib-overlays>   TikZ-Timing Library for timing overlays]
 %<lib-clockarrows>   TikZ-Timing Library for timing clock arrows]
-%<lib-celltype>   TikZ-Timing Library for timing cell types]
+%<lib-columntype>   TikZ-Timing Library for timing cell types]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-celltype>\GetFileInfoSVN*%
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-celltype>\RequirePackage{tikz-timing}[\filedate]%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype>\GetFileInfoSVN*%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype>\RequirePackage{tikz-timing}[\filedate]%
 %<*package|driver>
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
@@ -5640,12 +5640,19 @@
 %
 % \iffalse
 %</lib-overlays>
-%<*lib-celltype>
+%
+% \subsubsection{Column Type}
+%
+%<*lib-columntype>
 % \fi
+% The \pkg{array} package is needed to define the columntype.
 %    \begin{macrocode}
 \RequirePackage{array}
-\newcolumntype{T}{>{\celltiming}l<{\endcelltiming}}
-
+\newcolumntype{t}{>{\celltiming}l<{\endcelltiming}}
+%    \end{macrocode}
+%
+% \begin{macro}{\celltiming}
+%    \begin{macrocode}
 \def\celltiming#1\ignorespaces{%
   \begin{tikzpicture}[timing/picture]
     \def\tikztiming@endhook{%
@@ -5657,7 +5664,11 @@
       {\tikztiming@celltiming}%
       {\tikztiming@celltiming[]}%
 }
-
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endcelltiming}
+%    \begin{macrocode}
 \def\endcelltiming{%
     \tikztiming@str;
     \expandafter\node 
@@ -5666,9 +5677,14 @@
   \end{tikzpicture}%
   \tikztiming@cell@endtoken
 }
-\let\tikztiming@cell@endtoken\relax
-
 %    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@cell@endtoken}
+%    \begin{macrocode}
+\let\tikztiming@cell@endtoken\relax
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\tikztiming@celltiming}
 %    \begin{macrocode}
@@ -5686,9 +5702,9 @@
 }
 %    \end{macrocode}
 % \end{macro}
-
+%
 % \iffalse
-%</lib-celltype>
+%</lib-columntype>
 % \fi
 % \Finale
 \endinput
