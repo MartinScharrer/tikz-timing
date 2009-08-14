@@ -5648,11 +5648,8 @@
 
 \def\celltiming#1\ignorespaces{%
   \begin{tikzpicture}[timing/picture]
-    %\coordinate (last row) at (0,0);
     \def\tikztiming@endhook{%
-      \@ifnextchar\endcelltiming
-        {\endgroup\gdef\tikztiming@cell@endtoken{\unskip}}%
-        {\endgroup\\\gdef\tikztiming@cell@endtoken{}}%
+      \endcelltiming\let\endcelltiming\relax
     }%
     \tikztiming@init
     \let\settings\empty
@@ -5683,7 +5680,6 @@
     \def\lastchar{@}%
   \fi
   \expandafter\scope\expandafter[\settings]%
-    \begingroup
     \let\unskip\relax
     \let\\\relax
     \tikztiming@parser
