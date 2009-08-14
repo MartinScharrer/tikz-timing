@@ -35,6 +35,7 @@
 %<lib-either>\ProvidesPackageSVN[tikz-timing-either]
 %<lib-overlays>\ProvidesPackageSVN[tikz-timing-overlays]
 %<lib-clockarrows>\ProvidesPackageSVN[tikz-timing-clockarrows]
+%<lib-columntype>\ProvidesPackageSVN[tikz-timing-columntype]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -47,11 +48,12 @@
 %<lib-either>   TikZ-Timing Library for uncertain transitions]
 %<lib-overlays>   TikZ-Timing Library for timing overlays]
 %<lib-clockarrows>   TikZ-Timing Library for timing clock arrows]
+%<lib-columntype>   TikZ-Timing Library for timing cell types]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows>\GetFileInfoSVN*%
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows>\RequirePackage{tikz-timing}[\filedate]%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype>\GetFileInfoSVN*%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype>\RequirePackage{tikz-timing}[\filedate]%
 %<*package|driver>
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
@@ -62,7 +64,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays,clockarrows}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -185,7 +187,8 @@
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash #1}{desc@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
+  %#1}{desc@#1}}%
   \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
   \noindent\mbox{}\macroargformat{#2}\nopagebreak
   \macroline*[0.2\baselineskip]%
@@ -209,7 +212,8 @@
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash #1}{desc@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
+  %#1}{desc@#1}}%
   \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
   \noindent\mbox{}\macroargformat{#2}\nopagebreak
   \macroline*[0.2\baselineskip]%
@@ -233,7 +237,7 @@
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{desc@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{desc@#1}}%
   \css{begin}%
   \{\macrolink{\macroformat{\textcolor{macrodesccolor}{#1}}}\}%
   \noindent\mbox{}\macroargformat{#2}\\*\relax
@@ -253,7 +257,8 @@
 }
 \def\DescribeScriptS*#1#2{%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Script #1}{script@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Script 
+  %#1}{script@#1}}%
   \scriptformat{\textcolor{scriptcolor}{#1}}%
   \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
   \nopagebreak
@@ -264,7 +269,8 @@
 }
 \def\DescribeOptionS*#1{%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Option #1}{option@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Option 
+  %#1}{option@#1}}%
   \optionformat{\textcolor{optioncolor}{#1}}%
   \noindent\mbox{}\macroline*[0.2\baselineskip]%
   \nopagebreak
@@ -292,7 +298,8 @@
     {\let\macrolink\relax}%
     {\def\macrolink{\hyperlink{desc@#1.3}}}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash #1}{impl@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
+  %#1}{impl@#1}}%
   \macrolink{\macroformat{%
     \textcolor{macroimplcolor}{\textbackslash #1}}}%
   \\*[\smallskipamount]%
@@ -318,7 +325,7 @@
     {\let\macrolink\relax}%
     {\def\macrolink{\hyperlink{desc@#1.3}}}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{impl@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{impl@#1}}%
   \macrolink{\macroformat{%
     \textcolor{macroimplcolor}{#1}}}%
   \\*[\smallskipamount]%
@@ -1760,6 +1767,61 @@
 % \end{table}
 %
 % \clearpage
+% \subsection{Column Type}
+% The library `|columntype|' uses the \pkg{array} package to define a new 
+% |tabular| column type for timing characters. The tabular column can then hold 
+% timing characters like the \env{tikztimingtable}. An initial option block 
+% `|[...]|' is taken as initial character or diagram line wide settings. The 
+% main difference between these two table types is that \env{tikztimingtable} 
+% creates a big common |tikzpicture| with one coordinate system with potential 
+% extra drawing code and the column type creates single pictures for each 
+% diagram line without common coordinate system.
+%
+% By default the letter `|T|' and left alignment are used for the timing column 
+% type. The TikZ style |timing/columntype=|\marg{letter}\marg{alignment} can be 
+% used to select different column letters and alignments. The \meta{alignment} 
+% represents here the \emph{real} column letter like `|l|', `|c|' or `|r|'.  
+% Additional column code can be added using the `|>|\marg{code}' and 
+% `|<|\marg{code}' argument of the \pkg{array} package.
+% \iffalse
+% \noindent\textbf{Examples:}\\
+% \hspace*{1em}|\tikzset{timing/columntype={T}{r}}| \hspace{2em} Change to right 
+% alignment.\\
+% \hspace*{1em}|\tikzset{timing/columntype={I}{>{code}c<{code}}| \hspace{2em} 
+% Defines letter `|I|' to create centered timing diagrams with some code before   
+% and after it.
+% \fi
+%
+% More complex column types (\eg one holding |@{..}| or |!{..}| arguments, 
+% multiple columns, etc.) must be defined manually using \pkg{array}'s 
+% \cs{newcolumntype} macro.  The default definition is equal 
+% to\\[\smallskipamount]
+% \hspace*{2em}|\newcolumntype{T}{>{\celltiming}l<{\endcelltiming}}|.
+%
+% \smallskip
+% The default `|T|' definition can be suppressed by using either the library 
+% option |notype| or a different |type| (equal to |timing/columntype|):
+% \\[\smallskipamount]
+% \hspace*{2em}|\usetikzlibrary[type={U}{l}]{columntype}|\\[\smallskipamount]
+%
+% \bigskip
+% \begin{example}
+% \centering
+% \begin{examplecode}
+%   \begin{tabular}{lcT}
+%     \toprule
+%       Description & Num & \multicolumn{1}{l}{Signal} \\
+%     \midrule
+%       Example  & A  &           HLHZLHL \\
+%       Example  & B  & [][green] HLHZLHL \\
+%       Example  & C  &   [green] HLHZLHL \\
+%     \bottomrule
+%   \end{tabular}
+% \end{examplecode}
+% \caption{Example for use of Timing Column Type.}\label{exa:columntype}
+% \end{example}
+%
+% \clearpage
 % \section{Examples}
 % This section shows some examples by putting either the full source code or 
 % only the needed characters beside the graphical result. Please note that the 
@@ -2086,7 +2148,7 @@
 \tikzset{%
   timing/.cd,
   initchar/.value required,
-  initchar/.code={\ifx\lastchar\empty\uppercase{\def\lastchar{#1}}\fi},
+  initchar/.code={\if @\lastchar\relax\uppercase{\def\lastchar{#1}}\fi},
   metachar/.code 2 args={\tikztimingmetachar{#1}{#2}},
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
@@ -2431,12 +2493,10 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@parser}
-% The |\@ifnextchar\bgroup| is a trick to remove following spaces which would 
-% break the number test.
 %    \begin{macrocode}
 \def\tikztiming@parser{%
-  \@ifnextchar\bgroup
-    {\tikztiming@testfornum}%
+  \@ifnextchar\relax
+    {\tikztiming@parser@end}%
     {\tikztiming@testfornum}%
 }
 %    \end{macrocode}
@@ -2799,7 +2859,9 @@
       coordinate (timing/end base) at (\x2,\y1)
       coordinate (timing/end top)  at (\x2,1+\y1)
   }%
+  \tikztiming@endhook%
 }
+\let\tikztiming@endhook\relax
 %    \end{macrocode}
 % \end{macro}
 %
@@ -3412,6 +3474,9 @@
   \let\settings\empty
   \ifx\relax#1\relax\else
     \tikztiming@testoptarg#1\relax\relax
+  \fi
+  \ifx\lastchar\empty
+    \def\lastchar{@}%
   \fi
   \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\settings]
     at (last row)}%
@@ -5635,6 +5700,109 @@
 %
 % \iffalse
 %</lib-overlays>
+%<*lib-columntype>
+% \fi
+% \subsubsection{Column Type}
+% The \pkg{array} package is needed to define the column type.
+%    \begin{macrocode}
+\RequirePackage{array}
+
+\tikzset{timing/columntype/.code 2 args =
+  \newcolumntype{#1}{>{\celltiming}#2<{\endcelltiming}}%
+}%
+%    \end{macrocode}
+% 
+% The options |type| (calls |timing/columntype|) and |notype| are defined.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\tikzset{timing/columntype/.cd,
+  type/.style 2 args={/tikz/timing/columntype={#1}{#2}},%
+  notype/.code={},
+  notype/.value forbidden={},
+}
+
+\ProcessPgfOptions{/tikz/timing/columntype}
+%    \end{macrocode}
+% Use default settings if no options where given. This works because all options 
+% so far will change the default type.
+%    \begin{macrocode}
+\expandafter\ifx\csname opt@\@currname.\@currext\endcsname\empty
+  \tikzset{timing/columntype={T}{l}}%
+\fi
+%    \end{macrocode}
+%
+% \begin{macro}{\celltiming}[1]{Some ignored tokens}
+% The macro first reads everything to the |\ignorespaces| placed by the 
+% |tabular|. After placing the tokens except |\ignorespaces| back a 
+% |tikzpicture| is started. The \cs{tikztiming@endhook} is defined to call 
+% \cs{end@celltiming}.
+% After the usual init process the input is tested for an optional argument and 
+% \cs{tikztiming@celltiming} is called accordantly.
+%    \begin{macrocode}
+\def\celltiming#1\ignorespaces{%
+  #1%
+  \begin{tikzpicture}[timing/picture]
+    \def\tikztiming@endhook{\end@celltiming}
+    \tikztiming@init
+    \let\settings\empty
+    \@ifnextchar{[}%
+      {\tikztiming@celltiming}%
+      {\tikztiming@celltiming[]}%
+}
+\let\endcelltiming\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@celltiming}[1]{Optional Initial Character or 
+% Settings}
+% First the optional argument is tested to see if it is a single initial 
+% character or some settings. The \cs{tikztiming@testoptarg} macro sets the 
+% \cs{lastchar} and \cs{settings} macros to the appropriate values.
+%
+% If the \cs{lastchar} is empty it is set to the normal start value.
+%
+% Then a \pkg{pgf} scope with the potential user settings is started. The macros  
+% |\unskip| and |\\| which are used internally by the |tabular| environment are 
+% |\let| to |\relax| to work as end marker for the \cs{tikztiming@parser}.  This 
+% will not influence the table because they will revert to their original 
+% definition at the end of the |tikzpicture| environment.
+%
+% Finally the \cs{tikztiming@parser} is called.
+%    \begin{macrocode}
+\def\tikztiming@celltiming[#1]{%
+  \ifx\relax#1\relax\else
+    \tikztiming@testoptarg#1\relax\relax
+  \fi
+  \ifx\lastchar\empty
+    \def\lastchar{@}%
+  \fi
+  \expandafter\scope\expandafter[\settings]%
+    \let\unskip\relax
+    \let\\\relax
+    \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\end@celltiming}
+% This macro is called from the \cs{tikztiming@endhook} which is located in 
+% \cs{tikztiming@parser@end} when the end marker (|\relax| or alias) is 
+% encountered. It executes the accumulated \cs{tikztiming@str} and places the 
+% timing shape. Finally the |scope| and |tikzpicture| is 
+% closed.
+%     \begin{macrocode}
+\def\end@celltiming{%
+    \tikztiming@str;
+    \expandafter\node 
+    \expandafter[\settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
+  \endscope
+  \end{tikzpicture}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \iffalse
+%</lib-columntype>
 % \fi
 % \Finale
 \endinput
