@@ -2433,12 +2433,10 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@parser}
-% The |\@ifnextchar\bgroup| is a trick to remove following spaces which would 
-% break the number test.
 %    \begin{macrocode}
 \def\tikztiming@parser{%
-  \@ifnextchar\bgroup
-    {\tikztiming@testfornum}%
+  \@ifnextchar\relax
+    {\tikztiming@parser@end}%
     {\tikztiming@testfornum}%
 }
 %    \end{macrocode}
