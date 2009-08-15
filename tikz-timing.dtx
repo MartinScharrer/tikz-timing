@@ -2340,64 +2340,85 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing}
+% \begin{macro}{\tikz@timing}
 %    \begin{macrocode}
-\def\timing{%
+\def\tikz@timing{%
   \@ifnextchar{[}%
-    {\timing@}%
-    {\timing@[]}%
+    {\tikz@timing@}%
+    {\tikz@timing@[]}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@}[1]{Optional TikZ Settings}
+% \begin{macro}{\tikz@installcommands}
+% Add \cs{timing} to the TikZ internal |\tikz@installcommands| macro.
+% The |\timing| macro will be installed at the begin of the |tikzpicture|.
 %    \begin{macrocode}
-\def\timing@[#1]{%
+\g@addto@macro\tikz@installcommands{%
+  \let\tikz@origtiming=\timing%
+  \let\timing=\tikz@timing%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikz@uninstallcommands}
+% Add \cs{timing} to the TikZ internal |\tikz@uninstallcommands| macro.
+% The |\timing| macro will be uninstalled at the begin of nodes.
+%    \begin{macrocode}
+\g@addto@macro\tikz@uninstallcommands{%
+  \let\timing=\tikz@origtiming%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikz@timing@}[1]{Optional TikZ Settings}
+%    \begin{macrocode}
+\def\tikz@timing@[#1]{%
   \@ifnextchar{a}%
-    {\timing@at{#1}}%
+    {\tikz@timing@at{#1}}%
     {\PackageWarning{tikz-timing}{The \string\timing\space command awaits now an 
     `at' before the coordinate, like the \string\node\space command is doing.  
     Please update your source code to ensure compatibility with newer 
     versions}{}{}{}%
      \@ifnextchar{+}%
-      {\timing@@{#1}}%
+      {\tikz@timing@@{#1}}%
       {\@ifnextchar(%)
-        {\timing@@{#1}}%
-        {\timing@@{#1}++(0,0)}%
+        {\tikz@timing@@{#1}}%
+        {\tikz@timing@@{#1}++(0,0)}%
       }%
     }%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@at}[1]{Optional TikZ Settings}
+% \begin{macro}{\tikz@timing@at}[1]{Optional TikZ Settings}
 %    \begin{macrocode}
-\def\timing@at#1at#2(#3){%
-  \timing@@@{#1}{#2(#3)}%
+\def\tikz@timing@at#1at#2(#3){%
+  \tikz@timing@@@{#1}{#2(#3)}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@}[3]{Optional TikZ Settings}{Potential `+' or 
+% \begin{macro}{\tikz@timing@@}[3]{Optional TikZ Settings}{Potential `+' or 
 % empty}{Coordinate}
 %    \begin{macrocode}
-\def\timing@@#1#2(#3){%
-  \timing@@@{#1}{#2(#3)}%
+\def\tikz@timing@@#1#2(#3){%
+  \tikz@timing@@@{#1}{#2(#3)}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@}[3]{Optional TikZ Settings}{Coordinate}{Timing 
+% \begin{macro}{\tikz@timing@@@}[3]{Optional TikZ Settings}{Coordinate}{Timing 
 % Characters}
 %    \begin{macrocode}
-\def\timing@@@#1#2#3{%
+\def\tikz@timing@@@#1#2#3{%
   \begingroup
     \tikztiming@init
     \let\tikz@alias=\pgfutil@empty%
     \begin{scope}[shift={#2},timing,#1]%
       \@ifnextchar{[}%
-        {\timing@@@init}%
-        {\timing@@@init[]}%
+        {\tikz@timing@@@init}%
+        {\tikz@timing@@@init[]}%
       #3\relax
       \ifnum\tikztiming@debug>1
       \message{^^J\meaning\tikztiming@str^^J}%
@@ -2418,14 +2439,14 @@
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
   \endgroup
-  \timing@@@end
+  \tikz@timing@@@end
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@end}
+% \begin{macro}{\tikz@timing@@@end}
 %    \begin{macrocode}
-\def\timing@@@end{%
+\def\tikz@timing@@@end{%
   \@ifnextchar{;}%
     {\@gobble}%
     {\PackageError{tikz-package}{Can not parse timing path}{}{}{}}%
@@ -2433,9 +2454,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@init}[1]{Initial character.}
+% \begin{macro}{\tikz@timing@@@init}[1]{Initial character.}
 %    \begin{macrocode}
-\def\timing@@@init[#1]{%
+\def\tikz@timing@@@init[#1]{%
   \ifx\relax#1\relax\else
     \uppercase{\def\lastchar{#1}}%
   \fi
