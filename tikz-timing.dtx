@@ -1539,8 +1539,8 @@
 %     \midrule
 %     timing/initchar=\meta{char} & Sets initial character. Only valid as first  
 %     optional argument in table rows or \cs{texttiming}.\\
-%     timing/metachar=\meta{C}\meta{G} & Sets meta-character \meta{C} to 
-%     character group \meta{G}.\\
+%     timing/metachar=\meta{C}\oarg{\#arg}\meta{G} & Sets meta-character 
+%     \meta{C} to character group \meta{G} with \meta{\#arg} arguments.\\
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
 %     \newline This also sets \texttt{dslope=2*slope}, 
 %     \texttt{zslope=slope/2}.\\
@@ -2149,7 +2149,7 @@
   timing/.cd,
   initchar/.value required,
   initchar/.code={\if @\lastchar\relax\uppercase{\def\lastchar{#1}}\fi},
-  metachar/.code 2 args={\tikztimingmetachar{#1}{#2}},
+  metachar/.code={\tikztimingmetachar#1},
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
@@ -3231,9 +3231,8 @@
           \def\tikztiming@num{1 }%
           \if@tikztiming@metachar
             {\def\@tempa{\expandafter\expandafter\expandafter
-            \tikztiming@testfornum@@@@
-            \expandafter\expandafter\expandafter{%
-            \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
+            \tikztiming@parser
+            \csname tikztiming@metachar@\meaning\@let@token\endcsname}%
             \expandafter\@tempa\@gobble
             }%
             {\tikztiming@testforcode}%
@@ -3302,14 +3301,29 @@
 % \end{macro}
 %
 % \subsection{Macro Characters}
-% \begin{macro}{\tikztimig@metachar}[2]{Macro character}{Substituted 
+% \begin{macro}{\tikztimig@metachar}[1]{Macro character}
+% Checks if there is an optional argument and calls \cs{tikztiming@metachar} 
+% appropriately.
+%    \begin{macrocode}
+\def\tikztimingmetachar#1{%
+  \@ifnextchar{[}%]
+    {\tikztiming@metachar{#1}}%
+    {\tikztiming@metachar{#1}[0]}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimig@metachar@}[2]{Macro character}{Substituted 
 % Characters}
 %    \begin{macrocode}
-\def\tikztimingmetachar#1#2{%
-  \ifx\relax#2\relax
+\def\tikztiming@metachar#1[#2]#3{%
+  \ifx\relax#3\relax
     \expandafter\let\csname tikztiming@metachar@\meaning#1\endcsname\@undefined
   \else
-    \@namedef{tikztiming@metachar@\meaning#1}{#2}%
+    \expandafter\let
+    \csname tikztiming@metachar@\meaning#1\endcsname\empty
+    \expandafter\renewcommand\expandafter*%
+    \csname tikztiming@metachar@\meaning#1\endcsname[#2]{#3}%
   \fi
 }
 %    \end{macrocode}
