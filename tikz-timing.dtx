@@ -2167,6 +2167,8 @@
   initchar/.code={\if @\lastchar\relax\uppercase{\def\lastchar{#1}}\fi},
   metachar/.code={\tikztimingmetachar#1},
   grid/.style={timing,help lines},
+  draw grid/.code={\let\tikz@timing@before\tikz@timing@grid},
+  no grid/.code={\let\tikz@timing@before\empty},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
   inline node/.style={shape=tikztiming coordinate},
@@ -2435,14 +2437,22 @@
       }
       \fi
       \fi
+      \tikz@timing@before
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
+      \tikz@timing@after
     \end{scope}%
   \endgroup
   \tikz@timing@@@end
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%    \begin{macrocode}
+\let\tikz@timing@after\empty
+\let\tikz@timing@before\empty
+\let\tikz@timing@grid\texttiminggrid
+%    \end{macrocode}
 %
 % \begin{macro}{\tikz@timing@@@end}
 %    \begin{macrocode}
