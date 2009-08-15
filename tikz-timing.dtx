@@ -75,13 +75,14 @@
 \usepackage{array}
 \usepackage{flafter,fnpos}
 \usepackage{booktabs}
+\usepackage{xtab}
 \usepackage{amsmath}
 \usepackage{placeins}
 \makeFNbottom
 \makeFNbelow
 \usepackage{microtype}
 \DisableLigatures{encoding = T1, family = tt* }%
-
+\newsavebox{\mysb}
 \makeatletter
 %</driver>
 %<*ydoc>
@@ -1517,28 +1518,52 @@
 % ^^A`|/tikz/timing/slope|'.
 %
 % ^^AThe Table~\ref{tab:styles} lists all styles defined by this package.
-% {%
-% \begin{table}[b]
-%   \centering
-%   \caption{TikZ Styles and Settings provided and used by this Package.}
+% \begin{center}^^A{table}[b]
+%   \tablecaption{TikZ Styles and Settings provided and used by this Package.}
 %   \label{tab:styles}
 %   \def\en{\,\textsf{--}\,}
-%   \makebox[\textwidth][c]{^^A
-%   \begin{tabularx}{1.15\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
+%   \let\origtabular\tabular
+%   \let\endorigtabular\endtabular
+%   \def\tabular{\begingroup
+%     \setbox\mysb\hbox\bgroup
+%     \origtabular}%
+%   \def\endtabular{\endorigtabular\egroup\makebox[\textwidth][c]{\usebox\mysb}
+%   \endgroup}%
+%   \tablefirsthead{%
 %     \toprule
 %     \normalfont Style/Setting & Description \\
 %     \midrule
+%   }%
+%   \tablehead{%
+%     \multicolumn{2}{c}%
+%     {\raisebox{\belowcaptionskip}{\tablename\ \thetable{} --
+%     continued from previous page}} \\
+%     \toprule
+%     \normalfont Style/Setting & Description \\
+%     \midrule
+%   }%
+%   \tabletail{%
+%     \bottomrule
+%     ^^A\multicolumn{2}{r}{Continued on next page}\\
+%   }
+%   \tablelasttail{%
+%     \bottomrule
+%   }
+%   \begin{xtabular}{>{\ttfamily}l>{\raggedright\arraybackslash}p{.675\textwidth}}
 %     timing      & Base settings like signal height \& period width.\\
 %     timing/intext & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
 %     timing/picture & Usable for own \texttt{tikzpictures} to set timing 
 %     settings.\\
 %     timing/grid   & Used for grids. Depends on \texttt{help lines} and \texttt{timing}.  \\
+%     timing/draw grid & Enables background grids for \cs{timing} macros. \\
+%     timing/no grid & Disabled background grids for \cs{timing} macros. \\
 %     timing/table & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
 %     timing/table/grid & Used for table grid. Depends on \texttt{timing/grid}.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
 %     timing/table/rules & Used for \cs{tablerules}. \\
 %     timing/inline node & Used for nodes created by the \texttt{N} character.  
 %     Defaults to \texttt{tikztiming coordinate}.\\
+%     \midrule
 %     timing/outer sep=\meta{dim} & Sets outer separation around \cs{texttiming} 
 %     macros. \\
 %     timing/outer xsep=\meta{dim} & See above. Only X-Coordinate. 
@@ -1555,7 +1580,7 @@
 %     \midrule
 %     timing/initchar=\meta{char} & Sets initial character. Only valid as first  
 %     optional argument in table rows or \cs{texttiming}.\\
-%     timing/metachar=\meta{C}\oarg{\#arg}\meta{G} & Sets meta-character 
+%     timing/metachar=\marg{C}\oarg{\#arg}\marg{G} & Sets meta-character 
 %     \meta{C} to character group \meta{G}.\\
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
 %     \newline This also sets \texttt{dslope=2*slope}, 
@@ -1570,12 +1595,10 @@
 %     a tikztimingtable. Default: 2 (=$2\times$signal height)\\
 %     timing/coldist=\meta{distance} & Sets distance between columns in a 
 %     tikztimingtable. Default: 1 (=$1\times$period width)\\
-%     \bottomrule
-%   \end{tabularx}
-%   }
+%   \end{xtabular}
 %   ^^A\\[\smallskipamount]
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
-% \end{table}}
+% \end{center}^^A{table}
 %
 % \clearpage
 % \section{Libraries for Further Characters}
