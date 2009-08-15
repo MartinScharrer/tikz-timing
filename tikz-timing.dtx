@@ -2964,14 +2964,14 @@
   \@ifnextchar{[}%
     {\tikztiming@handletext@@}%
     {\tikztiming@handletext@@[]}%
-  #1\relax
+  #1\tikztiming@endoftext
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@handletext@@}[2]{Optional Settings}{Text}
 %    \begin{macrocode}
-\def\tikztiming@handletext@@[#1]#2\relax{%
+\def\tikztiming@handletext@@[#1]#2\tikztiming@endoftext{%
   \@ifnextchar{\relax}%
     {\def\tikztiming@output@nextchar{@}%
      \tikztiming@handletext@@@{#1}{#2}}%
@@ -2991,10 +2991,10 @@
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
     \edef\@tempa{node [timing/\currentcharlc/text,}%
-    \expandafter\tikztiming@output@eaddcode\expandafter{%
+    \expandafter\tikztiming@output@addcode\expandafter{%
       \@tempa
-      \unexpanded{#1}] at ($ (timing@dstart) !.5! (timing@dend) $)
-      {\unexpanded{#2}}
+      #1] at ($ (timing@dstart) !.5! (timing@dend) $)
+      {#2}
     }%
     \ifcase0%
       \if @\tikztiming@output@bufchara
@@ -3270,9 +3270,9 @@
           \def\tikztiming@num{1 }%
           \if@tikztiming@metachar
             {\def\@tempa{\expandafter\expandafter\expandafter
-            \tikztiming@parser
-            \csname tikztiming@metachar@\meaning\@let@token\endcsname}%
-            \expandafter\@tempa\@gobble
+             \tikztiming@parser
+             \csname tikztiming@metachar@\meaning\@let@token\endcsname{1}}%
+             \expandafter\@tempa\@gobble
             }%
             {\tikztiming@testforcode}%
         }%
@@ -3313,9 +3313,9 @@
     {%
       \if@tikztiming@metachar
         {\def\@tempa{\expandafter\expandafter\expandafter
-        \tikztiming@testfornum@@@@
-        \expandafter\expandafter\expandafter{%
-        \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
+        \tikztiming@parser
+        \csname tikztiming@metachar@\meaning\@let@token\expandafter\endcsname
+        \expandafter{\tikztiming@num}}%
         \expandafter\@tempa\@gobble
         }%
         {\tikztiming@testforcode}%
@@ -3340,35 +3340,42 @@
 % \end{macro}
 %
 % \subsection{Macro Characters}
-% \begin{macro}{\tikztimig@metachar}[1]{Macro character}
+%
+% \begin{macro}{\tikztimingmetachar}[1]{Macro character}
 % Checks if there is an optional argument and calls \cs{tikztiming@metachar} 
 % appropriately.
 %    \begin{macrocode}
 \def\tikztimingmetachar#1{%
   \@ifnextchar{[}%]
     {\tikztiming@metachar{#1}}%
-    {\tikztiming@metachar{#1}[0]}%
+    {\tikztiming@metachar{#1}[]}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimig@metachar@}[2]{Macro character}{Substituted 
-% Characters}
+% \begin{macro}{\tikztiming@metachar}[3]{Macro character}{Number of 
+% Arguments}{Substituted Characters}
 %    \begin{macrocode}
 \def\tikztiming@metachar#1[#2]#3{%
   \ifx\relax#3\relax
     \expandafter\let\csname tikztiming@metachar@\meaning#1\endcsname\@undefined
   \else
-    \expandafter\let
-    \csname tikztiming@metachar@\meaning#1\endcsname\empty
-    \expandafter\renewcommand\expandafter*%
-    \csname tikztiming@metachar@\meaning#1\endcsname[#2]{#3}%
+    \@namedef{tikztiming@metachar@\meaning#1}{}%
+    \ifx\relax#2\relax
+      \expandafter\renewcommand\expandafter*%
+      \csname tikztiming@metachar@\meaning#1\expandafter
+      \endcsname\expandafter[1]{##1{#3}}%
+    \else
+      \expandafter\renewcommand\expandafter*%
+      \csname tikztiming@metachar@\meaning#1\expandafter
+      \endcsname\expandafter[#2]{#3}%
+    \fi
   \fi
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\if@tikztimig@metachar}[2]{True clause}{False clause}
+% \begin{macro}{\if@tikztiming@metachar}[2]{True clause}{False clause}
 % Only works in an argument of |\@ifnextchar|. This macro sets the needed 
 % |\@let@token| macro.
 %    \begin{macrocode}
