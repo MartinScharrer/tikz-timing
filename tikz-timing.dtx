@@ -40,7 +40,7 @@
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.6a
+  [v0.7
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
@@ -1435,11 +1435,21 @@
 % suppresses its normal meaning. Using the meta-character in its own definition 
 % group causes a infinite loop which will lead to an \TeX\ error.
 % 
-% \DescribeMacro{tikztimingmetachar}{\marg{Meta-Character}\marg{Character 
-% Group}}
+% \DescribeMacro{tikztimingmetachar}{\marg{Meta-Character}\oarg{Number of 
+% arguments}\marg{Character Group}}
 % This macro defines the given \meta{meta-character} to be identical to the 
 % given \meta{character group}. Alternatively this can also be done using the 
-% TikZ style `|timing/metachar=|\marg{Meta-Character}\marg{Character~Group}'.
+% TikZ style `|timing/metachar=|\marg{Meta-Character}\oarg{Number of 
+% arguments}\marg{Character~Group}'. 
+%
+% Meta-character\marginpar{\color{black}\textit{New in v0.7}}
+% can now include arguments which can be placed in \meta{Character Group} like 
+% in normal macro definitions with `|#1|' etc.
+% These meta-characters must not be preceded with a number because the resulting 
+% repetition group will cause macro expansion errors. However, they can be 
+% repeated by enclosing them and their arguments with an explicit repetition 
+% group: `\meta{num}|{|\meta{char}\marg{argument}\dots|}|' instead of 
+% `\meta{num}\meta{Char}\marg{argument}\dots'.
 %
 % An empty group deletes the meta-character, which  might be necessary in cases 
 % when normal characters are temporary redefined as meta-characters. However, if 
@@ -1479,6 +1489,12 @@
 % \texttiming{ 10{H G L G} H }\\
 % \texttiming{ 10{H g L g} H }\\
 % \texttiming{ 10{H   L  } H }}
+% \\[\bigskipamount]
+% |\tikztimingmetachar{J}[1]{ 1.8D{#1} .2D{} }|\\
+% |\texttiming{ D{} J{A} J{B} J{C} D }|\\
+% gives:\\
+% {\tikztimingmetachar{J}[1]{ 1.8D{#1} .2D{} }\\
+%  \texttiming{ D{} J{A} J{B} J{C} D }}\\
 %
 % \clearpage
 % \section{Styles}\label{sec:styles}
@@ -1540,7 +1556,7 @@
 %     timing/initchar=\meta{char} & Sets initial character. Only valid as first  
 %     optional argument in table rows or \cs{texttiming}.\\
 %     timing/metachar=\meta{C}\oarg{\#arg}\meta{G} & Sets meta-character 
-%     \meta{C} to character group \meta{G} with \meta{\#arg} arguments.\\
+%     \meta{C} to character group \meta{G}.\\
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
 %     \newline This also sets \texttt{dslope=2*slope}, 
 %     \texttt{zslope=slope/2}.\\
