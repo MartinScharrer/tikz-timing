@@ -2312,18 +2312,36 @@
 %    \begin{macrocode}
 \DeclareRobustCommand*\texttiming[2][]{%
   \begingroup
-    \let\lastchar\empty%
+    \let\lastchar\empty
     \let\settings\empty
+    \tikztiming@checktexthooks
+    \def\tikz@timing@textbefore{\texttimingbefore}%
+    \def\tikz@timing@textafter{\texttimingafter}%
     \ifx\relax#1\relax\else
       \tikztiming@testoptarg#1\relax\relax%
     \fi
     \begin{tikzpicture}[timing/intext,baseline={(0,0)}]
-      \texttimingbefore
       \def\@tempa{\expandafter\timing\expandafter[\settings] at (0,0)}%
       \expandafter\@tempa\expandafter{\expandafter[\lastchar]#2};%
-      \texttimingafter
     \end{tikzpicture}%
   \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@checktexthooks}
+%    \begin{macrocode}
+\def\tikztiming@checktexthooks{%
+  \ifcase0%
+    \ifx\texttimingbefore\empty 1\fi
+    \ifx\texttimingafter\empty 1\fi
+  \relax
+  \else
+    \PackageInfo{tikz-timing}{The macros \string\texttimingbefore\space and 
+    \string\texttimingafter\space are now deprecated. For grids use the style 
+    'timing/draw grid' now.}{}{}%
+    \global\let\tikztiming@checktexthooks\relax
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2456,8 +2474,10 @@
       \fi
       \fi
       \tikz@timing@before
+      \tikz@timing@textbefore
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
+      \tikz@timing@textafter
       \tikz@timing@after
     \end{scope}%
   \endgroup
@@ -2467,6 +2487,8 @@
 % \end{macro}
 %
 %    \begin{macrocode}
+\let\tikz@timing@textafter\empty
+\let\tikz@timing@textbefore\empty
 \let\tikz@timing@after\empty
 \let\tikz@timing@before\empty
 \let\tikz@timing@grid\texttiminggrid
