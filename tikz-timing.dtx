@@ -2216,8 +2216,16 @@
   initchar/.code={\uppercase{\def\lastchar{#1}}},
   metachar/.code={\tikztimingmetachar#1},
   grid/.style={timing,help lines},
-  draw grid/.code={\let\tikz@timing@before\tikz@timing@grid},
-  no grid/.code={\let\tikz@timing@before\empty},
+  @grid/.code={\texttiminggrid},
+  draw grid/.style={%
+    timing/before text/.append style={timing/@grid},%
+    timing/before/.append style={timing/@grid}%
+  },
+  no grid/.style={timing/@grid/.code={}},
+  before/.code={},
+  after/.code={},
+  before text/.code={\texttimingbefore},
+  after text/.code={\texttimingafter},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
   inline node/.style={shape=tikztiming coordinate},
@@ -2314,9 +2322,8 @@
   \begingroup
     \let\lastchar\empty
     \let\settings\empty
-    \tikztiming@checktexthooks
-    \def\tikz@timing@textbefore{\texttimingbefore}%
-    \def\tikz@timing@textafter{\texttimingafter}%
+    \tikzset{timing/before/.style={timing/before text}}%
+    \tikzset{timing/after/.style={timing/after text}}%
     \ifx\relax#1\relax\else
       \tikztiming@testoptarg#1\relax\relax%
     \fi
@@ -2325,23 +2332,6 @@
       \expandafter\@tempa\expandafter{\expandafter[\lastchar]#2};%
     \end{tikzpicture}%
   \endgroup
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@checktexthooks}
-%    \begin{macrocode}
-\def\tikztiming@checktexthooks{%
-  \ifcase0%
-    \ifx\texttimingbefore\empty 1\fi
-    \ifx\texttimingafter\empty 1\fi
-  \relax
-  \else
-    \PackageInfo{tikz-timing}{The macros \string\texttimingbefore\space and 
-    \string\texttimingafter\space are now deprecated. For grids use the style 
-    'timing/draw grid' now.}{}{}%
-    \global\let\tikztiming@checktexthooks\relax
-  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2473,26 +2463,16 @@
       }
       \fi
       \fi
-      \tikz@timing@before
-      \tikz@timing@textbefore
+      \tikzset{timing/before}
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
-      \tikz@timing@textafter
-      \tikz@timing@after
+      \tikzset{timing/after}
     \end{scope}%
   \endgroup
   \tikz@timing@@@end
 }
 %    \end{macrocode}
 % \end{macro}
-%
-%    \begin{macrocode}
-\let\tikz@timing@textafter\empty
-\let\tikz@timing@textbefore\empty
-\let\tikz@timing@after\empty
-\let\tikz@timing@before\empty
-\let\tikz@timing@grid\texttiminggrid
-%    \end{macrocode}
 %
 % \begin{macro}{\tikz@timing@@@end}
 %    \begin{macrocode}
