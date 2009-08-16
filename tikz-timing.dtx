@@ -1034,6 +1034,17 @@
 % !\{\meta{code}\}  & Places given code into the internal \envv{tikzpicture}.
 %& \multicolumn{2}{l}{\small See Example~\ref{exa:adv} on
 % page~\pageref{exa:adv}.} \\
+% @\{\meta{code}\}  & Executes the given code immediately during the parsing 
+% process. This can be used to change parsing parameters. To execute code during 
+% the drawing process use |[/utils/exec=|\meta{code}|]| instead. & \scriptsize
+% L @\{\string\setwscale\{2\}\} H & \texttiming{L @{\setwscale{2}} H} \\
+% \texttt{\$}\meta{math expression}\texttt{\$} & Takes a valid \texttt{pgfmath} 
+% expression (See \pkg{pgf} manual), evaluates it and places the result back in 
+% the input string so it can be used as width for the next character. The macros  
+% \cs{slope}=\cs{lslope}, \cs{dslope}, \cs{zslope} and \cs{wscale} can be used 
+% to access the corresponding values. & \scriptsize D\{\} \$ \string\dslope \$ 
+% D\{\} D &
+% \texttiming{D{} $ \dslope $ D{} D} \\
 % \bottomrule
 % \end{tabularx}}
 % \end{table}
@@ -2379,6 +2390,10 @@
     \let\tikztiming@tochar\empty
     \let\setwscale\tikztimingsetwscale
     \def\wscale{\tikztiming@wscale}%
+    \let\slope\timingslope
+    \let\lslope\slope
+    \let\zslope\timingzslope
+    \let\dslope\timingdslope
     \gdef\tikztiming@saved@settings{}%
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
@@ -3101,7 +3116,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@defcode{$}}% $
+% \begin{macro}{\tikztiming@defcode{DOLLAR}}
 % Takes the code between two dollar signs and parses it as math expression. The 
 % result is put back on the input stream. This allows the calculation of 
 % character width.
