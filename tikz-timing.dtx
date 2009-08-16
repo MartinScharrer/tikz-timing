@@ -75,7 +75,8 @@
 \usepackage{array}
 \usepackage{flafter,fnpos}
 \usepackage{booktabs}
-\usepackage{xtab}
+\usepackage{supertabular}
+%\usepackage{xtab}
 \usepackage{amsmath}
 \usepackage{placeins}
 \makeFNbottom
@@ -1584,7 +1585,7 @@
 %   \tablelasttail{%
 %     \bottomrule
 %   }
-%   \begin{xtabular}{>{\ttfamily}l>{\raggedright\arraybackslash}p{.675\textwidth}}
+%   \begin{supertabular}{>{\ttfamily}l>{\raggedright\arraybackslash}p{.675\textwidth}}
 %     timing      & Base settings like signal height \& period width.\\
 %     timing/intext & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
 %     timing/picture & Usable for own \texttt{tikzpictures} to set timing 
@@ -1613,7 +1614,11 @@
 %     timing/\meta{lc char}/text & Text style for character \meta{char}.  Only 
 %     defined for `\texttt{D}'. \\
 %     \midrule
-%     timing/initchar=\meta{char} & Sets initial character. Only valid as first  
+%     timing/text format=\meta{macros} & Define macros which are placed before 
+%     the text of `\texttt{D\{text\}}'. The text is enclosed in braces to allow 
+%     the last macro to take it as an argument. A \cs{strut} is a good choice to 
+%     make all text blocks have the same baseline.\\
+%     timing/initchar=\meta{char} & Sets initial character.  Only valid as first  
 %     optional argument in table rows or \cs{texttiming}.\\
 %     timing/metachar=\marg{C}\oarg{\#arg}\marg{G} & Sets meta-character 
 %     \meta{C} to character group \meta{G}.\\
@@ -1630,7 +1635,7 @@
 %     a tikztimingtable. Default: 2 (=$2\times$signal height)\\
 %     timing/coldist=\meta{distance} & Sets distance between columns in a 
 %     tikztimingtable. Default: 1 (=$1\times$period width)\\
-%   \end{xtabular}
+%   \end{supertabular}
 %   ^^A\\[\smallskipamount]
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
 % \end{center}^^A{table}
@@ -2245,6 +2250,7 @@
   save/.style={coordinate,/utils/exec=\tikztiming@savesettings},
   restore/.style={/utils/exec=\tikztiming@restoresettings},
   name/.style={inner sep=0pt,outer sep=0pt},
+  text format/.store in=\tikztiming@textformat,
   d/.style={},
   d/text/.style={timing,scale=0.6,font=\sffamily},
   d/background/.style={draw=none},
@@ -3031,7 +3037,7 @@
     \expandafter\tikztiming@output@addcode\expandafter{%
       \@tempa
       #1] at ($ (timing@dstart) !.5! (timing@dend) $)
-      {#2}
+      {\tikztiming@textformat{#2}}
     }%
     \ifcase0%
       \if @\tikztiming@output@bufchara
@@ -3053,6 +3059,7 @@
   }%
   \tikztiming@parser
 }
+\let\tikztiming@textformat\empty
 %    \end{macrocode}
 % \end{macro}
 %
