@@ -3221,14 +3221,30 @@
 % \end{macro}
 %
 %
-% \begin{macro}{\tikztiming@defcode []}[1]{Options to add to string}
-% Options do not flush the output buffer and are therefore added before the 
-% currently buffered character, e.g. `|HHH [blue] HHH|` is identical with 
-% `|[blue] HHHHHH|'.
-%
-% \textbf{TODO:} Add user option.
+% \begin{macro}{\tikztiming@defcode []}[1]{Options}
+% Single brackets are in-picture options, double brackets are parser options.
 %    \begin{macrocode}
-\tikztiming@defcode[#1]{%
+\tikztiming@defcode[{%}]{
+  \@ifnextchar[      %]
+    {\tikztiming@parseroption}%
+    {\tikztiming@addoption}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@parseroption}[1]{Options}
+% Sets the given options immediately, so that they are in affect for the rest of 
+% the parser run.
+\def\tikztiming@parseroption[#1]]{%
+  \pgfqkeys{/tikz/timing}{#1}%
+  \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@addoption}[1]{Options}
+% Simply adds the options to the output code buffer.
+\def\tikztiming@addoption#1]{%
   \tikztiming@output@addcode{ [#1] }%
   \tikztiming@parser
 }
