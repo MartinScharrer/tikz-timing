@@ -1024,8 +1024,18 @@
 % current position.  All three arguments are optional.  & H N(a1) L & 
 % \texttiming{H N(a1) L}\\
 %   \midrule
-% {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & H[blue]LH & 
-% \texttiming{H[blue]LH} \\
+% {}[\meta{TikZ Settings}]  & Executes given TikZ settings during the drawing 
+% process. & H[blue]LH & \texttiming{H[blue]LH} \\
+% {}[!\meta{TikZ Settings}!]  & Executes given TikZ settings during the 
+% \emph{parsing} process. Because this makes only sense for internal settings 
+% the default path is `\texttt{/tikz/timing}', not `\texttt{/tikz}' like in all  
+% other settings macros. & H[!wscale=2.5!]LH & \texttiming{H[!wscale=2.5!]LH} \\
+% {}[[\meta{TikZ Settings}]]  & Executes given TikZ settings first during the 
+% parsing process and again during the drawing process. This is for settings 
+% which are needed for width calculations and again for the drawing code, \eg 
+% the slope values.
+% & H[[timing/slope=.5]]L $\string\slope$H & \texttiming{H[[timing/slope=.5]]L 
+% $\slope$H} \\
 % ;  & Renews the internal drawing path which ends the scope of all options 
 % given by \texttt{[\,]}. & H;[blue]L;H & \texttiming{H;[blue]L;H} \\
 % ,  & Same as `\texttt{;}', but timing specific options (atm.: slopes and line 
@@ -1445,6 +1455,58 @@
 % The label column starts at $x=-$|\coldist| and the text is right align with 
 % the right border at this position.
 %
+% \subsection{Macros for use inside the Character String}
+% The modifiers `|@|' and `\texttt{\$}' allow the user to include macros.  These 
+% macros are evaluated when the |tikz-timing| parser encounters them in the 
+% input character string, \ie before any diagram element is drawn or any single 
+% bracket `|[ ]|' options are processed. Therefore their values should be set 
+% either outside the |tikz-timing| diagram or with the `|[! .. !]|' or
+% `|[[ .. ]]|' option blocks.
+%
+% The following macros are provided for the user.
+%
+% \DescribeMacro{tikztimingsetwscale}{\marg{math expression}}
+% \DescribeMacro*{setwscale}{\marg{math expression}}
+% This macro, which can be called |\setwscale| for short inside modifier code, 
+% sets the |wscale| value. This value is used during the parsing process to 
+% scale the width of the characters, \eg |wscale=3.2| makes |1H| as long as 
+% |3.2H| normally would be. Slopes are not affected. It can also be set with the 
+% |timing/wscale| TikZ setting. The current value can be accessed using 
+% \cs{wscale}.
+%
+% \DescribeMacro{wscale}{}
+% Returns the current width scaling `|wscale|' value. 
+%
+% \DescribeMacro{slope}{}
+% \DescribeMacro*{lslope}{\hspace{1em}\small(alias)}
+% Returns the current logic slope, \ie the slope justed between |L| and |H| 
+% levels.
+% Set by the |timing/lslope| or indirectly by the |timing/slope| TikZ setting.  
+% See Table~\ref{tab:styles} for more information.
+%
+% \DescribeMacro{zslope}{}
+% Returns the current Z slope. Set by the |timing/zslope| or indirectly by the 
+% |timing/slope| TikZ setting.
+%
+% \DescribeMacro{dslope}{}
+% Returns the current Z slope. Set by the |timing/dslope| or indirectly by the 
+% |timing/slope| TikZ setting.
+%
+% \subsubsection*{Examples:}
+% Changing the slope and using its value to calculate the width of a 
+% character:\\
+% |\texttiming{ HLHLHL [[timing/slope=.5]] H $\slope$L }|\\
+% gives:
+% {\texttiming{ HLHLHL [[timing/slope=.5]] H $\slope$L }}
+% \\[\bigskipamount]
+% Changing the width scaling for a curtain group of characters:\\
+% |\texttiming|\ignorespaces
+% |{ HL [!wscale=\wscale/3!] 3D{a} Z D Z [!wscale=3*\wscale!] HL  }|\\
+% gives:
+% {\texttiming{ HL [!wscale=\wscale/3!] 3D{a} Z D Z [!wscale=3*\wscale!] HL }}
+% \\[\bigskipamount]
+%
+% \clearpage
 % \subsection{Meta-Characters}
 % It is possible to define recurring groups of characters and modifiers as so 
 % called meta-characters. These characters are than expanded to the group 
@@ -2314,6 +2376,7 @@
   lslope/.code={\tikztimingsetslope{#1}},
   dslope/.code={\tikztimingsetdslope{#1}},
   zslope/.code={\tikztimingsetzslope{#1}},
+  wscale/.code={\tikztimingsetwscale{#1}},
   coldist/.store in=\tikztiming@coldist,
   rowdist/.store in=\tikztiming@rowdist,
   outer xsep/.store in=\tikztiming@xsep,
@@ -3222,14 +3285,15 @@
 %
 %
 % \begin{macro}{\tikztiming@defcode []}[1]{Options}
-% Single brackets are in-picture options, double brackets are parser options.  
-% Brackets and a plus sign `|[+ +]|' are both.
+% Single brackets are in-picture options.
+% Brackets and a `|!|' sign `|[! !]|' are parser options.
+% Double brackets are are both.
 %    \begin{macrocode}
 \tikztiming@defcode[{%}]{
   \@ifnextchar[%]
-    {\tikztiming@parseroption}%
-    {\@ifnextchar{+}%
-      {\tikztiming@bothoption}%
+    {\tikztiming@bothoption}%
+    {\@ifnextchar{!}%
+      {\tikztiming@parseroption}%
       {\tikztiming@addoption}%
     }%
 }
@@ -3239,7 +3303,8 @@
 % \begin{macro}{\tikztiming@parseroption}[1]{Options}
 % Sets the given options immediately, so that they are in affect for the rest of 
 % the parser run.
-\def\tikztiming@parseroption[#1]]{%
+%    \begin{macrocode}
+\def\tikztiming@parseroption!#1!]{%
   \pgfqkeys{/tikz/timing}{#1}%
   \tikztiming@parser
 }
@@ -3248,6 +3313,7 @@
 %
 % \begin{macro}{\tikztiming@addoption}[1]{Options}
 % Simply adds the options to the output code buffer.
+%    \begin{macrocode}
 \def\tikztiming@addoption#1]{%
   \tikztiming@output@addcode{ [#1] }%
   \tikztiming@parser
@@ -3258,7 +3324,8 @@
 % \begin{macro}{\tikztiming@bothoption}[1]{Options}
 % Does executes and adds the options to the output code buffer. This is 
 % necessary for slopes if they are used in width calculations.
-\def\tikztiming@bothoption+#1+]{%
+%    \begin{macrocode}
+\def\tikztiming@bothoption[#1]]{%
   \tikzset{#1}%
   \tikztiming@output@addcode{ [#1] }%
   \tikztiming@parser
