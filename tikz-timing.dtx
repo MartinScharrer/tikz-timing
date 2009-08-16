@@ -2189,12 +2189,8 @@
 \newcount\tikztiming@numfrac
 \def\tikztiming@wscale{1.0}%
 \def\tikztimingsetwscale#1{%
-  \begingroup
-    \let\wscale\tikztiming@wscale
-    \pgfmathparse{#1}%
-    \global\let\g@tempa\pgfmathresult
-  \endgroup
-  \let\tikztiming@wscale\g@tempa
+  \pgfmathparse{#1}%
+  \let\tikztiming@wscale\pgfmathresult
 }
 \def\tikztiming@num{1.0}%
 \let\tikztiming@back\empty
@@ -2381,6 +2377,8 @@
     \let\settings\empty
     \let\tikztiming@fromchar\empty
     \let\tikztiming@tochar\empty
+    \let\setwscale\tikztimingsetwscale
+    \def\wscale{\tikztiming@wscale}%
     \gdef\tikztiming@saved@settings{}%
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
