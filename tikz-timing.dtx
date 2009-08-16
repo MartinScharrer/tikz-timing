@@ -1443,18 +1443,32 @@
 % TikZ style `|timing/metachar=|\marg{Meta-Character}\oarg{Number of 
 % arguments}\marg{Character~Group}'. 
 %
-% Meta-character\marginpar{\color{black}\textit{New in v0.7}}
-% can now include arguments which can be placed in \meta{Character Group} like 
-% in normal macro definitions with `|#1|' etc.
-% These meta-characters must not be preceded with a number because the resulting 
-% repetition group will cause macro expansion errors. However, they can be 
-% repeated by enclosing them and their arguments with an explicit repetition 
-% group: `\meta{num}|{|\meta{char}\marg{argument}\dots|}|' instead of 
-% `\meta{num}\meta{Char}\marg{argument}\dots'.
-%
 % An empty group deletes the meta-character, which  might be necessary in cases 
 % when normal characters are temporary redefined as meta-characters. However, if 
 % the group only contains spaces the meta-character is practically ignored.
+%
+% \subsubsection*{Meta-Characters with Arguments}
+% The\marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in v0.7}}}}
+% replacement text of meta-character can now include macro arguments.
+% This allows the creation of more complex and flexible meta-characters.  The 
+% optional argument \meta{Number of arguments} selects the number of macro 
+% arguments in the same way it does for \cs{newcommand}. However, the first 
+% argument |#1| is always set to the given `width' of the meta-character, \ie 
+% the number value preceding it. All further arguments are read as normal for 
+% macros from the text after the meta-character. It is recommended to enclose 
+% them in braces.
+%
+% The default behaviour of meta-character without arguments is, as mentioned 
+% above, to repeat the replacement group by the preceding number (`width'). This 
+% is now archived by defining them internally as `|#1|\marg{Character Group}',
+% which creates a repetition group. Users which want to include an own argument 
+% but still want to repeat the group need to define a meta-character with at 
+% least two arguments and define it as `|#1{ .. #2 .. }|'. If the repetition is 
+% not wanted the |#1| argument can be used as a real width for one or more group 
+% internal characters: `|{Y}[1]{Z #1D Z}|', so `|4Y|' will give `|Z 4D Z|' 
+% instead of `|4{Z D Z}|'.
+%
+%
 %
 % \bigskip
 % \noindent
@@ -1491,11 +1505,23 @@
 % \texttiming{ 10{H g L g} H }\\
 % \texttiming{ 10{H   L  } H }}
 % \\[\bigskipamount]
-% |\tikztimingmetachar{J}[1]{ 1.8D{#1} .2D{} }|\\
+% |\tikztimingmetachar{J}[2]{ 1.8D{#2} .2D{} }|\\
 % |\texttiming{ D{} J{A} J{B} J{C} D }|\\
 % gives:\\
-% {\tikztimingmetachar{J}[1]{ 1.8D{#1} .2D{} }\\
-%  \texttiming{ D{} J{A} J{B} J{C} D }}\\
+% {\tikztimingmetachar{J}[2]{ 1.8D{\strut #2} .2D{} }\\
+%  \texttiming{ D{} J{A} J{B} J{C} D }}
+% \\[\bigskipamount]
+% |\tikztimingmetachar{Y}[3]{#1{ D{\strut #2} D{#3} }}|\\
+% |\texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}|\\
+% gives:\\
+% {\tikztimingmetachar{Y}[3]{#1{ D{#2} D{#3} }}
+%  \texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}}
+% \\[\bigskipamount]
+% |\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }|\\
+% |\texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}|\\
+% gives:\\
+% {\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }
+%  \texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}}
 %
 % \clearpage
 % \section{Styles}\label{sec:styles}
