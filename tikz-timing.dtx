@@ -3101,6 +3101,19 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@defcode{$}}% $
+% Takes the code between two dollar signs and parses it as math expression. The 
+% result is put back on the input stream. This allows the calculation of 
+% character width.
+%    \begin{macrocode}
+\tikztiming@defcode$#1${%
+  \pgfmathparse{#1}%
+  \expandafter
+  \tikztiming@parser\pgfmathresult
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@defcode{,}}
 %    \begin{macrocode}
 \tikztiming@defcode{,}{%
