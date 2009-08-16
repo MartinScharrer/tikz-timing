@@ -1470,9 +1470,9 @@
 % This macro, which can be called |\setwscale| for short inside modifier code, 
 % sets the |wscale| value. This value is used during the parsing process to 
 % scale the width of the characters, \eg |wscale=3.2| makes |1H| as long as 
-% |3.2H| normally would be. Slopes are not affected. It can also be set with the 
-% |timing/wscale| TikZ setting. The current value can be accessed using 
-% \cs{wscale}.
+% |3.2H| normally would be. Slopes are not affected, but the `width' values of 
+% meta-characters are. It can also be set with the |timing/wscale| TikZ setting.  
+% The current value can be accessed using \cs{wscale}.
 %
 % \DescribeMacro{wscale}{}
 % Returns the current width scaling `|wscale|' value. 
@@ -1600,20 +1600,27 @@
 % |\tikztimingmetachar{J}[2]{ 1.8D{#2} .2D{} }|\\
 % |\texttiming{ D{} J{A} J{B} J{C} D }|\\
 % gives:\\
-% {\tikztimingmetachar{J}[2]{ 1.8D{\strut #2} .2D{} }\\
+% {\tikztimingmetachar{J}[2]{ 1.8D{\strut #2} .2D{} }%
 %  \texttiming{ D{} J{A} J{B} J{C} D }}
 % \\[\bigskipamount]
 % |\tikztimingmetachar{Y}[3]{#1{ D{\strut #2} D{#3} }}|\\
 % |\texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}|\\
 % gives:\\
-% {\tikztimingmetachar{Y}[3]{#1{ D{#2} D{#3} }}
+% {\tikztimingmetachar{Y}[3]{#1{ D{#2} D{#3} }}%
 %  \texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}}
 % \\[\bigskipamount]
 % |\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }|\\
 % |\texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}|\\
 % gives:\\
-% {\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }
+% {\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }%
 %  \texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}}
+% \\[\bigskipamount]
+% Defining `|W|' to set the width scaling:\\
+% |\tikztimingmetachar{W}[1]{ [! wscale=#1 !] }|\\
+% |\texttiming{ HL .2W HLHLH 5W LH }|\\
+% gives:\\
+% {\tikztimingmetachar{W}[1]{ [! wscale=#1 !] }%
+%  \texttiming{ HL .2W HLHLH 5W LH }}
 %
 % \clearpage
 % \section{Styles}\label{sec:styles}
