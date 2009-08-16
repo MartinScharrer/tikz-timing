@@ -1073,24 +1073,31 @@
 % \end{minipage}
 % \end{minipage}
 %
-% \DescribeMacro{texttimingbefore}{\hspace{15.5em}(\emph{defaults to}: 
-% \meta{empty})}
-% \DescribeMacro*{texttimingafter}{\hspace{16em}(\emph{defaults to}: 
-% \meta{empty})}
+% \DescribeMacro{texttimingbefore}{\hspace{2em}\textbf{Deprecated!}\hspace{8em}(\emph{defaults 
+% to}: \meta{empty})}
+% \DescribeMacro*{texttimingafter}{\hspace{2.5em}\textbf{Deprecated!}\hspace{8em}(\emph{defaults 
+% to}: \meta{empty})}
 % This two macros are executed before and after every timing diagram line 
 % created by \cs{texttiming} macro inside the same \envv{tikzpicture} 
 % environment and can be used to add drawing macros. The argument of the 
 % \cs{texttiming} macro is already processed before any of these macros are 
 % expanded, therefore this macros can access the width of the diagram.
 %
+% These macros should not be used directly in newer code but instead the new 
+% TikZ styles `|timing/before text|' and `|timing/after text|'. For backward 
+% compatibility these styles default to the two macros.
+%
 % Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
 % background of the \cs{texttiming} diagram. A more \LaTeX-stylish way to do 
 % this is |\renewcommand*{\textttimingbefore}{\texttiminggrid}|.
 %
-% \DescribeMacro{texttiminggrid}{}
+% \DescribeMacro{texttiminggrid}{\hspace{2.5em}\textbf{Deprecated!}}
 % This macro should only be used inside \cs{texttimingbefore} or 
 % \cs{texttimingafter} and draws a grid of the full size of the
 % \cs{texttiming} diagram.
+% For newer code the TikZ styles `|timing/draw grid|' and `|timing/no grid|' 
+% should be used instead, \eg
+% |\tikzset{timing/intext/.append style={timing/draw grid}}|
 %
 % \newpage
 % \subsection{Macro for use inside TikZ-Pictures}
@@ -1160,6 +1167,7 @@
 % signal.}\label{fig:shape}
 % \end{figure}
 %
+% \iffalse
 % \subsubsection{In-Line Nodes Shape Anchors}
 % A default shape for In-Line Nodes/Coordinates (`|N|' character) is provided 
 % which is named `\texttt{tikztiming coordinate}'. Like the PGF standard shape 
@@ -1317,8 +1325,9 @@
 % \caption{Anchors of In-Line Nodes.  
 % (\texttt{timing/slope=.25})}\label{fig:coordnodeanchors}
 % \end{figure}
+% \fi
 %
-% \newpage
+% \clearpage
 % \subsection{Table for Timing Diagrams}
 % \DescribeEnv{tikztimingtable}{\oarg{TikZ settings for whole 
 % table}\\\meta{Signal Name}\ \ \&\ \ \oarg{\small Init.~Char./TikZ Settings for 
@@ -2463,10 +2472,10 @@
       }
       \fi
       \fi
-      \tikzset{timing/before}
+      \tikzset{timing/before}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
-      \tikzset{timing/after}
+      \tikzset{timing/after}%
     \end{scope}%
   \endgroup
   \tikz@timing@@@end
