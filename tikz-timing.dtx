@@ -2595,8 +2595,10 @@
 % \end{macro}
 %
 % \begin{macro}{\tikz@timing@@@init}[1]{Initial character.}
+% Opens a group which will end in \cs{tikztiming@parser@end}.
 %    \begin{macrocode}
 \def\tikz@timing@@@init[#1]{%
+  \begingroup
   \ifx\relax#1\relax\else
     \uppercase{\def\lastchar{#1}}%
   \fi
@@ -3036,6 +3038,7 @@
       coordinate (timing/end base) at (\x2,\y1)
       coordinate (timing/end top)  at (\x2,1+\y1)
   }%
+  \endgroup
   \tikztiming@endhook%
 }
 \let\tikztiming@endhook\relax
@@ -5943,7 +5946,7 @@
 %     \begin{macrocode}
 \tikztiming@defcode{O}#1{%
   \ifx\relax#1\empty
-    \def\next{\tikztiming@parser\relax}%
+    \def\next{\tikztiming@parser#1}%
   \else
     \let\tikztiming@overlay@lastchar\lastchar
     \tikztiming@output@addcode
@@ -5954,7 +5957,7 @@
         }%
        }]%
      }%
-    \tikztiming@parser #1\relax
+    \begingroup\tikztiming@parser #1\relax
     \tikztiming@output@addcode{%
       (tikztiming@overlay@node) [/utils/exec=\tikztiming@overlay@save]
     }%
@@ -6045,6 +6048,7 @@
     \def\lastchar{@}%
   \fi
   \expandafter\scope\expandafter[\settings]%
+    \begingroup
     \let\unskip\relax
     \let\\\relax
     \tikztiming@parser
