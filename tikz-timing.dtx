@@ -1488,12 +1488,21 @@
 % not wanted the |#1| argument can be used as a real width for one or more group 
 % internal characters: `|{Y}[1]{Z #1D Z}|', so `|4Y|' will give `|Z 4D Z|' 
 % instead of `|4{Z D Z}|'.
+% 
+% Also the modifier `|@|' (see Table~\ref{tab:modifiers}) together with the 
+% \cs{setwscale} macro can be used to scale the whole group dependent on the 
+% first argument:\\
+% `|{Y}[1]}{ @{\setwscale{#1*\wscale}} Z 2D Z @{\setwscale{\wscale/#1}} }|', so
+% `|4Y|' is equivalent to `|4Z 8D 4Z|'.
 %
+% The new `\texttt{\$}' modifier can be used to calculate the width of the group 
+% characters: |{Y}[1]{$#1/3$D{A} $#1/3D${B} $#1/3$D{C}}|, so `|4Y|` results in 
+% `|1.333D{A} 1.333D{B} 1.333D{C}|'.
 %
 %
 % \bigskip
 % \noindent
-% \textit{Examples:}\\[\medskipamount]
+% \textit{Examples:}\\*[\medskipamount]
 % |\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}|\\
 % gives:\\
 % {\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}}
