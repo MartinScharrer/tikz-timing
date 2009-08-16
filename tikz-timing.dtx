@@ -2399,10 +2399,10 @@
     \let\tikztiming@tochar\empty
     \let\setwscale\tikztimingsetwscale
     \def\wscale{\tikztiming@wscale}%
-    \let\slope\timingslope
-    \let\lslope\slope
-    \let\zslope\timingzslope
-    \let\dslope\timingdslope
+    \def\slope{\timingslope}%
+    \def\lslope{\timingslope}%
+    \def\zslope{\timingzslope}%
+    \def\dslope{\timingdslope}%
     \gdef\tikztiming@saved@settings{}%
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
@@ -3222,12 +3222,16 @@
 %
 %
 % \begin{macro}{\tikztiming@defcode []}[1]{Options}
-% Single brackets are in-picture options, double brackets are parser options.
+% Single brackets are in-picture options, double brackets are parser options.  
+% Brackets and a plus sign `|[+ +]|' are both.
 %    \begin{macrocode}
 \tikztiming@defcode[{%}]{
-  \@ifnextchar[      %]
+  \@ifnextchar[%]
     {\tikztiming@parseroption}%
-    {\tikztiming@addoption}%
+    {\@ifnextchar{+}%
+      {\tikztiming@bothoption}%
+      {\tikztiming@addoption}%
+    }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3251,6 +3255,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@bothoption}[1]{Options}
+% Does executes and adds the options to the output code buffer. This is 
+% necessary for slopes if they are used in width calculations.
+\def\tikztiming@bothoption+#1+]{%
+  \tikzset{#1}%
+  \tikztiming@output@addcode{ [#1] }%
+  \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
 %
 % \subsubsection{Add-Node Macros}
 %
