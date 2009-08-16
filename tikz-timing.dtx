@@ -1631,6 +1631,7 @@
 %     Default: 0.2\\
 %     timing/zslope=\meta{0.0\en1.0} & Sets slope for Z transitions. Default: 
 %     0.05\\
+%     \midrule
 %     timing/rowdist=\meta{distance} & Sets (baseline) distance between rows in 
 %     a tikztimingtable. Default: 2 (=$2\times$signal height)\\
 %     timing/coldist=\meta{distance} & Sets distance between columns in a 
@@ -2186,6 +2187,15 @@
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
+\def\tikztiming@wscale{1.0}%
+\def\tikztimingsetwscale#1{%
+  \begingroup
+    \let\wscale\tikztiming@wscale
+    \pgfmathparse{#1}%
+    \global\let\g@tempa\pgfmathresult
+  \endgroup
+  \let\tikztiming@wscale\g@tempa
+}
 \def\tikztiming@num{1.0}%
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
@@ -3073,6 +3083,26 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@defcode{@}}
+% Simply executes given code. The |\relax| is added to have some protection 
+% against user code manipulating the parser macro. The `@' character can be both 
+% a letter (in style files) and a character (in user documents), so it is
+% defined twice.
+%    \begin{macrocode}
+\tikztiming@defcode{@}#1{%
+  #1\relax
+  \tikztiming@parser
+}
+\begingroup
+  \expandafter\let\expandafter\temp
+    \csname tikztiming@code@\meaning @\endcsname
+  \makeatother
+  \expandafter\global\expandafter\let
+    \csname tikztiming@code@\meaning @\endcsname\temp
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@defcode{,}}
 %    \begin{macrocode}
 \tikztiming@defcode{,}{%
@@ -3263,7 +3293,7 @@
 % \begin{macro}{\tikztiming@testfornum}
 %    \begin{macrocode}
 \def\tikztiming@testfornum{%
-  \def\tikztiming@num{1 }%
+  \let\tikztiming@num\tikztiming@wscale%
   \let\tikztiming@numchars\empty
   \tikztiming@numfrac0\relax
   \afterassignment
@@ -3311,7 +3341,7 @@
         {%
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
-          \def\tikztiming@num{1 }%
+          \let\tikztiming@num\tikztiming@wscale
           \if@tikztiming@metachar
             {\def\@tempa{\expandafter\expandafter\expandafter
              \tikztiming@parser
@@ -3341,6 +3371,8 @@
 %    \begin{macrocode}
 \def\tikztiming@testfornum@@@{%
   \xdef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
+  \pgfmathparse{\tikztiming@wscale * \tikztiming@num}%
+  \let\tikztiming@num\pgfmathresult
   \@ifnextchar\bgroup
     {%
       \expandafter\tikztiming@numfrac\expandafter0\expandafter
