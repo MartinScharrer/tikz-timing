@@ -5955,12 +5955,19 @@
   \else
     \let\tikztiming@overlay@lastchar\tikztiming@lastchar
     \tikztiming@output@addcode
-      { node [timing/save] (tikztiming@overlay@node) {} [/utils/exec={%
+      {
+       [/utils/exec={%
         \xdef\tikztiming@overlay@save{%
           \noexpand\global\noexpand\c@tikztimingtrans\the\c@tikztimingtrans\relax%
           \noexpand\global\noexpand\c@tikztimingtranspos\the\c@tikztimingtranspos\relax%
+          \noexpand\gdef\noexpand\pgf@sh@nt@tikztiming@overlay@node
+            {\csname pgf@sh@nt@tikztiming@overlay@node\endcsname}%
+          \noexpand\gdef\noexpand\tikztiming@overlay@save{%
+            \expandafter\unexpanded\expandafter{\tikztiming@overlay@save}%
+          }%
         }%
        }]%
+       node [timing/save] (tikztiming@overlay@node) {A}
      }%
     \begingroup
       \def\tikztiming@parser@end{%
@@ -5970,13 +5977,16 @@
       \tikztiming@parser #1\relax
     \endgroup
     \tikztiming@output@addcode{%
-      (tikztiming@overlay@node) [/utils/exec=\tikztiming@overlay@save]
+      (tikztiming@overlay@node) node {X} [/utils/exec=
+      \show\tikztiming@overlay@save
+      \tikztiming@overlay@save]
     }%
     \let\tikztiming@lastchar\tikztiming@overlay@lastchar
     \def\tikztiming@next{\expandafter\tikztiming@parser\@firstofone}%
   \fi
   \tikztiming@next
 }
+\let\tikztiming@overlay@save\empty
 %    \end{macrocode}
 % \end{macro}
 %
