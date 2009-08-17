@@ -24,16 +24,25 @@ MV = mv -v
 RMDIR = rm -rf
 MKDIR = mkdir -p
 
-.PHONY: all doc package clean fullclean tds
+.PHONY: all doc package clean fullclean tds reload
 
 all: package doc example
 new: fullclean all
 
-doc: ${PACKAGE}.pdf
+doc: ${PACKAGE}.pdf reload
+
+pdf: one_run reload
+	
 
 package: ${PACKAGE}.sty
 
+reload:
+	pdfreload --file ${PACKAGE}.pdf
+
 example:
+
+one_run: ${PACKAGE}.dtx
+	${LATEX} $<
 
 %.pdf: %.dtx
 	${LATEX} $*.dtx
