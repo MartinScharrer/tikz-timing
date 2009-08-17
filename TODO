@@ -1,6 +1,3 @@
 * Table head line macro
 * Transition dependent node anchors.
 * Extension for counter values incl. reset character.
-* Make overlays cascadable.
-* Scopes { .. } inside the character string. Must apply for 
-  drawing and parsing settings.
