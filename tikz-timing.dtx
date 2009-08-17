@@ -5962,7 +5962,13 @@
         }%
        }]%
      }%
-    \begingroup\tikztiming@parser #1\relax
+    \begingroup
+      \def\tikztiming@parser@end{%
+        \def\tikztiming@output@nextchar{@}%
+        \tikztiming@output@flush
+      }
+      \tikztiming@parser #1\relax
+    \endgroup
     \tikztiming@output@addcode{%
       (tikztiming@overlay@node) [/utils/exec=\tikztiming@overlay@save]
     }%
