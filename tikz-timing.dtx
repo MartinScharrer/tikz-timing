@@ -1566,12 +1566,12 @@
 % \noindent
 % \textit{Examples:}\\*[\medskipamount]
 % |\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}|\\
-% gives:\\
+% gives:
 % {\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}}
 % \\[\bigskipamount]
 % |\tikztimingmetachar{Y}{2D{Text}}  \tikztimingmetachar{y}{1D{\tiny Text}}|
 % |\texttiming{ZZ Y Z 3y ZZ}|\\
-% gives:\\
+% gives:
 % {\tikztimingmetachar{Y}{2D{Text}}  \tikztimingmetachar{y}{1D{\tiny Text}}
 % \texttiming{ZZ Y Z 3y ZZ}}
 % \\[\bigskipamount]
@@ -1579,7 +1579,7 @@
 % |\tikztimingmetachar{Q}{2D{\stepcounter{mycount}\arabic{mycount}}}|\\
 % |\tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}|\\
 % |\texttiming{ 5Q R 3Q R 10Q }|\\
-% gives:\\
+% gives:
 % {\newcounter{mycount}%
 % \tikztimingmetachar{Q}{2D{\stepcounter{mycount}\arabic{mycount}}}%
 % \tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}%
@@ -1599,28 +1599,32 @@
 % \\[\bigskipamount]
 % |\tikztimingmetachar{J}[2]{ 1.8D{#2} .2D{} }|\\
 % |\texttiming{ D{} J{A} J{B} J{C} D }|\\
-% gives:\\
+% gives:
 % {\tikztimingmetachar{J}[2]{ 1.8D{\strut #2} .2D{} }%
 %  \texttiming{ D{} J{A} J{B} J{C} D }}
 % \\[\bigskipamount]
 % |\tikztimingmetachar{Y}[3]{#1{ D{\strut #2} D{#3} }}|\\
 % |\texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}|\\
-% gives:\\
+% gives:
 % {\tikztimingmetachar{Y}[3]{#1{ D{#2} D{#3} }}%
 %  \texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}}
 % \\[\bigskipamount]
 % |\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }|\\
 % |\texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}|\\
-% gives:\\
+% gives:
 % {\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }%
 %  \texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}}
 % \\[\bigskipamount]
-% Defining `|W|' to set the width scaling:\\
-% |\tikztimingmetachar{W}[1]{ [! wscale=#1 !] }|\\
-% |\texttiming{ HL .2W HLHLH 5W LH }|\\
-% gives:\\
-% {\tikztimingmetachar{W}[1]{ [! wscale=#1 !] }%
-%  \texttiming{ HL .2W HLHLH 5W LH }}
+% Mata-chars to set the width scaling. Because the scaling also affects the 
+% meta-char width (|#1|) argument a compensation is needed to achieve absolute 
+% values (|W|) instead of relative ones (|w|).\\
+% |\tikztimingmetachar{w}[1]{ [! wscale=#1 !] }         % relative|\\
+% |\tikztimingmetachar{W}[1]{ [! wscale=#1/\wscale !] } % absolute|\\
+% |\texttiming{ HL .2w HLHLH 3w LH 1W LH }|\\
+% gives:
+% {\tikztimingmetachar{w}[1]{ [! wscale=#1 !] }%
+%  \tikztimingmetachar{W}[1]{ [! wscale=#1/\wscale !] }\\
+%  \texttiming{ HL .2w HLHLH 3w LH 1W LH }}
 %
 % \clearpage
 % \section{Styles}\label{sec:styles}
