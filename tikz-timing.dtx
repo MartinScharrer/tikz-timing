@@ -792,14 +792,14 @@
 \makeatother
 
 \EnableCrossrefs
-%\CodelineIndex
+\CodelineIndex
 \RecordChanges
 %\OnlyDescription
 \listfiles
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
-  %\newpage\PrintIndex
+  \newpage\PrintIndex
 \end{document}
 %</driver>
 % \fi
@@ -862,7 +862,7 @@
 % \DoNotIndex{\ignorespaces,\lccode,\sffamily,\@gobble,\@ifundefined,\@for,\or}
 % \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameuse,\@secondoftwo}
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
-% \DoNotIndex{\height,\width,\slope,\style,\draw,\path,\newdraw,\lastchar,\currentchar}
+% \DoNotIndex{\height,\width,\slope,\style,\draw,\path,\newdraw,\newdrawns}
 % \DoNotIndex{\dslope,\zslope}
 %
 % \ifpdf
@@ -2320,7 +2320,7 @@
 \tikzset{%
   timing/.cd,
   initchar/.value required,
-  initchar/.code={\uppercase{\def\lastchar{#1}}},
+  initchar/.code={\uppercase{\gdef\tikztiming@lastchar{#1}}},
   metachar/.code={\tikztimingmetachar#1},
   grid/.style={timing,help lines},
   @grid/.code={\texttiminggrid},
@@ -2429,16 +2429,16 @@
 %    \begin{macrocode}
 \DeclareRobustCommand*\texttiming[2][]{%
   \begingroup
-    \let\lastchar\empty
-    \let\settings\empty
+    \let\tikztiming@lastchar\empty
+    \let\tikztiming@settings\empty
     \tikzset{timing/before/.style={timing/before text}}%
     \tikzset{timing/after/.style={timing/after text}}%
     \ifx\relax#1\relax\else
       \tikztiming@testoptarg#1\relax\relax%
     \fi
     \begin{tikzpicture}[timing/intext,baseline={(0,0)}]
-      \def\@tempa{\expandafter\timing\expandafter[\settings] at (0,0)}%
-      \expandafter\@tempa\expandafter{\expandafter[\lastchar]#2};%
+      \def\@tempa{\expandafter\timing\expandafter[\tikztiming@settings] at (0,0)}%
+      \expandafter\@tempa\expandafter{\expandafter[\tikztiming@lastchar]#2};%
     \end{tikzpicture}%
   \endgroup
 }
@@ -2449,9 +2449,9 @@
 %    \begin{macrocode}
 \def\tikztiming@testoptarg#1#2\relax{%
   \ifx\relax#2\relax
-    \uppercase{\def\lastchar{#1}}%
+    \uppercase{\def\tikztiming@lastchar{#1}}%
   \else
-    \def\settings{#1#2}%
+    \def\tikztiming@settings{#1#2}%
   \fi
 }
 %    \end{macrocode}
@@ -2460,9 +2460,9 @@
 % \begin{macro}{\tikztiming@init}
 %    \begin{macrocode}
 \def\tikztiming@init{%
-    \let\lastchar\tikztiming@startchar
-    \let\currentchar\empty
-    \let\settings\empty
+    \let\tikztiming@lastchar\tikztiming@startchar
+    \let\tikztiming@currentchar\empty
+    \let\tikztiming@settings\empty
     \let\tikztiming@fromchar\empty
     \let\tikztiming@tochar\empty
     \let\setwscale\tikztimingsetwscale
@@ -2605,16 +2605,16 @@
 \def\tikz@timing@@@init[#1]{%
   \begingroup
   \ifx\relax#1\relax\else
-    \uppercase{\def\lastchar{#1}}%
+    \uppercase{\def\tikztiming@lastchar{#1}}%
   \fi
-  \@ifundefined{tikztiming@initcode@\lastchar}%
+  \@ifundefined{tikztiming@initcode@\tikztiming@lastchar}%
     {}%
-    {\@nameuse{tikztiming@initcode@\lastchar}}%
-  \ifx\lastchar\empty\else
-  \@ifundefined{\tikztiming@prefix\lastchar @start}%
-    {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
+    {\@nameuse{tikztiming@initcode@\tikztiming@lastchar}}%
+  \ifx\tikztiming@lastchar\empty\else
+  \@ifundefined{\tikztiming@prefix\tikztiming@lastchar @start}%
+    {\PackageWarning{tikz-timing}{Start value for timing character '\tikztiming@lastchar' 
     is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@nameaddtostr{\lastchar @start}{}}%
+    {\tikztiming@nameaddtostr{\tikztiming@lastchar @start}{}}%
   \fi
   \tikztiming@parser
 }
@@ -2634,8 +2634,8 @@
 % \begin{macro}{\tikztiming@beforenextcode@D@edge@}
 %    \begin{macrocode}
 \def\tikztiming@beforenextcode@D@edge@{%
-  \if D\currentchar\else
-    \def\lastchar{D}%
+  \if D\tikztiming@currentchar\else
+    \gdef\tikztiming@lastchar{D}%
   \fi
 }
 %    \end{macrocode}
@@ -2644,8 +2644,8 @@
 % \begin{macro}{\tikztiming@beforenextcode@U@edge@}
 %    \begin{macrocode}
 \def\tikztiming@beforenextcode@U@edge@{%
-  \if U\currentchar\else
-    \def\lastchar{U}%
+  \if U\tikztiming@currentchar\else
+    \gdef\tikztiming@lastchar{U}%
   \fi
 }
 %    \end{macrocode}
@@ -2655,7 +2655,7 @@
 % If empty init char was given, exchange it with `|@|'.
 %    \begin{macrocode}
 \def\tikztiming@initcode@{%
-  \def\lastchar{@}%
+  \gdef\tikztiming@lastchar{@}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2663,7 +2663,7 @@
 % \begin{macro}{\tikztiming@initcode@D}
 %    \begin{macrocode}
 \def\tikztiming@initcode@D{%
-  \def\lastchar{D@edge@}%
+  \gdef\tikztiming@lastchar{D@edge@}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2671,7 +2671,7 @@
 % \begin{macro}{\tikztiming@initcode@U}
 %    \begin{macrocode}
 \def\tikztiming@initcode@U{%
-  \def\lastchar{U@edge@}%
+  \gdef\tikztiming@lastchar{U@edge@}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2741,21 +2741,20 @@
 % {Next character or empty}{Eats token till end marker}
 %    \begin{macrocode}
 \def\tikztiming@iftrans@#1#2#3#4\relax{%
- %\tracingmacros=1
- %\tracingonline=1
-  \edef\tikztiming@trans{#1#2}%
+  \begingroup
+  \xdef\tikztiming@trans{#1#2}%
   \ifx\tikztiming@trans\empty\else
     \let\tikztiming@trans\relax
     % Use triple macros before double macros
     \@ifundefined{tikztiming@triple@#2}%
       {\@ifundefined{\tikztiming@prefix#1#2}%
         {}%
-        {\edef\tikztiming@trans{#1#2}}%
+        {\xdef\tikztiming@trans{#1#2}}%
       }%
       {%
       \@ifundefined{\tikztiming@prefix#1#2#3}%
         {}%
-        {\edef\tikztiming@trans{#1#2#3}}%
+        {\xdef\tikztiming@trans{#1#2#3}}%
       }%
     % If both do not exist, search for aliases:
     \ifx\tikztiming@trans\relax
@@ -2775,7 +2774,7 @@
       \ifx\charb\empty
         \def\charb{\empty}%
       \fi
-      \let\next\relax
+      \let\tikztiming@next\relax
       \foreach \b in \charb {%
         \foreach \a in \chara {%
           \foreach \c in \charc {%
@@ -2809,18 +2808,17 @@
                     \expandafter\meaning\csname\tikztiming@prefix\a\b\c\endcsname^^J}%
                   \fi
                 \fi
-                \global\let\next\breakforeach
+                \global\let\tikztiming@next\breakforeach
               }%
-            \next
+            \tikztiming@next
           }%
-          \next
+          \tikztiming@next
         }%
-        \next
+        \tikztiming@next
       }%
     \fi
   \fi
- %\tracingmacros=0
- %\tracingonline=0
+  \endgroup
   \ifx\tikztiming@trans\relax
     \expandafter\@secondoftwo
   \else
@@ -3066,13 +3064,12 @@
     \fi
     \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
     \let\tikztimingwidth\pgfmathresult
-    \uppercase{\def\currentchar{#1}}%
-    \@nameuse{tikztiming@beforenextcode@\lastchar}%
-    \@nameuse{tikztiming@beforecode@\currentchar}%
-    \tikztiming@output{\lastchar}{\currentchar}%
-    \let\secondlastchar\lastchar
-    \let\lastchar\currentchar
-    \@nameuse{tikztiming@aftercode@\currentchar}%
+    \uppercase{\gdef\tikztiming@currentchar{#1}}%
+    \@nameuse{tikztiming@beforenextcode@\tikztiming@lastchar}%
+    \@nameuse{tikztiming@beforecode@\tikztiming@currentchar}%
+    \tikztiming@output{\tikztiming@lastchar}{\tikztiming@currentchar}%
+    \global\let\tikztiming@lastchar\tikztiming@currentchar
+    \@nameuse{tikztiming@aftercode@\tikztiming@currentchar}%
     \expandafter
     \tikztiming@testfortext
   \fi
@@ -3132,7 +3129,7 @@
 \def\tikztiming@handletext@@@#1#2{%
   \expandafter\lowercase\expandafter{%
     \expandafter\def\expandafter\currentcharlc
-    \expandafter{\currentchar}%
+    \expandafter{\tikztiming@currentchar}%
   }%
   \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
   {%
@@ -3146,19 +3143,19 @@
       \if @\tikztiming@output@bufchara
         1%
       \else
-        \ifx\tikztiming@output@bufchara\currentchar
+        \ifx\tikztiming@output@bufchara\tikztiming@currentchar
           1%
         \fi
       \fi
     \relax
     \else
     \fi
-      \xdef\tikztiming@output@bufcharb{\currentchar @edge@}%
-    \edef\lastchar{\currentchar @edge@}%
+    \xdef\tikztiming@output@bufcharb{\tikztiming@currentchar @edge@}%
+    \xdef\tikztiming@lastchar{\tikztiming@currentchar @edge@}%
   }{%
     \endgroup
     \PackageWarning{tikz-timing}{Ignoring text for character 
-    '\currentchar'!}{}{}{}%
+    '\tikztiming@currentchar'!}{}{}{}%
   }%
   \tikztiming@parser
 }
@@ -3223,6 +3220,7 @@
 % \begin{macro}{\tikztiming@defcode{;}}
 %    \begin{macrocode}
 \tikztiming@defcode{;}{%
+  \endgroup\begingroup
   \tikztiming@output@eaddcode{%
     \newdrawns
   }%
@@ -3705,11 +3703,11 @@
     \endgroup
   \fi
   \ifx\tikztiming@emptycell#2%
-    \def\next{\tikztimingtable@row@@{#1}{}}%
+    \def\tikztiming@next{\tikztimingtable@row@@{#1}{}}%
   \else
-    \def\next{\tikztimingtable@row@@{#1}{#2}}%
+    \def\tikztiming@next{\tikztimingtable@row@@{#1}{#2}}%
   \fi
-  \next
+  \tikztiming@next
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -3746,17 +3744,17 @@
 % \begin{macro}{\tikztiming@tabletiming}
 %    \begin{macrocode}
 \def\tikztiming@tabletiming[#1]#2\relax{%
-  \let\lastchar\empty
-  \let\settings\empty
+  \let\tikztiming@lastchar\empty
+  \let\tikztiming@settings\empty
   \ifx\relax#1\relax\else
     \tikztiming@testoptarg#1\relax\relax
   \fi
-  \ifx\lastchar\empty
-    \def\lastchar{@}%
+  \ifx\tikztiming@lastchar\empty
+    \def\tikztiming@lastchar{@}%
   \fi
-  \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\settings]
+  \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\tikztiming@settings]
     at (last row)}%
-  \expandafter\@tempa\expandafter{\expandafter[\lastchar]#2};
+  \expandafter\@tempa\expandafter{\expandafter[\tikztiming@lastchar]#2};
 }
 %    \end{macrocode}
 % \end{macro}
@@ -5951,9 +5949,9 @@
 %     \begin{macrocode}
 \tikztiming@defcode{O}#1{%
   \ifx\relax#1\empty
-    \def\next{\tikztiming@parser#1}%
+    \def\tikztiming@next{\tikztiming@parser#1}%
   \else
-    \let\tikztiming@overlay@lastchar\lastchar
+    \let\tikztiming@overlay@lastchar\tikztiming@lastchar
     \tikztiming@output@addcode
       { node [timing/save] (tikztiming@overlay@node) {} [/utils/exec={%
         \xdef\tikztiming@overlay@save{%
@@ -5966,10 +5964,10 @@
     \tikztiming@output@addcode{%
       (tikztiming@overlay@node) [/utils/exec=\tikztiming@overlay@save]
     }%
-    \let\lastchar\tikztiming@overlay@lastchar
-    \def\next{\expandafter\tikztiming@parser\@firstofone}%
+    \let\tikztiming@lastchar\tikztiming@overlay@lastchar
+    \def\tikztiming@next{\expandafter\tikztiming@parser\@firstofone}%
   \fi
-  \next
+  \tikztiming@next
 }
 %    \end{macrocode}
 % \end{macro}
@@ -6020,7 +6018,7 @@
   \begin{tikzpicture}[timing/picture]
     \def\tikztiming@endhook{\end@celltiming}
     \tikztiming@init
-    \let\settings\empty
+    \let\tikztiming@settings\empty
     \@ifnextchar{[}%
       {\tikztiming@celltiming}%
       {\tikztiming@celltiming[]}%
@@ -6049,10 +6047,10 @@
   \ifx\relax#1\relax\else
     \tikztiming@testoptarg#1\relax\relax
   \fi
-  \ifx\lastchar\empty
-    \def\lastchar{@}%
+  \ifx\tikztiming@lastchar\empty
+    \def\tikztiming@lastchar{@}%
   \fi
-  \expandafter\scope\expandafter[\settings]%
+  \expandafter\scope\expandafter[\tikztiming@settings]%
     \begingroup
     \let\unskip\relax
     \let\\\relax
@@ -6071,7 +6069,7 @@
 \def\end@celltiming{%
     \tikztiming@str;
     \expandafter\node 
-    \expandafter[\settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
+    \expandafter[\tikztiming@settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
   \endscope
   \end{tikzpicture}%
 }
