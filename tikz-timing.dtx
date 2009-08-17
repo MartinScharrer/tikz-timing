@@ -305,6 +305,7 @@
   \macrolink{\macroformat{%
     \textcolor{macroimplcolor}{\textbackslash #1}}}%
   \\*[\smallskipamount]%
+  \noindent
   \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
 }
 
@@ -346,8 +347,8 @@
 }
 \newcommand*{\aftermacroargs}{%
   \@ifnextchar\begin
-    {\\*[-2ex]\ignorespaces}%
-    {\\*[\smallskipamount]\ignorespaces}%
+    {\\*[0ex]\noindent\ignorespaces}%
+    {\\*[\smallskipamount]\noindent\ignorespaces}%
 }
 \newcommand*{\imacroargX}[1]{%
   \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
