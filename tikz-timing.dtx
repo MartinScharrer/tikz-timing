@@ -3395,8 +3395,10 @@
     {\tikztiming@testforcode@}%
     {\@ifundefined{tikztiming@code@\meaning\@let@token}%
       {\tikztiming@parser@}%
-      {\csname tikztiming@code@\meaning\@let@token\expandafter
-       \endcsname\@gobble}%
+      {\expandafter\afterassignment
+       \csname tikztiming@code@\meaning\@let@token\endcsname
+       \let\tikztiming@temp=%
+      }%
     }%
 }
 %    \end{macrocode}
