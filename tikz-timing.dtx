@@ -1403,12 +1403,18 @@
 % If the list is empty the default `|0,1,...,\twidth|' is used which draws lines 
 % after every period width.
 %
+% \DescribeMacro{tableheader}{\oarg{TikZ Settings}\marg{Description 
+% Title}\marg{Signal Title}}
+% This macro adds a table head row on top of the table. The two mandatory 
+% arguments provide the header text for the description and signal columns.
+%
 % \DescribeMacro{tablerules}{\oarg{TikZ Settings}}
 % This macro adds top and bottom rules to the table in the same (or at least 
 % very similar) way as the \texttt{booktabs} package is doing it for normal 
 % \texttt{tabular}s. The current bounding box is used to calculate the needed 
-% rule length, which makes this macro position dependent if further code is 
-% changing the bounding box.
+% rule length, which makes this macro position dependent if further code
+% changes bounding box. If the \cs{tableheader} macro was used beforehand it 
+% also draws a thinner horizontal line between the table head and body.
 %
 % \DescribeMacro{nrows}{}
 % Returns the number of rows in the current table. Useful for use in 
@@ -1684,7 +1690,11 @@
 %     timing/table & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
 %     timing/table/grid & Used for table grid. Depends on \texttt{timing/grid}.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
-%     timing/table/rules & Used for \cs{tablerules}. \\
+%     timing/table/rules & Used for \cs{tablerules} on top and bottom of the 
+%     table.  \\
+%     timing/table/midrules & Used for \cs{tablerules} between table head and 
+%     body.  \\
+%     timing/table/header & Used for \cs{tableheader}. \\
 %     timing/inline node & Used for nodes created by the \texttt{N} character.  
 %     Defaults to \texttt{tikztiming coordinate}.\\
 %     \midrule
@@ -2373,6 +2383,8 @@
   table/grid/.style={timing/grid},
   table/lines/.style={},
   table/rules/.style={line width=0.08em,line cap=butt},
+  table/midrules/.style={line width=0.05em,line cap=butt},
+  table/header/.style={timing/name},
   slope/.code={%
     \tikztimingsetslope{#1}%
     \tikztimingsetdslope{2*#1}%
@@ -3625,6 +3637,7 @@
   \let\horlines\tikztiming@horlines
   \let\vertlines\tikztiming@vertlines
   \let\tablerules\tikztiming@tablerules
+  \let\tableheader\tikztiming@tableheader
   \def\rowdist{\tikztiming@rowdist}%
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
@@ -3810,18 +3823,50 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@tableheader}[3]{Optional Settings}{Text 
+% title}{Diagram title}
+%    \begin{macrocode}
+\newcommand*\tikztiming@tableheader[3][]{%
+  \path [timing/table/header,#1]
+    (-\tikztiming@coldist,1.5*\tikztiming@rowdist) node
+      [anchor=base east] {#2}
+    (0,1.5*\tikztiming@rowdist) node
+      [anchor=base west] {#3}
+  ;
+  \tikztiming@tableheadtrue
+}
+\newif\iftikztiming@tablehead
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@tablerules}[1]{Optional Settings}
 %    \begin{macrocode}
 \newcommand*\tikztiming@tablerules[1][]{%
-    \draw [timing/table/rules,#1] let
-      \p1 = (current bounding box.north west),
-      \p2 = (current bounding box.south east),
+  \begin{scope}[#1]
+    \coordinate (NW) at (current bounding box.north west);
+    \coordinate (SE) at (current bounding box.south east);
+    %
+    \draw [timing/table/rules]
+    let
+      \p1 = (NW),
+      \p2 = (SE),
       \p3 = (last row)
     in
-      (\x1-\tabcolsep,\rowdist) -- (\x2+\tabcolsep,\rowdist)
-      ($ (\x1-\tabcolsep,\y3) - (0,\rowdist-1) $) --
-      ($ (\x2+\tabcolsep,\y3) - (0,\rowdist-1) $)
+      ($ (\x1-\tabcolsep,\y3) - (0,.5*\rowdist) $) --
+      ($ (\x2+\tabcolsep,\y3) - (0,.5*\rowdist) $)
+     \iftikztiming@tablehead
+      (\x1-\tabcolsep,2.5*\rowdist) -- (\x2+\tabcolsep,2.5*\rowdist)
+     \fi
     ;
+    \draw
+     \iftikztiming@tablehead [timing/table/midrules] \else [timing/table/rules] \fi
+    let
+      \p1 = (NW),
+      \p2 = (SE)
+    in
+      (\x1-\tabcolsep,\rowdist) -- (\x2+\tabcolsep,\rowdist)
+    ;
+  \end{scope}
 }
 %    \end{macrocode}
 % \end{macro}
