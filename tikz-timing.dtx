@@ -1764,7 +1764,7 @@
 %
 % The width provided with these character is added as whitespace after the 
 % ``zero-width'' arrow: `|A2AA|' results in `\,\texttiming{A2AA}'. This space 
-% can be avoided by specifying the width to zero: `|0.A|'. Like the `|C|' and 
+% can be avoided by specifying the width to zero: `|0A|'. Like the `|C|' and 
 % `|T|' characters the subsequent arrow characters are not combined into one.
 %
 % The arrow tips can be changed using the TikZ styles for this characters. See 
@@ -1775,7 +1775,7 @@
 % \centering
 % \caption{Examples for Arrow Characters.}\label{tab:arrows}
 % \begin{tikztimingexampletable}
-%   0.A \\
+%   0A \\
 %   AAA \\
 %   3A  \\
 %   3{A} \\
@@ -6351,8 +6351,10 @@
 %<*lib-counters>
 % \fi
 %
+% \subsubsection{Counters}
+%
 % \begin{macro}{\tikztiming@counter@new}[2]{Character}{Base}
-%     \begin{macrocode}
+%    \begin{macrocode}
 \def\tikztiming@counter@new#1#2{%
   \newcounter{tikztiming@counter@#1}%
   \tikzset{timing/counter/#1/.append style={}}%
@@ -6360,32 +6362,31 @@
   \tikztiming@iflower{#1}{}%
     {\lowercase{\tikztimingmetachar{#1}}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}}%
 }
-%     \end{macrocode}
+%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@counter@reset}[2]{Character}{Character to Reset}
 % The counter is set first using pgf to round the value correctly and then again 
 % with \cs{setcounter} to make it global.
-%     \begin{macrocode}
+%    \begin{macrocode}
 \def\tikztiming@counter@reset#1#2{%
   \tikztimingmetachar{#1}[1]{[/utils/exec=%
     \pgfmathsetcounter{tikztiming@counter@#2}{round((##1)/\tikztiming@wscale)}%
     \setcounter{tikztiming@counter@#2}{\value{tikztiming@counter@#2}}%
   ]}%
 }
-%     \end{macrocode}
+%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@counter@vs}[2]{Character}{Base}
-%     \begin{macrocode}
+%    \begin{macrocode}
 \def\tikztiming@counter@vs#1#2{%
   \pgfmathdectoBase\pgfmathresult{\value{tikztiming@counter@#1}}{#2}%
   \pgfmathresult
   \stepcounter{tikztiming@counter@#1}%
 }
-%     \end{macrocode}
+%    \end{macrocode}
 % \end{macro}
-%
 %
 % \iffalse
 %</lib-counters>
