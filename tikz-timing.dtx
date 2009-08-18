@@ -3545,8 +3545,13 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@testfornum@}
+% The \cs{@let@token} set in \cs{tikztiming@parser} is used to handle `|0|' 
+% which can not be detected using the \cs{tikztiming@numint} value.
 %    \begin{macrocode}
 \def\tikztiming@testfornum@{%
+  \ifx0\@let@token
+    \let\tikztiming@next\tikztiming@testfornum@@
+  \else
   \ifnum0<\tikztiming@numint
     \let\tikztiming@next\tikztiming@testfornum@@
   \else
@@ -3566,7 +3571,7 @@
             {\tikztiming@testforcode}%
         }%
     }%
-  \fi
+  \fi\fi
   \tikztiming@next
 }
 %    \end{macrocode}
