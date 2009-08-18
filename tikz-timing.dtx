@@ -691,7 +691,7 @@
 %    \begin{macrocode}
 \def\tikztimingexampletable@#1{%
   \tikztimingexampletable@row#1\endtikztimingtable@
-  \path (0,-1) +(-\tikztiming@coldist,0.5*\tikztiming@rowdist) node
+  \path (0,-1) +(-1*{(\tikztiming@coldist)},0.5*\tikztiming@rowdist) node
     [anchor=base east,timing/name] {Characters};
   \path (0,-1) +(0,0.5*\tikztiming@rowdist) node
     [anchor=base west,timing/name] {Resulting Diagram};
@@ -716,10 +716,10 @@
   \addtocounter{tikztiming@nrows}{1}%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
-  \path (last row) +(0,-1*\tikztiming@rowdist) coordinate (last row);
-  \path (last row) +(-1*\tikztiming@coldist,0) node
+  \path (last row) +(0,-\tikztiming@rowdist) coordinate (last row);
+  \path (last row) +(-1*{(\tikztiming@coldist)},0) node (last row text)
     [anchor=base east,timing/name]
-    {\ttfamily\tikztiming@text};
+    {\ttfamily\expandafter\ignorespaces\tikztiming@text\unskip\strut};
   %\timing at (last row) {#1};
   \@ifnextchar{[}%
   {\tikztiming@tabletiming}%
@@ -2302,7 +2302,6 @@
 \newcounter{tikztiming@nrows}%
 \def\tikztiming@rowdist{2}%
 \def\tikztiming@coldist{1}%
-\def\tikztiminglabel#1{#1}%
 
 \def\tikztiming@prefix{tikztiming@trans@}
 
@@ -2319,12 +2318,13 @@
 % \subsection{TikZ Style Settings}
 %    \begin{macrocode}
 \tikzset{timing/.style={%
-    x=1.6ex, y=1.6ex,
     line cap=round, line join=round,
     /utils/exec={%
+      \tikz@textfont
       \setlength{\tikztiming@xunit}{1.6ex}%
       \setlength{\tikztiming@yunit}{1.6ex}%
     },%
+    x=1.6ex, y=1.6ex,
   }%
 }
 \tikzset{%
@@ -3644,7 +3644,7 @@
   \def\twidth{\tikztiming@maxwidth}%
   \tikzpicture[timing/table,#1]%
     \coordinate (last row)  at (0,\rowdist);
-    \coordinate (label pos) at (-1*\coldist,0);
+    \coordinate (label pos) at (-1*{(\coldist)},0);
     \coordinate (timing/table/top left) at (0,1);
     \coordinate (timing/table/bottom right) at (0,0);
   \collect@body\tikztiming@table
@@ -3731,9 +3731,10 @@
 %    \begin{macrocode}
 \def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
-  \path ($ (last row) + (0,-1*\rowdist) $) coordinate (last row);
-  \path ($ (last row) + (-1*\coldist,0) $) node [anchor=base east,timing/name]
-    {\tikztiminglabel{#1}};
+  \path ($ (last row) - (0,\tikztiming@rowdist) $) coordinate (last row);
+  \path ($ (last row) - (\tikztiming@coldist,0) $) node [anchor=base 
+  east,timing/name]
+    (last row text) {\ignorespaces #1\unskip\strut};
   \@ifnextchar{[}%
     {\tikztiming@tabletiming}%
     {\tikztiming@tabletiming[]}%
@@ -3827,11 +3828,14 @@
 % title}{Diagram title}
 %    \begin{macrocode}
 \newcommand*\tikztiming@tableheader[3][]{%
+  \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
   \path [timing/table/header,#1]
-    (-\tikztiming@coldist,1.5*\tikztiming@rowdist) node
-      [anchor=base east] {#2}
-    (0,1.5*\tikztiming@rowdist) node
-      [anchor=base west] {#3}
+    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa +
+    \arraystretch\ht\strutbox + \arraystretch\dp\strutbox) in
+    node [anchor=base west] (tikztiming@header) at (0,\y1) {\ignorespaces 
+    #3\unskip\strut}
+    node [anchor=base east] at (-1*{(\tikztiming@coldist)},\y1) {\ignorespaces 
+    #2\unskip\strut}
   ;
   \tikztiming@tableheadtrue
 }
@@ -3850,12 +3854,14 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (last row)
+      \p3 = (last row text.south)
     in
-      ($ (\x1-\tabcolsep,\y3) - (0,.5*\rowdist) $) --
-      ($ (\x2+\tabcolsep,\y3) - (0,.5*\rowdist) $)
+      ($ (\x1-\tabcolsep,\y3) - (0,\aboverulesep + .5\pgflinewidth) $) --
+      ($ (\x2+\tabcolsep,\y3) - (0,\aboverulesep + .5\pgflinewidth) $)
      \iftikztiming@tablehead
-      (\x1-\tabcolsep,2.5*\rowdist) -- (\x2+\tabcolsep,2.5*\rowdist)
+      let \p4 = (tikztiming@header.north) in
+      ($ (\x1-\tabcolsep,\y4 + \belowrulesep + .5\pgflinewidth) $) --
+      ($ (\x2+\tabcolsep,\y4 + \belowrulesep + .5\pgflinewidth) $)
      \fi
     ;
     \draw
@@ -3864,7 +3870,9 @@
       \p1 = (NW),
       \p2 = (SE)
     in
-      (\x1-\tabcolsep,\rowdist) -- (\x2+\tabcolsep,\rowdist)
+      (\x1-\tabcolsep, \arraystretch\ht\strutbox + \belowrulesep + .5\pgflinewidth)
+       --
+      (\x2+\tabcolsep, \arraystretch\ht\strutbox + \belowrulesep + .5\pgflinewidth)
     ;
   \end{scope}
 }
@@ -6107,7 +6115,7 @@
 %    \begin{macrocode}
 \def\celltiming#1\ignorespaces{%
   #1%
-  \begin{tikzpicture}[timing/picture]
+  \begin{tikzpicture}[timing/picture,baseline={(0,0)}]
     \def\tikztiming@endhook{\end@celltiming}
     \tikztiming@init
     \let\tikztiming@settings\empty
