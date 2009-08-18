@@ -37,7 +37,7 @@ pdf: one_run reload
 package: ${PACKAGE}.sty
 
 reload:
-	pdfreload --file ${PACKAGE}.pdf
+	-@pdfreload --file ${PACKAGE}.pdf
 
 example:
 
