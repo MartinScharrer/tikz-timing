@@ -2002,10 +2002,11 @@
 %
 % \clearpage
 % \subsection{Nice Timing Tables}
-% The library `|nicetabs|' uses the settings of the \pkg{booktabs} package to 
-% improve the layout of \env{tikztimingtables}. The resulting table is a close 
-% match of a \env{tabular}|{rT}| table which uses the |columntype| library and 
-% the \pkg{booktabs} package.
+% The library `|nicetabs|' uses the settings of the \pkg{array} and 
+% \pkg{booktabs} packages to improve the layout of \env{tikztimingtables}. The 
+% resulting table is a close match of a \env{tabular}|{rT}| table which uses the 
+% |columntype| library and the \pkg{booktabs} package. The table macros 
+% \cs{tabcolsep}, \cs{arraystretch} and \cs{extrarowheight} are obeyed.
 % 
 % The original table layout is designed to produce integer coordinates between 
 % the rows to simplify the drawing of extra drawings (see \cs{extracode}). The 
@@ -2015,9 +2016,50 @@
 % 
 % The TikZ styles `|timing/nice tabs|' (default) and `|timing/no nice tabs|' can 
 % be used to activate and deactivate the layout, \eg for each table. Both 
-% settings can be given as a library option without the `|timing/|' path.
+% settings can be given as a library option, but without the `|timing/|' path.
+% 
+% \bigskip
+% \begin{table}[H]
+%   \caption{Timing tables using `nice' (left) and normal (right) Layout. For 
+%   comparison a \texttt{\{tabular\}\{rT\}} table is placed in grey below the 
+%   left table.}^^A
+%   \hbox{}\hfill
+%   \begin{tikzpicture}
+%     \node [gray] {\sffamily\ignorespaces
+%   \begin{tabular}{rT}
+%    \toprule
+%     Name    & \multicolumn{1}{l}{Timing} \\
+%    \midrule
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%    \bottomrule
+%   \end{tabular}^^A
+%     };
+%     \node {\ignorespaces
+%   \begin{tikztimingtable}[timing/nice tabs]
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%    \extracode
+%     \tableheader{Name}{Timing}
+%     \tablerules
+%   \end{tikztimingtable}^^A
+%     };
+%  \end{tikzpicture}
+%  \hfill
+%   \begin{tikztimingtable}[timing/no nice tabs]
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%    \extracode
+%     \tableheader{Name}{Timing}
+%     \tablerules
+%   \end{tikztimingtable}
+%   \hfill\hbox{}^^A
+% \end{table}
 %
-%
+% \clearpage
 % \section{Examples}
 % This section shows some examples by putting either the full source code or 
 % only the needed characters beside the graphical result. Please note that the 
@@ -6193,7 +6235,10 @@
 %<*lib-nicetabs>
 % \fi
 % \subsubsection{Nice Timing Tables}
+%
+% The dimensions of the following packages are used.
 %    \begin{macrocode}
+\RequirePackage{array}
 \RequirePackage{booktabs}
 %    \end{macrocode}
 
@@ -6204,8 +6249,8 @@
 \newcommand*\tikztiming@nicetabs@tableheader[3][]{%
   \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
   \path [timing/table/header,#1]
-    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa +
-    \arraystretch\ht\strutbox + \arraystretch\dp\strutbox) in
+    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa + \arraystretch * 
+    {(\ht\strutbox + \extrarowheight)} + \arraystretch\dp\strutbox) in
     node [anchor=base west] (tikztiming@header) at (0,\y1) {\ignorespaces 
     #3\unskip\strut}
     node [anchor=base east] at (-1*{(\tikztiming@coldist)},\y1) {\ignorespaces 
@@ -6227,25 +6272,31 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (last row text.south)
+      \p3 = (last row text.base),
+      \p4 = ($ (0,\y3) - (0,\arraystretch\dp\strutbox + \aboverulesep +
+        .5\pgflinewidth) $)
     in
-      ($ (\x1-\tabcolsep,\y3) - (0,\aboverulesep + .5\pgflinewidth) $) --
-      ($ (\x2+\tabcolsep,\y3) - (0,\aboverulesep + .5\pgflinewidth) $)
+      (\x1-\tabcolsep,\y4) -- (\x2+\tabcolsep,\y4)
      \iftikztiming@tablehead
-      let \p4 = (tikztiming@header.north) in
-      ($ (\x1-\tabcolsep,\y4 + \belowrulesep + .5\pgflinewidth) $) --
-      ($ (\x2+\tabcolsep,\y4 + \belowrulesep + .5\pgflinewidth) $)
+      let
+        \p5 = (tikztiming@header.base),
+        \p6 = ($ (0,\y5) + (0,\arraystretch * {(\ht\strutbox + \extrarowheight 
+        )} + \belowrulesep + .5\pgflinewidth) $)
+      in
+        (\x1-\tabcolsep,\y6) -- (\x2+\tabcolsep,\y6)
      \fi
     ;
     \draw
      \iftikztiming@tablehead [timing/table/midrules] \else [timing/table/rules] \fi
     let
       \p1 = (NW),
-      \p2 = (SE)
+      \p2 = (SE),
+      \p3 = (0, \arraystretch * {( \ht\strutbox + \extrarowheight )} +
+        \belowrulesep + .5\pgflinewidth)
     in
-      (\x1-\tabcolsep, \arraystretch\ht\strutbox + \belowrulesep + .5\pgflinewidth)
+      (\x1-\tabcolsep, \y3)
        --
-      (\x2+\tabcolsep, \arraystretch\ht\strutbox + \belowrulesep + .5\pgflinewidth)
+      (\x2+\tabcolsep, \y3)
     ;
   \end{scope}
 }
@@ -6253,6 +6304,11 @@
 % \end{macro}
 %
 %    \begin{macrocode}
+\let\tikztiming@normal@tableheader\tikztiming@tableheader
+\let\tikztiming@normal@tablerules\tikztiming@tablerules
+\let\tikztiming@normal@coldist\tikztiming@coldist
+\let\tikztiming@normal@rowdist\tikztiming@rowdist
+
 \tikzset{%
   timing/no nice tabs/.code={%
     \let\tikztiming@coldist\tikztiming@normal@coldist
@@ -6261,20 +6317,19 @@
     \let\tikztiming@tablerules\tikztiming@normal@tablerules
   },
   timing/nice tabs/.code={%
-    \def\tikztiming@rowdist{\arraystretch\ht\strutbox+\arraystretch\dp\strutbox}%
-    \def\tikztiming@coldist{2\tabcolsep}%
     \ifx\tikztiming@tableheader\tikztiming@nicetabs@tableheader\else
       \let\tikztiming@normal@coldist\tikztiming@coldist
       \let\tikztiming@normal@rowdist\tikztiming@rowdist
     \fi
+    \def\tikztiming@rowdist{%
+        \arraystretch * {(\ht\strutbox+\extrarowheight)}%
+      +\arraystretch\dp\strutbox
+    }%
+    \def\tikztiming@coldist{2\tabcolsep}%
     \let\tikztiming@tableheader\tikztiming@nicetabs@tableheader
     \let\tikztiming@tablerules\tikztiming@nicetabs@tablerules
   }%
 }
-\let\tikztiming@normal@tableheader\tikztiming@tableheader
-\let\tikztiming@normal@tablerules\tikztiming@tablerules
-\let\tikztiming@normal@coldist\tikztiming@coldist
-\let\tikztiming@normal@rowdist\tikztiming@rowdist
 %
 \tikzset{timing/nice tabs}%
 %    \end{macrocode}
