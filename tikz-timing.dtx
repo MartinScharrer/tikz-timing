@@ -3638,8 +3638,8 @@
   \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
   \let\vertlines\tikztiming@vertlines
-  \let\tablerules\tikztiming@tablerules
-  \let\tableheader\tikztiming@tableheader
+  \def\tablerules{\tikztiming@tablerules}%
+  \def\tableheader{\tikztiming@tableheader}%
   \def\rowdist{\tikztiming@rowdist}%
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
@@ -6180,16 +6180,6 @@
 \RequirePackage{booktabs}
 %    \end{macrocode}
 
-%    \begin{macrocode}
-\tikzset{%
-  timing/nicetabs/.code={%
-    \def\tikztiming@rowdist{\arraystretch\ht\strutbox+\arraystretch\dp\strutbox}%
-    \def\tikztiming@coldist{2\tabcolsep}%
-    \let\tikztiming@tableheader\tikztiming@nicetabs@tableheader
-    \let\tikztiming@tablerules\tikztiming@nicetabs@tablerules
-  }%
-}
-%    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@nicetabs@tableheader}[3]{Optional Settings}{Text 
 % title}{Diagram title}
@@ -6244,8 +6234,39 @@
 }
 %    \end{macrocode}
 % \end{macro}
-
-
+%
+%    \begin{macrocode}
+\tikzset{%
+  timing/no nice tabs/.code={%
+    \let\tikztiming@coldist\tikztiming@normal@coldist
+    \let\tikztiming@rowdist\tikztiming@normal@rowdist
+    \let\tikztiming@tableheader\tikztiming@normal@tableheader
+    \let\tikztiming@tablerules\tikztiming@normal@tablerules
+  },
+  timing/nice tabs/.code={%
+    \def\tikztiming@rowdist{\arraystretch\ht\strutbox+\arraystretch\dp\strutbox}%
+    \def\tikztiming@coldist{2\tabcolsep}%
+    \ifx\tikztiming@tableheader\tikztiming@nicetabs@tableheader\else
+      \let\tikztiming@normal@coldist\tikztiming@coldist
+      \let\tikztiming@normal@rowdist\tikztiming@rowdist
+    \fi
+    \let\tikztiming@tableheader\tikztiming@nicetabs@tableheader
+    \let\tikztiming@tablerules\tikztiming@nicetabs@tablerules
+  }%
+}
+\let\tikztiming@normal@tableheader\tikztiming@tableheader
+\let\tikztiming@normal@tablerules\tikztiming@tablerules
+\let\tikztiming@normal@coldist\tikztiming@coldist
+\let\tikztiming@normal@rowdist\tikztiming@rowdist
+%
+\tikzset{timing/nice tabs}%
+%    \end{macrocode}
+%
+% Use the \pkg{pgfopts} to handle the package options.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\ProcessPgfOptions{/tikz/timing}
+%    \end{macrocode}
 % \iffalse
 %<*lib-columntype>
 % \fi
