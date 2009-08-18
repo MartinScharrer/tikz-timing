@@ -37,6 +37,7 @@
 %<lib-clockarrows>\ProvidesPackageSVN[tikz-timing-clockarrows]
 %<lib-columntype>\ProvidesPackageSVN[tikz-timing-columntype]
 %<lib-nicetabs>\ProvidesPackageSVN[tikz-timing-nicetabs]
+%<lib-counters>\ProvidesPackageSVN[tikz-timing-counters]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -51,11 +52,12 @@
 %<lib-clockarrows>   TikZ-Timing Library for timing clock arrows]
 %<lib-columntype>   TikZ-Timing Library for timing cell types]
 %<lib-nicetabs>   TikZ-Timing Library for nice timing tables]
+%<lib-counters>   TikZ-Timing Library for counter values]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype|lib-nicetabs>\GetFileInfoSVN*%
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype|lib-nicetabs>\RequirePackage{tikz-timing}[\filedate]%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype|lib-nicetabs|lib-counters>\GetFileInfoSVN*%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype|lib-nicetabs|lib-counters>\RequirePackage{tikz-timing}[\filedate]%
 %<*package|driver>
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
@@ -6340,7 +6342,48 @@
 \ProcessPgfOptions{/tikz/timing}
 %    \end{macrocode}
 % \iffalse
-%<*lib-columntype>
+%</lib-nicetabs>
+%<*lib-counters>
+% \fi
+%
+% \begin{macro}{\tikztiming@counter@new}[2]{Character}{Base}
+%     \begin{macrocode}
+\def\tikztiming@counter@new#1#2{%
+  \newcounter{tikztiming@counter@#1}%
+  \tikzset{timing/counter/#1/.append style={}}%
+  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+  \tikztiming@iflower{#1}{}%
+    {\lowercase{\tikztimingmetachar{#1}}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}}%
+}
+%     \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@counter@reset}[2]{Character}{Character to Reset}
+% The counter is set first using pgf to round the value correctly and then again 
+% with \cs{setcounter} to make it global.
+%     \begin{macrocode}
+\def\tikztiming@counter@reset#1#2{%
+  \tikztimingmetachar{#1}[1]{[/utils/exec=%
+    \pgfmathsetcounter{tikztiming@counter@#2}{round((##1)/\tikztiming@wscale)}%
+    \setcounter{tikztiming@counter@#2}{\value{tikztiming@counter@#2}}%
+  ]}%
+}
+%     \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@counter@vs}[2]{Character}{Base}
+%     \begin{macrocode}
+\def\tikztiming@counter@vs#1#2{%
+  \pgfmathdectoBase\pgfmathresult{\value{tikztiming@counter@#1}}{#2}%
+  \pgfmathresult
+  \stepcounter{tikztiming@counter@#1}%
+}
+%     \end{macrocode}
+% \end{macro}
+%
+%
+% \iffalse
+%</lib-counters>
 % \fi
 % \Finale
 \endinput
