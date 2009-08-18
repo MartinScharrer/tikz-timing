@@ -3886,7 +3886,7 @@
       \draw [timing/table/lines,#1] let
         \p1 = (timing/table/bottom right)
       in
-        (0,{(\rowdist)} * {(1 - \row)}) -- +(\x1,0);
+        ($ (0,\rowdist) -  (0,\row * {(\rowdist)}) $) -- +(\x1,0);
   \endgroup
 }
 %    \end{macrocode}
