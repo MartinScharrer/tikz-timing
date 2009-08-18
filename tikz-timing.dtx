@@ -66,7 +66,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -2001,6 +2001,23 @@
 % \end{example}
 %
 % \clearpage
+% \subsection{Nice Timing Tables}
+% The library `|nicetabs|' uses the settings of the \pkg{booktabs} package to 
+% improve the layout of \env{tikztimingtables}. The resulting table is a close 
+% match of a \env{tabular}|{rT}| table which uses the |columntype| library and 
+% the \pkg{booktabs} package.
+% 
+% The original table layout is designed to produce integer coordinates between 
+% the rows to simplify the drawing of extra drawings (see \cs{extracode}). The 
+% improved layout will cause non-integer coordinates, but in-line nodes and the 
+% \cs{rowdist} and \cs{coldist} macros can be used to draw extra material 
+% relatively to the rows.
+% 
+% The TikZ styles `|timing/nice tabs|' (default) and `|timing/no nice tabs|' can 
+% be used to activate and deactivate the layout, \eg for each table. Both 
+% settings can be given as a library option without the `|timing/|' path.
+%
+%
 % \section{Examples}
 % This section shows some examples by putting either the full source code or 
 % only the needed characters beside the graphical result. Please note that the 
