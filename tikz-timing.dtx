@@ -36,6 +36,7 @@
 %<lib-overlays>\ProvidesPackageSVN[tikz-timing-overlays]
 %<lib-clockarrows>\ProvidesPackageSVN[tikz-timing-clockarrows]
 %<lib-columntype>\ProvidesPackageSVN[tikz-timing-columntype]
+%<lib-nicetabs>\ProvidesPackageSVN[tikz-timing-nicetabs]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -49,11 +50,12 @@
 %<lib-overlays>   TikZ-Timing Library for timing overlays]
 %<lib-clockarrows>   TikZ-Timing Library for timing clock arrows]
 %<lib-columntype>   TikZ-Timing Library for timing cell types]
+%<lib-nicetabs>   TikZ-Timing Library for nice timing tables]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype>\GetFileInfoSVN*%
-%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype>\RequirePackage{tikz-timing}[\filedate]%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype|lib-nicetabs>\GetFileInfoSVN*%
+%<lib-arrows|lib-either|lib-overlays|lib-clockarrows|lib-columntype|lib-nicetabs>\RequirePackage{tikz-timing}[\filedate]%
 %<*package|driver>
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
@@ -3830,9 +3832,9 @@
 \newcommand*\tikztiming@tableheader[3][]{%
   \path [timing/table/header,#1]
     (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)}) node
-      [anchor=base east] {#2}
+      [anchor=base east] {\ignorespaces #2\unskip\strut}
     (0,1.5*{(\tikztiming@rowdist)}) node
-      [anchor=base west] {#3}
+      [anchor=base west] {\ignorespaces #3\unskip\strut}
   ;
   \tikztiming@tableheadtrue
 }
@@ -6171,6 +6173,81 @@
 %
 % \iffalse
 %</lib-columntype>
+%<*lib-nicetabs>
+% \fi
+% \subsubsection{Nice Timing Tables}
+%    \begin{macrocode}
+\RequirePackage{booktabs}
+%    \end{macrocode}
+
+%    \begin{macrocode}
+\tikzset{%
+  timing/nicetabs/.code={%
+    \def\tikztiming@rowdist{\arraystretch\ht\strutbox+\arraystretch\dp\strutbox}%
+    \def\tikztiming@coldist{2\tabcolsep}%
+    \let\tikztiming@tableheader\tikztiming@nicetabs@tableheader
+    \let\tikztiming@tablerules\tikztiming@nicetabs@tablerules
+  }%
+}
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@nicetabs@tableheader}[3]{Optional Settings}{Text 
+% title}{Diagram title}
+%    \begin{macrocode}
+\newcommand*\tikztiming@nicetabs@tableheader[3][]{%
+  \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
+  \path [timing/table/header,#1]
+    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa +
+    \arraystretch\ht\strutbox + \arraystretch\dp\strutbox) in
+    node [anchor=base west] (tikztiming@header) at (0,\y1) {\ignorespaces 
+    #3\unskip\strut}
+    node [anchor=base east] at (-1*{(\tikztiming@coldist)},\y1) {\ignorespaces 
+    #2\unskip\strut}
+  ;
+  \tikztiming@tableheadtrue
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@nicetabs@tablerules}[1]{Optional Settings}
+%    \begin{macrocode}
+\newcommand*\tikztiming@nicetabs@tablerules[1][]{%
+  \begin{scope}[#1]
+    \coordinate (NW) at (current bounding box.north west);
+    \coordinate (SE) at (current bounding box.south east);
+    %
+    \draw [timing/table/rules]
+    let
+      \p1 = (NW),
+      \p2 = (SE),
+      \p3 = (last row text.south)
+    in
+      ($ (\x1-\tabcolsep,\y3) - (0,\aboverulesep + .5\pgflinewidth) $) --
+      ($ (\x2+\tabcolsep,\y3) - (0,\aboverulesep + .5\pgflinewidth) $)
+     \iftikztiming@tablehead
+      let \p4 = (tikztiming@header.north) in
+      ($ (\x1-\tabcolsep,\y4 + \belowrulesep + .5\pgflinewidth) $) --
+      ($ (\x2+\tabcolsep,\y4 + \belowrulesep + .5\pgflinewidth) $)
+     \fi
+    ;
+    \draw
+     \iftikztiming@tablehead [timing/table/midrules] \else [timing/table/rules] \fi
+    let
+      \p1 = (NW),
+      \p2 = (SE)
+    in
+      (\x1-\tabcolsep, \arraystretch\ht\strutbox + \belowrulesep + .5\pgflinewidth)
+       --
+      (\x2+\tabcolsep, \arraystretch\ht\strutbox + \belowrulesep + .5\pgflinewidth)
+    ;
+  \end{scope}
+}
+%    \end{macrocode}
+% \end{macro}
+
+
+% \iffalse
+%<*lib-columntype>
 % \fi
 % \Finale
 \endinput
