@@ -691,9 +691,9 @@
 %    \begin{macrocode}
 \def\tikztimingexampletable@#1{%
   \tikztimingexampletable@row#1\endtikztimingtable@
-  \path (0,-1) +(-1*{(\tikztiming@coldist)},0.5*\tikztiming@rowdist) node
+  \path (0,-1) +(-1*{(\tikztiming@coldist)},0.5*{(\tikztiming@rowdist)}) node
     [anchor=base east,timing/name] {Characters};
-  \path (0,-1) +(0,0.5*\tikztiming@rowdist) node
+  \path (0,-1) +(0,0.5*{(\tikztiming@rowdist)}) node
     [anchor=base west,timing/name] {Resulting Diagram};
   \draw [line width=\lightrulewidth]
      (current bounding box.north west) +(-1,-2) --
@@ -716,7 +716,7 @@
   \addtocounter{tikztiming@nrows}{1}%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
-  \path (last row) +(0,-\tikztiming@rowdist) coordinate (last row);
+  \path (last row) +(0,-1*{(\tikztiming@rowdist)}) coordinate (last row);
   \path (last row) +(-1*{(\tikztiming@coldist)},0) node (last row text)
     [anchor=base east,timing/name]
     {\ttfamily\expandafter\ignorespaces\tikztiming@text\unskip\strut};
@@ -3828,14 +3828,11 @@
 % title}{Diagram title}
 %    \begin{macrocode}
 \newcommand*\tikztiming@tableheader[3][]{%
-  \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
   \path [timing/table/header,#1]
-    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa +
-    \arraystretch\ht\strutbox + \arraystretch\dp\strutbox) in
-    node [anchor=base west] (tikztiming@header) at (0,\y1) {\ignorespaces 
-    #3\unskip\strut}
-    node [anchor=base east] at (-1*{(\tikztiming@coldist)},\y1) {\ignorespaces 
-    #2\unskip\strut}
+    (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)}) node
+      [anchor=base east] {#2}
+    (0,1.5*{(\tikztiming@rowdist)}) node
+      [anchor=base west] {#3}
   ;
   \tikztiming@tableheadtrue
 }
@@ -3854,14 +3851,12 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (last row text.south)
+      \p3 = (last row)
     in
-      ($ (\x1-\tabcolsep,\y3) - (0,\aboverulesep + .5\pgflinewidth) $) --
-      ($ (\x2+\tabcolsep,\y3) - (0,\aboverulesep + .5\pgflinewidth) $)
+      ($ (\x1-\tabcolsep,\y3) - (0,.5*{(\rowdist)}) $) --
+      ($ (\x2+\tabcolsep,\y3) - (0,.5*{(\rowdist)}) $)
      \iftikztiming@tablehead
-      let \p4 = (tikztiming@header.north) in
-      ($ (\x1-\tabcolsep,\y4 + \belowrulesep + .5\pgflinewidth) $) --
-      ($ (\x2+\tabcolsep,\y4 + \belowrulesep + .5\pgflinewidth) $)
+      (\x1-\tabcolsep,2.5*{(\rowdist)}) -- (\x2+\tabcolsep,2.5*{(\rowdist)})
      \fi
     ;
     \draw
@@ -3870,9 +3865,7 @@
       \p1 = (NW),
       \p2 = (SE)
     in
-      (\x1-\tabcolsep, \arraystretch\ht\strutbox + \belowrulesep + .5\pgflinewidth)
-       --
-      (\x2+\tabcolsep, \arraystretch\ht\strutbox + \belowrulesep + .5\pgflinewidth)
+      (\x1-\tabcolsep,\rowdist) -- (\x2+\tabcolsep,\rowdist)
     ;
   \end{scope}
 }
@@ -3891,7 +3884,7 @@
       \draw [timing/table/lines,#1] let
         \p1 = (timing/table/bottom right)
       in
-        (0,\rowdist-\row*\rowdist) -- +(\x1,0);
+        (0,{(\rowdist)} * {(1 - \row)}) -- +(\x1,0);
   \endgroup
 }
 %    \end{macrocode}
