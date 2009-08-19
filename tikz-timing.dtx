@@ -3203,12 +3203,12 @@
 %    \begin{macrocode}
 \def\tikztiming@handletext@@@#1#2{%
   \expandafter\lowercase\expandafter{%
-    \expandafter\def\expandafter\currentcharlc
+    \expandafter\def\expandafter\@tempa
     \expandafter{\tikztiming@currentchar}%
   }%
-  \pgfkeysifdefined{/tikz/timing/\currentcharlc/text/.@cmd}%
+  \pgfkeysifdefined{/tikz/timing/\@tempa/text/.@cmd}%
   {%
-    \edef\@tempa{node [timing/\currentcharlc/text,}%
+    \edef\@tempa{node [timing/\@tempa/text,}%
     \expandafter\tikztiming@output@addcode\expandafter{%
       \@tempa
       #1] at ($ (timing@dstart) !.5! (timing@dend) $)
@@ -3472,7 +3472,7 @@
       {\tikztiming@parser@}%
       {\expandafter\afterassignment
        \csname tikztiming@code@\meaning\@let@token\endcsname
-       \let\tikztiming@temp=%
+       \let\@let@token=%
       }%
     }%
 }
