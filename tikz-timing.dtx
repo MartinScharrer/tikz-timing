@@ -2619,6 +2619,7 @@
     \setcounter{tikztimingtrans}{-1}%
     \setcounter{tikztimingtranspos}{0}%
     \def\tikztiming@str{%
+      \useasboundingbox (0,0) rectangle (\tikztimingwidth,\timingheight);
       \draw (0,0)
         coordinate (timing/start base)
     }%
