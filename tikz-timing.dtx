@@ -68,7 +68,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -797,14 +797,14 @@
 \makeatother
 
 \EnableCrossrefs
-\CodelineIndex
+%\CodelineIndex
 \RecordChanges
-%\OnlyDescription
+\OnlyDescription
 \listfiles
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
-  \newpage\PrintIndex
+  %\newpage\PrintIndex
 \end{document}
 %</driver>
 % \fi
@@ -2060,6 +2060,64 @@
 %   \end{tikztimingtable}
 %   \hfill\hbox{}^^A
 % \end{table}
+%
+% \clearpage
+% \subsection{Counter Character}
+% The library `|counters|' allows the easy definition of meta-characters which 
+% implement up-counters. These characters show the counter value using the 
+% `|D{}|' character and increment it by one every time they are used. A second 
+% character can be defined to (re-)set the counter to a specific value. The 
+% counter values can be decimal (base-10, default), hexadecimal (base-16) or any 
+% other base from 2 till 36. By default the lower case version of the counter 
+% character is defined to produce the same output only with half the width.
+% The style `\texttt{timing/counter/\meta{char}}' (initially empty) is used to 
+% format the graphic style of this counter.\\
+%
+% Counter characters are defined using the TikZ key
+% `\texttt{timing/counter/new=}\linebreak[3]\ignorespaces
+% \texttt{\{char=\meta{char},\meta{settings}\}}' which can also be written as 
+% `|timing/new counter|'. The \meta{settings} are TikZ keys themselves and are 
+% shown by Table~\ref{tab:countersettings}.  One or more `|new|` keys (path 
+% `|timing/counter|` removed) can be given as library options.
+%
+% \begin{table}
+%   \caption{Settings for Counter Meta-Characters}
+%   \label{tab:countersettings}
+% \begin{tabularx}{\textwidth}{>{\ttfamily}lX}
+%  \toprule
+%   \multicolumn{1}{l}{Key name} & Description \\
+%  \midrule
+%   char=\meta{char} & Defines the given \meta{char} to be a counter 
+%   meta-character. If it is a upper case character the lower case character 
+%   will produce the same output but with the half width, as long this is not 
+%   overwritten with the \texttt{half with char} key. \\
+%   reset char=\meta{char} & Defines the given \meta{char} to (re-)set the 
+%   counter value to the `width' of the character, \ie the number preceding it.  
+%   The lower case version of \meta{char} is not defined.\\
+%   base=\meta{Num 2-36} & Defines the numeric base of the counter. The default 
+%   is 10.\\
+%   half width char=\meta{char} & Defines the given \meta{char} to be the half 
+%   width version of the counter value. By default this is the lower case 
+%   version of the counter character given with \texttt{char}. An empty value 
+%   for \meta{char} deactivates the definition of a half width character, which 
+%   is the main application of this key.\\
+%  \bottomrule
+% \end{tabularx}
+% \end{table}
+%
+% \subsubsection*{Example:}
+% \noindent
+% Counter character `|Q|' with base 16 (hexadecimal). `|R|' resets the 
+% counter:\\*\noindent
+% |\tikzset{timing/new counter={char=Q,base=16,reset char=R}}|\\*\noindent
+% The counter value should be in blue text typer font.\\*\noindent
+% |\tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}|\\*\noindent
+% |\texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }|\\*\noindent
+% gives: {%
+% \tikzset{timing/counter/new={char=Q,base=16,reset char=R}}%
+% \tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}%
+% \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
+% }%
 %
 % \clearpage
 % \section{Examples}
@@ -6361,11 +6419,11 @@
   new/.value required,
   opt/.cd,
   char/.estore in=\tikztiming@counter@char,
-  reset/.estore in=\tikztiming@counter@resetchar,
+  reset char/.estore in=\tikztiming@counter@resetchar,
   base/.estore in=\tikztiming@counter@base,
   half width char/.estore in=\tikztiming@counter@hwchar,
   char/.value required,
-  reset/.value required,
+  reset char/.value required,
   base/.value required,
   half width char/.value required,
 }
@@ -6402,8 +6460,9 @@
   \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
   \ifx\tikztiming@counter@hwchar\empty\else
     \ifx\tikztiming@counter@hwchar\relax
-      \lowercase{\tikztimingmetachar{#1}}[1]%
-        {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+      \tikztiming@iflower{#1}{}%
+        {\lowercase{\tikztimingmetachar{#1}}[1]%
+          {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}}%
     \else
       \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
     \fi
