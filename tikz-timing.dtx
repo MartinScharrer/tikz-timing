@@ -6353,27 +6353,75 @@
 %
 % \subsubsection{Counters}
 %
-% \begin{macro}{\tikztiming@counter@new}[2]{Character}{Base}
 %    \begin{macrocode}
-\def\tikztiming@counter@new#1#2{%
-  \newcounter{tikztiming@counter@#1}%
-  \tikzset{timing/counter/#1/.append style={}}%
-  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
-  \tikztiming@iflower{#1}{}%
-    {\lowercase{\tikztimingmetachar{#1}}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}}%
+\tikzset{%
+  timing/new counter/.style={timing/counter/new={#1}},
+  timing/counter/.cd,
+  new/.code={\tikztiming@counter@new{#1}},
+  new/.value required,
+  opt/.cd,
+  char/.estore in=\tikztiming@counter@char,
+  reset/.estore in=\tikztiming@counter@resetchar,
+  base/.estore in=\tikztiming@counter@base,
+  half width char/.estore in=\tikztiming@counter@hwchar,
+  char/.value required,
+  reset/.value required,
+  base/.value required,
+  half width char/.value required,
+}
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@counter@new}[1]{Styles}
+%    \begin{macrocode}
+\def\tikztiming@counter@new#1{%
+  \let\tikztiming@counter@char\empty
+  \let\tikztiming@counter@resetchar\empty
+  \def\tikztiming@counter@base{10}%
+  \let\tikztiming@counter@hwchar\relax
+  \pgfqkeys{/tikz/timing/counter/opt}{#1}%
+  \ifx\tikztiming@counter@char\empty
+    \PackageError{tikz-timing-counters}{Counter character must be given using 
+    the 'char' key!}%
+  \else
+    \edef\@tempa{%
+      \noexpand\tikztiming@counter@new@{\tikztiming@counter@char}{\tikztiming@counter@base}%
+        {\tikztiming@counter@hwchar}{\tikztiming@counter@resetchar}%
+    }%
+    \expandafter\@tempa
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@reset}[2]{Character}{Character to Reset}
+% \begin{macro}{\tikztiming@counter@new@}[4]{Character}{Base}{Half Width 
+% Character}{Reset Character}
+%    \begin{macrocode}
+\def\tikztiming@counter@new@#1#2#3#4{%
+  \newcounter{tikztiming@counter@#1}%
+  \tikzset{timing/counter/#1/.append style={}}%
+  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+  \ifx\tikztiming@counter@hwchar\empty\else
+    \ifx\tikztiming@counter@hwchar\relax
+      \lowercase{\tikztimingmetachar{#1}}[1]%
+        {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+    \else
+      \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+    \fi
+  \fi
+  \ifx\tikztiming@counter@resetchar\empty\else
+    \tikztimingmetachar{#4}[1]{[/utils/exec=\tikztiming@counter@reset{#1}{##1}]}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@counter@reset}[2]{Character to Reset}{Reset value}
 % The counter is set first using pgf to round the value correctly and then again 
 % with \cs{setcounter} to make it global.
 %    \begin{macrocode}
 \def\tikztiming@counter@reset#1#2{%
-  \tikztimingmetachar{#1}[1]{[/utils/exec=%
-    \pgfmathsetcounter{tikztiming@counter@#2}{round((##1)/\tikztiming@wscale)}%
-    \setcounter{tikztiming@counter@#2}{\value{tikztiming@counter@#2}}%
-  ]}%
+  \pgfmathsetcounter{tikztiming@counter@#1}{round((#2)/\tikztiming@wscale)}%
+  \setcounter{tikztiming@counter@#1}{\value{tikztiming@counter@#1}}%
 }
 %    \end{macrocode}
 % \end{macro}
