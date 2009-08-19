@@ -1685,9 +1685,8 @@
 %   }
 %   \begin{supertabular}{>{\ttfamily}l>{\raggedright\arraybackslash}p{.675\textwidth}}
 %     timing      & Base settings like signal height \& period width.\\
-%     timing/font & Sets the normal \texttt{font} key and adjusts 
-%     \texttt{x}/\texttt{y} keys to 1.6ex. Designed for the optional argument of 
-%     \env{tikztimingtable}.\\
+%     timing/font & Sets the normal \texttt{font} key and sets
+%     \texttt{x}/\texttt{y} keys to 1.6ex.\\
 %     timing/intext & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
 %     timing/picture & Usable for own \texttt{tikzpictures} to set timing 
 %     settings.\\
@@ -1697,8 +1696,8 @@
 %     timing/table & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
 %     timing/table/grid & Used for table grid. Depends on \texttt{timing/grid}.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
-%     timing/table/rules & Used for \cs{tablerules} on top and bottom of the 
-%     table.  \\
+%     timing/table/rules & Used for \cs{tablerules} for top and bottom lines.  
+%     \\
 %     timing/table/midrules & Used for \cs{tablerules} between table head and 
 %     body.  \\
 %     timing/table/header & Used for \cs{tableheader}. \\
@@ -1722,7 +1721,7 @@
 %     timing/text format=\meta{macros} & Define macros which are placed before 
 %     the text of `\texttt{D\{text\}}'. The text is enclosed in braces to allow 
 %     the last macro to take it as an argument. A \cs{strut} is a good choice to 
-%     make all text blocks have the same baseline.\\
+%     ensure a common baseline.\\
 %     timing/initchar=\meta{char} & Sets initial character.  Only valid as first  
 %     optional argument in table rows or \cs{texttiming}.\\
 %     timing/metachar=\marg{C}\oarg{\#arg}\marg{G} & Sets meta-character 
