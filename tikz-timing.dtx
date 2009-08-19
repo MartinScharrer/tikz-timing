@@ -2819,7 +2819,7 @@
   \begingroup
   \xdef\tikztiming@trans{#1#2}%
   \ifx\tikztiming@trans\empty\else
-    \let\tikztiming@trans\relax
+    \global\let\tikztiming@trans\relax
     % Use triple macros before double macros
     \@ifundefined{tikztiming@triple@#2}%
       {\@ifundefined{\tikztiming@prefix#1#2}%
