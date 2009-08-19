@@ -1214,7 +1214,7 @@
 % \begin{tikzpicture}[
 %     timing/.append style={x=1cm,y=1cm},
 %     timing/picture,
-%     font=\sffamily\scriptsize,
+%     timing/font=\sffamily\scriptsize,
 %     ultra thick,
 %     step=.5,
 %     help lines/.style={thin,gray,semitransparent}
@@ -1685,6 +1685,9 @@
 %   }
 %   \begin{supertabular}{>{\ttfamily}l>{\raggedright\arraybackslash}p{.675\textwidth}}
 %     timing      & Base settings like signal height \& period width.\\
+%     timing/font & Sets the normal \texttt{font} key and adjusts 
+%     \texttt{x}/\texttt{y} keys to 1.6ex. Designed for the optional argument of 
+%     \env{tikztimingtable}.\\
 %     timing/intext & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
 %     timing/picture & Usable for own \texttt{tikzpictures} to set timing 
 %     settings.\\
@@ -2438,18 +2441,26 @@
 
 % \subsection{TikZ Style Settings}
 %    \begin{macrocode}
-\tikzset{timing/.style={%
+\tikzset{%
+  timing/.style={%
     line cap=round, line join=round,
+    timing/adjust@xy
+  },%
+}
+\tikzset{%
+  timing/.cd,
+  adjust@xy/.style={%
     /utils/exec={%
       \tikz@textfont
       \setlength{\tikztiming@xunit}{1.6ex}%
       \setlength{\tikztiming@yunit}{1.6ex}%
     },%
     x=1.6ex, y=1.6ex,
-  }%
-}
-\tikzset{%
-  timing/.cd,
+  },
+  font/.style={%
+    /tikz/font={#1},
+    /tikz/timing/adjust@xy
+  },%
   initchar/.value required,
   initchar/.code={\uppercase{\gdef\tikztiming@lastchar{#1}}},
   metachar/.code={\tikztimingmetachar#1},
@@ -2469,7 +2480,7 @@
   inline node/.style={shape=tikztiming coordinate},
   inline node/from char/.store in=\tikztiming@node@fromchar,
   inline node/to char/.store in=\tikztiming@node@tochar,
-  table/.style={timing,line width=0.15ex,font=\sffamily},
+  table/.style={font=\sffamily,timing,line width=0.15ex},
   coord/.style={coordinate},
   save/.style={coordinate,/utils/exec=\tikztiming@savesettings},
   restore/.style={/utils/exec=\tikztiming@restoresettings},
