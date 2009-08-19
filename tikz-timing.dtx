@@ -720,11 +720,10 @@
   \addtocounter{tikztiming@nrows}{1}%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
-  \path (last row) +(0,-1*{(\tikztiming@rowdist)}) coordinate (last row);
-  \path (last row) +(-1*{(\tikztiming@coldist)},0) node (last row text)
-    [anchor=base east,timing/name]
+  \coordinate (last row) at ($ (last row) - (0,\tikztiming@rowdist) $);
+  \node [anchor=base east,timing/name] (last row text)
+    at ($ (last row) - (\tikztiming@coldist,0) $)
     {\ttfamily\expandafter\ignorespaces\tikztiming@text\unskip\strut};
-  %\timing at (last row) {#1};
   \@ifnextchar{[}%
   {\tikztiming@tabletiming}%
   {\tikztiming@tabletiming[]}%
@@ -2380,8 +2379,8 @@
 % \url{http://en.wikipedia.org/wiki/File:SPI_timing_diagram.svg}}}
 % \end{example}
 %
+% \clearpage
 % \StopEventually{}
-% \FloatBarrier
 % \clearpage
 % \section{Implementation}
 % \subsection{Package Header}
@@ -2712,12 +2711,13 @@
       \ifnum\tikztiming@debug>2
       {
       \def\@protect##1{\def##1{\noexpand##1}}%
+      \@protect\useasboundingbox
       \@protect\draw
       \@protect\p
       \@protect\n
       \@protect\x
       \@protect\y
-      \edef\@tempa{\tikztiming@str}
+      \edef\@tempa{\tikztiming@str}%
       \message{^^J\meaning\@tempa^^J}%
       }
       \fi
@@ -3868,10 +3868,9 @@
 %    \begin{macrocode}
 \def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
-  \path ($ (last row) - (0,\tikztiming@rowdist) $) coordinate (last row);
-  \path ($ (last row) - (\tikztiming@coldist,0) $) node
-    [anchor=base east,timing/name]
-    (last row text) {\ignorespaces #1\unskip};
+  \coordinate (last row) at ($ (last row) - (0,\tikztiming@rowdist) $);
+  \node [anchor=base east,timing/name] (last row text)
+    at ($ (last row) - (\tikztiming@coldist,0) $) {\ignorespaces #1\unskip};
   \@ifnextchar{[}%
     {\tikztiming@tabletiming}%
     {\tikztiming@tabletiming[]}%
@@ -4795,8 +4794,8 @@
      +(#1,-\height/2)%
   -- +(\dslope/2,-\height/2)
   -- +(0,0)
-     coordinate (timing@dend) at
      +($ (#1,0) + (\dslope/2,0) $)
+     coordinate (timing@dend)
     ++(#1,0)
   \newdraw
 }
@@ -4842,8 +4841,8 @@
   -- +(#1,\height/2)
      +(#1,-\height/2)
   -- +(0,-\height/2)
-     coordinate (timing@dend) at
      +($ (#1,0) + (\dslope/2,0) $)
+     coordinate (timing@dend)
     ++(#1,0)
   \newdraw
 }
@@ -4887,8 +4886,8 @@
   -- +(#1,\height/2)
      +(#1,-\height/2)
   -- +(0,-\height/2)
-     coordinate (timing@dend) at
      +($ (#1,0) + (\dslope/2,0) $)
+     coordinate (timing@dend)
     ++(#1,0)
   \newdraw
 }
@@ -5242,8 +5241,8 @@
      +($ (#1,-\height/2) - (\dslope/2,0) $)
   -- +(\dslope/2,-\height/2)
   -- +(0,0)
-     coordinate (timing@dend) at
      +(#1,0)
+     coordinate (timing@dend)
     ++($ (#1,0) - (\dslope/2,0) $)
   \newdraw
 }
