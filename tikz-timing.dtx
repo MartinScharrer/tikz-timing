@@ -3858,9 +3858,9 @@
 \def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
   \path ($ (last row) - (0,\tikztiming@rowdist) $) coordinate (last row);
-  \path ($ (last row) - (\tikztiming@coldist,0) $) node [anchor=base 
-  east,timing/name]
-    (last row text) {\ignorespaces #1\unskip\strut};
+  \path ($ (last row) - (\tikztiming@coldist,0) $) node
+    [anchor=base east,timing/name]
+    (last row text) {\ignorespaces #1\unskip};
   \@ifnextchar{[}%
     {\tikztiming@tabletiming}%
     {\tikztiming@tabletiming[]}%
