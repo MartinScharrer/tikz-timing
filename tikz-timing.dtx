@@ -2475,7 +2475,7 @@
   after text/.code={\texttimingafter},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
-  inline node/.style={shape=tikztiming coordinate},
+  inline node/.style={anchor=origin,shape=tikztiming coordinate},
   inline node/from char/.store in=\tikztiming@node@fromchar,
   inline node/to char/.store in=\tikztiming@node@tochar,
   table/.style={font=\sffamily,timing,line width=0.15ex},
@@ -4101,6 +4101,8 @@
   }%
 }
 
+\newif\iftikztiming@oldnodecenter
+\tikztiming@oldnodecentertrue
 \pgfdeclareshape{tikztiming coordinate} {
   \saveddimen\slope{%
     \pgfpointxy{\timingslope}{0}%
@@ -4117,9 +4119,17 @@
   }
   \savedmacro\fromchar{%
     \let\fromchar\tikztiming@node@fromchar
+    \expandafter
+    \if\csname tikztiming@alias@\fromchar\endcsname D\relax
+      \def\fromchar{D}%
+    \fi
   }
   \savedmacro\tochar{%
     \let\tochar\tikztiming@node@tochar
+    \expandafter
+    \if\csname tikztiming@alias@\tochar\endcsname D\relax
+      \def\tochar{D}%
+    \fi
   }
   \savedanchor\lowpoint{%
     \pgfpointanchor{timing/start base}{center}%
@@ -4129,9 +4139,24 @@
     \pgfpointorigin
   }
   \anchor{center}{%
-    \pgfpointorigin\relax
-    %\@nameuse{tikztiming@node@center@\fromchar @}%
-    \@nameuse{tikztiming@node@center@\fromchar @\tochar}%
+    \pgfpointorigin
+    \iftikztiming@oldnodecenter
+      \@nameuse{tikztiming@node@oldcenter@\fromchar @}%
+      \@nameuse{tikztiming@node@oldcenter@\fromchar @\tochar}%
+    \else
+      \@nameuse{tikztiming@node@newcenter@\fromchar @}%
+      \@nameuse{tikztiming@node@newcenter@\fromchar @\tochar}%
+    \fi
+  }
+  \anchor{new center}{%
+    \pgfpointorigin
+    \@nameuse{tikztiming@node@newcenter@\fromchar @}%
+    \@nameuse{tikztiming@node@newcenter@\fromchar @\tochar}%
+  }
+  \anchor{old center}{%
+    \pgfpointorigin
+    \@nameuse{tikztiming@node@oldcenter@\fromchar @}%
+    \@nameuse{tikztiming@node@oldcenter@\fromchar @\tochar}%
   }
   \anchor{low}{\lowpoint}
   \anchor{low lslope}{
@@ -4248,30 +4273,44 @@
   \nodeparts{}% no text
 }
 
-\def\tikztiming@node@center#1#2{%
-  \@namedef{tikztiming@node@center@#1@#2}%
+\def\tikztiming@node@newcenter#1#2{%
+  \@namedef{tikztiming@node@newcenter@#1@#2}%
+}
+\def\tikztiming@node@oldcenter#1#2{%
+  \@namedef{tikztiming@node@oldcenter@#1@#2}%
 }
 
-\tikztiming@node@center{L}{D}{%
+\tikztiming@node@oldcenter{D}{}{%
   \pgf@xb=\dslope\relax
   \pgf@yb=\height\relax
   \advance\pgf@x by -.5\pgf@xb
   \advance\pgf@y by -.5\pgf@yb
 }
 
-\tikztiming@node@center{H}{D}{%
-  \pgf@xb=\dslope\relax
+\tikztiming@node@oldcenter{D}{D}{%
+  \pgfpointorigin
   \pgf@yb=\height\relax
-  \advance\pgf@x by -.5\pgf@xb
-  \advance\pgf@y by  .5\pgf@yb
+  \advance\pgf@y by -.5\pgf@yb
 }
 
-\tikztiming@node@center{D}{H}{%
-  \showthe\pgf@x
+\tikztiming@node@oldcenter{D}{@}{%
+  \pgfpointorigin
+  \pgf@yb=\height\relax
+  \advance\pgf@y by -.5\pgf@yb
+}
+
+\tikztiming@node@newcenter{H}{D}{%
   \pgf@xb=\dslope\relax
   \pgf@yb=\height\relax
-  \advance\pgf@x by .5\pgf@xb
-  \advance\pgf@y by .5\pgf@yb
+  \advance\pgf@x by  .5\pgf@xb
+  \advance\pgf@y by -.5\pgf@yb
+}
+
+\tikztiming@node@newcenter{L}{D}{%
+  \pgf@xb=\dslope\relax
+  \pgf@yb=\height\relax
+  \advance\pgf@x by  .5\pgf@xb
+  \advance\pgf@y by  .5\pgf@yb
 }
 %    \end{macrocode}
 %
