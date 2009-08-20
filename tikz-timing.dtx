@@ -2095,8 +2095,8 @@
 %   reset char=\meta{char} & Defines the given \meta{char} to (re-)set the 
 %   counter value to the `width' of the character, \ie the number preceding it.  
 %   The lower case version of \meta{char} is not defined.\\
-%   base=\meta{Num 2-36} & Defines the numeric base of the counter. The default 
-%   is 10.\\
+%   base=\meta{2-36} & Defines the numeric base of the counter. The default is 
+%   10.\\
 %   half width char=\meta{char} & Defines the given \meta{char} to be the half 
 %   width version of the counter value. By default this is the lower case 
 %   version of the counter character given with \texttt{char}. An empty value 
@@ -4115,17 +4115,24 @@
     \pgfpointxy{0}{\timingheight}%
     \pgf@x=\pgf@y
   }
-  \savedmacro\tikztiming@fromchar{%
-    \let\tikztiming@fromchar\tikztiming@node@fromchar
+  \savedmacro\fromchar{%
+    \let\fromchar\tikztiming@node@fromchar
   }
-  \savedmacro\tikztiming@tochar{%
-    \let\tikztiming@tochar\tikztiming@node@tochar
+  \savedmacro\tochar{%
+    \let\tochar\tikztiming@node@tochar
   }
   \savedanchor\lowpoint{%
     \pgfpointanchor{timing/start base}{center}%
     \pgf@x=0pt
   }
-  \anchor{center}{\pgfpointorigin}
+  \anchor{origin}{%
+    \pgfpointorigin
+  }
+  \anchor{center}{%
+    \pgfpointorigin\relax
+    %\@nameuse{tikztiming@node@center@\fromchar @}%
+    \@nameuse{tikztiming@node@center@\fromchar @\tochar}%
+  }
   \anchor{low}{\lowpoint}
   \anchor{low lslope}{
     \lowpoint
@@ -4241,6 +4248,31 @@
   \nodeparts{}% no text
 }
 
+\def\tikztiming@node@center#1#2{%
+  \@namedef{tikztiming@node@center@#1@#2}%
+}
+
+\tikztiming@node@center{L}{D}{%
+  \pgf@xb=\dslope\relax
+  \pgf@yb=\height\relax
+  \advance\pgf@x by -.5\pgf@xb
+  \advance\pgf@y by -.5\pgf@yb
+}
+
+\tikztiming@node@center{H}{D}{%
+  \pgf@xb=\dslope\relax
+  \pgf@yb=\height\relax
+  \advance\pgf@x by -.5\pgf@xb
+  \advance\pgf@y by  .5\pgf@yb
+}
+
+\tikztiming@node@center{D}{H}{%
+  \showthe\pgf@x
+  \pgf@xb=\dslope\relax
+  \pgf@yb=\height\relax
+  \advance\pgf@x by .5\pgf@xb
+  \advance\pgf@y by .5\pgf@yb
+}
 %    \end{macrocode}
 %
 % \subsection{Other Macros}
