@@ -4736,7 +4736,11 @@
       +(0, \height/2)
    -- +(\dslope/2,0)
    -- +(0,-\height/2)
-   ++(\dslope/2,0)
+  \@iftikztiming@oldnodecenter{%
+     ++(0,-\height/2)
+  }{%
+     ++(\dslope/2,0)
+  }%
 }
 
 \let\@tempa\tikztiming@chars
