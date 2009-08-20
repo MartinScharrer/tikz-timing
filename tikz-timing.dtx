@@ -1704,7 +1704,7 @@
 %     body.  \\
 %     timing/table/header & Used for \cs{tableheader}. \\
 %     timing/inline node & Used for nodes created by the \texttt{N} character.  
-%     Defaults to \texttt{tikztiming coordinate}.\\
+%     Defaults to \texttt{coordinate}.\\
 %     \midrule
 %     timing/outer sep=\meta{dim} & Sets outer separation around \cs{texttiming} 
 %     macros. \\
@@ -2478,7 +2478,7 @@
   after text/.code={\texttimingafter},
   picture/.style={timing,line width=0.15ex},
   intext/.style={timing,line width=0.15ex},
-  inline node/.style={shape=tikztiming coordinate},
+  inline node/.style={shape=coordinate},
   inline node/from char/.store in=\tikztiming@node@fromchar,
   inline node/to char/.store in=\tikztiming@node@tochar,
   table/.style={font=\sffamily,timing,line width=0.15ex},
@@ -2710,7 +2710,7 @@
       \ifnum\tikztiming@debug>1
       \message{^^J\meaning\tikztiming@str^^J}%
       \ifnum\tikztiming@debug>2
-      {
+      {%
       \def\@protect##1{\def##1{\noexpand##1}}%
       \@protect\useasboundingbox
       \@protect\draw
@@ -2720,7 +2720,7 @@
       \@protect\y
       \edef\@tempa{\tikztiming@str}%
       \message{^^J\meaning\@tempa^^J}%
-      }
+      }%
       \fi
       \fi
       \tikzset{timing/before}%
@@ -4101,157 +4101,11 @@
     \pgfpointborderrectangle{\pgfpoint{\@tempdima}{\@tempdimb}}{\northeastborder}%
   }%
 }
-
-\newif\iftikztiming@oldnodecenter
-\tikztiming@oldnodecentertrue
-\def\@iftikztiming@oldnodecenter{%
-  \iftikztiming@oldnodecenter%
-    \expandafter\@firstoftwo
-  \else
-    \expandafter\@secondoftwo
-  \fi
-}
-
-\pgfdeclareshape{tikztiming coordinate} {
-  \saveddimen\slope{%
-    \pgfpointxy{\timingslope}{0}%
-  }
-  \saveddimen\dslope{%
-    \pgfpointxy{\timingdslope}{0}%
-  }
-  \saveddimen\zslope{%
-    \pgfpointxy{\timingzslope}{0}%
-  }
-  \saveddimen\height{%
-    \pgfpointxy{0}{\timingheight}%
-    \pgf@x=\pgf@y
-  }
-  \savedmacro\tikztiming@fromchar{%
-    \let\tikztiming@fromchar\tikztiming@node@fromchar
-  }
-  \savedmacro\tikztiming@tochar{%
-    \let\tikztiming@tochar\tikztiming@node@tochar
-  }
-  \savedanchor\lowpoint{%
-    \pgfpointanchor{timing/start base}{center}%
-    \pgf@x=0pt
-  }
-  \anchor{center}{\pgfpointorigin}
-  \anchor{low}{\lowpoint}
-  \anchor{low lslope}{
-    \lowpoint
-    \advance\pgf@x by \slope
-  }
-  \anchor{low lslope/2}{
-    \lowpoint
-    \pgf@xa=\slope
-    \advance\pgf@x by .5\pgf@xa
-  }
-  \anchor{low dslope}{
-    \lowpoint
-    \advance\pgf@x by \dslope
-  }
-  \anchor{low dslope/2}{
-    \lowpoint
-    \pgf@xa=\dslope
-    \advance\pgf@x by .5\pgf@xa
-  }
-  \anchor{low zslope}{
-    \lowpoint
-    \advance\pgf@x by \zslope
-  }
-  \anchor{low zslope/2}{
-    \lowpoint
-    \pgf@xa=\zslope
-    \advance\pgf@x by .5\pgf@xa
-  }
-  \anchor{high}{%
-    \lowpoint
-    \advance\pgf@y by \height
-  }
-  \anchor{high lslope}{%
-    \lowpoint
-    \pgf@xa=\slope
-    \advance\pgf@y by \height
-    \advance\pgf@x by \pgf@xa
-  }
-  \anchor{high lslope/2}{%
-    \lowpoint
-    \pgf@xa=\slope
-    \advance\pgf@y by \height
-    \advance\pgf@x by .5\pgf@xa
-  }
-  \anchor{high dslope}{%
-    \lowpoint
-    \advance\pgf@y by \height
-    \advance\pgf@x by \dslope
-  }
-  \anchor{high dslope/2}{%
-    \lowpoint
-    \pgf@xa=\dslope
-    \advance\pgf@y by \height
-    \advance\pgf@x by .5\pgf@xa
-  }
-  \anchor{high zslope}{%
-    \lowpoint
-    \advance\pgf@y by \height
-    \advance\pgf@x by \zslope
-  }
-  \anchor{high zslope/2}{%
-    \lowpoint
-    \pgf@xa=\zslope
-    \advance\pgf@y by \height
-    \advance\pgf@x by .5\pgf@xa
-  }
-  \anchor{mid}{%
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@y by .5\pgf@ya
-  }
-  \anchor{mid lslope}{%
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by \slope
-    \advance\pgf@y by .5\pgf@ya
-  }
-  \anchor{mid lslope/2}{%
-    \pgf@xa=\slope
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by .5\pgf@xa
-    \advance\pgf@y by .5\pgf@ya
-  }
-  \anchor{mid dslope}{%
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by \dslope
-    \advance\pgf@y by .5\pgf@ya
-  }
-  \anchor{mid dslope/2}{%
-    \pgf@xa=\dslope
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by .5\pgf@xa
-    \advance\pgf@y by .5\pgf@ya
-  }
-  \anchor{mid zslope}{%
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by \zslope
-    \advance\pgf@y by .5\pgf@ya
-  }
-  \anchor{mid zslope/2}{%
-    \pgf@xa=\zslope
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by .5\pgf@xa
-    \advance\pgf@y by .5\pgf@ya
-  }
-  \anchorborder{\pgfpointorigin}
-
-  \nodeparts{}% no text
-}
-
+%    \end{macrocode}
+%
+% By default use the old node centers for backwards compability.
+%    \begin{macrocode}
+\let\@iftikztiming@oldnodecenter\@firstoftwo
 %    \end{macrocode}
 %
 % \subsection{Other Macros}
@@ -6652,6 +6506,191 @@
 %    \end{macrocode}
 % \iffalse
 %</lib-counters>
+%<*lib-advnodes>
+% \fi
+%    \begin{macrocode}
+\newif\iftikztiming@oldnodecenter
+
+\def\@iftikztiming@oldnodecenter{%
+  \iftikztiming@oldnodecenter
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+
+\pgfdeclareshape{tikztiming coordinate}{%
+  \saveddimen\slopeh{%
+    \pgfpointxy{\timingslope}{0}%
+    \pgf@x=.5\pgf@x%
+  }%
+  \saveddimen\dslopeh{%
+    \pgfpointxy{\timingdslope}{0}%
+    \pgf@x=.5\pgf@x%
+  }%
+  \saveddimen\zslopeh{%
+    \pgfpointxy{\timingzslope}{0}%
+    \pgf@x=.5\pgf@x%
+  }%
+  \saveddimen\heighth{%
+    \pgfpointxy{0}{\timingheight}%
+    \pgf@x=.5\pgf@y
+  }%
+  \savedmacro\fromchar{%
+    \let\fromchar\tikztiming@node@fromchar
+  }%
+  \savedmacro\tochar{%
+    \let\tochar\tikztiming@node@tochar
+  }%
+  \savedanchor\lowpoint{%
+    \pgfpointanchor{timing/start base}{center}%
+    \pgf@x=0pt
+  }%
+  \anchor{origin}{%
+    \pgfpointorigin
+    \@nameuse{tikztiming@origin@\fromchar @\tochar}%
+    \pgf@x=-\pgf@x
+    \pgf@y=-\pgf@y
+  }%
+  \anchor{center}{\pgfpointorigin}%
+  \anchor{low}{\lowpoint}%
+  \anchor{low lslope}{%
+    \lowpoint
+    \advance\pgf@x by \slope
+  }%
+  \anchor{low lslope/2}{%
+    \lowpoint
+    \pgf@xa=\slope
+    \advance\pgf@x by .5\pgf@xa
+  }%
+  \anchor{low dslope}{%
+    \lowpoint
+    \advance\pgf@x by \dslope
+  }%
+  \anchor{low dslope/2}{%
+    \lowpoint
+    \pgf@xa=\dslope
+    \advance\pgf@x by .5\pgf@xa
+  }%
+  \anchor{low zslope}{%
+    \lowpoint
+    \advance\pgf@x by \zslope
+  }%
+  \anchor{low zslope/2}{%
+    \lowpoint
+    \pgf@xa=\zslope
+    \advance\pgf@x by .5\pgf@xa
+  }%
+  \anchor{high}{%
+    \lowpoint
+    \advance\pgf@y by \height
+  }%
+  \anchor{high lslope}{%
+    \lowpoint
+    \pgf@xa=\slope
+    \advance\pgf@y by \height
+    \advance\pgf@x by \pgf@xa
+  }%
+  \anchor{high lslope/2}{%
+    \lowpoint
+    \pgf@xa=\slope
+    \advance\pgf@y by \height
+    \advance\pgf@x by .5\pgf@xa
+  }%
+  \anchor{high dslope}{%
+    \lowpoint
+    \advance\pgf@y by \height
+    \advance\pgf@x by \dslope
+  }%
+  \anchor{high dslope/2}{%
+    \lowpoint
+    \pgf@xa=\dslope
+    \advance\pgf@y by \height
+    \advance\pgf@x by .5\pgf@xa
+  }%
+  \anchor{high zslope}{%
+    \lowpoint
+    \advance\pgf@y by \height
+    \advance\pgf@x by \zslope
+  }%
+  \anchor{high zslope/2}{%
+    \lowpoint
+    \pgf@xa=\zslope
+    \advance\pgf@y by \height
+    \advance\pgf@x by .5\pgf@xa
+  }%
+  \anchor{mid}{%
+    \pgf@ya=\height
+    \lowpoint
+    \advance\pgf@y by .5\pgf@ya
+  }%
+  \anchor{mid lslope}{%
+    \pgf@ya=\height
+    \lowpoint
+    \advance\pgf@x by \slope
+    \advance\pgf@y by .5\pgf@ya
+  }%
+  \anchor{mid lslope/2}{%
+    \pgf@xa=\slope
+    \pgf@ya=\height
+    \lowpoint
+    \advance\pgf@x by .5\pgf@xa
+    \advance\pgf@y by .5\pgf@ya
+  }%
+  \anchor{mid dslope}{%
+    \pgf@ya=\height
+    \lowpoint
+    \advance\pgf@x by \dslope
+    \advance\pgf@y by .5\pgf@ya
+  }%
+  \anchor{mid dslope/2}{%
+    \pgf@xa=\dslope
+    \pgf@ya=\height
+    \lowpoint
+    \advance\pgf@x by .5\pgf@xa
+    \advance\pgf@y by .5\pgf@ya
+  }%
+  \anchor{mid zslope}{%
+    \pgf@ya=\height
+    \lowpoint
+    \advance\pgf@x by \zslope
+    \advance\pgf@y by .5\pgf@ya
+  }%
+  \anchor{mid zslope/2}{%
+    \pgf@xa=\zslope
+    \pgf@ya=\height
+    \lowpoint
+    \advance\pgf@x by .5\pgf@xa
+    \advance\pgf@y by .5\pgf@ya
+  }%
+  \anchorborder{\pgfpointorigin}%
+  %
+  \nodeparts{}% no text
+}
+
+\tikzset{%
+  timing/inline node/.style={shape=tikztiming coordinate},
+  every tikztiming coordinate node/.style={anchor=origin},
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\tikztiming@origin#1#2{%
+  \@namedef{tikztiming@origin@#1@#2}%
+}
+
+\tikztiming@origin{L}{H}{\pgfpoint{\slopeh}{\heighth}}%
+\tikztiming@origin{H}{L}{\pgfpoint{\slopeh}{-\heighth}}%
+\tikztiming@origin{L}{D}{\pgfpoint{\dslopeh}{\heighth}}%
+\tikztiming@origin{H}{D}{\pgfpoint{\dslopeh}{-\heighth}}%
+\tikztiming@origin{L}{E}{\pgfpoint{\slopeh}{\heighth}}%
+\tikztiming@origin{H}{E}{\pgfpoint{\slopeh}{-\heighth}}%
+\tikztiming@origin{E}{E}{\pgfpoint{\slopeh}{\heighth}}%
+\tikztiming@origin{E}{E}{\pgfpoint{\slopeh}{-\heighth}}%
+\tikztiming@origin{E}{H}{\pgfpoint{-\slopeh}{-\heighth}}%
+\tikztiming@origin{E}{L}{\pgfpoint{-\slopeh}{\heighth}}%
+%    \end{macrocode}
+% \iffalse
+%</lib-advnodes>
 % \fi
 % \Finale
 \endinput
