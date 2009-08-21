@@ -1,0 +1,144 @@
+%&pdflatex
+\documentclass{article}
+\usepackage [margin=.1cm,paperwidth=20cm,paperheight=20cm] {geometry}
+
+\usepackage {tikz-timing}
+\usetikzlibrary {patterns}
+
+\ifx\usetikztimingpackage\undefined
+  %\usepackage {tikz-timing-either}
+  %\tikzset{timing/e/.style={fill=green},timing/e/background/.style={fill=green,draw=none}}
+\else
+\fi
+\usetikztiminglibrary {either,advnodes}
+\pagestyle{empty}
+\tikzset{%
+timing/.append style={orange,}%semitransparent,},
+timing/e/.style={},timing/e/background/.style={fill=black!20,draw=none,},
+timing/d/.style={},timing/d/background/.style={fill=black!10,draw=none,},
+timing/u/text/.style={timing/d/text},
+tt/.style={timing/initchar=T},
+ee/.style={},
+}
+
+\makeatletter
+\csname tikztiming@oldnodecenterfalse\endcsname
+
+\usepackage[active,tightpage]{preview}
+\begin{document}
+\sffamily
+%\tikzset{timing/lslope=.4}
+%\tikzset{timing/dslope=.4}
+\tikzset{timing/zslope=0.2}
+\tikzset{timing/dslope=0.3}
+\tikzset{timing/lslope=.1}
+\makeatletter
+\def\asis#1{{%
+  \let\@tempa#1\empty
+  \@onelevel@sanitize\@tempa
+  \normalfont\texttt{\@tempa}%
+}}
+\let\texttimingbefore\texttiminggrid
+
+\def\da{D{A}}
+\def\db{D{B}}
+\def\dc{D{C}}
+\def\d{D}
+\def\e{E}
+\def\ee{ee}
+\def\tt{tt}
+\def\cc{cc}
+
+\@ifundefined{I}{\let\I\empty}{}
+\def\ichars{H,L,Z,X,M,U,D,T,C,}
+\def\achars{\empty}%D,dNd,D{},d{}Nd{},U,uNu,U{},u{}Nu{}}
+%H,L,Z,X,M,U,D,D{A},T,tt,C,cc,}
+%D{A},;D{A},D{A};,;D{A};%
+%U{A},;U{A},U{A};,;U{A};%
+%}%H,L,Z,X,M,U,D,D{A},T,tt,C,cc,}
+\def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,E,ee,}
+\def\cchars{H,L,Z,X,M,U,D,D{C},T,tt,C,cc,E,ee,}
+%\def\achars{N(a),[],;,H,L,Z,X,M,U,U{A},D,D{A},G,T,tt,C,cc,}
+%\def\bchars{H,L,Z,X,M,U,U{B},D,D{B},G,S,T,tt,C,cc,}
+%\def\cchars{H,L,Z,X,M,U,U{C},D,D{C},G,S,T,tt,C,cc,}
+
+%\tikztiming@debug=5
+\@tempdima=1.6ex
+
+\def\b{\@backslashchar b}
+
+
+\tikzstyle{n} = [draw,fill,circle]
+\tikzstyle{timing/u/text} = [timing/d/text]
+\newcounter{K}
+\tikztimingmetachar{K}{%
+  N(K)
+}
+\tikztimingmetachar{J}{%
+  !{%
+  node [n,minimum size=2pt,fill=brown] at (K) { }
+  node [n,green!50] at (K.high2) {}
+  node [n,red!50] at (K.low2) {}
+  node [n,red]    at (K.low) {}
+  node [n,yellow] at (K.mid) {}
+  node [n,green]  at (K.high) {}
+  }%
+}
+
+
+\def\X{}
+\def\Y{}
+\foreach \a in \achars {%
+%\foreach \X/\Y in {/,/;,;/,;/;} {%
+    \begin{preview}
+    \message{ ^^J^^J \a }%
+    \begin{tikzpicture}[timing/picture]
+      \node [black]%,anchor=base]
+        (x) at (0,0)
+        {};%{\strut\textbf{\X\asis\a\Y}};%
+    \foreach \c in \cchars {%
+      \node [black,right of=x] (x) {\strut\asis\c};%
+      \message{ \c }%
+    }%
+    \coordinate (y) at (0,0);
+    \foreach \b in \bchars {%
+      \coordinate (y) at ($ (y) - (0,2) $);
+      \coordinate (x) at (y);
+      \node [black]%,anchor=base]
+      at (x) {\strut\asis\b};%
+      \message{^^J    \b    }%
+      \foreach \c in \cchars {%
+        \let\x\b
+        \ifx\b\db
+          \def\x{D}%
+        \fi
+        \ifx\ee\b
+          \def\x{E}%
+        \fi
+        \ifx\tt\b
+          \def\x{T}%
+        \fi
+        \ifx\cc\b
+          \def\x{T}%
+        \fi
+        %\node [right of=x] (x) {\expandafter\texttiming\abc};%
+        \coordinate (x) at ($ (x) + (4,0) $);
+        %\coordinate (t) at ($ (x) - (1.5,0) $);
+        \message{ . }%
+        %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
+        \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
+        {\noexpand\texttiming[\I]{\b K \c J}};}%
+        \temp
+      }%
+    }%
+     \draw [help lines] (-3.5,2) rectangle ($ (x) + (3,-1) $);
+        \message{ ^^J^^J }%
+    \end{tikzpicture}%
+    \end{preview}
+    \newpage
+%}%
+}%
+
+\end{document}
+
+
