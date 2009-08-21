@@ -5728,7 +5728,7 @@
   -- +($ (#1,\height) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
      +($ (#1,0) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
   -- +(0,0)
-    ++($ (#1,0) + (-\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)%
+    ++($ (#1,\height/2) + (-\slope/2 + \slope/2 * \value{tikztimingtrans},0) $)%
 }%
 
 \tikztimingdef{ZE@}{
@@ -6537,6 +6537,12 @@
   \addtosavedmacro{#1}%
 }
 
+\def\tikztiming@noanchor{%
+  \PackageError{tikz-timing}{No such anchor defined for this transition 
+  node!}{}{}%
+  \pgfpointorigin
+}
+
 \def\tikztiming@anchorpoints{%
   \pgf@xa=0pt\relax
   \pgf@ya=0pt\relax
@@ -6579,9 +6585,9 @@
 % \begin{macro}{\tikztiming@tryanchor@}[2]{From}{To}
 %    \begin{macrocode}
 \def\tikztiming@tryanchor#1#2{%
-         %\message{^^J Try Anchor: '#1' '#2' ^^J }%
+         \message{^^J Try Anchor: '#1' '#2' ^^J }%
          \let\tikztiming@next\relax
-         %\def\tikztiming@next{\message{^^J TERM ^^J}}%
+         \def\tikztiming@next{\message{^^J TERM ^^J}}%
   \ifx\relax#1\empty\else
   \ifx\relax#2\empty\else
     \def\tikztiming@next{%
@@ -6594,7 +6600,7 @@
           \expandafter\tikztiming@tryanchor@\@tempa{#1}{#2}%
         }%
         {\let\tikztiming@tryanchor\@gobbletwo
-         %\message{^^J Anchor: '#1' '#2' ^^J }%
+         %message{^^J Anchor: '#1' '#2' ^^J }%
          \@nameuse{tikztiming@anchors@#1@#2}%
         }%
     }%
@@ -6629,7 +6635,7 @@
     \let\fromchar\tikztiming@node@fromchar
     \let\tochar\tikztiming@node@tochar
     %
-    %\message{^^J Node: \fromchar \tochar ^^J}%
+    \message{^^J Node: \fromchar \tochar ^^J}%
     %
     \pgfpointxy{\timingslope}{0}%
     \slope=\pgf@x\relax
@@ -6687,6 +6693,26 @@
   \anchorpoint\low{0pt}{-.5\height}%
 }
 
+\tikztiming@anchors{@}{H}{%
+  \anchorpoint\originoffset{0pt}{\height}%
+  \anchorpoint\high{0pt}{0pt}%
+}
+
+\tikztiming@anchors{@}{L}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\low{0pt}{0pt}%
+}
+
+\tikztiming@anchors{@}{T}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\low{0pt}{0pt}%
+}
+
+\tikztiming@anchors{@}{Z}{%
+  \anchorpoint\originoffset{0pt}{.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+}
+
 \tikztiming@anchors{D}{D}{%
   \anchorpoint\originoffset{0pt}{0pt}%
   \anchorpoint\mid{0pt}{0pt}%
@@ -6699,6 +6725,28 @@
   \anchorpoint\mid{0pt}{0pt}%
   \anchorpoint\high{.5\slope}{.5\height}%
   \anchorpoint\low{-.5\slope}{-.5\height}%
+}
+
+\tikztiming@anchors{H}{H}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\high{0pt}{0pt}%
+}
+
+\tikztiming@anchors{L}{L}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\low{0pt}{0pt}%
+}
+
+\tikztiming@anchors{Z}{Z}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\mid{0pt}{0pt}%
+}
+
+\tikztiming@anchors{E}{E}{%
+  \anchorpoint\originoffset{.5\slope}{.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{\c@tikztimingtrans\slope}{.5\height}%
+  \anchorpoint\low{-\c@tikztimingtrans\slope}{-.5\height}%
 }
 
 \tikztiming@anchors{H}{L}{%
@@ -6783,18 +6831,6 @@
   \anchorpoint\low{.5\dslope}{-.5\height}%
 }
 
-\tikztiming@anchors{@}{H}{%
-  \anchorpoint\high{0pt}{\height}%
-}
-
-\tikztiming@anchors{@}{L}{%
-  \anchorpoint\low{0pt}{0pt}%
-}
-
-\tikztiming@anchors{@}{Z}{%
-  \anchorpoint\mid{0pt}{.5\height}%
-}
-
 \tikztiming@anchors{H}{@}{%
   \anchorpoint\high{0pt}{0pt}%
 }
@@ -6807,8 +6843,11 @@
   \anchorpoint\mid{0pt}{0pt}%
 }
 
-\def\tikztiming@origin#1#2{%
-  \@namedef{tikztiming@origin@#1@#2}%
+\tikztiming@anchors{@}{@}{%
+  \anchorpoint\originoffset{0pt}{.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{0pt}{.5\height}%
+  \anchorpoint\low{0pt}{-.5\height}%
 }
 
 %    \end{macrocode}
