@@ -3179,6 +3179,8 @@
 %    \begin{macrocode}
 \def\tikztiming@parser@end{%
   \def\tikztiming@output@nextchar{@}%
+  \let\tikztiming@fromchar\tikztiming@tochar
+  \edef\tikztiming@tochar{@}%
   \tikztiming@output@flush
   \global\let\tikztimingwidth\tikztimingwidth
   \tikztiming@addtostr{ coordinate (timing/end)
