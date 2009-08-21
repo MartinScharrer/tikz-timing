@@ -6519,150 +6519,135 @@
   \fi
 }
 
+\def\anchoralias#1#2{%
+  \expandafter\def
+  \csname pgf@anchor@\shape@name @#1\expandafter\endcsname
+  \expandafter{\csname pgf@anchor@\shape@name @#2\endcsname}%
+}
+
+\def\tikztiming@anchorpoint#1#2#3{%
+  \pgf@xa=#2\relax
+  \pgf@ya=#3\relax
+  \edef#1{%
+    \pgf@x=\the\pgf@xa\relax
+    \pgf@y=\the\pgf@ya\relax
+  }%
+  \addtosavedmacro{#1}%
+}
+
+\def\tikztiming@anchorpoints{%
+  \pgf@xa=0pt\relax
+  \pgf@ya=0pt\relax
+  \unexpanded{%
+  \def\high{%
+    \PackageError{tikz-timing}{No anchor 'high' defined for this transition 
+    node!}{}{}%
+    \pgfpointorigin
+  }%
+  \def\mid{%
+    \PackageError{tikz-timing}{No anchor 'mid' defined for this transition 
+    node!}{}{}%
+    \pgfpointorigin
+  }%
+  \def\low{%
+    \PackageError{tikz-timing}{No anchor 'low' defined for this transition 
+    node!}{}{}%
+    \pgfpointorigin
+  }%
+  \def\lowtwo{%
+    \PackageError{tikz-timing}{No anchor 'low2' defined for this transition 
+    node!}{}{}%
+    \pgfpointorigin
+  }%
+  \def\hightwo{%
+    \PackageError{tikz-timing}{No anchor 'high2' defined for this transition 
+    node!}{}{}%
+    \pgfpointorigin
+  }%
+  }%
+}
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@tryanchor@}[2]{From}{To}
+%    \begin{macrocode}
+\def\tikztiming@tryanchor#1#2{%
+  \let\tikztiming@next\relax
+  \ifx\relax#1\empty\else
+  \ifx\relax#2\empty\else
+    \def\tikztiming@next{%
+      \@ifundefined{tikztiming@anchors@#1@#2}%
+        {%
+          \edef\@tempa{%
+            {\csname tikztiming@alias@#1\endcsname}%
+            {\csname tikztiming@alias@#2\endcsname}%
+          }%
+          \expandafter\tikztiming@tryanchor@\@tempa{#1}{#2}%
+        }%
+        {\let\tikztiming@tryanchor\@gobbletwo
+         \message{^^J Anchor: '#1' '#2' ^^J }%
+         \@nameuse{tikztiming@anchors@#1@#2}%
+        }%
+    }%
+  \fi\fi
+  \tikztiming@next
+}
+%   \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tryanchor@}[4]{Alias From}{Alias To}{From}{To}
+%   \begin{macrocode}
+\def\tikztiming@tryanchor@#1#2#3#4{%
+  \tikztiming@tryanchor{#3}{#2}%
+  \tikztiming@tryanchor{#1}{#4}%
+  \tikztiming@tryanchor{#1}{#2}%
+  \tikztiming@tryanchor{#3}{}%
+  \tikztiming@tryanchor{}{#4}%
+}
+%   \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
 \pgfdeclareshape{tikztiming coordinate}{%
-  \saveddimen\slopeh{%
-    \pgfpointxy{\timingslope}{0}%
-    \pgf@x=.5\pgf@x%
-  }%
-  \saveddimen\dslopeh{%
-    \pgfpointxy{\timingdslope}{0}%
-    \pgf@x=.5\pgf@x%
-  }%
-  \saveddimen\zslopeh{%
-    \pgfpointxy{\timingzslope}{0}%
-    \pgf@x=.5\pgf@x%
-  }%
-  \saveddimen\heighth{%
-    \pgfpointxy{0}{\timingheight}%
-    \pgf@x=.5\pgf@y
-  }%
-  \savedmacro\fromchar{%
+  \savedmacro\anchorpoints{%
+    \let\anchorpoints\tikztiming@anchorpoints
+    \let\anchorpoint\tikztiming@anchorpoint
+    \let\slope\@tempdima
+    \let\dslope\@tempdimb
+    \let\zslope\@tempdimc
+    \let\height\pgf@yb
     \let\fromchar\tikztiming@node@fromchar
-  }%
-  \savedmacro\tochar{%
     \let\tochar\tikztiming@node@tochar
-  }%
+    %
+    \message{^^J Node: \fromchar \tochar ^^J}%
+    %
+    \pgfpointxy{\timingslope}{0}%
+    \slope=\pgf@x\relax
+    \pgfpointxy{\timingdslope}{0}%
+    \dslope=\pgf@x\relax
+    \pgfpointxy{\timingzslope}{0}%
+    \zslope=\pgf@x\relax
+    \pgfpointxy{0}{\timingheight}%
+    \height=\pgf@y\relax
+    %
+    \tikztiming@tryanchor{\fromchar}{\tochar}%
+  }
   \savedanchor\lowpoint{%
     \pgfpointanchor{timing/start base}{center}%
     \pgf@x=0pt
   }%
   \anchor{origin}{%
-    \pgfpointorigin
-    \@nameuse{tikztiming@origin@\fromchar @\tochar}%
+    \anchorpoints
+    \@nameuse{originoffset}
     \pgf@x=-\pgf@x
     \pgf@y=-\pgf@y
   }%
   \anchor{center}{\pgfpointorigin}%
-  \anchor{low}{\lowpoint}%
-  \anchor{low lslope}{%
-    \lowpoint
-    \advance\pgf@x by \slope
-  }%
-  \anchor{low lslope/2}{%
-    \lowpoint
-    \pgf@xa=\slope
-    \advance\pgf@x by .5\pgf@xa
-  }%
-  \anchor{low dslope}{%
-    \lowpoint
-    \advance\pgf@x by \dslope
-  }%
-  \anchor{low dslope/2}{%
-    \lowpoint
-    \pgf@xa=\dslope
-    \advance\pgf@x by .5\pgf@xa
-  }%
-  \anchor{low zslope}{%
-    \lowpoint
-    \advance\pgf@x by \zslope
-  }%
-  \anchor{low zslope/2}{%
-    \lowpoint
-    \pgf@xa=\zslope
-    \advance\pgf@x by .5\pgf@xa
-  }%
-  \anchor{high}{%
-    \lowpoint
-    \advance\pgf@y by \height
-  }%
-  \anchor{high lslope}{%
-    \lowpoint
-    \pgf@xa=\slope
-    \advance\pgf@y by \height
-    \advance\pgf@x by \pgf@xa
-  }%
-  \anchor{high lslope/2}{%
-    \lowpoint
-    \pgf@xa=\slope
-    \advance\pgf@y by \height
-    \advance\pgf@x by .5\pgf@xa
-  }%
-  \anchor{high dslope}{%
-    \lowpoint
-    \advance\pgf@y by \height
-    \advance\pgf@x by \dslope
-  }%
-  \anchor{high dslope/2}{%
-    \lowpoint
-    \pgf@xa=\dslope
-    \advance\pgf@y by \height
-    \advance\pgf@x by .5\pgf@xa
-  }%
-  \anchor{high zslope}{%
-    \lowpoint
-    \advance\pgf@y by \height
-    \advance\pgf@x by \zslope
-  }%
-  \anchor{high zslope/2}{%
-    \lowpoint
-    \pgf@xa=\zslope
-    \advance\pgf@y by \height
-    \advance\pgf@x by .5\pgf@xa
-  }%
-  \anchor{mid}{%
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@y by .5\pgf@ya
-  }%
-  \anchor{mid lslope}{%
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by \slope
-    \advance\pgf@y by .5\pgf@ya
-  }%
-  \anchor{mid lslope/2}{%
-    \pgf@xa=\slope
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by .5\pgf@xa
-    \advance\pgf@y by .5\pgf@ya
-  }%
-  \anchor{mid dslope}{%
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by \dslope
-    \advance\pgf@y by .5\pgf@ya
-  }%
-  \anchor{mid dslope/2}{%
-    \pgf@xa=\dslope
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by .5\pgf@xa
-    \advance\pgf@y by .5\pgf@ya
-  }%
-  \anchor{mid zslope}{%
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by \zslope
-    \advance\pgf@y by .5\pgf@ya
-  }%
-  \anchor{mid zslope/2}{%
-    \pgf@xa=\zslope
-    \pgf@ya=\height
-    \lowpoint
-    \advance\pgf@x by .5\pgf@xa
-    \advance\pgf@y by .5\pgf@ya
-  }%
+  \anchor{mid}{\anchorpoints\mid}
+  \anchor{low}{\anchorpoints\low}
+  \anchor{high}{\anchorpoints\high}
+  \anchor{low2}{\anchorpoints\lowtwo}
+  \anchor{high2}{\anchorpoints\hightwo}
+  %
   \anchorborder{\pgfpointorigin}%
   %
   \nodeparts{}% no text
@@ -6674,20 +6659,113 @@
 }
 %    \end{macrocode}
 %    \begin{macrocode}
+\def\tikztiming@anchors#1#2{%
+  \@namedef{tikztiming@anchors@#1@#2}%
+}
+\def\tikztiming@anchorslet#1#2#3#4{%
+  \expandafter\let
+  \csname tikztiming@anchors@#1@#2\expandafter\endcsname
+  \csname tikztiming@anchors@#3@#4\endcsname
+}
+
+\tikztiming@anchors{@}{D}{%
+  \anchorpoint\originoffset{0pt}{.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{0pt}{.5\height}%
+  \anchorpoint\low{0pt}{-.5\height}%
+}
+
+\tikztiming@anchors{D}{D}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{0pt}{.5\height}%
+  \anchorpoint\low{0pt}{-.5\height}%
+}
+
+\tikztiming@anchors{L}{H}{%
+  \anchorpoint\originoffset{.5\slope}{.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{.5\slope}{.5\height}%
+  \anchorpoint\low{-.5\slope}{-.5\height}%
+}
+
+\tikztiming@anchors{H}{L}{%
+  \anchorpoint\originoffset{.5\slope}{-.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{-.5\slope}{.5\height}%
+  \anchorpoint\low{.5\slope}{-.5\height}%
+}
+
+\tikztiming@anchors{Z}{D}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{.5\dslope}{.5\height}%
+  \anchorpoint\low{.5\dslope}{-.5\height}%
+}
+
+\tikztiming@anchors{D}{Z}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{-.5\dslope}{.5\height}%
+  \anchorpoint\low{-.5\dslope}{-.5\height}%
+}
+
+\tikztiming@anchors{D}{H}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{-.5\dslope}{.5\height}%
+  \anchorpoint\hightwo{.5\dslope}{.5\height}%
+  \anchorpoint\low{-.5\dslope}{-.5\height}%
+}
+
+\tikztiming@anchors{D}{L}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{-.5\dslope}{.5\height}%
+  \anchorpoint\low{-.5\dslope}{-.5\height}%
+  \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+}
+
+\tikztiming@anchors{D@edge@}{D}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{-.5\dslope}{.5\height}%
+  \anchorpoint\hightwo{.5\dslope}{.5\height}%
+  \anchorpoint\low{-.5\dslope}{-.5\height}%
+  \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+}
+\tikztiming@anchorslet{D}{U}{D@edge@}{D}
+\tikztiming@anchorslet{U}{D}{D@edge@}{D}
+
+\tikztiming@anchors{D}{@}{%
+  \anchorpoint\originoffset{0pt}{0pt}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{0pt}{.5\height}%
+  \anchorpoint\low{0pt}{-.5\height}%
+}
+
+\tikztiming@anchors{L}{D}{%
+  \anchorpoint\originoffset{.5\dslope}{.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{.5\dslope}{.5\height}%
+  \anchorpoint\low{-.5\dslope}{-.5\height}%
+  \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+}
+
+\tikztiming@anchors{H}{D}{%
+  \anchorpoint\originoffset{.5\dslope}{-.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{-.5\dslope}{.5\height}%
+  \anchorpoint\hightwo{.5\dslope}{.5\height}%
+  \anchorpoint\low{.5\dslope}{-.5\height}%
+}
+
+\tikztiming@anchors{}{}{}
+
 \def\tikztiming@origin#1#2{%
   \@namedef{tikztiming@origin@#1@#2}%
 }
 
-\tikztiming@origin{L}{H}{\pgfpoint{\slopeh}{\heighth}}%
-\tikztiming@origin{H}{L}{\pgfpoint{\slopeh}{-\heighth}}%
-\tikztiming@origin{L}{D}{\pgfpoint{\dslopeh}{\heighth}}%
-\tikztiming@origin{H}{D}{\pgfpoint{\dslopeh}{-\heighth}}%
-\tikztiming@origin{L}{E}{\pgfpoint{\slopeh}{\heighth}}%
-\tikztiming@origin{H}{E}{\pgfpoint{\slopeh}{-\heighth}}%
-\tikztiming@origin{E}{E}{\pgfpoint{\slopeh}{\heighth}}%
-\tikztiming@origin{E}{E}{\pgfpoint{\slopeh}{-\heighth}}%
-\tikztiming@origin{E}{H}{\pgfpoint{-\slopeh}{-\heighth}}%
-\tikztiming@origin{E}{L}{\pgfpoint{-\slopeh}{\heighth}}%
 %    \end{macrocode}
 % \iffalse
 %</lib-advnodes>
