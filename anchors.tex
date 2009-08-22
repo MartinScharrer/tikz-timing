@@ -30,7 +30,7 @@ ee/.style={},
 %\tikzset{timing/lslope=.4}
 %\tikzset{timing/dslope=.4}
 \tikzset{timing/zslope=0.2}
-\tikzset{timing/dslope=0.3}
+\tikzset{timing/dslope=0.5}
 \tikzset{timing/lslope=.1}
 \makeatletter
 \def\asis#1{{%
@@ -67,8 +67,35 @@ ee/.style={},
 
 \def\b{\@backslashchar b}
 
+\def\testanchorpoint#1#2#3{%
+  \def#1{}%
+}
 
-\tikzstyle{n} = [draw,fill,circle]
+\makeatletter
+
+%\tikzstyle{n} = [draw,fill,circle]
+\tikzset{n/.code={%
+  \begingroup
+  \let\mid\relax \let\low\relax \let\high\relax
+  \let\lowtwo\relax \let\hightwo\relax
+  \let\anchorpoint\testanchorpoint
+  \ifx\b\empty\def\b{@}\fi
+  \ifx\c\empty\def\c{@}\fi
+  \ifx\b\db\def\b{D@edge@}\fi
+  \ifx\c\db\def\c{D@edge@}\fi
+  \ifx\b\dc\def\b{D@edge@}\fi
+  \ifx\c\dc\def\c{D@edge@}\fi
+  \ifx\b\tt\def\b{T}\fi
+  \ifx\c\tt\def\c{T}\fi
+  \ifx\b\cc\def\b{C}\fi
+  \ifx\c\cc\def\c{C}\fi
+  \ifx\b\ee\def\b{E}\fi
+  \ifx\c\ee\def\c{E}\fi
+  \tikztiming@tryanchor{\b}{\c}%
+  \@ifundefined{#1}%
+    {\endgroup\tikzset{}}%
+    {\endgroup\tikzset{fill,opacity=.8,circle}}%
+}}
 \tikzstyle{timing/u/text} = [timing/d/text]
 \newcounter{K}
 \tikztimingmetachar{K}{%
@@ -76,15 +103,16 @@ ee/.style={},
 }
 \tikztimingmetachar{J}{%
   !{%
-  node [n,minimum size=2pt,fill=brown] at (K) { }
-  node [n,green!50] at (K.high2) {}
-  node [n,red!50] at (K.low2) {}
-  node [n,red]    at (K.low) {}
-  node [n,yellow] at (K.mid) {}
-  node [n,green]  at (K.high) {}
+  node [n=center,minimum size=3pt,brown] at (K) { }
+  node [n=hightwo,green!50] at (K.high2) {}
+  node [n=lowtwo,red!50] at (K.low2) {}
+  node [n=low,red]    at (K.low) {}
+  node [n=mid,yellow] at (K.mid) {}
+  node [n=high,green]  at (K.high) {}
   }%
 }
 
+\tikzset{minimum size=2pt}
 
 \def\X{}
 \def\Y{}
@@ -97,7 +125,7 @@ ee/.style={},
         (x) at (0,0)
         {};%{\strut\textbf{\X\asis\a\Y}};%
     \foreach \c in \cchars {%
-      \node [black,right of=x] (x) {\strut\asis\c};%
+      \node [black] (x) at ($ (x) + (3,0) $) {\strut\asis\c};%
       \message{ \c }%
     }%
     \coordinate (y) at (0,0);
@@ -122,12 +150,12 @@ ee/.style={},
           \def\x{T}%
         \fi
         %\node [right of=x] (x) {\expandafter\texttiming\abc};%
-        \coordinate (x) at ($ (x) + (4,0) $);
+        \coordinate (x) at ($ (x) + (3,0) $);
         %\coordinate (t) at ($ (x) - (1.5,0) $);
         \message{ . }%
         %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
         \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
-        {\noexpand\texttiming[\I]{\b K \c J}};}%
+        {\noexpand\texttiming[\I]{\b KJ \c }};}%
         \temp
       }%
     }%
