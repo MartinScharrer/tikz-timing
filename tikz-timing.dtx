@@ -5372,6 +5372,7 @@
   -- ++($ (#1,0) - (\slope,0) $)%
      ++($ -1*(#1,\height) $)%
   -- ++($  1*(#1,0) $)%
+     ++(0,.5\height)%
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
 }%
@@ -5387,7 +5388,7 @@
   -- ++($ (#1,0) - (\slope,0) $)%
      ++($ -1*(#1,-\height) $)%
   -- ++($  1*(#1,0) $)%
-     ++(0,-\height)%
+     ++(0,-.5\height)%
   \code{\setcounter{tikztimingtranspos}{1}}%
   \code{\setcounter{tikztimingtrans}{-1}}%
 }%
@@ -6724,6 +6725,35 @@
   \anchorpoint\low{-.5\slope}{-.5\height}%
 }
 
+\tikztiming@anchors{E}{H}{%
+  \anchorpoint\originoffset{-.5\slope}{-.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{.5\slope}{.5\height}%
+  \anchorpoint\low{-.5\slope}{-.5\height}%
+}
+
+\tikztiming@anchors{T}{T}{%
+  \anchorpoint\mid{0pt}{0pt}%
+  \ifnum 1=\c@tikztimingtrans
+    \anchorpoint\originoffset{.5\slope}{-.5\height}%
+    \anchorpoint\high{-.5\slope}{.5\height}%
+    \anchorpoint\low{.5\slope}{-.5\height}%
+  \else
+    \anchorpoint\originoffset{.5\slope}{.5\height}%
+    \anchorpoint\high{.5\slope}{.5\height}%
+    \anchorpoint\low{-.5\slope}{-.5\height}%
+  \fi
+}
+\tikztiming@anchorslet{T}{E}{T}{T}%
+
+\tikztiming@anchors{T}{@}{%
+  \ifnum 1=\c@tikztimingtrans
+    \anchorpoint\high{0pt}{0pt}%
+  \else
+    \anchorpoint\low{0pt}{0pt}%
+  \fi
+}
+
 \tikztiming@anchors{H}{H}{%
   \anchorpoint\originoffset{0pt}{0pt}%
   \anchorpoint\high{0pt}{0pt}%
@@ -6740,10 +6770,16 @@
 }
 
 \tikztiming@anchors{E}{E}{%
-  \anchorpoint\originoffset{.5\slope}{.5\height}%
   \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{\c@tikztimingtrans\slope}{.5\height}%
-  \anchorpoint\low{-\c@tikztimingtrans\slope}{-.5\height}%
+  \ifnum 1=\c@tikztimingtrans
+    \anchorpoint\originoffset{.5\slope}{.5\height}%
+    \anchorpoint\high{.5\slope}{.5\height}%
+    \anchorpoint\low{-.5\slope}{-.5\height}%
+  \else
+    \anchorpoint\originoffset{-.5\slope}{.5\height}%
+    \anchorpoint\high{-.5\slope}{.5\height}%
+    \anchorpoint\low{.5\slope}{-.5\height}%
+  \fi
 }
 
 \tikztiming@anchors{H}{L}{%
@@ -6753,6 +6789,32 @@
   \anchorpoint\low{.5\slope}{-.5\height}%
 }
 \tikztiming@anchorslet{H}{E}{H}{L}%
+
+\tikztiming@anchors{E}{L}{%
+  \anchorpoint\originoffset{-.5\slope}{.5\height}%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{-.5\slope}{.5\height}%
+  \anchorpoint\low{.5\slope}{-.5\height}%
+}
+
+\tikztiming@anchors{E}{T}{%
+  \anchorpoint\mid{0pt}{0pt}%
+  \ifnum 1=\c@tikztimingtrans
+    \anchorpoint\originoffset{-.5\slope}{-.5\height}%
+    \anchorpoint\high{.5\slope}{.5\height}%
+    \anchorpoint\low{-.5\slope}{-.5\height}%
+  \else
+    \anchorpoint\originoffset{-.5\slope}{.5\height}%
+    \anchorpoint\high{-.5\slope}{.5\height}%
+    \anchorpoint\low{.5\slope}{-.5\height}%
+  \fi
+}
+
+\tikztiming@anchors{E}{Z}{%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{-\zslope}{.5\height}%
+  \anchorpoint\low{-\zslope}{-.5\height}%
+}
 
 \tikztiming@anchors{Z}{D}{%
   \anchorpoint\originoffset{0pt}{0pt}%
@@ -6805,7 +6867,6 @@
 \tikztiming@anchorslet{H}{T}{H}{L}%
 \tikztiming@anchorslet{T}{H}{H}{L}%
 
-
 \tikztiming@anchors{D}{D}{%
   \anchorpoint\originoffset{0pt}{0pt}%
   \anchorpoint\mid{0pt}{0pt}%
@@ -6830,6 +6891,21 @@
   \anchorpoint\high{.5\dslope}{.5\height}%
   \anchorpoint\low{-.5\dslope}{-.5\height}%
   \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+}
+
+\tikztiming@anchors{T}{D}{%
+  \anchorpoint\mid{0pt}{0pt}%
+  \ifnum 1=\c@tikztimingtrans
+    \anchorpoint\originoffset{.5\dslope}{-.5\height}%
+    \anchorpoint\high{-.5\dslope}{.5\height}%
+    \anchorpoint\hightwo{.5\dslope}{.5\height}%
+    \anchorpoint\low{.5\dslope}{-.5\height}%
+  \else
+    \anchorpoint\originoffset{.5\dslope}{.5\height}%
+    \anchorpoint\high{.5\dslope}{.5\height}%
+    \anchorpoint\low{-.5\dslope}{-.5\height}%
+    \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+  \fi
 }
 
 \tikztiming@anchors{H}{D}{%
