@@ -2487,6 +2487,7 @@
   restore/.style={/utils/exec=\tikztiming@restoresettings},
   name/.style={inner sep=0pt,outer sep=0pt,minimum size=0pt},
   text format/.store in=\tikztiming@textformat,
+  @/.style={},
   d/.style={},
   d/text/.style={timing,scale=0.6,font=\sffamily},
   d/background/.style={draw=none},
@@ -4580,6 +4581,7 @@
 \def\tikztiming@triple@D{}%
 \def\tikztiming@triple@D@edge@{}%
 \def\tikztiming@nocombine@D@edge@{}%
+\def\tikztiming@alias@D@edge@{D}%
 
 \tikztiming@nameedef[D]{D@edge@@start}{
      ++(0, \height/2)
@@ -5106,11 +5108,10 @@
 }
 
 \tikztimingdef{ZT}{%
-  \newdraw
-  {[\style]
+  \newdraw {[\style]
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  -- ++(\slope/2,\value{tikztimingtrans}*\height/2.)
-  -- ++($ (#1,0) - (\slope/2,0) $)
+  -- ++(\zslope,\value{tikztimingtrans}*\height/2.)
+  -- ++($ (#1,0) - (\zslope,0) $)
   }
 }
 
@@ -5130,13 +5131,6 @@
   }{}%
   --  +(\dslope/2.,-\height/2)
   -- ++($ (#1,-\height/2) - (\dslope/2,0) $)
-  }
-}
-
-\tikztimingdef{MT}{%
-  \newdraw {[\style]
-  -- ++(\slope,\value{tikztimingtrans}*\height/2.)
-  -- ++($ (#1,0) - (\slope,0) $)
   }
 }
 
@@ -6637,6 +6631,9 @@
     %
     \message{^^J Node: \fromchar \tochar ^^J}%
     %
+    \edef\@tempa{{timing/\tochar}}%
+    \expandafter\lowercase\expandafter
+      {\expandafter\tikzset\@tempa}%
     \pgfpointxy{\timingslope}{0}%
     \slope=\pgf@x\relax
     \pgfpointxy{\timingdslope}{0}%
@@ -6755,6 +6752,7 @@
   \anchorpoint\high{-.5\slope}{.5\height}%
   \anchorpoint\low{.5\slope}{-.5\height}%
 }
+\tikztiming@anchorslet{H}{E}{H}{L}%
 
 \tikztiming@anchors{Z}{D}{%
   \anchorpoint\originoffset{0pt}{0pt}%
@@ -6785,6 +6783,7 @@
   \anchorpoint\low{-.5\dslope}{-.5\height}%
   \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
 }
+\tikztiming@anchorslet{D}{T}{D}{L}%
 
 \tikztiming@anchors{D@edge@}{D}{%
   \anchorpoint\originoffset{0pt}{0pt}%
@@ -6796,6 +6795,16 @@
 }
 \tikztiming@anchorslet{D}{U}{D@edge@}{D}
 \tikztiming@anchorslet{U}{D}{D@edge@}{D}
+\tikztiming@anchorslet{D}{D@edge@}{D@edge@}{D}
+\tikztiming@anchorslet{D@edge@}{D@edge@}{D@edge@}{D}
+\tikztiming@anchorslet{D}{E}{D@edge@}{D}
+\tikztiming@anchorslet{E}{D}{D@edge@}{D}
+
+\tikztiming@anchorslet{L}{E}{L}{H}%
+\tikztiming@anchorslet{L}{T}{L}{H}%
+\tikztiming@anchorslet{H}{T}{H}{L}%
+\tikztiming@anchorslet{T}{H}{H}{L}%
+
 
 \tikztiming@anchors{D}{D}{%
   \anchorpoint\originoffset{0pt}{0pt}%
@@ -6831,6 +6840,77 @@
   \anchorpoint\low{.5\dslope}{-.5\height}%
 }
 
+\tikztiming@anchors{Z}{E}{%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{\zslope}{.5\height}%
+  \anchorpoint\low{\zslope}{-.5\height}%
+}
+
+\tikztiming@anchors{Z}{H}{%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\high{\zslope}{.5\height}%
+}
+
+\tikztiming@anchors{Z}{T}{%
+  \anchorpoint\mid{0pt}{0pt}%
+  \ifnum1=\c@tikztimingtrans\relax
+    \anchorpoint\low{\zslope}{-.5\height}%
+  \else
+    \anchorpoint\high{\zslope}{.5\height}%
+  \fi
+}
+
+\tikztiming@anchors{T}{H}{%
+  \ifnum1=\c@tikztimingtrans\relax
+    \anchorpoint\high{0pt}{0pt}%
+  \else
+    \anchorpoint\originoffset{.5\slope}{.5\height}%
+    \anchorpoint\low{-.5\slope}{-.5\height}%
+    \anchorpoint\mid{0pt}{0pt}%
+    \anchorpoint\high{.5\slope}{.5\height}%
+  \fi
+}
+
+\tikztiming@anchors{T}{L}{%
+  \ifnum1=\c@tikztimingtrans\relax
+    \anchorpoint\originoffset{.5\slope}{-.5\height}%
+    \anchorpoint\low{.5\slope}{-.5\height}%
+    \anchorpoint\mid{0pt}{0pt}%
+    \anchorpoint\high{-.5\slope}{.5\height}%
+  \else
+    \anchorpoint\low{0pt}{0pt}%
+  \fi
+}
+
+\tikztiming@anchors{T}{Z}{%
+  \ifnum1=\c@tikztimingtrans\relax
+    \anchorpoint\high{0pt}{0pt}%
+    \anchorpoint\mid{\zslope}{-.5\height}%
+  \else
+    \anchorpoint\low{0pt}{0pt}%
+    \anchorpoint\mid{\zslope}{.5\height}%
+  \fi
+}
+
+\tikztiming@anchors{Z}{L}{%
+  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint\low{\zslope}{-.5\height}%
+}
+
+\tikztiming@anchors{H}{Z}{%
+  \anchorpoint\high{0pt}{0pt}%
+  \anchorpoint\mid{\zslope}{-.5\height}%
+}
+
+\tikztiming@anchors{L}{Z}{%
+  \anchorpoint\low{0pt}{0pt}%
+  \anchorpoint\mid{\zslope}{.5\height}%
+}
+
+\tikztiming@anchors{Z}{Z}{%
+  \anchorpoint\mid{0pt}{0pt}%
+}
+
 \tikztiming@anchors{H}{@}{%
   \anchorpoint\high{0pt}{0pt}%
 }
@@ -6843,7 +6923,7 @@
   \anchorpoint\mid{0pt}{0pt}%
 }
 
-\tikztiming@anchors{@}{@}{%
+\tikztiming@anchors{}{@}{%
   \anchorpoint\originoffset{0pt}{.5\height}%
   \anchorpoint\mid{0pt}{0pt}%
   \anchorpoint\high{0pt}{.5\height}%
