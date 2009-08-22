@@ -4321,36 +4321,8 @@
 % drawing code}
 %    \begin{macrocode}
 \def\tikztimingchar@#1#2#3{%
-  \tikztiming@nameedef{}{#1}{@start}{#2 coordinate (timing/start) }%
-  \tikztiming@nameedef{}{#1}{}{#2 coordinate (timing/start) #3}%
+  \tikztiming@nameedef{@}{#1}{}{#2 coordinate (timing/start) #3}%
   \tikztimingdef{{#1}{#1}}{#3}%
-  \tikztimingcpy{@{#1}}{{}{#1}}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingalias}[2]{Original character}{New character}
-%    \begin{macrocode}
-\def\tikztimingalias#1#2{%
-  \uppercase{\tikztimingalias@{#1}{#2}}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingalias@}[2]{New character}{Original character}
-%    \begin{macrocode}
-\def\tikztimingalias@#1#2{%
-  \tikztiming@namelet{#1}{#2}%
-  \tikztiming@namelet{#1@start}{#2@start}%
-  \lowercase{%
-  \tikztiming@namelet{#1}{#2}%
-  \tikztiming@namelet{#1@start}{#2@start}%
-  }%
-  \tikztiminglet{#1#1}{#2#2}%
-  \@for\@tempa:=\tikztiming@chars\do{%
-    \expandafter\tikztiminglet@@
-    \expandafter{\@tempa}{#1}{#2}%
-  }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4437,14 +4409,9 @@
 %
 % \subsection{Definition of Timing Characters}
 %
-% Pre-Define Timing Characters to set up list of timing characters.
+% Pre-Define list of Timing Characters.
 %    \begin{macrocode}
-\tikztimingchar{H}{}{}%
-\tikztimingchar{L}{}{}%
-\tikztimingchar{Z}{}{}%
-\tikztimingchar{D}{}{}%
-\tikztimingchar{M}{}{}%
-\tikztimingchar{T}{}{}%
+\def\tikztiming@chars{H,L,Z,D,M,T}%
 %    \end{macrocode}
 %
 % \subsubsection{Character `S'}
