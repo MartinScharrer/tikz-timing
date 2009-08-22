@@ -10,10 +10,10 @@
   %\tikzset{timing/e/.style={fill=green},timing/e/background/.style={fill=green,draw=none}}
 \else
 \fi
-%  \usetikztiminglibrary {either}
+\usetikztiminglibrary {either,advnodes}
 \pagestyle{empty}
 \tikzset{%
-timing/.append style={orange,semitransparent,},
+timing/.append style={orange},%,semitransparent,},
 timing/e/.style={},timing/e/background/.style={fill=green,draw=none,},
 timing/d/.style={},timing/d/background/.style={fill=yellow,draw=none,},
 timing/u/text/.style={timing/d/text},
@@ -49,17 +49,26 @@ ee/.style={},
 \@ifundefined{I}{\let\I\empty}{}
 \def\ichars{H,L,Z,X,M,U,D,T,C,}
 \def\achars{N(a),[],;,H,L,Z,X,M,U,U{A},D,D{A},G,T,tt,C,cc,}
-\def\bchars{H,L,Z,X,M,U,U{B},D,D{B},G,S,T,tt,C,cc,}
-\def\cchars{H,L,Z,X,M,U,U{C},D,D{C},G,S,T,tt,C,cc,}
+\def\cchars{H,L,Z,X,M,U,U{B},D,D{B},G,S,T,tt,C,cc,}
+\def\bchars{\empty}%H,L,Z,X,M,U,U{C},D,D{C},G,S,T,tt,C,cc,}
 
-%\tikztiming@debug=0
+\tikztiming@debug=3
 \@tempdima=1.6ex
 
 \def\b{\@backslashchar b}
 
+\newcounter{count}
 
+\tikztimingmetachar{K}{%
+  [/utils/exec=\stepcounter{count}]
+  N(X)
+  %!{ node[draw,circle] at (X) {} }
+}
+
+\def\X{}%
+\def\Y{}%
 \foreach \a in \achars {%
-\foreach \X/\Y in {/,/;,;/,;/;} {%
+\foreach \X/\Y in {K} {%
     \begin{preview}
     \message{ ^^J^^J \X\a\Y }%
     \begin{tikzpicture}[timing/picture]
@@ -97,7 +106,7 @@ ee/.style={},
         \message{ . }%
         %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
         \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
-        {\noexpand\texttiming[\I]{\b\a\c}};}%
+        {\noexpand\texttiming[\I]{\b\X\a\Y\c}};}%
         \temp
       }%
     }%

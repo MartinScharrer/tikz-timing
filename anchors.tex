@@ -30,7 +30,7 @@ ee/.style={},
 %\tikzset{timing/lslope=.4}
 %\tikzset{timing/dslope=.4}
 \tikzset{timing/zslope=0.2}
-\tikzset{timing/dslope=0.3}
+\tikzset{timing/dslope=0.5}
 \tikzset{timing/lslope=.1}
 \makeatletter
 \def\asis#1{{%
@@ -40,14 +40,24 @@ ee/.style={},
 }}
 \let\texttimingbefore\texttiminggrid
 
-\def\da{D{A}}
-\def\db{D{B}}
-\def\dc{D{C}}
-\def\d{D}
-\def\e{E}
-\def\ee{ee}
-\def\tt{tt}
-\def\cc{cc}
+\def\D{D}
+\def\E{E}
+\def\DA{D{A}}
+\def\DB{D{B}}
+\def\DC{D{C}}
+\def\EE{ee}
+\def\TT{tt}
+\def\LT{lt}
+\def\HT{ht}
+\def\CC{cc}
+\def\LC{lc}
+\def\HC{hc}
+\def\LE{le}
+\def\HE{he}
+\def\LT{lt}
+\def\HT{ht}
+\def\LC{lc}
+\def\HC{hc}
 
 \@ifundefined{I}{\let\I\empty}{}
 \def\ichars{H,L,Z,X,M,U,D,T,C,}
@@ -56,7 +66,7 @@ ee/.style={},
 %D{A},;D{A},D{A};,;D{A};%
 %U{A},;U{A},U{A};,;U{A};%
 %}%H,L,Z,X,M,U,D,D{A},T,tt,C,cc,}
-\def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,E,ee,}
+\def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,E,ee,le,he,}
 \def\cchars{H,L,Z,X,M,U,D,D{C},T,tt,C,cc,E,ee,}
 %\def\achars{N(a),[],;,H,L,Z,X,M,U,U{A},D,D{A},G,T,tt,C,cc,}
 %\def\bchars{H,L,Z,X,M,U,U{B},D,D{B},G,S,T,tt,C,cc,}
@@ -67,8 +77,45 @@ ee/.style={},
 
 \def\b{\@backslashchar b}
 
+\def\testanchorpoint#1#2#3{%
+  \def#1{}%
+}
 
-\tikzstyle{n} = [draw,fill,circle]
+\makeatletter
+
+%\tikzstyle{n} = [draw,fill,circle]
+\tikzset{n/.code={%
+  \begingroup
+  \let\mid\relax \let\low\relax \let\high\relax
+  \let\lowtwo\relax \let\hightwo\relax
+  \let\anchorpoint\testanchorpoint
+  \ifx\b\empty\def\b{@}\fi
+  \ifx\c\empty\def\c{@}\fi
+  \ifx\b\DB\def\b{D@edge@}\fi
+  \ifx\c\DB\def\c{D@edge@}\fi
+  \ifx\b\DC\def\b{D@edge@}\fi
+  \ifx\c\DC\def\c{D@edge@}\fi
+  \ifx\b\TT\def\b{T}\fi
+  \ifx\c\TT\def\c{T}\fi
+  \ifx\b\CC\def\b{C}\fi
+  \ifx\c\CC\def\c{C}\fi
+  \ifx\c\HT\def\c{T}\fi
+  \ifx\c\LT\def\c{T}\fi
+  \ifx\c\HC\def\c{C}\fi
+  \ifx\c\LC\def\c{C}\fi
+  \ifx\b\EE\def\b{E}\fi
+  \ifx\c\EE\def\c{E}\fi
+  \ifx\b\LE\def\b{E}\fi
+  \ifx\b\HE\def\b{E}\fi
+  \ifx\b\LT\def\b{T}\fi
+  \ifx\b\HT\def\b{T}\fi
+  \ifx\b\LC\def\b{C}\fi
+  \ifx\b\HC\def\b{C}\fi
+  \tikztiming@tryanchor{\b}{\c}%
+  \@ifundefined{#1}%
+    {\endgroup\tikzset{}}%
+    {\endgroup\tikzset{fill,opacity=.8,circle}}%
+}}
 \tikzstyle{timing/u/text} = [timing/d/text]
 \newcounter{K}
 \tikztimingmetachar{K}{%
@@ -76,15 +123,16 @@ ee/.style={},
 }
 \tikztimingmetachar{J}{%
   !{%
-  node [n,minimum size=2pt,fill=brown] at (K) { }
-  node [n,green!50] at (K.high2) {}
-  node [n,red!50] at (K.low2) {}
-  node [n,red]    at (K.low) {}
-  node [n,yellow] at (K.mid) {}
-  node [n,green]  at (K.high) {}
+  node [n=center,minimum size=3pt,brown] at (K) { }
+  node [n=hightwo,green!50] at (K.high2) {}
+  node [n=lowtwo,red!50] at (K.low2) {}
+  node [n=low,red]    at (K.low) {}
+  node [n=mid,yellow] at (K.mid) {}
+  node [n=high,green]  at (K.high) {}
   }%
 }
 
+\tikzset{minimum size=2pt}
 
 \def\X{}
 \def\Y{}
@@ -97,7 +145,7 @@ ee/.style={},
         (x) at (0,0)
         {};%{\strut\textbf{\X\asis\a\Y}};%
     \foreach \c in \cchars {%
-      \node [black,right of=x] (x) {\strut\asis\c};%
+      \node [black] (x) at ($ (x) + (3,0) $) {\strut\asis\c};%
       \message{ \c }%
     }%
     \coordinate (y) at (0,0);
@@ -122,12 +170,12 @@ ee/.style={},
           \def\x{T}%
         \fi
         %\node [right of=x] (x) {\expandafter\texttiming\abc};%
-        \coordinate (x) at ($ (x) + (4,0) $);
+        \coordinate (x) at ($ (x) + (3,0) $);
         %\coordinate (t) at ($ (x) - (1.5,0) $);
         \message{ . }%
         %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
         \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
-        {\noexpand\texttiming[\I]{\b K \c J}};}%
+        {\noexpand\texttiming[\I]{\b KJ \c J}};}%
         \temp
       }%
     }%
