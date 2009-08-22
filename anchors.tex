@@ -131,6 +131,17 @@ ee/.style={},
   node [n=high,green]  at (K.high) {}
   }%
 }
+\tikztimingmetachar{V}{%
+  !{%
+  node [draw,minimum size=3pt,black] at (timing/start) { }
+  }
+}
+
+\def\tikztiming@endhook{%
+  \tikztiming@addtostr{%
+    node [draw,minimum size=3pt,black] at (timing/end) { }
+  }%
+}
 
 \tikzset{minimum size=2pt}
 
@@ -175,7 +186,7 @@ ee/.style={},
         \message{ . }%
         %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
         \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
-        {\noexpand\texttiming[\I]{\b KJ \c J}};}%
+        {\noexpand\texttiming[\I]{\b KJ \c J V}};}%
         \temp
       }%
     }%
