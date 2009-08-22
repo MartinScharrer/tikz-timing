@@ -5351,7 +5351,7 @@
   -- ++($ (#1,0) - (\slope,0) $)%
      ++($ -1*(#1,-\height * \value{tikztimingtrans}) $)%
   -- ++($  1*(#1,0) $)%
-     ++(0,-\height)%
+     ++(0,-1*\value{tikztimingtrans}*.5*\height)%
 }%
 
 \tikztimingdef{LEL}{%
