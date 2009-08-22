@@ -2837,7 +2837,7 @@
 %    \begin{macrocode}
 \def\tikztiming@eaddto#1#2{%
   \begingroup
-    \tikztiming@internaldefs{}%
+    \tikztiming@internaldefs{}{}{}%
     \@temptokena\expandafter{#1}%
     \xdef#1{%
       \the\@temptokena
@@ -3143,7 +3143,7 @@
   \def\@gtempa##1{#4}%
   \expandafter\let\csname\tikztiming@prefix#1#2#3@general\endcsname\@gtempa
   \begingroup
-    \tikztiming@internaldefs{#2}%
+    \tikztiming@internaldefs{#1}{#2}{#3}%
     \xdef\@gtempa##1{\@gtempa{\width}}%
   \endgroup
   \expandafter\let\csname\tikztiming@prefix#1#2#3\endcsname\@gtempa
@@ -4131,9 +4131,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@internaldefs}[1]{Character}
+% \begin{macro}{\tikztiming@internaldefs}[3]{Character}{Character}{Character}
 %    \begin{macrocode}
-\def\tikztiming@internaldefs#1{%
+\def\tikztiming@internaldefs#1#2#3{%
   \let\draw\relax
   \let\path\relax
   \let\fill\relax
@@ -4146,8 +4146,10 @@
   \def\dslope{\noexpand\timingdslope}%
   \def\gslope{0}%
   \edef\style{%
-    \noexpand\def\noexpand\style{timing/#1}%
-    \noexpand\def\noexpand\bgstyle{draw=none,timing/#1/background}%
+    \noexpand\def\noexpand\pstyle{timing/#1}%
+    \noexpand\def\noexpand\style{timing/#2}%
+    \noexpand\def\noexpand\nstyle{timing/#3}%
+    \noexpand\def\noexpand\bgstyle{draw=none,timing/#2/background}%
   }%
   \expandafter\lowercase\expandafter{\style}%
   \def\newdraw{\tikztiming@newdraw}%
@@ -5395,12 +5397,32 @@
 }%
 
 \tikztimingdef{HET}{
-  \tikztiminguse{HEL}{#1}
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(#1,0)
+  {[\nstyle]
+  -- +($ (#1,-\height) + (\slope,0) $)%
+  }
+  -- +(\slope,-\height)
+  -- +(0,0)
+  {[\nstyle]
+    ++($ (#1,-\height) + (\slope,0) $)%
+  }
+  \newdraw
   \code{\setcounter{tikztimingtrans}{-1}}%
 }
 
 \tikztimingdef{LET}{
-  \tikztiminguse{LEH}{#1}
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\slope,\height)%
+  {[\nstyle]
+  -- +($ (#1,\height) + (\slope,0) $)%
+  }
+  -- +(#1,0)%
+  -- +(0,0)
+  {[\nstyle]
+    ++($ (#1,\height) + (\slope,0) $)%
+  }
+  \newdraw
   \code{\setcounter{tikztimingtrans}{1}}%
 }
 
@@ -5493,10 +5515,14 @@
 \tikztimingdef{TET}{%
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope, -\height * \value{tikztimingtrans})%
+   {[\nstyle]
    -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
+   }
    -- +(#1,0)%
    -- +(0,0)%
+   {[\nstyle]
      ++($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
+   }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }%
@@ -5629,13 +5655,17 @@
 \tikztimingdef{EET}{% OK
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope * \value{tikztimingtrans}, \height)%
+   {[\nstyle]
    -- +($ (#1,\height) + (\slope * \value{tikztimingtrans}, 0) $)%
+   }
    -- +(#1,0)%
    -- +(0,0)%
+   {[\nstyle]
    ++($ (#1,0) +
       (\slope/2 + \value{tikztimingtrans} * \slope/2,
         \height/2 + \value{tikztimingtrans} * \height/2)
       $)%
+   }
   \newdraw
 }%
 
@@ -5714,11 +5744,15 @@
 \tikztimingdef{ZET}{%
   \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
+  {[\nstyle]
   -- +($ (#1, \height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)
   -- +($ (#1,-\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)
+  }
   -- +(\zslope, -\height/2)
   -- +(0,0)
+  {[\nstyle]
     ++($ (#1,-\height/2 * \value{tikztimingtrans}) + (\slope, 0) $)
+  }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }
@@ -5729,13 +5763,17 @@
      ++(\dslope/2.,\height/2.)
   }{}%
   -- +(\dslope/2, \height/2)
+  {[\nstyle]
   -- +($ (#1, \height/2) + (-\dslope/2 + \slope/2 - \slope/2 * 
   \value{tikztimingtrans}, 0) $)
   -- +($ (#1,-\height/2) + (-\dslope/2 + \slope/2 + \slope/2 * 
   \value{tikztimingtrans}, 0) $)
+  }
   -- +(\dslope/2, -\height/2)
   -- +(0,0)
+  {[\nstyle]
     ++($ (#1,-\height/2 * \value{tikztimingtrans}) + (-\dslope/2 + \slope, 0) $)
+  }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }
@@ -5881,13 +5919,31 @@
 }
 
 \tikztimingdef{@ET}{%
-  \tikztiminguse{@EH}{#1}%
+  \newdraw [\bgstyle]
+  -- +(0,\height)
+  {[\nstyle]
+  -- +($ (#1,\height) + (\slope,0) $)
+  }
+  -- +(#1,0)
+  -- +(0,0)
+  \newdraw [\style]
+      +(0,\height)
+  {[\nstyle]
+   -- +($ (#1,\height) + (\slope,0) $)
+  }
+   -- +(#1,0)
+   -- +(0,0)
+  {[\nstyle]
+     ++($ (#1,\height) + (\slope,0) $)
+  }
+  \newdraw
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }
 
 \tikztimingdef{ET}{%
-  % No scope because below slope belongs to 'E' not 'T'.
+  {[\style]
   -- ++($ (#1,0) - (\slope,0) $)%
+  }
 }
 
 \tikztimingdef{@EL}{%
