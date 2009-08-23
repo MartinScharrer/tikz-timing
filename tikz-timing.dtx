@@ -2428,7 +2428,11 @@
 \def\tikztiming@rowdist{2}%
 \def\tikztiming@coldist{1}%
 
-\def\tikztiming@prefix{tikztiming@trans@}
+\def\tikztiming@prefix{tikztiming@trans@}%
+\def\tikztiming@ttt#1#2#3{#1#2#3}%
+\def\tikztiming@pfxtr{%
+  \tikztiming@prefix\expandafter\tikztiming@ttt
+}
 
 \def\timingwidth{1}%
 \def\timingheight{1}%
@@ -2760,7 +2764,7 @@
   \@ifundefined{\tikztiming@prefix\tikztiming@lastchar @start}%
     {\PackageWarning{tikz-timing}{Start value for timing character '\tikztiming@lastchar' 
     is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@nameaddtostr{\tikztiming@lastchar @start}{}}%
+    {\tikztiming@nameaddtostr{}{\tikztiming@lastchar @start}{}}%
   \fi
   \tikztiming@parser
 }
@@ -2770,10 +2774,10 @@
 % \subsection{Internal Macros}
 %
 % \begin{macro}{\tikztiming@trans@}
-% The empty transition gets defined to avoid errors if it is used by the generic 
-% code, e.g. if a non-combinable character like `C' is the last one.
 %    \begin{macrocode}
-\let\tikztiming@trans@\@gobble
+\def\tikztiming@trans@#1#2#3#4{%
+  \csname\tikztiming@prefix #2#3#4\endcsname{#1}{#2}{#3}{#4}%
+}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2837,7 +2841,7 @@
 %    \begin{macrocode}
 \def\tikztiming@eaddto#1#2{%
   \begingroup
-    \tikztiming@internaldefs{}{}{}%
+    \tikztiming@internaldefs
     \@temptokena\expandafter{#1}%
     \xdef#1{%
       \the\@temptokena
@@ -2895,12 +2899,12 @@
     \@ifundefined{tikztiming@triple@#2}%
       {\@ifundefined{\tikztiming@prefix#1#2}%
         {}%
-        {\xdef\tikztiming@trans{#1#2}}%
+        {\xdef\tikztiming@trans{{#1}{#2}{}}}%
       }%
       {%
       \@ifundefined{\tikztiming@prefix#1#2#3}%
         {}%
-        {\xdef\tikztiming@trans{#1#2#3}}%
+        {\xdef\tikztiming@trans{{#1}{#2}{#3}}}%
       }%
     % If both do not exist, search for aliases:
     \ifx\tikztiming@trans\relax
@@ -2927,29 +2931,20 @@
             %\message{ ^^J Testing: \a\b\c ^^J}%
             \@ifundefined{\tikztiming@prefix\a\b\c}%
               {}{%
-                %\ifx\c\empty
-                %  \xdef\tikztiming@trans{#1#2}%
-                %  \tikztimingcpy{#1#2}{\a\b}%
-                %  \ifnum\tikztiming@debug>0
-                %    \message{^^J DEBUG: '#1#2' = '\a\b' ^^J}%
-                %  \fi
-                %\else
-                  \xdef\tikztiming@trans{#1#2#3}%
-                  \tikztimingcpy{#1#2#3}{\a\b\c}%
-                  \ifnum\tikztiming@debug>0
-                    \message{^^J DEBUG: '#1#2#3' = '\a\b\c' ^^J}%
-                  \fi
-                %\fi
+                \xdef\tikztiming@trans{{#1}{#2}{#3}}%
+                \expandafter\tikztimingcpy\expandafter
+                  {\tikztiming@trans}{\a\b\c}%
+                \ifnum\tikztiming@debug>0
+                  \message{^^J DEBUG: '#1#2#3' = '\a\b\c' ^^J}%
+                \fi
                 \expandafter\tikztiming@makeglobal
-                \csname\tikztiming@prefix\tikztiming@trans\endcsname
-                \expandafter\tikztiming@makeglobal
-                \csname\tikztiming@prefix\tikztiming@trans @general\endcsname
+                \csname\tikztiming@pfxtr\tikztiming@trans\endcsname
                 \ifnum\tikztiming@debug>1
                   \ifnum\tikztiming@debug>2
-                    \expandafter\show\csname\tikztiming@prefix\tikztiming@trans\endcsname
+                    \expandafter\show\csname\tikztiming@pfxtr\tikztiming@trans\endcsname
                   \else
                     \message{^^J\tikztiming@trans: 
-                    \expandafter\meaning\csname\tikztiming@prefix\tikztiming@trans\endcsname^^J}%
+                    \expandafter\meaning\csname\tikztiming@pfxtr\tikztiming@trans\endcsname^^J}%
                     \message{^^J\a\b\c: 
                     \expandafter\meaning\csname\tikztiming@prefix\a\b\c\endcsname^^J}%
                   \fi
@@ -2974,18 +2969,19 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@nameaddtostr}[3]{Optional next character}
+% \begin{macro}{\tikztiming@nameaddtostr}
 % {First character}{Second character}
+% {Optional next character}
 %    \begin{macrocode}
-\newcommand*\tikztiming@nameaddtostr[3][]{%
-  \tikztiming@iftrans{{#2}{#3}{#1}}%
+\def\tikztiming@nameaddtostr#1#2#3{%
+  \tikztiming@iftrans{{#1}{#2}{#3}}%
    {%
+     \edef\@tempa{\noexpand\tikztiming@trans@{\tikztiming@num}\tikztiming@trans}%
      \expandafter\g@addto@macro
      \expandafter\tikztiming@str
-     \expandafter{\csname\tikztiming@prefix\tikztiming@trans\expandafter\endcsname
-       \expandafter{\tikztiming@num} }%
+     \expandafter{\@tempa}%
    }%
-   {\PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}}%
+   {\PackageWarning{tikz-timing}{No transitions '#1#2' (or '#1#2#3') defined!}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3039,7 +3035,7 @@
   \edef\tikztiming@tochar{#2}%
   \ifx\relax#2\relax
     %\tikztiming@output@codeflush
-    \tikztiming@nameaddtostr{#1}{}%
+    \tikztiming@nameaddtostr{}{#1}{}%
   \else
     \ifcase0%
       \ifx\tikztiming@output@bufchara\empty
@@ -3118,9 +3114,9 @@
   \begingroup
     \let\tikztiming@num\tikztiming@output@bufnum
     \tikztiming@nameaddtostr
-      [\tikztiming@output@nextchar]%
       {\tikztiming@output@bufchara}%
       {\tikztiming@output@bufcharb}%
+      {\tikztiming@output@nextchar}%
   \endgroup%
   \gdef\tikztiming@output@nextchar{}%
   \gdef\tikztiming@output@bufchara{}%
@@ -3141,10 +3137,9 @@
 %    \begin{macrocode}
 \newcommand\tikztiming@nameedef[4]{%
   \def\@gtempa##1{#4}%
-  \expandafter\let\csname\tikztiming@prefix#1#2#3@general\endcsname\@gtempa
   \begingroup
-    \tikztiming@internaldefs{#1}{#2}{#3}%
-    \xdef\@gtempa##1{\@gtempa{\width}}%
+    \tikztiming@internaldefs
+    \xdef\@gtempa##1##2##3##4{\@gtempa{\width}}%
   \endgroup
   \expandafter\let\csname\tikztiming@prefix#1#2#3\endcsname\@gtempa
   \let\@gtempa\empty
@@ -4133,7 +4128,7 @@
 %
 % \begin{macro}{\tikztiming@internaldefs}[3]{Character}{Character}{Character}
 %    \begin{macrocode}
-\def\tikztiming@internaldefs#1#2#3{%
+\def\tikztiming@internaldefs{%
   \let\draw\relax
   \let\path\relax
   \let\fill\relax
@@ -4145,13 +4140,9 @@
   \def\zslope{\noexpand\timingzslope}%
   \def\dslope{\noexpand\timingdslope}%
   \def\gslope{0}%
-  \edef\style{%
-    \noexpand\def\noexpand\pstyle{timing/#1}%
-    \noexpand\def\noexpand\style{timing/#2}%
-    \noexpand\def\noexpand\nstyle{timing/#3}%
-    \noexpand\def\noexpand\bgstyle{draw=none,timing/#2/background}%
-  }%
-  \expandafter\lowercase\expandafter{\style}%
+  \def\style{timing/####2}%
+  \def\bgstyle{draw=none,timing/####2/background}%
+  \def\nstyle{timing/####3}%
   \def\newdraw{\tikztiming@newdraw}%
   \def\newdrawns{\tikztiming@newdraw@nosave}%
   \def\code##1{ [/utils/exec={\unexpanded{##1}}] }%
@@ -4199,10 +4190,8 @@
 %
 % \begin{macro}{\tikztiminguse}[1]{Character(s)}
 %    \begin{macrocode}
-\def\tikztiminguse#1{%
-  \@ifundefined{\tikztiming@prefix#1@general}%
-    {\PackageWarning{Can not use transition macro for '#1'.}{}{}{}}%
-    {\@nameuse{\tikztiming@prefix#1@general}}%
+\def\tikztiminguse#1#2{%
+  \@nameuse{\tikztiming@prefix#1}{#2}{##2}{##3}{##4}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4239,21 +4228,15 @@
     %\message{^^J Copy macro '#2' to '#1' skipped.^^J}%
   \else
     \endgroup
-    \@ifundefined{\tikztiming@prefix#2@general}%
-      {\ifnum\tikztiming@debug>0\relax\message{^^J Copy macro '#2' to '#1' 
-      failed.^^J}\fi}%
-      {\ifnum\tikztiming@debug>0\relax\message{^^J Copy macro '#2' to 
-      '#1'.^^J}\fi%
-      % The following code is used to unsure that the used macroname is resolved 
-      % before it is used in the definition. Otherwise some macros in '#2' would 
-      % not be expanded and cause problems later.
-        \def\tikztimingcpy@a{\global\tikztimingdef{#1}}%
-        \expandafter\tikztimingcpy@a\expandafter{%
-        \csname\tikztiming@prefix#2@general\endcsname{##1}}%
+    \@ifundefined{\tikztiming@pfxtr#2\empty\empty\empty}%
+      {\ifnum\tikztiming@debug>0\relax
+        \message{^^J Copy macro '#2' to '#1' failed.^^J}\fi}%
+      {\ifnum\tikztiming@debug>0\relax
+        \message{^^J Copy macro '#2' to '#1'.^^J}\fi
         \expandafter\let
-        \csname\tikztiming@prefix#1@general\expandafter\endcsname
-        \csname\tikztiming@prefix#2@general\endcsname
-      }
+        \csname\tikztiming@pfxtr#1\empty\empty\empty\expandafter\endcsname
+        \csname\tikztiming@pfxtr#2\empty\empty\empty\endcsname
+      }%
   \fi
 }
 %    \end{macrocode}
@@ -4264,7 +4247,6 @@
 %    \begin{macrocode}
 \def\tikztiminglet#1#2{%
   \tikztiming@namelet{#1}{#2}%
-  \tikztiming@namelet{#1@general}{#2@general}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4315,8 +4297,8 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\@namedef{\tikztiming@prefix  @start}#1{ coordinate (timing/start)}%
-\@namedef{\tikztiming@prefix @@start}#1{ coordinate (timing/start)}%
+\@namedef{\tikztiming@prefix  @start}#1#2#3#4{ coordinate (timing/start)}%
+\@namedef{\tikztiming@prefix @@start}#1#2#3#4{ coordinate (timing/start)}%
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztimingchar@}[3]{Character}{Start position}{Character 
