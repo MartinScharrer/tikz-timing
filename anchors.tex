@@ -45,6 +45,9 @@ ee/.style={},
 \def\DA{D{A}}
 \def\DB{D{B}}
 \def\DC{D{C}}
+\def\UA{U{A}}
+\def\UB{U{B}}
+\def\UC{U{C}}
 \def\EE{ee}
 \def\TT{tt}
 \def\LT{lt}
@@ -66,13 +69,13 @@ ee/.style={},
 %D{A},;D{A},D{A};,;D{A};%
 %U{A},;U{A},U{A};,;U{A};%
 %}%H,L,Z,X,M,U,D,D{A},T,tt,C,cc,}
-\def\bchars{H,L,Z,X,M,U,D,D{B},T,tt,C,cc,E,ee,le,he,}
-\def\cchars{H,L,Z,X,M,U,D,D{C},T,tt,C,cc,E,ee,}
+\def\bchars{H,L,Z,X,M,U,U{B},D,D{B},T,tt,C,cc,E,ee,le,he,}
+\def\cchars{H,L,Z,X,M,U,U{C},D,D{C},T,tt,C,cc,E,ee,}
 %\def\achars{N(a),[],;,H,L,Z,X,M,U,U{A},D,D{A},G,T,tt,C,cc,}
 %\def\bchars{H,L,Z,X,M,U,U{B},D,D{B},G,S,T,tt,C,cc,}
 %\def\cchars{H,L,Z,X,M,U,U{C},D,D{C},G,S,T,tt,C,cc,}
 
-%\tikztiming@debug=5
+%\tikztiming@debug=3
 \@tempdima=1.6ex
 
 \def\b{\@backslashchar b}
@@ -95,6 +98,10 @@ ee/.style={},
   \ifx\c\DB\def\c{D@edge@}\fi
   \ifx\b\DC\def\b{D@edge@}\fi
   \ifx\c\DC\def\c{D@edge@}\fi
+  \ifx\b\UB\def\b{U@edge@}\fi
+  \ifx\c\UB\def\c{U@edge@}\fi
+  \ifx\b\UC\def\b{U@edge@}\fi
+  \ifx\c\UC\def\c{U@edge@}\fi
   \ifx\b\TT\def\b{T}\fi
   \ifx\c\TT\def\c{T}\fi
   \ifx\b\CC\def\b{C}\fi
@@ -131,8 +138,19 @@ ee/.style={},
   node [n=high,green]  at (K.high) {}
   }%
 }
+\tikztimingmetachar{V}{%
+  !{%
+  node [draw,minimum size=3pt,black] at (timing/start) { }
+  }
+}
 
-\tikzset{minimum size=2pt}
+\def\tikztiming@endhook{%
+  \tikztiming@addtostr{%
+    node [draw,minimum size=3pt,black] at (timing/end) { }
+  }%
+}
+
+\tikzset{minimum size=2pt,inner sep=0pt,outer sep=0pt}
 
 \def\X{}
 \def\Y{}
@@ -175,7 +193,7 @@ ee/.style={},
         \message{ . }%
         %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
         \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
-        {\noexpand\texttiming[\I]{\b KJ \c J}};}%
+        {\noexpand\texttiming[\I]{\b KJ \c J V}};}%
         \temp
       }%
     }%
