@@ -2492,6 +2492,31 @@
   name/.style={inner sep=0pt,outer sep=0pt,minimum size=0pt},
   text format/.store in=\tikztiming@textformat,
   @/.style={},
+  D/.style={timing/d},
+  D/text/.style={timing/d/text},
+  D/background/.style={timing/d/background},
+  D@edge@/.style={timing/d@edge@},
+  D@edge@/text/.style={timing/d@edge@/text},
+  D@edge@/background/.style={timing/d@edge@/background},
+  U/.style={timing/u},
+  U/text/.style={timing/u/text},
+  U/background/.style={timing/u/background},
+  U@edge@/.style={timing/u@edge@},
+  U@edge@/text/.style={timing/u@edge@/text},
+  U@edge@/background/.style={timing/u@edge@/background},
+  H/.style={timing/h},
+  L/.style={timing/l},
+  E/.style={timing/e},
+  E/background/.style={timing/e/background},
+  M/decoration/.style={timing/m/decoration},
+  M/base/.style={timing/m/base},
+  M/.style={timing/m},
+  G/.style={timing/g},
+  Z/.style={timing/z},
+  T/.style={timing/t},
+  C/.style={timing/c},
+  X/.style={timing/x},
+  @/.style={},
   d/.style={},
   d/text/.style={timing,scale=0.6,font=\sffamily},
   d/background/.style={draw=none},
@@ -4140,9 +4165,9 @@
   \def\zslope{\noexpand\timingzslope}%
   \def\dslope{\noexpand\timingdslope}%
   \def\gslope{0}%
-  \def\style{timing/####2}%
-  \def\bgstyle{draw=none,timing/####2/background}%
-  \def\nstyle{timing/####3}%
+  \def\style{timing/####3}%
+  \def\bgstyle{draw=none,timing/####3/background}%
+  \def\nstyle{timing/####4}%
   \def\newdraw{\tikztiming@newdraw}%
   \def\newdrawns{\tikztiming@newdraw@nosave}%
   \def\code##1{ [/utils/exec={\unexpanded{##1}}] }%
