@@ -2418,6 +2418,15 @@
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
+\setlength{\tikztiming@xunit}{1.6ex}%
+\setlength{\tikztiming@yunit}{1.6ex}%
+
+\def\tikztiming@setnum#1{%
+  \pgfmathparse{#1}%
+  \global\let\tikztiming@num\pgfmathresult
+  \message{^^J Num:   \tikztiming@num }%
+  \message{^^J Width: \tikztimingwidth ^^J}%
+}
 
 \newcount\tikztiming@debug
 
@@ -2428,16 +2437,14 @@
 \def\tikztiming@rowdist{2}%
 \def\tikztiming@coldist{1}%
 
-\def\tikztiming@prefix{tikztiming@trans@}
+\def\tikztiming@prefix{tikztiming@trans@}%
+\def\tikztiming@ttt#1#2#3{#1#2#3}%
+\def\tikztiming@pfxtr{%
+  \tikztiming@prefix\expandafter\tikztiming@ttt
+}
 
 \def\timingwidth{1}%
 \def\timingheight{1}%
-
-{%
-\@makeother\#
-\gdef\tikztiming@startchar{@}
-\gdef\tikztiming@endchar{@}
-}
 %    \end{macrocode}
 
 % \subsection{TikZ Style Settings}
@@ -2488,6 +2495,30 @@
   name/.style={inner sep=0pt,outer sep=0pt,minimum size=0pt},
   text format/.store in=\tikztiming@textformat,
   @/.style={},
+  D/.style={timing/d},
+  D/text/.style={timing/d/text},
+  D/background/.style={timing/d/background},
+  D@edge@/.style={timing/d@edge@},
+  D@edge@/text/.style={timing/d@edge@/text},
+  D@edge@/background/.style={timing/d@edge@/background},
+  U/.style={timing/u},
+  U/text/.style={timing/u/text},
+  U/background/.style={timing/u/background},
+  U@edge@/.style={timing/u@edge@},
+  U@edge@/text/.style={timing/u@edge@/text},
+  U@edge@/background/.style={timing/u@edge@/background},
+  H/.style={timing/h},
+  L/.style={timing/l},
+  E/.style={timing/e},
+  E/background/.style={timing/e/background},
+  M/decoration/.style={timing/m/decoration},
+  M/base/.style={timing/m/base},
+  M/.style={timing/m},
+  G/.style={timing/g},
+  Z/.style={timing/z},
+  T/.style={timing/t},
+  C/.style={timing/c},
+  X/.style={timing/x},
   d/.style={},
   d/text/.style={timing,scale=0.6,font=\sffamily},
   d/background/.style={draw=none},
@@ -2503,8 +2534,9 @@
   l/.style={},
   e/.style={},
   e/background/.style={draw=none},
-  m/decoration/.style={decorate,decoration={zigzag,segment 
-  length=.25\tikztiming@xunit,amplitude=.225\tikztiming@yunit}},
+  m/decoration/.style={decorate,%
+    decoration={zigzag,segment length=.25\tikztiming@xunit,
+    amplitude=.225\tikztiming@yunit}},
   m/base/.style={black!40!brown},
   m/.style={timing/m/base,timing/m/decoration},
   g/.style={decorate=false},
@@ -2604,7 +2636,7 @@
 % \begin{macro}{\tikztiming@init}
 %    \begin{macrocode}
 \def\tikztiming@init{%
-    \let\tikztiming@lastchar\tikztiming@startchar
+    \def\tikztiming@lastchar{@}%
     \let\tikztiming@currentchar\empty
     \let\tikztiming@settings\empty
     \let\tikztiming@fromchar\empty
@@ -2756,11 +2788,11 @@
   \@ifundefined{tikztiming@initcode@\tikztiming@lastchar}%
     {}%
     {\@nameuse{tikztiming@initcode@\tikztiming@lastchar}}%
-  \ifx\tikztiming@lastchar\empty\else
-  \@ifundefined{\tikztiming@prefix\tikztiming@lastchar @start}%
-    {\PackageWarning{tikz-timing}{Start value for timing character '\tikztiming@lastchar' 
-    is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@nameaddtostr{\tikztiming@lastchar @start}{}}%
+  \if @\tikztiming@lastchar\relax\else
+  \@ifundefined{\tikztiming@prefix @\tikztiming@lastchar}%
+    {\PackageWarning{tikz-timing}{Start value for timing character 
+    '\tikztiming@lastchar' is not defined and will be ignored!}{}{}{}}%
+    {\tikztiming@nameaddtostr{@}{\tikztiming@lastchar}{}}%
   \fi
   \tikztiming@parser
 }
@@ -2770,10 +2802,10 @@
 % \subsection{Internal Macros}
 %
 % \begin{macro}{\tikztiming@trans@}
-% The empty transition gets defined to avoid errors if it is used by the generic 
-% code, e.g. if a non-combinable character like `C' is the last one.
 %    \begin{macrocode}
-\let\tikztiming@trans@\@gobble
+\def\tikztiming@trans@#1#2#3#4{%
+  \csname\tikztiming@prefix #2#3#4\endcsname{#1}{#2}{#3}{#4}%
+}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2837,7 +2869,7 @@
 %    \begin{macrocode}
 \def\tikztiming@eaddto#1#2{%
   \begingroup
-    \tikztiming@internaldefs\empty\relax%
+    \tikztiming@internaldefs
     \@temptokena\expandafter{#1}%
     \xdef#1{%
       \the\@temptokena
@@ -2889,18 +2921,20 @@
 \def\tikztiming@iftrans@#1#2#3#4\relax{%
   \begingroup
   \xdef\tikztiming@trans{#1#2}%
-  \ifx\tikztiming@trans\empty\else
+  \ifx\tikztiming@trans\empty
+    \gdef\tikztiming@trans{{@}{}{@}}%
+  \else
     \global\let\tikztiming@trans\relax
     % Use triple macros before double macros
     \@ifundefined{tikztiming@triple@#2}%
       {\@ifundefined{\tikztiming@prefix#1#2}%
         {}%
-        {\xdef\tikztiming@trans{#1#2}}%
+        {\xdef\tikztiming@trans{{#1}{#2}{}}}%
       }%
       {%
       \@ifundefined{\tikztiming@prefix#1#2#3}%
         {}%
-        {\xdef\tikztiming@trans{#1#2#3}}%
+        {\xdef\tikztiming@trans{{#1}{#2}{#3}}}%
       }%
     % If both do not exist, search for aliases:
     \ifx\tikztiming@trans\relax
@@ -2927,29 +2961,20 @@
             %\message{ ^^J Testing: \a\b\c ^^J}%
             \@ifundefined{\tikztiming@prefix\a\b\c}%
               {}{%
-                %\ifx\c\empty
-                %  \xdef\tikztiming@trans{#1#2}%
-                %  \tikztimingcpy{#1#2}{\a\b}%
-                %  \ifnum\tikztiming@debug>0
-                %    \message{^^J DEBUG: '#1#2' = '\a\b' ^^J}%
-                %  \fi
-                %\else
-                  \xdef\tikztiming@trans{#1#2#3}%
-                  \tikztimingcpy{#1#2#3}{\a\b\c}%
-                  \ifnum\tikztiming@debug>0
-                    \message{^^J DEBUG: '#1#2#3' = '\a\b\c' ^^J}%
-                  \fi
-                %\fi
+                \xdef\tikztiming@trans{{#1}{#2}{#3}}%
+                \expandafter\tikztimingcpy\expandafter
+                  {\tikztiming@trans}{\a\b\c}%
+                \ifnum\tikztiming@debug>0
+                  \message{^^J DEBUG: '#1#2#3' = '\a\b\c' ^^J}%
+                \fi
                 \expandafter\tikztiming@makeglobal
-                \csname\tikztiming@prefix\tikztiming@trans\endcsname
-                \expandafter\tikztiming@makeglobal
-                \csname\tikztiming@prefix\tikztiming@trans @general\endcsname
+                \csname\tikztiming@pfxtr\tikztiming@trans\endcsname
                 \ifnum\tikztiming@debug>1
                   \ifnum\tikztiming@debug>2
-                    \expandafter\show\csname\tikztiming@prefix\tikztiming@trans\endcsname
+                    \expandafter\show\csname\tikztiming@pfxtr\tikztiming@trans\endcsname
                   \else
                     \message{^^J\tikztiming@trans: 
-                    \expandafter\meaning\csname\tikztiming@prefix\tikztiming@trans\endcsname^^J}%
+                    \expandafter\meaning\csname\tikztiming@pfxtr\tikztiming@trans\endcsname^^J}%
                     \message{^^J\a\b\c: 
                     \expandafter\meaning\csname\tikztiming@prefix\a\b\c\endcsname^^J}%
                   \fi
@@ -2974,18 +2999,19 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@nameaddtostr}[3]{Optional next character}
+% \begin{macro}{\tikztiming@nameaddtostr}
 % {First character}{Second character}
+% {Optional next character}
 %    \begin{macrocode}
-\newcommand*\tikztiming@nameaddtostr[3][]{%
-  \tikztiming@iftrans{{#2}{#3}{#1}}%
+\def\tikztiming@nameaddtostr#1#2#3{%
+  \tikztiming@iftrans{{#1}{#2}{#3}}%
    {%
+     \edef\@tempa{\noexpand\tikztiming@trans@{\tikztiming@num}\tikztiming@trans}%
      \expandafter\g@addto@macro
      \expandafter\tikztiming@str
-     \expandafter{\csname\tikztiming@prefix\tikztiming@trans\expandafter\endcsname
-       \expandafter{\tikztiming@num} }%
+     \expandafter{\@tempa}%
    }%
-   {\PackageWarning{tikz-timing}{No transitions '#2#3' (or '#2#3#1') defined!}}%
+   {\PackageWarning{tikz-timing}{No transitions '#1#2' (or '#1#2#3') defined!}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3039,7 +3065,7 @@
   \edef\tikztiming@tochar{#2}%
   \ifx\relax#2\relax
     %\tikztiming@output@codeflush
-    \tikztiming@nameaddtostr{#1}{}%
+    \tikztiming@nameaddtostr{}{#1}{}%
   \else
     \ifcase0%
       \ifx\tikztiming@output@bufchara\empty
@@ -3065,20 +3091,12 @@
         \xdef\tikztiming@output@bufchara{#1}%
         \xdef\tikztiming@output@bufcharb{#2}%
       \or
-        %\ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
-        %  \def\tikztiming@output@nextchar{@}%
-        %  \tikztiming@output@flush
-        %  \tikztiming@addtostr{\tikztiming@baseline}%
-        %  \edef\tikztiming@output@bufchara{@}%
-        %\else
-          \edef\tikztiming@output@nextchar{#2}%
-          \tikztiming@output@flush
-          \xdef\tikztiming@output@bufchara{#1}%
-        %\fi
+        \edef\tikztiming@output@nextchar{#2}%
+        \tikztiming@output@flush
+        \xdef\tikztiming@output@bufchara{#1}%
         \xdef\tikztiming@output@bufcharb{#2}%
       \or
-        \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
-        \global\let\tikztiming@output@bufnum\pgfmathresult
+        \tikztiming@setnum{\tikztiming@output@bufnum + \tikztiming@num}%
       \fi
     \else % empty
       \tikztiming@output@codeflush
@@ -3118,9 +3136,9 @@
   \begingroup
     \let\tikztiming@num\tikztiming@output@bufnum
     \tikztiming@nameaddtostr
-      [\tikztiming@output@nextchar]%
       {\tikztiming@output@bufchara}%
       {\tikztiming@output@bufcharb}%
+      {\tikztiming@output@nextchar}%
   \endgroup%
   \gdef\tikztiming@output@nextchar{}%
   \gdef\tikztiming@output@bufchara{}%
@@ -3133,20 +3151,19 @@
 %
 % \subsection{Macros for Character Definitions}
 %
-% \begin{macro}{\tikztiming@nameedef}[3]{Optional character to indicate 
-% character case}{Macro name to be defined (without prefix)}{Content of macro}
+% \begin{macro}{\tikztiming@nameedef}[4]{Macro name to be defined (without 
+% prefix)}{Content of macro}
 % Defines internal tikztiming macro with name |\|\meta{prefix}\meta{name (\#2)}.  
 % The macro definition (\#3) is expanded while the internal drawing definitions 
 % are active.
 %    \begin{macrocode}
-\newcommand\tikztiming@nameedef[3][A]{%
-  \def\@gtempa##1{#3}%
-  \expandafter\let\csname\tikztiming@prefix#2@general\endcsname\@gtempa
+\newcommand\tikztiming@nameedef[4]{%
+  \def\@gtempa##1{#4}%
   \begingroup
-    \tikztiming@internaldefs#1#2\relax%
-    \xdef\@gtempa##1{\@gtempa{\width}}%
+    \tikztiming@internaldefs
+    \xdef\@gtempa##1##2##3##4{\@gtempa{\width}}%
   \endgroup
-  \expandafter\let\csname\tikztiming@prefix#2\endcsname\@gtempa
+  \expandafter\let\csname\tikztiming@prefix#1#2#3\endcsname\@gtempa
   \let\@gtempa\empty
 }
 %    \end{macrocode}
@@ -3203,15 +3220,14 @@
     \expandafter\tikztiming@parser@end
   \else
     \tikztiming@iflower{#1}%
-      {\pgfmathparse{\tikztiming@num/2.0}\let\tikztiming@num\pgfmathresult}%
+      {\tikztiming@setnum{\tikztiming@num/2}}%
       {}%
     \ifx\tikztiming@back\empty\else
-      \pgfmathparse{\tikztiming@num-\tikztiming@back}%
-      \let\tikztiming@num\pgfmathresult
-      \let\tikztiming@back\empty
+      \tikztiming@setnum{\tikztiming@num - \tikztiming@back}%
+      \global\let\tikztiming@back\empty
     \fi
     \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
-    \let\tikztimingwidth\pgfmathresult
+    \global\let\tikztimingwidth\pgfmathresult
     \uppercase{\gdef\tikztiming@currentchar{#1}}%
     \@nameuse{tikztiming@beforenextcode@\tikztiming@lastchar}%
     \@nameuse{tikztiming@beforecode@\tikztiming@currentchar}%
@@ -3401,7 +3417,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{B}{%
   \pgfmathparse{\tikztiming@back+\tikztiming@num}%
-  \let\tikztiming@back\pgfmathresult
+  \global\let\tikztiming@back\pgfmathresult
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3411,7 +3427,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{b}{%
   \pgfmathparse{\tikztiming@back+\tikztiming@num/2}%
-  \let\tikztiming@back\pgfmathresult
+  \global\let\tikztiming@back\pgfmathresult
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3421,7 +3437,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{F}{%
   \pgfmathparse{\tikztiming@back-\tikztiming@num}%
-  \let\tikztiming@back\pgfmathresult
+  \global\let\tikztiming@back\pgfmathresult
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3431,7 +3447,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{f}{%
   \pgfmathparse{\tikztiming@back-\tikztiming@num/2}%
-  \let\tikztiming@back\pgfmathresult
+  \global\let\tikztiming@back\pgfmathresult
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3581,7 +3597,7 @@
 % \begin{macro}{\tikztiming@testfornum}
 %    \begin{macrocode}
 \def\tikztiming@testfornum{%
-  \let\tikztiming@num\tikztiming@wscale%
+  \global\let\tikztiming@num\tikztiming@wscale
   \let\tikztiming@numchars\empty
   \tikztiming@numfrac0\relax
   \afterassignment
@@ -3634,7 +3650,7 @@
         {%
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
-          \let\tikztiming@num\tikztiming@wscale
+          \global\let\tikztiming@num\tikztiming@wscale
           \if@tikztiming@metachar
             {\def\@tempa{\expandafter\expandafter\expandafter
              \tikztiming@parser
@@ -3663,9 +3679,8 @@
 % \begin{macro}{\tikztiming@testfornum@@@}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@@@{%
-  \xdef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
-  \pgfmathparse{\tikztiming@wscale * \tikztiming@num}%
-  \let\tikztiming@num\pgfmathresult
+  \edef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
+  \tikztiming@setnum{\tikztiming@wscale * \tikztiming@num}%
   \@ifnextchar\bgroup
     {%
       \expandafter\tikztiming@numfrac\expandafter0\expandafter
@@ -3675,7 +3690,7 @@
         \PackageWarning{tikz-timing}%
           {Can not repeat group by a non-integer factor!^^J%
            Rounding '\tikztiming@num' to '\pgfmathresult'.}{}{}{}%
-        \let\tikztiming@num\pgfmathresult
+        \global\let\tikztiming@num\pgfmathresult
       \fi
       \tikztiming@testfornum@@@@
     }%
@@ -4131,9 +4146,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@internaldefs}[1]{Character}
+% \begin{macro}{\tikztiming@internaldefs}[3]{Character}{Character}{Character}
 %    \begin{macrocode}
-\def\tikztiming@internaldefs#1#2\relax{%
+\def\tikztiming@internaldefs{%
   \let\draw\relax
   \let\path\relax
   \let\fill\relax
@@ -4145,11 +4160,9 @@
   \def\zslope{\noexpand\timingzslope}%
   \def\dslope{\noexpand\timingdslope}%
   \def\gslope{0}%
-  \edef\style{%
-    \noexpand\def\noexpand\style{timing/#1}%
-    \noexpand\def\noexpand\bgstyle{draw=none,timing/#1/background}%
-  }%
-  \expandafter\lowercase\expandafter{\style}%
+  \def\style{timing/####3}%
+  \def\bgstyle{draw=none,timing/####3/background}%
+  \def\nstyle{timing/####4}%
   \def\newdraw{\tikztiming@newdraw}%
   \def\newdrawns{\tikztiming@newdraw@nosave}%
   \def\code##1{ [/utils/exec={\unexpanded{##1}}] }%
@@ -4197,18 +4210,16 @@
 %
 % \begin{macro}{\tikztiminguse}[1]{Character(s)}
 %    \begin{macrocode}
-\def\tikztiminguse#1{%
-  \@ifundefined{\tikztiming@prefix#1@general}%
-    {\PackageWarning{Can not use transition macro for '#1'.}{}{}{}}%
-    {\@nameuse{\tikztiming@prefix#1@general}}%
+\def\tikztiminguse#1#2{%
+  \@nameuse{\tikztiming@prefix#1}{#2}{##2}{##3}{##4}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingdef}[1]{One or two characters}
+% \begin{macro}{\tikztimingdef}[1]{One till three characters}
 %    \begin{macrocode}
 \def\tikztimingdef#1{%
-  \tikztimingdef@#1\relax%
+  \tikztimingdef@#1\empty\empty\relax
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4216,11 +4227,11 @@
 % \begin{macro}{\tikztimingdef@}[3]{First character}{Second character or 
 % empty}{Definition code}
 %    \begin{macrocode}
-\def\tikztimingdef@#1#2\relax#3{%
-  \ifx\relax#2\relax
-    \tikztiming@nameedef[#1]{#1}{#3}%
+\def\tikztimingdef@#1#2#3\relax#4{%
+  \ifx\empty#2\empty
+    \tikztiming@nameedef{}{#1}{}{#4}%
   \else
-    \tikztiming@nameedef[#2]{#1#2}{#3}%
+    \tikztiming@nameedef{#1}{#2}{#3}{#4}%
   \fi
 }
 %    \end{macrocode}
@@ -4237,21 +4248,15 @@
     %\message{^^J Copy macro '#2' to '#1' skipped.^^J}%
   \else
     \endgroup
-    \@ifundefined{\tikztiming@prefix#2@general}%
-      {\ifnum\tikztiming@debug>0\relax\message{^^J Copy macro '#2' to '#1' 
-      failed.^^J}\fi}%
-      {\ifnum\tikztiming@debug>0\relax\message{^^J Copy macro '#2' to 
-      '#1'.^^J}\fi%
-      % The following code is used to unsure that the used macroname is resolved 
-      % before it is used in the definition. Otherwise some macros in '#2' would 
-      % not be expanded and cause problems later.
-        \def\tikztimingcpy@a{\global\tikztimingdef{#1}}%
-        \expandafter\tikztimingcpy@a\expandafter{%
-        \csname\tikztiming@prefix#2@general\endcsname{##1}}%
+    \@ifundefined{\tikztiming@pfxtr#2\empty\empty\empty}%
+      {\ifnum\tikztiming@debug>0\relax
+        \message{^^J Copy macro '#2' to '#1' failed.^^J}\fi}%
+      {\ifnum\tikztiming@debug>0\relax
+        \message{^^J Copy macro '#2' to '#1'.^^J}\fi
         \expandafter\let
-        \csname\tikztiming@prefix#1@general\expandafter\endcsname
-        \csname\tikztiming@prefix#2@general\endcsname
-      }
+        \csname\tikztiming@pfxtr#1\empty\empty\empty\expandafter\endcsname
+        \csname\tikztiming@pfxtr#2\empty\empty\empty\endcsname
+      }%
   \fi
 }
 %    \end{macrocode}
@@ -4262,7 +4267,6 @@
 %    \begin{macrocode}
 \def\tikztiminglet#1#2{%
   \tikztiming@namelet{#1}{#2}%
-  \tikztiming@namelet{#1@general}{#2@general}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4313,44 +4317,15 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\@namedef{\tikztiming@prefix  @start}#1{ coordinate (timing/start)}%
-\@namedef{\tikztiming@prefix @@start}#1{ coordinate (timing/start)}%
+\@namedef{\tikztiming@prefix @@}#1#2#3#4{ coordinate (timing/start)}%
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztimingchar@}[3]{Character}{Start position}{Character 
 % drawing code}
 %    \begin{macrocode}
 \def\tikztimingchar@#1#2#3{%
-  \tikztiming@nameedef[#1]{#1@start}{#2 coordinate (timing/start) }%
-  \tikztiming@nameedef[#1]{#1}{#2 coordinate (timing/start) #3}%
-  \tikztimingdef{#1#1}{#3}%
-  \tikztiminglet{@#1}{#1}
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingalias}[2]{Original character}{New character}
-%    \begin{macrocode}
-\def\tikztimingalias#1#2{%
-  \uppercase{\tikztimingalias@{#1}{#2}}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingalias@}[2]{New character}{Original character}
-%    \begin{macrocode}
-\def\tikztimingalias@#1#2{%
-  \tikztiming@namelet{#1}{#2}%
-  \tikztiming@namelet{#1@start}{#2@start}%
-  \lowercase{%
-  \tikztiming@namelet{#1}{#2}%
-  \tikztiming@namelet{#1@start}{#2@start}%
-  }%
-  \tikztiminglet{#1#1}{#2#2}%
-  \@for\@tempa:=\tikztiming@chars\do{%
-    \expandafter\tikztiminglet@@
-    \expandafter{\@tempa}{#1}{#2}%
-  }%
+  \tikztiming@nameedef{@}{#1}{}{#2 coordinate (timing/start) #3}%
+  \tikztimingdef{{#1}{#1}}{#3}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4360,7 +4335,6 @@
 \def\tikztimingecopy#1#2{%
   \@namedef{tikztiming@alias@#1}{#2}%
   \tikztiming@addchar{#1}%
-  \tikztiming@nameedef[#1]{#1@start}{\tikztiminguse{#2@start}{##1}}%
   \expandafter\let
   \csname tikztiming@triple@#1\expandafter\endcsname
   \csname tikztiming@triple@#2\endcsname
@@ -4370,26 +4344,6 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{macro}{\tikztiminglet@@}[3]{Character from list}{New 
-% character}{Original character}
-%    \begin{macrocode}
-\def\tikztiminglet@@#1#2#3{%
-  \tikztiminglet{#1#2}{#1#3}%
-  \tikztiminglet{#2#1}{#3#1}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-%
-% \begin{macro}{\tikztimingdef@@}[3]{Character from list}{New 
-% character}{Original character}
-%    \begin{macrocode}
-\def\tikztimingdef@@#1#2#3{%
-}
-%    \end{macrocode}
-% \end{macro}
-%
 %
 % \subsection{Save and Restore Macros}
 %
@@ -4457,14 +4411,9 @@
 %
 % \subsection{Definition of Timing Characters}
 %
-% Pre-Define Timing Characters to set up list of timing characters.
+% Pre-Define list of Timing Characters.
 %    \begin{macrocode}
-\tikztimingchar{H}{}{}%
-\tikztimingchar{L}{}{}%
-\tikztimingchar{Z}{}{}%
-\tikztimingchar{D}{}{}%
-\tikztimingchar{M}{}{}%
-\tikztimingchar{T}{}{}%
+\def\tikztiming@chars{H,L,Z,D,M,T}%
 %    \end{macrocode}
 %
 % \subsubsection{Character `S'}
@@ -4473,7 +4422,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{S}{%
   \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
-  \let\tikztimingwidth\pgfmathresult
+  \global\let\tikztimingwidth\pgfmathresult
   \tikztiming@output@Eaddcode{%
     ++(\tikztiming@num,0)
   }%
@@ -4482,7 +4431,7 @@
 
 \tikztiming@defcode{s}{%
   \pgfmathparse{\tikztimingwidth + \tikztiming@num/2}%
-  \let\tikztimingwidth\pgfmathresult
+  \global\let\tikztimingwidth\pgfmathresult
   \tikztiming@output@Eaddcode{%
     ++(\tikztiming@num/2,0)
   }%
@@ -4582,29 +4531,6 @@
 \def\tikztiming@triple@D@edge@{}%
 \def\tikztiming@nocombine@D@edge@{}%
 \def\tikztiming@alias@D@edge@{D}%
-
-\tikztiming@nameedef[D]{D@edge@@start}{
-     ++(0, \height/2)
-     coordinate (timing/start)
-  \newdraw [\bgstyle]
-   -- +(0, \height/2)
-   -- +(\dslope/2,0)
-   -- +(0,-\height/2)
-   -- +(0,0)
-  \newdraw [\style]
-      +(0, \height/2)
-   -- +(\dslope/2,0)
-   -- +(0,-\height/2)
-  \@iftikztiming@oldnodecenter{%
-     ++(0,-\height/2)
-  }{%
-     ++(\dslope/2,0)
-  }%
-}
-
-\let\@tempa\tikztiming@chars
-\tikztimingecopy{U@edge@}{D@edge@}
-\let\tikztiming@chars\@tempa
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@trans@D@fill}[2]{Original width}{Width to subtract}
@@ -4806,87 +4732,91 @@
   \tikztiming@dchard@{#1}%
 }
 
-\tikztiminglet{DDD}{DD@}
+\tikztimingcpy{DDD}{DD@}
 \tikztimingcpy{UUU}{DDD}
 
-\tikztiming@nameedef[D]{D@edge@D@edge@}{%
+\tikztimingdef{{D@edge@}{D@edge@}}{%
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
   \tikztiming@chard{#1 - \dslope/2}%
 }%
 
-\tikztiming@nameedef[D]{@D@edge@@}{%
+\tikztimingdef{@{D@edge@}}{%
   \tikztiming@@chard@{#1}%
 }%
 
-\tikztiming@nameedef[D]{@D@edge@D}{%
+\tikztimingdef{@{D@edge@}@}{%
+  \tikztiming@@chard@{#1}%
+}%
+
+\tikztimingdef{@{D@edge@}D}{%
   \tikztiming@@chard{#1}%
 }
 
-\tikztiming@nameedef[D]{DD@edge@}{%
+\tikztimingdef{D{D@edge@}}{%
   \tikztiming@dchardu{#1}%
 }
 
-\tikztiming@nameedef[U]{UU@edge@}{%
+\tikztimingdef{U{U@edge@}}{%
   \tikztiming@dchardu{#1}%
 }
 
-\tikztiming@nameedef[D]{UD@edge@}{%
+\tikztimingdef{U{D@edge@}}{%
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
-\tikztiming@nameedef[D]{UD@edge@@}{%
+\tikztimingdef{U{D@edge@}@}{%
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
-\tikztiming@nameedef[U]{DU@edge@}{%
+\tikztimingdef{D{U@edge@}}{%
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
-\tikztiming@nameedef[U]{DU@edge@@}{%
+\tikztimingdef{D{U@edge@}@}{%
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
-\tikztiming@nameedef[D]{DD@edge@@}{%
+\tikztimingdef{D{D@edge@}@}{%
   \tikztiming@dchard@{#1}%
 }%
 
-\tikztiming@nameedef[U]{UU@edge@@}{%
+\tikztimingdef{U{U@edge@}@}{%
   \tikztiming@dchard@{#1}%
 }%
 
-\tikztiming@nameedef[D]{D@edge@D@edge@@}{%
+\tikztimingdef{{D@edge@}{D@edge@}@}{%
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
   \tikztiming@chard@{#1 - \dslope/2}%
 }%
 
-\tikztiming@nameedef[D]{@D@edge@}{%
+\tikztimingdef{@{D@edge@}}{%
   \tikztiming@@chard{#1}%
 }%
 
-\tikztiming@nameedef[D]{D@edge@D}{%
+\tikztimingdef{{D@edge@}D}{%
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
   \tikztiming@chard{#1 - \dslope/2}%
 }%
 
-\tikztiming@nameedef[D]{D@edge@D@}{%
+\tikztimingdef{{D@edge@}D@}{%
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
@@ -4896,9 +4826,9 @@
 \tikztimingdef{ZDZ}{
   \tikztiming@chard{#1}
 }
-\tikztiminglet{ZDX}{ZDZ}
-\tikztiminglet{XDX}{ZDZ}
-\tikztiminglet{XDZ}{ZDZ}
+\tikztimingcpy{ZDX}{ZDZ}
+\tikztimingcpy{XDX}{ZDZ}
+\tikztimingcpy{XDZ}{ZDZ}
 
 \tikztimingdef{ZDD}{
   \tikztiming@chard@{#1}
@@ -4916,10 +4846,6 @@
 }
 
 \tikztimingdef{@DD}{%
-  \tikztiming@@chard@{#1}%
-}
-
-\tikztimingdef{@D}{%
   \tikztiming@@chard@{#1}%
 }
 
@@ -4963,14 +4889,18 @@
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
+\tikztimingdef{@D}{%
+  \tikztiming@@chard@{#1}%
+}
+
 \tikztimingdef{@D@}{%
   \tikztiming@@chard@{#1}%
 }
 
-\tikztiminglet{HD@edge@@}{HD@}
-\tikztiminglet{LD@edge@@}{LD@}
-\tikztiminglet{ZD@edge@@}{ZD@}
-\tikztiminglet{TD@edge@@}{TD@}
+\tikztimingcpy{H{D@edge@}@}{HD@}
+\tikztimingcpy{L{D@edge@}@}{LD@}
+\tikztimingcpy{Z{D@edge@}@}{ZD@}
+\tikztimingcpy{T{D@edge@}@}{TD@}
 
 \tikztimingdef{@DZ}{%
   \tikztiming@@chard{#1}%
@@ -5153,6 +5083,10 @@
 %    \begin{macrocode}
 \tikztimingecopy{U}{D}
 
+\def\tikztiming@triple@U@edge@{}%
+\def\tikztiming@nocombine@U@edge@{}%
+\def\tikztiming@alias@U@edge@{D@edge@}%
+
 \tikztimingcpy{UU@}{DD@}%
 
 \tikztimingdef{UDU}{%
@@ -5190,36 +5124,36 @@
   \newdraw
 }
 
-\tikztiminglet{D@edge@DD}{UDD}
-\tikztiminglet{U@edge@UU}{D@edge@DD}
+\tikztimingcpy{{D@edge@}DD}{UDD}
+\tikztimingcpy{{U@edge@}UU}{{D@edge@}DD}
 
-\tikztiming@nameedef[D]{HD@edge@}{
+\tikztimingdef{H{D@edge@}}{
   -- ++(\dslope/2, -\height/2)
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
-\tikztiming@nameedef[D]{LD@edge@}{
+\tikztimingdef{L{D@edge@}}{
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
-\tikztiming@nameedef[D]{ZD@edge@}{
+\tikztimingdef{Z{D@edge@}}{
   \tikztiming@chard{#1}%
 }
 
-\tikztiming@nameedef[D]{TD@edge@}{
+\tikztimingdef{TD@edge@}{
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
-\tikztiming@nameedef[D]{D@edge@DU}{
+\tikztimingdef{{D@edge@}DU}{
   \@iftikztiming@oldnodecenter{%
      ++(\dslope/2.,\height/2.)
   }{}%
   \tikztiming@chard{#1 - \dslope/2}
 }
-\tikztiminglet{U@edge@UD}{D@edge@DU}
+\tikztimingcpy{{U@edge@}UD}{{D@edge@}DU}
 
 \tikztimingdef{DDU}{%
   \newdraw [\bgstyle]
@@ -5404,7 +5338,7 @@
   -- ++($ (#1,0) - (\slope,0) $)%
      ++($ -1*(#1,-\height * \value{tikztimingtrans}) $)%
   -- ++($  1*(#1,0) $)%
-     ++(0,-\height)%
+     ++(0,-1*\value{tikztimingtrans}*.5*\height)%
 }%
 
 \tikztimingdef{LEL}{%
@@ -5448,12 +5382,32 @@
 }%
 
 \tikztimingdef{HET}{
-  \tikztiminguse{HEL}{#1}
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(#1,0)
+  {[\nstyle]
+  -- +($ (#1,-\height) + (\slope,0) $)%
+  }
+  -- +(\slope,-\height)
+  -- +(0,0)
+  {[\nstyle]
+    ++($ (#1,-\height) + (\slope,0) $)%
+  }
+  \newdraw
   \code{\setcounter{tikztimingtrans}{-1}}%
 }
 
 \tikztimingdef{LET}{
-  \tikztiminguse{LEH}{#1}
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\slope,\height)%
+  {[\nstyle]
+  -- +($ (#1,\height) + (\slope,0) $)%
+  }
+  -- +(#1,0)%
+  -- +(0,0)
+  {[\nstyle]
+    ++($ (#1,\height) + (\slope,0) $)%
+  }
+  \newdraw
   \code{\setcounter{tikztimingtrans}{1}}%
 }
 
@@ -5546,10 +5500,14 @@
 \tikztimingdef{TET}{%
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope, -\height * \value{tikztimingtrans})%
+   {[\nstyle]
    -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
+   }
    -- +(#1,0)%
    -- +(0,0)%
+   {[\nstyle]
      ++($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
+   }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }%
@@ -5643,12 +5601,12 @@
 \tikztimingdef{ED@}{%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
-\tikztiminglet{ED@edge@@}{ED@}
+\tikztimingcpy{E{D@edge@}@}{ED@}
 
 \tikztimingdef{ED}{%
   \tikztiming@chard{#1 - \dslope/2}%
 }
-\tikztiminglet{ED@edge@}{ED}
+\tikztimingcpy{E{D@edge@}}{ED}
 
 
 \tikztimingdef{DE@}{%
@@ -5682,13 +5640,17 @@
 \tikztimingdef{EET}{% OK
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope * \value{tikztimingtrans}, \height)%
+   {[\nstyle]
    -- +($ (#1,\height) + (\slope * \value{tikztimingtrans}, 0) $)%
+   }
    -- +(#1,0)%
    -- +(0,0)%
+   {[\nstyle]
    ++($ (#1,0) +
       (\slope/2 + \value{tikztimingtrans} * \slope/2,
         \height/2 + \value{tikztimingtrans} * \height/2)
       $)%
+   }
   \newdraw
 }%
 
@@ -5767,11 +5729,15 @@
 \tikztimingdef{ZET}{%
   \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
+  {[\nstyle]
   -- +($ (#1, \height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)
   -- +($ (#1,-\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)
+  }
   -- +(\zslope, -\height/2)
   -- +(0,0)
+  {[\nstyle]
     ++($ (#1,-\height/2 * \value{tikztimingtrans}) + (\slope, 0) $)
+  }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }
@@ -5782,13 +5748,17 @@
      ++(\dslope/2.,\height/2.)
   }{}%
   -- +(\dslope/2, \height/2)
+  {[\nstyle]
   -- +($ (#1, \height/2) + (-\dslope/2 + \slope/2 - \slope/2 * 
   \value{tikztimingtrans}, 0) $)
   -- +($ (#1,-\height/2) + (-\dslope/2 + \slope/2 + \slope/2 * 
   \value{tikztimingtrans}, 0) $)
+  }
   -- +(\dslope/2, -\height/2)
   -- +(0,0)
+  {[\nstyle]
     ++($ (#1,-\height/2 * \value{tikztimingtrans}) + (-\dslope/2 + \slope, 0) $)
+  }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }
@@ -5934,13 +5904,31 @@
 }
 
 \tikztimingdef{@ET}{%
-  \tikztiminguse{@EH}{#1}%
+  \newdraw [\bgstyle]
+  -- +(0,\height)
+  {[\nstyle]
+  -- +($ (#1,\height) + (\slope,0) $)
+  }
+  -- +(#1,0)
+  -- +(0,0)
+  \newdraw [\style]
+      +(0,\height)
+  {[\nstyle]
+   -- +($ (#1,\height) + (\slope,0) $)
+  }
+   -- +(#1,0)
+   -- +(0,0)
+  {[\nstyle]
+     ++($ (#1,\height) + (\slope,0) $)
+  }
+  \newdraw
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }
 
 \tikztimingdef{ET}{%
-  % No scope because below slope belongs to 'E' not 'T'.
+  {[\style]
   -- ++($ (#1,0) - (\slope,0) $)%
+  }
 }
 
 \tikztimingdef{@EL}{%
@@ -6580,9 +6568,11 @@
 % \begin{macro}{\tikztiming@tryanchor@}[2]{From}{To}
 %    \begin{macrocode}
 \def\tikztiming@tryanchor#1#2{%
-         \message{^^J Try Anchor: '#1' '#2' ^^J }%
-         \let\tikztiming@next\relax
-         \def\tikztiming@next{\message{^^J TERM ^^J}}%
+  \let\tikztiming@next\relax
+  \ifnum\tikztiming@debug>2
+    \message{^^J Try Anchor: '#1' '#2' ^^J }%
+    \def\tikztiming@next{\message{^^J TERM ^^J}}%
+  \fi
   \ifx\relax#1\empty\else
   \ifx\relax#2\empty\else
     \def\tikztiming@next{%
@@ -6595,7 +6585,9 @@
           \expandafter\tikztiming@tryanchor@\@tempa{#1}{#2}%
         }%
         {\let\tikztiming@tryanchor\@gobbletwo
-         %message{^^J Anchor: '#1' '#2' ^^J }%
+         \ifnum\tikztiming@debug>2
+           \message{^^J Anchor: '#1' '#2' ^^J }%
+         \fi
          \@nameuse{tikztiming@anchors@#1@#2}%
         }%
     }%
@@ -6630,7 +6622,9 @@
     \let\fromchar\tikztiming@node@fromchar
     \let\tochar\tikztiming@node@tochar
     %
-    \message{^^J Node: \fromchar \tochar ^^J}%
+    \ifnum\tikztiming@debug>2
+      \message{^^J Node: \fromchar \tochar ^^J}%
+    \fi
     %
     \edef\@tempa{{timing/\tochar}}%
     \expandafter\lowercase\expandafter
