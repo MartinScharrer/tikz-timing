@@ -2414,10 +2414,12 @@
   \pgfmathparse{#1}%
   \let\tikztiming@wscale\pgfmathresult
 }
-\def\tikztiming@num{0.0}%
+\def\tikztiming@num{1.0}%
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
+\setlength{\tikztiming@xunit}{1.6ex}%
+\setlength{\tikztiming@yunit}{1.6ex}%
 
 \newcount\tikztiming@debug
 
@@ -2526,8 +2528,9 @@
   l/.style={},
   e/.style={},
   e/background/.style={draw=none},
-  m/decoration/.style={decorate,decoration={zigzag,segment 
-  length=.25\tikztiming@xunit,amplitude=.225\tikztiming@yunit}},
+  m/decoration/.style={decorate,%
+    decoration={zigzag,segment length=.25\tikztiming@xunit,
+    amplitude=.225\tikztiming@yunit}},
   m/base/.style={black!40!brown},
   m/.style={timing/m/base,timing/m/decoration},
   g/.style={decorate=false},
@@ -4336,7 +4339,6 @@
 \def\tikztimingecopy#1#2{%
   \@namedef{tikztiming@alias@#1}{#2}%
   \tikztiming@addchar{#1}%
-  \tikztimingcpy{@#1}{@#2}%
   \expandafter\let
   \csname tikztiming@triple@#1\expandafter\endcsname
   \csname tikztiming@triple@#2\endcsname
@@ -4533,29 +4535,6 @@
 \def\tikztiming@triple@D@edge@{}%
 \def\tikztiming@nocombine@D@edge@{}%
 \def\tikztiming@alias@D@edge@{D}%
-
-\tikztimingdef{@{D@edge@}}{
-     ++(0, \height/2)
-     coordinate (timing/start)
-  \newdraw [\bgstyle]
-   -- +(0, \height/2)
-   -- +(\dslope/2,0)
-   -- +(0,-\height/2)
-   -- +(0,0)
-  \newdraw [\style]
-      +(0, \height/2)
-   -- +(\dslope/2,0)
-   -- +(0,-\height/2)
-  \@iftikztiming@oldnodecenter{%
-     ++(0,-\height/2)
-  }{%
-     ++(\dslope/2,0)
-  }%
-}
-
-\let\@tempa\tikztiming@chars
-\tikztimingecopy{U@edge@}{D@edge@}
-\let\tikztiming@chars\@tempa
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@trans@D@fill}[2]{Original width}{Width to subtract}
@@ -4767,6 +4746,10 @@
   \tikztiming@chard{#1 - \dslope/2}%
 }%
 
+\tikztimingdef{@{D@edge@}}{%
+  \tikztiming@@chard@{#1}%
+}%
+
 \tikztimingdef{@{D@edge@}@}{%
   \tikztiming@@chard@{#1}%
 }%
@@ -4870,10 +4853,6 @@
   \tikztiming@@chard@{#1}%
 }
 
-\tikztimingdef{@D}{%
-  \tikztiming@@chard@{#1}%
-}
-
 \tikztimingdef{ZD@}{%
   \tikztiming@chard@{#1}%
 }
@@ -4912,6 +4891,10 @@
 \tikztimingdef{LD@}{%
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard@{#1 - \dslope/2}%
+}
+
+\tikztimingdef{@D}{%
+  \tikztiming@@chard@{#1}%
 }
 
 \tikztimingdef{@D@}{%
@@ -5103,6 +5086,10 @@
 % \subsubsection{Character `U'}
 %    \begin{macrocode}
 \tikztimingecopy{U}{D}
+
+\def\tikztiming@triple@U@edge@{}%
+\def\tikztiming@nocombine@U@edge@{}%
+\def\tikztiming@alias@U@edge@{D@edge@}%
 
 \tikztimingcpy{UU@}{DD@}%
 
