@@ -2414,7 +2414,7 @@
   \pgfmathparse{#1}%
   \let\tikztiming@wscale\pgfmathresult
 }
-\def\tikztiming@num{1.0}%
+\def\tikztiming@num{0.0}%
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
@@ -2436,12 +2436,6 @@
 
 \def\timingwidth{1}%
 \def\timingheight{1}%
-
-{%
-\@makeother\#
-\gdef\tikztiming@startchar{@}
-\gdef\tikztiming@endchar{@}
-}
 %    \end{macrocode}
 
 % \subsection{TikZ Style Settings}
@@ -2633,7 +2627,7 @@
 % \begin{macro}{\tikztiming@init}
 %    \begin{macrocode}
 \def\tikztiming@init{%
-    \let\tikztiming@lastchar\tikztiming@startchar
+    \def\tikztiming@lastchar{@}%
     \let\tikztiming@currentchar\empty
     \let\tikztiming@settings\empty
     \let\tikztiming@fromchar\empty
@@ -4342,7 +4336,7 @@
 \def\tikztimingecopy#1#2{%
   \@namedef{tikztiming@alias@#1}{#2}%
   \tikztiming@addchar{#1}%
-  \tikztimingcpy{{}#1@start}{{}#2@start}%
+  \tikztimingcpy{@#1}{@#2}%
   \expandafter\let
   \csname tikztiming@triple@#1\expandafter\endcsname
   \csname tikztiming@triple@#2\endcsname
@@ -4540,7 +4534,7 @@
 \def\tikztiming@nocombine@D@edge@{}%
 \def\tikztiming@alias@D@edge@{D}%
 
-\tikztimingdef{{D@edge@@start}}{
+\tikztimingdef{@{D@edge@}}{
      ++(0, \height/2)
      coordinate (timing/start)
   \newdraw [\bgstyle]
@@ -6591,9 +6585,11 @@
 % \begin{macro}{\tikztiming@tryanchor@}[2]{From}{To}
 %    \begin{macrocode}
 \def\tikztiming@tryanchor#1#2{%
-         \message{^^J Try Anchor: '#1' '#2' ^^J }%
-         \let\tikztiming@next\relax
-         \def\tikztiming@next{\message{^^J TERM ^^J}}%
+  \let\tikztiming@next\relax
+  \ifnum\tikztiming@debug>2
+    \message{^^J Try Anchor: '#1' '#2' ^^J }%
+    \def\tikztiming@next{\message{^^J TERM ^^J}}%
+  \fi
   \ifx\relax#1\empty\else
   \ifx\relax#2\empty\else
     \def\tikztiming@next{%
@@ -6606,7 +6602,9 @@
           \expandafter\tikztiming@tryanchor@\@tempa{#1}{#2}%
         }%
         {\let\tikztiming@tryanchor\@gobbletwo
-         %message{^^J Anchor: '#1' '#2' ^^J }%
+         \ifnum\tikztiming@debug>2
+           \message{^^J Anchor: '#1' '#2' ^^J }%
+         \fi
          \@nameuse{tikztiming@anchors@#1@#2}%
         }%
     }%
@@ -6641,7 +6639,9 @@
     \let\fromchar\tikztiming@node@fromchar
     \let\tochar\tikztiming@node@tochar
     %
-    \message{^^J Node: \fromchar \tochar ^^J}%
+    \ifnum\tikztiming@debug>2
+      \message{^^J Node: \fromchar \tochar ^^J}%
+    \fi
     %
     \edef\@tempa{{timing/\tochar}}%
     \expandafter\lowercase\expandafter
