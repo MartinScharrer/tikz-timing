@@ -2421,6 +2421,13 @@
 \setlength{\tikztiming@xunit}{1.6ex}%
 \setlength{\tikztiming@yunit}{1.6ex}%
 
+\def\tikztiming@setnum#1{%
+  \pgfmathparse{#1}%
+  \global\let\tikztiming@num\pgfmathresult
+  \message{^^J Num:   \tikztiming@num }%
+  \message{^^J Width: \tikztimingwidth ^^J}%
+}
+
 \newcount\tikztiming@debug
 
 \def\tikztiming@xsep{0pt}
@@ -3085,20 +3092,12 @@
         \xdef\tikztiming@output@bufchara{#1}%
         \xdef\tikztiming@output@bufcharb{#2}%
       \or
-        %\ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
-        %  \def\tikztiming@output@nextchar{@}%
-        %  \tikztiming@output@flush
-        %  \tikztiming@addtostr{\tikztiming@baseline}%
-        %  \edef\tikztiming@output@bufchara{@}%
-        %\else
-          \edef\tikztiming@output@nextchar{#2}%
-          \tikztiming@output@flush
-          \xdef\tikztiming@output@bufchara{#1}%
-        %\fi
+        \edef\tikztiming@output@nextchar{#2}%
+        \tikztiming@output@flush
+        \xdef\tikztiming@output@bufchara{#1}%
         \xdef\tikztiming@output@bufcharb{#2}%
       \or
-        \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
-        \global\let\tikztiming@output@bufnum\pgfmathresult
+        \tikztiming@setnum{\tikztiming@output@bufnum + \tikztiming@num}%
       \fi
     \else % empty
       \tikztiming@output@codeflush
@@ -3222,15 +3221,14 @@
     \expandafter\tikztiming@parser@end
   \else
     \tikztiming@iflower{#1}%
-      {\pgfmathparse{\tikztiming@num/2.0}\let\tikztiming@num\pgfmathresult}%
+      {\tikztiming@setnum{\tikztiming@num/2}}%
       {}%
     \ifx\tikztiming@back\empty\else
-      \pgfmathparse{\tikztiming@num-\tikztiming@back}%
-      \let\tikztiming@num\pgfmathresult
-      \let\tikztiming@back\empty
+      \tikztiming@setnum{\tikztiming@num - \tikztiming@back}%
+      \global\let\tikztiming@back\empty
     \fi
     \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
-    \let\tikztimingwidth\pgfmathresult
+    \global\let\tikztimingwidth\pgfmathresult
     \uppercase{\gdef\tikztiming@currentchar{#1}}%
     \@nameuse{tikztiming@beforenextcode@\tikztiming@lastchar}%
     \@nameuse{tikztiming@beforecode@\tikztiming@currentchar}%
@@ -3420,7 +3418,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{B}{%
   \pgfmathparse{\tikztiming@back+\tikztiming@num}%
-  \let\tikztiming@back\pgfmathresult
+  \global\let\tikztiming@back\pgfmathresult
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3430,7 +3428,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{b}{%
   \pgfmathparse{\tikztiming@back+\tikztiming@num/2}%
-  \let\tikztiming@back\pgfmathresult
+  \global\let\tikztiming@back\pgfmathresult
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3440,7 +3438,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{F}{%
   \pgfmathparse{\tikztiming@back-\tikztiming@num}%
-  \let\tikztiming@back\pgfmathresult
+  \global\let\tikztiming@back\pgfmathresult
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3450,7 +3448,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{f}{%
   \pgfmathparse{\tikztiming@back-\tikztiming@num/2}%
-  \let\tikztiming@back\pgfmathresult
+  \global\let\tikztiming@back\pgfmathresult
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3600,7 +3598,7 @@
 % \begin{macro}{\tikztiming@testfornum}
 %    \begin{macrocode}
 \def\tikztiming@testfornum{%
-  \let\tikztiming@num\tikztiming@wscale%
+  \global\let\tikztiming@num\tikztiming@wscale
   \let\tikztiming@numchars\empty
   \tikztiming@numfrac0\relax
   \afterassignment
@@ -3653,7 +3651,7 @@
         {%
           \tikztiming@numint1\relax
           \tikztiming@numfrac0\relax
-          \let\tikztiming@num\tikztiming@wscale
+          \global\let\tikztiming@num\tikztiming@wscale
           \if@tikztiming@metachar
             {\def\@tempa{\expandafter\expandafter\expandafter
              \tikztiming@parser
@@ -3682,9 +3680,8 @@
 % \begin{macro}{\tikztiming@testfornum@@@}
 %    \begin{macrocode}
 \def\tikztiming@testfornum@@@{%
-  \xdef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
-  \pgfmathparse{\tikztiming@wscale * \tikztiming@num}%
-  \let\tikztiming@num\pgfmathresult
+  \edef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
+  \tikztiming@setnum{\tikztiming@wscale * \tikztiming@num}%
   \@ifnextchar\bgroup
     {%
       \expandafter\tikztiming@numfrac\expandafter0\expandafter
@@ -3694,7 +3691,7 @@
         \PackageWarning{tikz-timing}%
           {Can not repeat group by a non-integer factor!^^J%
            Rounding '\tikztiming@num' to '\pgfmathresult'.}{}{}{}%
-        \let\tikztiming@num\pgfmathresult
+        \global\let\tikztiming@num\pgfmathresult
       \fi
       \tikztiming@testfornum@@@@
     }%
@@ -4426,7 +4423,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{S}{%
   \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
-  \let\tikztimingwidth\pgfmathresult
+  \global\let\tikztimingwidth\pgfmathresult
   \tikztiming@output@Eaddcode{%
     ++(\tikztiming@num,0)
   }%
@@ -4435,7 +4432,7 @@
 
 \tikztiming@defcode{s}{%
   \pgfmathparse{\tikztimingwidth + \tikztiming@num/2}%
-  \let\tikztimingwidth\pgfmathresult
+  \global\let\tikztimingwidth\pgfmathresult
   \tikztiming@output@Eaddcode{%
     ++(\tikztiming@num/2,0)
   }%
