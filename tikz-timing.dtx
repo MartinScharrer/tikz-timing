@@ -2785,11 +2785,11 @@
   \@ifundefined{tikztiming@initcode@\tikztiming@lastchar}%
     {}%
     {\@nameuse{tikztiming@initcode@\tikztiming@lastchar}}%
-  \ifx\tikztiming@lastchar\empty\else
-  \@ifundefined{\tikztiming@prefix\tikztiming@lastchar @start}%
-    {\PackageWarning{tikz-timing}{Start value for timing character '\tikztiming@lastchar' 
-    is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@nameaddtostr{}{\tikztiming@lastchar @start}{}}%
+  \if @\tikztiming@lastchar\relax\else
+  \@ifundefined{\tikztiming@prefix @\tikztiming@lastchar}%
+    {\PackageWarning{tikz-timing}{Start value for timing character 
+    '\tikztiming@lastchar' is not defined and will be ignored!}{}{}{}}%
+    {\tikztiming@nameaddtostr{@}{\tikztiming@lastchar}{}}%
   \fi
   \tikztiming@parser
 }
@@ -2918,7 +2918,9 @@
 \def\tikztiming@iftrans@#1#2#3#4\relax{%
   \begingroup
   \xdef\tikztiming@trans{#1#2}%
-  \ifx\tikztiming@trans\empty\else
+  \ifx\tikztiming@trans\empty
+    \gdef\tikztiming@trans{{@}{}{@}}%
+  \else
     \global\let\tikztiming@trans\relax
     % Use triple macros before double macros
     \@ifundefined{tikztiming@triple@#2}%
@@ -4322,8 +4324,7 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\@namedef{\tikztiming@prefix  @start}#1#2#3#4{ coordinate (timing/start)}%
-\@namedef{\tikztiming@prefix @@start}#1#2#3#4{ coordinate (timing/start)}%
+\@namedef{\tikztiming@prefix @@}#1#2#3#4{ coordinate (timing/start)}%
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztimingchar@}[3]{Character}{Start position}{Character 
