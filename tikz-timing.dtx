@@ -2420,6 +2420,7 @@
 \newlength\tikztiming@yunit
 \setlength{\tikztiming@xunit}{1.6ex}%
 \setlength{\tikztiming@yunit}{1.6ex}%
+\let\tikztiming@initstr\empty
 
 \def\tikztiming@setnum#1{%
   \pgfmathparse{#1}%
@@ -2650,7 +2651,8 @@
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \setcounter{tikztimingtranspos}{0}%
-    \def\tikztiming@str{%
+    \let\tikztiming@str\tikztiming@initstr
+    \tikztiming@addtostr{%
       \useasboundingbox (0,0) rectangle (\tikztimingwidth,\timingheight);
       \draw (0,0)
         coordinate (timing/start base)
