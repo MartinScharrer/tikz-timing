@@ -6511,55 +6511,11 @@
 \def\tikztiming@anchorpoint#1#2#3{%
   \pgf@xa=#2\relax
   \pgf@ya=#3\relax
-  \edef#1{%
+  \expandafter\edef\csname#1\endcsname{%
     \pgf@x=\the\pgf@xa\relax
     \pgf@y=\the\pgf@ya\relax
   }%
-  \addtosavedmacro{#1}%
-}
-
-\def\tikztiming@noanchor{%
-  \PackageError{tikz-timing}{No such anchor defined for this transition 
-  node!}{}{}%
-  \pgfpointorigin
-}
-
-\def\tikztiming@anchorpoints{%
-  \pgf@xa=0pt\relax
-  \pgf@ya=0pt\relax
-  \unexpanded{%
-  \def\high{%
-    \PackageError{tikz-timing}{No anchor 'high' defined for this transition 
-    node!}{}{}%
-    \pgfpointorigin
-  }%
-  \def\mid{%
-    \PackageError{tikz-timing}{No anchor 'mid' defined for this transition 
-    node!}{}{}%
-    \pgfpointorigin
-  }%
-  \def\low{%
-    \PackageError{tikz-timing}{No anchor 'low' defined for this transition 
-    node!}{}{}%
-    \pgfpointorigin
-  }%
-  \def\lowtwo{%
-    \PackageError{tikz-timing}{No anchor 'low2' defined for this transition 
-    node!}{}{}%
-    \pgfpointorigin
-  }%
-  \def\hightwo{%
-    \PackageError{tikz-timing}{No anchor 'high2' defined for this transition 
-    node!}{}{}%
-    \pgfpointorigin
-  }%
-  \let\high\relax
-  \let\mid\relax
-  \let\low\relax
-  \let\lowtwo\relax
-  \let\hightwo\relax
-  \pgfpointorigin
-  }%
+  \expandafter\addtosavedmacro\csname#1\endcsname
 }
 %    \end{macrocode}
 %
@@ -6611,7 +6567,6 @@
 %    \begin{macrocode}
 \pgfdeclareshape{tikztiming coordinate}{%
   \savedmacro\anchorpoints{%
-    \let\anchorpoints\tikztiming@anchorpoints
     \let\anchorpoint\tikztiming@anchorpoint
     \let\slope\@tempdima
     \let\dslope\@tempdimb
@@ -6650,15 +6605,25 @@
     \pgf@y=-\pgf@y
   }%
   \anchor{center}{\pgfpointorigin}%
-  \anchor{mid}{\anchorpoints\mid}
-  \anchor{low}{\anchorpoints\low}
-  \anchor{high}{\anchorpoints\high}
-  \anchor{low2}{\anchorpoints\lowtwo}
-  \anchor{high2}{\anchorpoints\hightwo}
+  \anchor{mid}{\tikztiming@useanchor{mid}}%
+  \anchor{low}{\tikztiming@useanchor{low}}%
+  \anchor{high}{\tikztiming@useanchor{high}}%
+  \anchor{low2}{\tikztiming@useanchor{low2}}%
+  \anchor{high2}{\tikztiming@useanchor{high2}}%
   %
   \anchorborder{\pgfpointorigin}%
   %
   \nodeparts{}% no text
+}
+
+\def\tikztiming@useanchor#1{%
+  \anchorpoints
+  \@ifundefined{#1}%
+   {\PackageError{tikz-timing}%
+      {No such anchor '#1' defined for this transition!}%
+    \pgfpointorigin
+   }%
+   {\@nameuse{#1}}%
 }
 
 \tikzset{%
@@ -6677,175 +6642,175 @@
 }
 
 \tikztiming@anchors{@}{D}{%
-  \anchorpoint\originoffset{0pt}{.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{0pt}{.5\height}%
-  \anchorpoint\low{0pt}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{0pt}{.5\height}%
+  \anchorpoint{low}{0pt}{-.5\height}%
 }
 
 \tikztiming@anchors{@}{H}{%
-  \anchorpoint\originoffset{0pt}{\height}%
-  \anchorpoint\high{0pt}{0pt}%
+  \anchorpoint{originoffset}{0pt}{\height}%
+  \anchorpoint{high}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{@}{L}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\low{0pt}{0pt}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{low}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{@}{T}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\low{0pt}{0pt}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{low}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{@}{Z}{%
-  \anchorpoint\originoffset{0pt}{.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{originoffset}{0pt}{.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{D}{D}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{0pt}{.5\height}%
-  \anchorpoint\low{0pt}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{0pt}{.5\height}%
+  \anchorpoint{low}{0pt}{-.5\height}%
 }
 
 \tikztiming@anchors{L}{H}{%
-  \anchorpoint\originoffset{.5\slope}{.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{.5\slope}{.5\height}%
-  \anchorpoint\low{-.5\slope}{-.5\height}%
+  \anchorpoint{originoffset}{.5\slope}{.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{.5\slope}{.5\height}%
+  \anchorpoint{low}{-.5\slope}{-.5\height}%
 }
 
 \tikztiming@anchors{E}{H}{%
-  \anchorpoint\originoffset{-.5\slope}{-.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{.5\slope}{.5\height}%
-  \anchorpoint\low{-.5\slope}{-.5\height}%
+  \anchorpoint{originoffset}{-.5\slope}{-.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{.5\slope}{.5\height}%
+  \anchorpoint{low}{-.5\slope}{-.5\height}%
 }
 
 \tikztiming@anchors{T}{T}{%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
   \ifnum 1=\c@tikztimingtrans
-    \anchorpoint\originoffset{.5\slope}{-.5\height}%
-    \anchorpoint\high{-.5\slope}{.5\height}%
-    \anchorpoint\low{.5\slope}{-.5\height}%
+    \anchorpoint{originoffset}{.5\slope}{-.5\height}%
+    \anchorpoint{high}{-.5\slope}{.5\height}%
+    \anchorpoint{low}{.5\slope}{-.5\height}%
   \else
-    \anchorpoint\originoffset{.5\slope}{.5\height}%
-    \anchorpoint\high{.5\slope}{.5\height}%
-    \anchorpoint\low{-.5\slope}{-.5\height}%
+    \anchorpoint{originoffset}{.5\slope}{.5\height}%
+    \anchorpoint{high}{.5\slope}{.5\height}%
+    \anchorpoint{low}{-.5\slope}{-.5\height}%
   \fi
 }
 \tikztiming@anchorslet{T}{E}{T}{T}%
 
 \tikztiming@anchors{T}{@}{%
   \ifnum 1=\c@tikztimingtrans
-    \anchorpoint\high{0pt}{0pt}%
+    \anchorpoint{high}{0pt}{0pt}%
   \else
-    \anchorpoint\low{0pt}{0pt}%
+    \anchorpoint{low}{0pt}{0pt}%
   \fi
 }
 
 \tikztiming@anchors{H}{H}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\high{0pt}{0pt}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{high}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{L}{L}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\low{0pt}{0pt}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{low}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{Z}{Z}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{E}{E}{%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
   \ifnum 1=\c@tikztimingtrans
-    \anchorpoint\originoffset{.5\slope}{.5\height}%
-    \anchorpoint\high{.5\slope}{.5\height}%
-    \anchorpoint\low{-.5\slope}{-.5\height}%
+    \anchorpoint{originoffset}{.5\slope}{.5\height}%
+    \anchorpoint{high}{.5\slope}{.5\height}%
+    \anchorpoint{low}{-.5\slope}{-.5\height}%
   \else
-    \anchorpoint\originoffset{-.5\slope}{.5\height}%
-    \anchorpoint\high{-.5\slope}{.5\height}%
-    \anchorpoint\low{.5\slope}{-.5\height}%
+    \anchorpoint{originoffset}{-.5\slope}{.5\height}%
+    \anchorpoint{high}{-.5\slope}{.5\height}%
+    \anchorpoint{low}{.5\slope}{-.5\height}%
   \fi
 }
 
 \tikztiming@anchors{H}{L}{%
-  \anchorpoint\originoffset{.5\slope}{-.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{-.5\slope}{.5\height}%
-  \anchorpoint\low{.5\slope}{-.5\height}%
+  \anchorpoint{originoffset}{.5\slope}{-.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{-.5\slope}{.5\height}%
+  \anchorpoint{low}{.5\slope}{-.5\height}%
 }
 \tikztiming@anchorslet{H}{E}{H}{L}%
 
 \tikztiming@anchors{E}{L}{%
-  \anchorpoint\originoffset{-.5\slope}{.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{-.5\slope}{.5\height}%
-  \anchorpoint\low{.5\slope}{-.5\height}%
+  \anchorpoint{originoffset}{-.5\slope}{.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{-.5\slope}{.5\height}%
+  \anchorpoint{low}{.5\slope}{-.5\height}%
 }
 
 \tikztiming@anchors{E}{T}{%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
   \ifnum 1=\c@tikztimingtrans
-    \anchorpoint\originoffset{-.5\slope}{-.5\height}%
-    \anchorpoint\high{.5\slope}{.5\height}%
-    \anchorpoint\low{-.5\slope}{-.5\height}%
+    \anchorpoint{originoffset}{-.5\slope}{-.5\height}%
+    \anchorpoint{high}{.5\slope}{.5\height}%
+    \anchorpoint{low}{-.5\slope}{-.5\height}%
   \else
-    \anchorpoint\originoffset{-.5\slope}{.5\height}%
-    \anchorpoint\high{-.5\slope}{.5\height}%
-    \anchorpoint\low{.5\slope}{-.5\height}%
+    \anchorpoint{originoffset}{-.5\slope}{.5\height}%
+    \anchorpoint{high}{-.5\slope}{.5\height}%
+    \anchorpoint{low}{.5\slope}{-.5\height}%
   \fi
 }
 
 \tikztiming@anchors{E}{Z}{%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{-\zslope}{.5\height}%
-  \anchorpoint\low{-\zslope}{-.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{-\zslope}{.5\height}%
+  \anchorpoint{low}{-\zslope}{-.5\height}%
 }
 
 \tikztiming@anchors{Z}{D}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{.5\dslope}{.5\height}%
-  \anchorpoint\low{.5\dslope}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{.5\dslope}{.5\height}%
+  \anchorpoint{low}{.5\dslope}{-.5\height}%
 }
 
 \tikztiming@anchors{D}{Z}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{-.5\dslope}{.5\height}%
-  \anchorpoint\low{-.5\dslope}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{-.5\dslope}{.5\height}%
+  \anchorpoint{low}{-.5\dslope}{-.5\height}%
 }
 
 \tikztiming@anchors{D}{H}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{-.5\dslope}{.5\height}%
-  \anchorpoint\hightwo{.5\dslope}{.5\height}%
-  \anchorpoint\low{-.5\dslope}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{-.5\dslope}{.5\height}%
+  \anchorpoint{high2}{.5\dslope}{.5\height}%
+  \anchorpoint{low}{-.5\dslope}{-.5\height}%
 }
 
 \tikztiming@anchors{D}{L}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{-.5\dslope}{.5\height}%
-  \anchorpoint\low{-.5\dslope}{-.5\height}%
-  \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{-.5\dslope}{.5\height}%
+  \anchorpoint{low}{-.5\dslope}{-.5\height}%
+  \anchorpoint{low2}{.5\dslope}{-.5\height}%
 }
 \tikztiming@anchorslet{D}{T}{D}{L}%
 
 \tikztiming@anchors{D@edge@}{D}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{-.5\dslope}{.5\height}%
-  \anchorpoint\hightwo{.5\dslope}{.5\height}%
-  \anchorpoint\low{-.5\dslope}{-.5\height}%
-  \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{-.5\dslope}{.5\height}%
+  \anchorpoint{high2}{.5\dslope}{.5\height}%
+  \anchorpoint{low}{-.5\dslope}{-.5\height}%
+  \anchorpoint{low2}{.5\dslope}{-.5\height}%
 }
 \tikztiming@anchorslet{D}{U}{D@edge@}{D}
 \tikztiming@anchorslet{U}{D}{D@edge@}{D}
@@ -6860,142 +6825,142 @@
 \tikztiming@anchorslet{T}{H}{H}{L}%
 
 \tikztiming@anchors{D}{D}{%
-  \anchorpoint\originoffset{0pt}{0pt}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{0pt}{.5\height}%
-  \anchorpoint\low{0pt}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{0pt}{.5\height}%
+  \anchorpoint{low}{0pt}{-.5\height}%
 }
 \tikztiming@anchorslet{D}{@}{D}{D}
 \tikztiming@anchorslet{E}{@}{D}{D}
 \tikztiming@anchorslet{U}{U}{D}{D}
 
 \tikztiming@anchors{@}{D}{%
-  \anchorpoint\originoffset{0pt}{.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{0pt}{.5\height}%
-  \anchorpoint\low{0pt}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{0pt}{.5\height}%
+  \anchorpoint{low}{0pt}{-.5\height}%
 }
 \tikztiming@anchorslet{@}{E}{@}{D}
 
 \tikztiming@anchors{L}{D}{%
-  \anchorpoint\originoffset{.5\dslope}{.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{.5\dslope}{.5\height}%
-  \anchorpoint\low{-.5\dslope}{-.5\height}%
-  \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+  \anchorpoint{originoffset}{.5\dslope}{.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{.5\dslope}{.5\height}%
+  \anchorpoint{low}{-.5\dslope}{-.5\height}%
+  \anchorpoint{low2}{.5\dslope}{-.5\height}%
 }
 
 \tikztiming@anchors{T}{D}{%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
   \ifnum 1=\c@tikztimingtrans
-    \anchorpoint\originoffset{.5\dslope}{-.5\height}%
-    \anchorpoint\high{-.5\dslope}{.5\height}%
-    \anchorpoint\hightwo{.5\dslope}{.5\height}%
-    \anchorpoint\low{.5\dslope}{-.5\height}%
+    \anchorpoint{originoffset}{.5\dslope}{-.5\height}%
+    \anchorpoint{high}{-.5\dslope}{.5\height}%
+    \anchorpoint{high2}{.5\dslope}{.5\height}%
+    \anchorpoint{low}{.5\dslope}{-.5\height}%
   \else
-    \anchorpoint\originoffset{.5\dslope}{.5\height}%
-    \anchorpoint\high{.5\dslope}{.5\height}%
-    \anchorpoint\low{-.5\dslope}{-.5\height}%
-    \anchorpoint\lowtwo{.5\dslope}{-.5\height}%
+    \anchorpoint{originoffset}{.5\dslope}{.5\height}%
+    \anchorpoint{high}{.5\dslope}{.5\height}%
+    \anchorpoint{low}{-.5\dslope}{-.5\height}%
+    \anchorpoint{low2}{.5\dslope}{-.5\height}%
   \fi
 }
 
 \tikztiming@anchors{H}{D}{%
-  \anchorpoint\originoffset{.5\dslope}{-.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{-.5\dslope}{.5\height}%
-  \anchorpoint\hightwo{.5\dslope}{.5\height}%
-  \anchorpoint\low{.5\dslope}{-.5\height}%
+  \anchorpoint{originoffset}{.5\dslope}{-.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{-.5\dslope}{.5\height}%
+  \anchorpoint{high2}{.5\dslope}{.5\height}%
+  \anchorpoint{low}{.5\dslope}{-.5\height}%
 }
 
 \tikztiming@anchors{Z}{E}{%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{\zslope}{.5\height}%
-  \anchorpoint\low{\zslope}{-.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{\zslope}{.5\height}%
+  \anchorpoint{low}{\zslope}{-.5\height}%
 }
 
 \tikztiming@anchors{Z}{H}{%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{\zslope}{.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{\zslope}{.5\height}%
 }
 
 \tikztiming@anchors{Z}{T}{%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
   \ifnum1=\c@tikztimingtrans\relax
-    \anchorpoint\low{\zslope}{-.5\height}%
+    \anchorpoint{low}{\zslope}{-.5\height}%
   \else
-    \anchorpoint\high{\zslope}{.5\height}%
+    \anchorpoint{high}{\zslope}{.5\height}%
   \fi
 }
 
 \tikztiming@anchors{T}{H}{%
   \ifnum1=\c@tikztimingtrans\relax
-    \anchorpoint\high{0pt}{0pt}%
+    \anchorpoint{high}{0pt}{0pt}%
   \else
-    \anchorpoint\originoffset{.5\slope}{.5\height}%
-    \anchorpoint\low{-.5\slope}{-.5\height}%
-    \anchorpoint\mid{0pt}{0pt}%
-    \anchorpoint\high{.5\slope}{.5\height}%
+    \anchorpoint{originoffset}{.5\slope}{.5\height}%
+    \anchorpoint{low}{-.5\slope}{-.5\height}%
+    \anchorpoint{mid}{0pt}{0pt}%
+    \anchorpoint{high}{.5\slope}{.5\height}%
   \fi
 }
 
 \tikztiming@anchors{T}{L}{%
   \ifnum1=\c@tikztimingtrans\relax
-    \anchorpoint\originoffset{.5\slope}{-.5\height}%
-    \anchorpoint\low{.5\slope}{-.5\height}%
-    \anchorpoint\mid{0pt}{0pt}%
-    \anchorpoint\high{-.5\slope}{.5\height}%
+    \anchorpoint{originoffset}{.5\slope}{-.5\height}%
+    \anchorpoint{low}{.5\slope}{-.5\height}%
+    \anchorpoint{mid}{0pt}{0pt}%
+    \anchorpoint{high}{-.5\slope}{.5\height}%
   \else
-    \anchorpoint\low{0pt}{0pt}%
+    \anchorpoint{low}{0pt}{0pt}%
   \fi
 }
 
 \tikztiming@anchors{T}{Z}{%
   \ifnum1=\c@tikztimingtrans\relax
-    \anchorpoint\high{0pt}{0pt}%
-    \anchorpoint\mid{\zslope}{-.5\height}%
+    \anchorpoint{high}{0pt}{0pt}%
+    \anchorpoint{mid}{\zslope}{-.5\height}%
   \else
-    \anchorpoint\low{0pt}{0pt}%
-    \anchorpoint\mid{\zslope}{.5\height}%
+    \anchorpoint{low}{0pt}{0pt}%
+    \anchorpoint{mid}{\zslope}{.5\height}%
   \fi
 }
 
 \tikztiming@anchors{Z}{L}{%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\low{\zslope}{-.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{low}{\zslope}{-.5\height}%
 }
 
 \tikztiming@anchors{H}{Z}{%
-  \anchorpoint\high{0pt}{0pt}%
-  \anchorpoint\mid{\zslope}{-.5\height}%
+  \anchorpoint{high}{0pt}{0pt}%
+  \anchorpoint{mid}{\zslope}{-.5\height}%
 }
 
 \tikztiming@anchors{L}{Z}{%
-  \anchorpoint\low{0pt}{0pt}%
-  \anchorpoint\mid{\zslope}{.5\height}%
+  \anchorpoint{low}{0pt}{0pt}%
+  \anchorpoint{mid}{\zslope}{.5\height}%
 }
 
 \tikztiming@anchors{Z}{Z}{%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{H}{@}{%
-  \anchorpoint\high{0pt}{0pt}%
+  \anchorpoint{high}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{L}{@}{%
-  \anchorpoint\low{0pt}{0pt}%
+  \anchorpoint{low}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{Z}{@}{%
-  \anchorpoint\mid{0pt}{0pt}%
+  \anchorpoint{mid}{0pt}{0pt}%
 }
 
 \tikztiming@anchors{}{@}{%
-  \anchorpoint\originoffset{0pt}{.5\height}%
-  \anchorpoint\mid{0pt}{0pt}%
-  \anchorpoint\high{0pt}{.5\height}%
-  \anchorpoint\low{0pt}{-.5\height}%
+  \anchorpoint{originoffset}{0pt}{.5\height}%
+  \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{high}{0pt}{.5\height}%
+  \anchorpoint{low}{0pt}{-.5\height}%
 }
 
 %    \end{macrocode}
