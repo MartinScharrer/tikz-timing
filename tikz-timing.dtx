@@ -2414,7 +2414,7 @@
   \pgfmathparse{#1}%
   \let\tikztiming@wscale\pgfmathresult
 }
-\def\tikztiming@num{1.0}%
+\def\tikztiming@num{0.0}%
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
@@ -2635,6 +2635,7 @@
 %    \begin{macrocode}
 \def\tikztiming@init{%
     \def\tikztiming@lastchar{@}%
+    \def\tikztiming@num{0}%
     \let\tikztiming@currentchar\empty
     \let\tikztiming@settings\empty
     \let\tikztiming@fromchar\empty
@@ -2787,10 +2788,10 @@
     {}%
     {\@nameuse{tikztiming@initcode@\tikztiming@lastchar}}%
   \if @\tikztiming@lastchar\relax\else
-  \@ifundefined{\tikztiming@prefix @\tikztiming@lastchar}%
+  \tikztiming@iftrans{@\tikztiming@lastchar}%
+    {\tikztiming@nameaddtostr{@}{\tikztiming@lastchar}{}}%
     {\PackageWarning{tikz-timing}{Start value for timing character 
     '\tikztiming@lastchar' is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@nameaddtostr{@}{\tikztiming@lastchar}{}}%
   \fi
   \tikztiming@parser
 }
