@@ -64,11 +64,12 @@ ee/.style={},
 
 \@ifundefined{I}{\let\I\empty}{}
 \def\ichars{H,L,Z,X,M,U,D,T,C,}
-\def\achars{\empty}%D,dNd,D{},d{}Nd{},U,uNu,U{},u{}Nu{}}
+%\def\achars{\empty}%D,dNd,D{},d{}Nd{},U,uNu,U{},u{}Nu{}}
 %H,L,Z,X,M,U,D,D{A},T,tt,C,cc,}
 %D{A},;D{A},D{A};,;D{A};%
 %U{A},;U{A},U{A};,;U{A};%
 %}%H,L,Z,X,M,U,D,D{A},T,tt,C,cc,}
+\def\achars{H,L,Z,X,M,U,U{C},D,D{C},T,tt,C,cc,E,ee,}
 \def\bchars{H,L,Z,X,M,U,U{B},D,D{B},T,tt,C,cc,E,ee,le,he,}
 \def\cchars{H,L,Z,X,M,U,U{C},D,D{C},T,tt,C,cc,E,ee,}
 %\def\achars{N(a),[],;,H,L,Z,X,M,U,U{A},D,D{A},G,T,tt,C,cc,}
@@ -81,16 +82,22 @@ ee/.style={},
 \def\b{\@backslashchar b}
 
 \def\testanchorpoint#1#2#3{%
-  \def#1{}%
+  \@namedef{#1}{}%
 }
 
 \makeatletter
 
+\def\tikztiming@useanchor#1{%
+  \pgfpointorigin
+  \anchorpoints
+  \@nameuse{#1}%
+}
+
+\let\mid\relax
+
 %\tikzstyle{n} = [draw,fill,circle]
 \tikzset{n/.code={%
   \begingroup
-  \let\mid\relax \let\low\relax \let\high\relax
-  \let\lowtwo\relax \let\hightwo\relax
   \let\anchorpoint\testanchorpoint
   \ifx\b\empty\def\b{@}\fi
   \ifx\c\empty\def\c{@}\fi
@@ -118,7 +125,8 @@ ee/.style={},
   \ifx\b\HT\def\b{T}\fi
   \ifx\b\LC\def\b{C}\fi
   \ifx\b\HC\def\b{C}\fi
-  \tikztiming@tryanchor{\b}{\c}%
+  %\tikztiming@tryanchor{\b}{\c}%
+  \pgf@sh@ma@K
   \@ifundefined{#1}%
     {\endgroup\tikzset{}}%
     {\endgroup\tikzset{fill,opacity=.8,circle}}%
@@ -131,8 +139,8 @@ ee/.style={},
 \tikztimingmetachar{J}{%
   !{%
   node [n=center,minimum size=3pt,brown] at (K) { }
-  node [n=hightwo,green!50] at (K.high2) {}
-  node [n=lowtwo,red!50] at (K.low2) {}
+  node [n=high2,green!50] at (K.high2) {}
+  node [n=low2,red!50] at (K.low2) {}
   node [n=low,red]    at (K.low) {}
   node [n=mid,yellow] at (K.mid) {}
   node [n=high,green]  at (K.high) {}
@@ -146,6 +154,7 @@ ee/.style={},
 
 \def\tikztiming@endhook{%
   \tikztiming@addtostr{%
+    node [draw,minimum size=3pt,black] at (timing/start) { }
     node [draw,minimum size=3pt,black] at (timing/end) { }
   }%
 }
@@ -163,7 +172,7 @@ ee/.style={},
         (x) at (0,0)
         {};%{\strut\textbf{\X\asis\a\Y}};%
     \foreach \c in \cchars {%
-      \node [black] (x) at ($ (x) + (3,0) $) {\strut\asis\c};%
+      \node [black] (x) at ($ (x) + (4,0) $) {\strut\asis\c};%
       \message{ \c }%
     }%
     \coordinate (y) at (0,0);
@@ -193,7 +202,8 @@ ee/.style={},
         \message{ . }%
         %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
         \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
-        {\noexpand\texttiming[\I]{\b KJ \c J V}};}%
+        {\noexpand\texttiming[\I]{\b KJ \a KJ \c}% V}
+        };}%
         \temp
       }%
     }%
