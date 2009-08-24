@@ -1,4 +1,5 @@
 %&pdflatex
+\tracingstats=1
 \documentclass{article}
 \usepackage [margin=.1cm,paperwidth=20cm,paperheight=20cm] {geometry}
 
@@ -22,7 +23,6 @@ ee/.style={},
 }
 
 \makeatletter
-\csname tikztiming@oldnodecenterfalse\endcsname
 
 \usepackage[active,tightpage]{preview}
 \begin{document}
@@ -98,39 +98,12 @@ ee/.style={},
 %\tikzstyle{n} = [draw,fill,circle]
 \tikzset{n/.code={%
   \begingroup
-  \let\anchorpoint\testanchorpoint
-  \ifx\b\empty\def\b{@}\fi
-  \ifx\c\empty\def\c{@}\fi
-  \ifx\b\DB\def\b{D@edge@}\fi
-  \ifx\c\DB\def\c{D@edge@}\fi
-  \ifx\b\DC\def\b{D@edge@}\fi
-  \ifx\c\DC\def\c{D@edge@}\fi
-  \ifx\b\UB\def\b{U@edge@}\fi
-  \ifx\c\UB\def\c{U@edge@}\fi
-  \ifx\b\UC\def\b{U@edge@}\fi
-  \ifx\c\UC\def\c{U@edge@}\fi
-  \ifx\b\TT\def\b{T}\fi
-  \ifx\c\TT\def\c{T}\fi
-  \ifx\b\CC\def\b{C}\fi
-  \ifx\c\CC\def\c{C}\fi
-  \ifx\c\HT\def\c{T}\fi
-  \ifx\c\LT\def\c{T}\fi
-  \ifx\c\HC\def\c{C}\fi
-  \ifx\c\LC\def\c{C}\fi
-  \ifx\b\EE\def\b{E}\fi
-  \ifx\c\EE\def\c{E}\fi
-  \ifx\b\LE\def\b{E}\fi
-  \ifx\b\HE\def\b{E}\fi
-  \ifx\b\LT\def\b{T}\fi
-  \ifx\b\HT\def\b{T}\fi
-  \ifx\b\LC\def\b{C}\fi
-  \ifx\b\HC\def\b{C}\fi
-  %\tikztiming@tryanchor{\b}{\c}%
-  \pgf@sh@ma@K
+  \pgf@sh@ma@K\anchorpoints
   \@ifundefined{#1}%
     {\endgroup\tikzset{}}%
-    {\endgroup\tikzset{fill,opacity=.8,circle}}%
+    {\endgroup\tikzset{draw}}%
 }}
+%\tikzset{n/.style={draw}}
 \tikzstyle{timing/u/text} = [timing/d/text]
 \newcounter{K}
 \tikztimingmetachar{K}{%
@@ -138,12 +111,25 @@ ee/.style={},
 }
 \tikztimingmetachar{J}{%
   !{%
-  node [n=center,minimum size=3pt,brown] at (K) { }
-  node [n=high2,green!50] at (K.high2) {}
-  node [n=low2,red!50] at (K.low2) {}
-  node [n=low,red]    at (K.low) {}
-  node [n=mid,yellow] at (K.mid) {}
-  node [n=high,green]  at (K.high) {}
+  node [n=center,minimum size=3pt,brown] at (K) {}
+  node [n=high2,green!50]                at (K.high2) {}
+  node [n=low2,red!50]                   at (K.low2) {}
+  node [n=low,red]                       at (K.low) {}
+  node [n=mid,yellow]                    at (K.mid) {}
+  node [n=high,green]                    at (K.high) {}
+  }%
+}
+\tikztimingmetachar{O}{%
+  !{%
+    {[draw=none,mark=x] plot coordinates {%
+      (K)
+      (K.high2)
+      (K.low2)
+      (K.low)
+      (K.mid)
+      (K.high) 
+      }%
+    }%
   }%
 }
 \tikztimingmetachar{V}{%
@@ -152,7 +138,7 @@ ee/.style={},
   }
 }
 
-\def\tikztiming@endhook{%
+\def\tikztiming@endhookX{%
   \tikztiming@addtostr{%
     node [draw,minimum size=3pt,black] at (timing/start) { }
     node [draw,minimum size=3pt,black] at (timing/end) { }
@@ -197,13 +183,15 @@ ee/.style={},
           \def\x{T}%
         \fi
         %\node [right of=x] (x) {\expandafter\texttiming\abc};%
-        \coordinate (x) at ($ (x) + (3,0) $);
+        \coordinate (x) at ($ (x) + (4,0) $);
         %\coordinate (t) at ($ (x) - (1.5,0) $);
         \message{ . }%
         %\draw [shift={(x)},help lines,step=.5] (0,0) grid (3,1);
-        \edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
-        {\noexpand\texttiming[\I]{\b KJ \a KJ \c}% V}
-        };}%
+        %\edef\temp{\noexpand\node [outer sep=0pt,inner sep=0pt] at (x) 
+        %{\noexpand\texttiming[\I]{\b KJ \a KJ \c}% V}
+        %};}%
+        %\edef\temp{\noexpand\timing at (x) {\b KJ \a KJ \c};}%
+        \edef\temp{\noexpand\timing at (x) {\b KJ \a KJ \c};}%
         \temp
       }%
     }%
