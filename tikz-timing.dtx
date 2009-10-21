@@ -71,7 +71,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters,advnodes}
 \makeatother
 \usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -2237,6 +2237,7 @@
 %
 % \begin{example}
 % \centering
+% \iffalse
 % \begin{examplecode}
 %   \Huge
 %   \begin{tikzpicture}[timing/picture,thick]
@@ -2251,6 +2252,7 @@
 %       ($ (B.high lslope/2) + (0,.1) $);
 %   \end{tikzpicture}
 % \end{examplecode}
+% \fi
 % \caption{Using In-Line Nodes to draw Relationships.}\label{exa:inlinenodes}
 % \end{example}
 %
@@ -6083,6 +6085,8 @@
 % \fi
 %    \begin{macrocode}
 \tikzset{timing/.cd,
+  A/.style={timing/a},
+  W/.style={timing/w},
   a/.style={->},
   w/.style={<-},
 }
