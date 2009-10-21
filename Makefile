@@ -6,6 +6,7 @@ PACKAGE_DOC = ${PACKAGE}.pdf
 PACKAGE_SRC = ${PACKAGE}.dtx ${PACKAGE}.ins Makefile
 PACKFILES = ${PACKAGE_SRC} ${PACKAGE_DOC} README
 TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.fdb_latexmk
+TESTDIR = tests
 INSGENERATED = ${PACKAGE_STY}
 ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
 TDSZIPFILE = ${PACKAGE}.tds.zip
