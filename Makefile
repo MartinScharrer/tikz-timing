@@ -9,7 +9,7 @@ TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls
 TESTDIR = tests
 INSGENERATED = ${PACKAGE_STY}
 ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
-TDSZIPFILE = ${PACKAGE}.tds.zip
+TDSZIPFILE = ${PACKAGE}-${ZIPVERSION}.tds.zip
 GENERATED = ${INSGENERATED} ${PACKAGE}.pdf
 ZIPS = zip tdszip
 
@@ -76,7 +76,7 @@ zip:
 	@${MAKE} --no-print-directory ${ZIPFILE}
 
 ${PACKAGE}%.zip: ${PACKFILES}
-	grep -q '\* Checksum passed \*' ${PACKAGE}.log
+	@test -n "${IGNORE_CHECKSUM}" || grep -q '\* Checksum passed \*' ${PACKAGE}.log
 	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
 	${RM} $@
 	zip $@ ${PACKFILES}
@@ -86,7 +86,7 @@ ${PACKAGE}%.zip: ${PACKFILES}
 tds: .tds
 
 .tds: ${PACKAGE_STY} ${PACKAGE_DOC} ${PACKAGE_SRC}
-	@grep -q '\* Checksum passed \*' ${PACKAGE}.log
+	@test -n "${IGNORE_CHECKSUM}" || grep -q '\* Checksum passed \*' ${PACKAGE}.log
 	${RMDIR} tds
 	${MKDIR} tds/
 	${MKDIR} tds/tex/ tds/tex/latex/ tds/tex/latex/${PACKAGE}/
@@ -98,6 +98,9 @@ tds: .tds
 	@touch $@
 
 tdszip: ${TDSZIPFILE}
+
+tdszip: ZIPVERSION=$(shell grep "Package: ${PACKAGE} " ${PACKAGE}.log | \
+	sed -e "s/.*Package: ${PACKAGE} ....\/..\/..\s\+\(v\S\+\).*/\1/")
 
 ${TDSZIPFILE}: .tds
 	${RM} ${TDSZIPFILE}
