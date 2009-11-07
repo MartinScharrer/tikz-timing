@@ -2490,10 +2490,8 @@
   inline node/to char/.store in=\tikztiming@node@tochar,
   table/.style={font=\sffamily,timing,line width=0.15ex},
   coord/.style={coordinate},
-  save/.style={coordinate,/utils/exec=\tikztiming@savesettings},
-  restore/.style={/utils/exec={\tikztiming@restoresettings
-    \expandafter\tikzset\expandafter{\tikztiming@saved@options}}%
-  },
+  save/.style={coordinate},
+  restore/.style={/utils/exec={\expandafter\tikzset\expandafter{\tikztiming@saved@options}}},
   option/.style={/utils/exec={\g@addto@macro\tikztiming@saved@options{#1,}},#1},
   nooptions/.style={/utils/exec={\gdef\tikztiming@saved@options{}}},
   name/.style={inner sep=0pt,outer sep=0pt,minimum size=0pt},
@@ -4351,42 +4349,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Save and Restore Macros}
-%
-% \begin{macro}{\tikztiming@savesettings}
-%    \begin{macrocode}
-\def\tikztiming@savesettings{%
-  \xdef\tikztiming@saved@settings{%
-    {\tikztiming@slope}%
-    {\tikztiming@dslope}%
-    {\tikztiming@zslope}%
-    {\the\pgflinewidth}%
-  }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@restoresettings}
-%    \begin{macrocode}
-\def\tikztiming@restoresettings{%
-  %\expandafter\tikztiming@restoresettings@
-  %\tikztiming@saved@settings\relax
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@restoresettings@}[4]{Slope}{D-Slope}{Z-Slope}{Line 
-% width}
-%    \begin{macrocode}
-\def\tikztiming@restoresettings@#1#2#3#4\relax{%
-  \tikztimingsetslope{#1}%
-  \tikztimingsetdslope{#2}%
-  \tikztimingsetzslope{#3}%
-  \pgfsetlinewidth{#4}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
+% \subsection{NewDraw Macros}
 %
 % \begin{macro}{\tikztiming@newdraw}
 %    \begin{macrocode}
