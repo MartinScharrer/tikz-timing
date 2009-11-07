@@ -2491,7 +2491,11 @@
   table/.style={font=\sffamily,timing,line width=0.15ex},
   coord/.style={coordinate},
   save/.style={coordinate,/utils/exec=\tikztiming@savesettings},
-  restore/.style={/utils/exec=\tikztiming@restoresettings},
+  restore/.style={/utils/exec={\tikztiming@restoresettings
+    \expandafter\tikzset\expandafter{\tikztiming@saved@options}}%
+  },
+  option/.style={/utils/exec={\g@addto@macro\tikztiming@saved@options{#1,}},#1},
+  nooptions/.style={/utils/exec={\gdef\tikztiming@saved@options{}}},
   name/.style={inner sep=0pt,outer sep=0pt,minimum size=0pt},
   text format/.store in=\tikztiming@textformat,
   @/.style={},
@@ -2649,6 +2653,7 @@
     \def\zslope{\timingzslope}%
     \def\dslope{\timingdslope}%
     \gdef\tikztiming@saved@settings{}%
+    \gdef\tikztiming@saved@options{}%
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \setcounter{tikztimingtranspos}{0}%
@@ -3487,7 +3492,7 @@
 % Simply adds the options to the output code buffer.
 %    \begin{macrocode}
 \def\tikztiming@addoption#1]{%
-  \tikztiming@output@addcode{ [#1] }%
+  \tikztiming@output@addcode{ [timing/option={#1}] }%
   \tikztiming@parser
 }
 %    \end{macrocode}
@@ -3498,9 +3503,8 @@
 % necessary for slopes if they are used in width calculations.
 %    \begin{macrocode}
 \def\tikztiming@bothoption[#1]]{%
-  \tikzset{#1}%
-  \tikztiming@output@addcode{ [#1] }%
-  \tikztiming@parser
+  \tikzset{#1}%[
+  \tikztiming@addoption{#1}]%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4365,8 +4369,8 @@
 % \begin{macro}{\tikztiming@restoresettings}
 %    \begin{macrocode}
 \def\tikztiming@restoresettings{%
-  \expandafter\tikztiming@restoresettings@
-  \tikztiming@saved@settings\relax
+  %\expandafter\tikztiming@restoresettings@
+  %\tikztiming@saved@settings\relax
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4397,7 +4401,7 @@
 %    \begin{macrocode}
 \def\tikztiming@newdraw@nosave{%
   node [timing/coord] (timing@save) {};%
-  \draw (timing@save) ++(0,0)
+  \draw [timing/nooptions] (timing@save) ++(0,0)
 }
 %    \end{macrocode}
 % \end{macro}
