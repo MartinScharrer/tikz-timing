@@ -4126,8 +4126,10 @@
 }
 %    \end{macrocode}
 %
-% By default use the old node centers for backwards compatibility.
+% By default use the old node centers for backwards compability.
 %    \begin{macrocode}
+\let\@iftikztiming@oldnodecenter\@firstoftwo
+
 \gdef\tikztiming@oldnodecenter@{}%
 \tikzset{timing/oldnodecenter/.code={\xdef\tikztiming@oldnodecenter@{%
   ++($ (0,0) - #1 $)
@@ -4168,6 +4170,7 @@
   \let\draw\relax
   \let\path\relax
   \let\fill\relax
+  \let\@iftikztiming@oldnodecenter\relax
   \let\tikztiming@oldnodecenter@\relax
   \def\width{####1*\noexpand\timingwidth}%
   \def\fwidth{\noexpand\timingwidth}%
@@ -4638,7 +4641,7 @@
      coordinate (timing@dend)
     ++(#1,0)
   \tikztiming@oldnodecenter{%
-    ++(0,-\height/2)
+    (0,-\height/2)
   }%
   \newdraw
 }
@@ -6413,6 +6416,15 @@
 %<*lib-advnodes>
 % \fi
 %    \begin{macrocode}
+\newif\iftikztiming@oldnodecenter
+
+\def\@iftikztiming@oldnodecenter{%
+  \iftikztiming@oldnodecenter
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
 
 \def\anchoralias#1#2{%
   \expandafter\def
