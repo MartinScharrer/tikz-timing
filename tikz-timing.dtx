@@ -2652,6 +2652,7 @@
     \def\dslope{\timingdslope}%
     \gdef\tikztiming@saved@settings{}%
     \gdef\tikztiming@saved@options{}%
+    \gdef\tikztiming@oldnodecenter@{}%
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \setcounter{tikztimingtranspos}{0}%
@@ -4125,9 +4126,20 @@
 }
 %    \end{macrocode}
 %
-% By default use the old node centers for backwards compability.
+% By default use the old node centers for backwards compatibility.
 %    \begin{macrocode}
-\let\@iftikztiming@oldnodecenter\@firstoftwo
+\gdef\tikztiming@oldnodecenter@{}%
+\tikzset{timing/oldnodecenter/.code={\xdef\tikztiming@oldnodecenter@{%
+  ++($ (0,0) - #1 $)
+  [timing/nooldnodecenter]}}%
+}%
+\tikzset{timing/nooldnodecenter/.code={\gdef\tikztiming@oldnodecenter@{}}}%
+
+\def\tikztiming@oldnodecenter#1{%
+  [timing/oldnodecenter={#1}]
+  ++#1
+}
+
 %    \end{macrocode}
 %
 % \subsection{Other Macros}
@@ -4156,7 +4168,7 @@
   \let\draw\relax
   \let\path\relax
   \let\fill\relax
-  \let\@iftikztiming@oldnodecenter\relax
+  \let\tikztiming@oldnodecenter@\relax
   \def\width{####1*\noexpand\timingwidth}%
   \def\fwidth{\noexpand\timingwidth}%
   \def\height{\noexpand\timingheight}%
@@ -4450,10 +4462,8 @@
 }
 
 \tikztimingdef{DH}{
+  \tikztiming@oldnodecenter@%
   \newdraw [\style]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,+\height/2.)
-  }{}%
   -- ++(\dslope/2.,+\height/2.)
   -- ++($ (#1,0) - (\dslope,0) $)
 }
@@ -4463,9 +4473,7 @@
 % \subsubsection{Character `L'}
 %    \begin{macrocode}
 \tikztimingdef{DL}{
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@
   \newdraw [\style]
   -- ++(\dslope/2.,-\height/2.)
   -- ++($ (#1,0) - (\dslope,0) $)
@@ -4537,10 +4545,8 @@
 }
 
 \tikztimingdef{DZ}{
+  \tikztiming@oldnodecenter@
   \newdraw [\style]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   -- ++($ (#1,0) - (\dslope/2.,0) $)
 }
 
@@ -4555,9 +4561,9 @@
   -- +(0,0)
     ++($ (#1,0) + (\dslope/2,0) $)
   coordinate (timing@dend)
-  \@iftikztiming@oldnodecenter{%
-    ++(-\dslope/2,-\height/2)
-  }{}%
+  \tikztiming@oldnodecenter{%
+    (-\dslope/2,-\height/2)
+  }%
   \newdraw
 }
 
@@ -4577,10 +4583,9 @@
   -- +(0,0)
      +($ (#1,0) + (\dslope/2,0) $)
      coordinate (timing@dend)
-  \@iftikztiming@oldnodecenter{%
-    ++(#1,-\height/2)
-  }{%
     ++(#1,0)
+  \tikztiming@oldnodecenter{%
+    (0,-\height/2)
   }%
   \newdraw
 }
@@ -4606,9 +4611,9 @@
   -- +(0,-\height/2)
     ++($ (#1,0) + (\dslope/2,0) $)
      coordinate (timing@dend)
-  \@iftikztiming@oldnodecenter{%
-    ++(-\dslope/2,-\height/2)
-  }{}%
+  \tikztiming@oldnodecenter{%
+    (-\dslope/2,-\height/2)
+  }%
   \newdraw
 }
 
@@ -4631,18 +4636,15 @@
   -- +(0,-\height/2)
      +($ (#1,0) + (\dslope/2,0) $)
      coordinate (timing@dend)
-  \@iftikztiming@oldnodecenter{%
-    ++(#1,-\height/2)
-  }{%
     ++(#1,0)
+  \tikztiming@oldnodecenter{%
+    ++(0,-\height/2)
   }%
   \newdraw
 }
 
 \def\tikztiming@dchardu#1{%
-  \@iftikztiming@oldnodecenter{%
-     ++(0,+\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@
   \newdraw [\bgstyle]
   -- +(0,\height/2)
   -- +(#1,\height/2)
@@ -4658,9 +4660,9 @@
   -- +(0,-\height/2)
     ++($ (#1,0) + (\dslope/2,0) $)
      coordinate (timing@dend)
-  \@iftikztiming@oldnodecenter{%
-    ++(-\dslope/2,-\height/2)
-  }{}%
+  \tikztiming@oldnodecenter{%
+    (-\dslope/2,-\height/2)
+  }%
   \newdraw
 }
 
@@ -4673,9 +4675,7 @@
 }
 
 \def\tikztiming@dchard@#1{%
-  \@iftikztiming@oldnodecenter{%
-     ++(0,+\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@
   \newdraw [\bgstyle]
   -- +(0,\height/2)
   -- +(#1,\height/2)
@@ -4689,10 +4689,9 @@
   -- +(0,-\height/2)
      +($ (#1,0) + (\dslope/2,0) $)
      coordinate (timing@dend)
-  \@iftikztiming@oldnodecenter{%
-    ++(#1,-\height/2)
-  }{%
     ++(#1,0)
+  \tikztiming@oldnodecenter{%
+    (0,-\height/2)
   }%
   \newdraw
 }
@@ -4705,9 +4704,7 @@
 \tikztimingcpy{UUU}{DDD}
 
 \tikztimingdef{{D@edge@}{D@edge@}}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@
   \tikztiming@chard{#1 - \dslope/2}%
 }%
 
@@ -4732,30 +4729,22 @@
 }
 
 \tikztimingdef{U{D@edge@}}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
 \tikztimingdef{U{D@edge@}@}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
 \tikztimingdef{D{U@edge@}}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
 \tikztimingdef{D{U@edge@}@}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
@@ -4768,9 +4757,7 @@
 }%
 
 \tikztimingdef{{D@edge@}{D@edge@}@}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard@{#1 - \dslope/2}%
 }%
 
@@ -4779,16 +4766,12 @@
 }%
 
 \tikztimingdef{{D@edge@}D}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard{#1 - \dslope/2}%
 }%
 
 \tikztimingdef{{D@edge@}D@}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard@{#1 - \dslope/2}%
 }%
 
@@ -4953,10 +4936,8 @@
 }
 
 \tikztimingdef{DM}{
+  \tikztiming@oldnodecenter@%
   \newdraw [\style]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   -- ++($ (-\dslope/2,0) + (#1,0) $)
   \newdraw [\style/base]
 }
@@ -5024,10 +5005,8 @@
 
 \tikztimingdef{DT}{
   \code{\setcounter{tikztimingtrans}{-1}}
+  \tikztiming@oldnodecenter@%
   \newdraw {[\style]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   --  +(\dslope/2.,-\height/2)
   -- ++($ (#1,-\height/2) - (\dslope/2,0) $)
   }
@@ -5059,17 +5038,13 @@
 \tikztimingcpy{UU@}{DD@}%
 
 \tikztimingdef{UDU}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard{#1 - \dslope/2}%
 }
 \tikztimingcpy{DUD}{UDU}%
 
 \tikztimingdef{UDD}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@
   \newdraw [\bgstyle]
   -- +(\dslope/2,\height/2)
   -- +($ (#1,\height/2) - (\dslope/2,0) $)
@@ -5085,10 +5060,9 @@
   -- +(0,0)
      +(#1,0)
      coordinate (timing@dend)
-  \@iftikztiming@oldnodecenter{%
-    ++($ (#1,0) - (\dslope/2,\height/2) $)
-  }{%
     ++($ (#1,0) - (\dslope/2,0) $)
+  \tikztiming@oldnodecenter{%
+      ($ (0,0) - (0,\height/2) $)
   }%
   \newdraw
 }
@@ -5117,18 +5091,14 @@
 }
 
 \tikztimingdef{{D@edge@}DU}{
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@
   \tikztiming@chard{#1 - \dslope/2}
 }
 \tikztimingcpy{{U@edge@}UD}{{D@edge@}DU}
 
 \tikztimingdef{DDU}{%
+  \tikztiming@oldnodecenter@
   \newdraw [\bgstyle]
-  \@iftikztiming@oldnodecenter{%
-     ++(0,\height/2.)
-  }{}%
   -- +(0,\height/2)
   -- +(#1,\height/2)
   -- +($ (#1,0) + (\dslope/2,0) $)
@@ -5143,9 +5113,9 @@
   -- +(0,-\height/2)
     ++($ (#1,0) + (\dslope/2,0) $)
      coordinate (timing@dend)
-  \@iftikztiming@oldnodecenter{%
-    ++(-\dslope/2,-\height/2)
-  }{}%
+  \tikztiming@oldnodecenter{%
+    (-\dslope/2,-\height/2)
+  }%
   \newdraw
 }
 
@@ -5165,30 +5135,22 @@
 }
 
 \tikztimingdef{UD}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
 \tikztimingdef{DU}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard{#1 - \dslope/2}%
 }
 
 \tikztimingdef{UD@}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
 \tikztimingdef{DU@}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \tikztiming@chard@{#1 - \dslope/2}%
 }
 
@@ -5579,9 +5541,7 @@
 
 
 \tikztimingdef{DE@}{%
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
+  \tikztiming@oldnodecenter@%
   \newdraw [\bgstyle]
   -- +(\dslope/2,\height/2)
   -- +($ (#1,\height/2) - (\dslope/2,0) $)%
@@ -5712,10 +5672,8 @@
 }
 
 \tikztimingdef{DET}{%
+  \tikztiming@oldnodecenter@%
   \newdraw [\style,preaction={\bgstyle}]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   -- +(\dslope/2, \height/2)
   {[\nstyle]
   -- +($ (#1, \height/2) + (-\dslope/2 + \slope/2 - \slope/2 * 
@@ -5757,10 +5715,8 @@
 }
 
 \tikztimingdef{DEE}{%
+  \tikztiming@oldnodecenter@
   \newdraw [\style,preaction={\bgstyle}]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   -- +(\dslope/2, \height/2)
   -- +($ (#1,0) + (-\dslope/2 + \slope, \height/2) $)
   -- +($ (#1,-\height/2) - (\dslope/2,0) $)
@@ -5773,10 +5729,8 @@
 
 
 \tikztimingdef{DED}{%
+  \tikztiming@oldnodecenter@%
   \newdraw [\style,preaction={\bgstyle}]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   -- +(\dslope/2, \height/2)
   -- +($ (#1,\height/2) - (\dslope/2,0) $)
   -- +(#1,0)
@@ -5800,10 +5754,8 @@
 }
 
 \tikztimingdef{DEZ}{%
+  \tikztiming@oldnodecenter@
   \newdraw [\style,preaction={\bgstyle}]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   -- +(\dslope/2, \height/2)
   -- +($ (#1,\height/2) - (\dslope/2,0) $)
   -- +($ (#1,0) + (\zslope - \dslope/2, 0) $)
@@ -5816,10 +5768,8 @@
 
 
 \tikztimingdef{DEH}{%
+  \tikztiming@oldnodecenter@%
   \newdraw [\style,preaction={\bgstyle}]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   -- +(\dslope/2, \height/2)
   -- +($ (#1,0) + (\slope, \height/2) - (\dslope/2, 0) $)
   -- +($ (#1,-\height/2) - (\dslope/2, 0) $)
@@ -5830,10 +5780,8 @@
 }
 
 \tikztimingdef{DEL}{%
+  \tikztiming@oldnodecenter@
   \newdraw [\style,preaction={\bgstyle}]
-  \@iftikztiming@oldnodecenter{%
-     ++(\dslope/2.,\height/2.)
-  }{}%
   -- +(\dslope/2, \height/2)
   -- +($ (#1,\height/2) - (\dslope/2, 0) $)
   -- +($ (#1,0) + (\slope, -\height/2) - (\dslope/2, 0) $)
@@ -6465,15 +6413,6 @@
 %<*lib-advnodes>
 % \fi
 %    \begin{macrocode}
-\newif\iftikztiming@oldnodecenter
-
-\def\@iftikztiming@oldnodecenter{%
-  \iftikztiming@oldnodecenter
-    \expandafter\@firstoftwo
-  \else
-    \expandafter\@secondoftwo
-  \fi
-}
 
 \def\anchoralias#1#2{%
   \expandafter\def
