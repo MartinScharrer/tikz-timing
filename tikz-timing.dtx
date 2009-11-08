@@ -4559,7 +4559,7 @@
 
 \def\tikztiming@chard#1{%
   \newdraw [\style,preaction={\bgstyle}]
-  coordinate (timing@dstart)
+  coordinate (timing@dstart) 
   -- +(\dslope/2,\height/2)
   --  ($ (timing@ref) + (#1,\height/2) $)
   -- +(\dslope/2,-\height/2)
@@ -4642,10 +4642,10 @@
      coordinate (timing@ref)
      coordinate [shift={(-\dslope/2,0)}] (timing@dstart)
      +(0,\height/2)
-  --  (#1,\height)
-     +(0,-\height)
+  -- +(#1,\height/2)
+     +(#1,-\height/2)
   --  ($ (timing@save) + (0,-\height/2) $)
-      (#1,\height/2)
+    ++(#1,\height/2)
      coordinate (timing@ref)
      coordinate [shift={(\dslope/2,0)}] (timing@dend)
   \tikztiming@oldnodecenter{%
@@ -4813,6 +4813,7 @@
 }%
 
 \tikztimingdef{ZDZ}{
+  coordinate (timing@ref)
   \tikztiming@chard{#1}
 }
 \tikztimingcpy{ZDX}{ZDZ}
@@ -4820,10 +4821,12 @@
 \tikztimingcpy{XDZ}{ZDZ}
 
 \tikztimingdef{ZDD}{
+  coordinate (timing@ref)
   \tikztiming@chard@{#1}
 }
 
 \tikztimingdef{ZDU}{
+  coordinate (timing@ref)
   \tikztiming@chard{#1}
 }
 
@@ -4831,6 +4834,7 @@
 \tikztimingcpy{ZUU}{ZDD}
 
 \tikztimingdef{ZD}{
+  coordinate (timing@ref)
   \tikztiming@chard{#1}
 }
 
@@ -4839,33 +4843,39 @@
 }
 
 \tikztimingdef{ZD@}{%
+  coordinate (timing@ref)
   \tikztiming@chard@{#1}%
 }
 
 \tikztimingdef{HD@}{%
+  coordinate [shift={(0,-\height/2)}] (timing@ref)
   -- ++(\dslope/2, -\height/2)
   \tikztiming@chard@{#1}%
 }
 
 \tikztimingdef{TD@}{%
+  coordinate [shift={(0,-\height/2 * \value{tikztimingtrans})}] (timing@ref)
   -- ++(\dslope/2, -\height/2 * \value{tikztimingtrans})
   \tikztiming@chard@{#1}%
 }
 
 \tikztimingdef{TD}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  coordinate [shift={(0,\height/2 * \value{tikztimingtrans})}] (timing@ref)
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1}%
 }
 
 \tikztimingdef{TDD}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  coordinate [shift={(0,\height/2 * \value{tikztimingtrans})}] (timing@ref)
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard@{#1}%
 }
 
 \tikztimingdef{TUD}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  coordinate [shift={(0,\height/2 * \value{tikztimingtrans})}] (timing@ref)
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1}%
 }
@@ -4874,6 +4884,7 @@
 \tikztimingcpy{TUU}{TDD}
 
 \tikztimingdef{LD@}{%
+  coordinate [shift={(0,\height/2)}] (timing@ref)
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard@{#1}%
 }
@@ -5555,6 +5566,15 @@
 \tikztimingdef{EDD}{%
   \tikztiming@chard@{#1}%
 }
+\tikztimingdef{EUU}{%
+  \tikztiming@chard@{#1}%
+}
+\tikztimingdef{EDU}{%
+  \tikztiming@chard{#1}%
+}
+\tikztimingdef{EUD}{%
+  \tikztiming@chard{#1}%
+}
 
 
 \tikztimingdef{DE@}{%
@@ -5819,7 +5839,7 @@
   \tikztiming@@chard{#1}%
 }
 \tikztimingdef{DDE}{
-  \tikztiming@chard{#1}%
+  \tikztiming@@chard{#1}%
 }
 
 \tikztimingdef{@EH}{%
@@ -5893,7 +5913,8 @@
    -- +($ (#1,\height/2) + (\dslope/2,0) $)
    -- +(#1,0)
    -- +(0,0)
-     ++($ (#1,\height/2) + (\dslope/2,0) $)
+     ++(#1,\height/2) coordinate (timing@ref)
+     ++(\dslope/2,0)
 }
 
 \tikztimingdef{@EZ}{%
