@@ -2659,6 +2659,7 @@
     \def\tikztiming@str{%
       \useasboundingbox (0,0) rectangle (\tikztimingwidth,\timingheight);
       \draw (0,0)
+        coordinate (timing/start base) at +(0,\timingheight/2)
         coordinate (timing/start base)
     }%
 }
@@ -4557,12 +4558,14 @@
   \newdraw [\style,preaction={\bgstyle}]
   coordinate (timing@dstart)
   -- +(\dslope/2,\height/2)
-  -- +(#1,\height/2)
-  -- +($ (#1,0) + (\dslope/2,0) $)
-  -- +(#1,-\height/2)
+  --  ($ (timing@ref) + (#1,\height/2) $)
   -- +(\dslope/2,-\height/2)
-  -- +(0,0)
-    ++($ (#1,0) + (\dslope/2,0) $)
+  -- +(0,-\height)
+  --  ($ (timing@dstart) + (\dslope/2,-\height/2) $)
+  --  (timing@dstart)
+      ($ (timing@ref) + (#1,0) $)
+  coordinate (timing@ref)
+    ++(\dslope/2,0)
   coordinate (timing@dend)
   \tikztiming@oldnodecenter{%
     (-\dslope/2,-\height/2)
@@ -4612,7 +4615,9 @@
   -- +($ (#1,0) + (\dslope/2,0) $)
   -- +(#1,-\height/2)
   -- +(0,-\height/2)
-    ++($ (#1,0) + (\dslope/2,0) $)
+    ++(#1,0)
+     coordinate (timing@ref)
+    ++(\dslope/2,0)
      coordinate (timing@dend)
   \tikztiming@oldnodecenter{%
     (-\dslope/2,-\height/2)
@@ -4708,7 +4713,7 @@
 
 \tikztimingdef{{D@edge@}{D@edge@}}{%
   \tikztiming@oldnodecenter@
-  \tikztiming@chard{#1 - \dslope/2}%
+  \tikztiming@chard{#1}%
 }%
 
 \tikztimingdef{@{D@edge@}}{%
@@ -4733,7 +4738,7 @@
 
 \tikztimingdef{U{D@edge@}}{%
   \tikztiming@oldnodecenter@
-  \tikztiming@chard{#1 - \dslope/2}%
+  \tikztiming@chard{#1}%
 }
 
 \tikztimingdef{U{D@edge@}@}{%
@@ -5074,16 +5079,19 @@
 \tikztimingcpy{{U@edge@}UU}{{D@edge@}DD}
 
 \tikztimingdef{H{D@edge@}}{
+  coordinate [shift={(0,-\height/2)}] (timing@ref)
   -- ++(\dslope/2, -\height/2)
-  \tikztiming@chard{#1 - \dslope/2}%
+  \tikztiming@chard{#1}%
 }
 
 \tikztimingdef{L{D@edge@}}{
+  coordinate [shift={(0,\height/2)}] (timing@ref)
   -- ++(\dslope/2, \height/2)
-  \tikztiming@chard{#1 - \dslope/2}%
+  \tikztiming@chard{#1}%
 }
 
 \tikztimingdef{Z{D@edge@}}{
+  coordinate (timing@ref)
   \tikztiming@chard{#1}%
 }
 
