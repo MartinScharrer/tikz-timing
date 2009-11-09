@@ -4471,8 +4471,8 @@
 \tikztimingdef{DH}{
   \tikztiming@oldnodecenter@%
   \newdraw [\style]
-  -- ++(\dslope/2.,+\height/2.)
-  -- ++($ (#1,0) - (\dslope,0) $)
+  --  +(\dslope/2.,\height/2.)
+  --   ($ (timing@ref) + (#1,\height/2) $)
 }
 
 %    \end{macrocode}
@@ -4482,8 +4482,8 @@
 \tikztimingdef{DL}{
   \tikztiming@oldnodecenter@
   \newdraw [\style]
-  -- ++(\dslope/2.,-\height/2.)
-  -- ++($ (#1,0) - (\dslope,0) $)
+  --  +(\dslope/2.,-\height/2.)
+  --   ($ (timing@ref) + (#1,-\height/2) $)
 }
 
 %    \end{macrocode}
@@ -4554,7 +4554,7 @@
 \tikztimingdef{DZ}{
   \tikztiming@oldnodecenter@
   \newdraw [\style]
-  -- ++($ (#1,0) - (\dslope/2.,0) $)
+  -- ($ (timing@ref) + (#1,0) $)
 }
 
 \def\tikztiming@chard#1{%
@@ -4992,7 +4992,7 @@
 \tikztimingdef{DM}{
   \tikztiming@oldnodecenter@%
   \newdraw [\style]
-  -- ++($ (-\dslope/2,0) + (#1,0) $)
+  -- ($ (timing@ref) + (#1,0) $)
   \newdraw [\style/base]
 }
 
@@ -5062,7 +5062,7 @@
   \tikztiming@oldnodecenter@%
   \newdraw {[\style]
   --  +(\dslope/2.,-\height/2)
-  -- ++($ (#1,-\height/2) - (\dslope/2,0) $)
+  --   ($ (timing@ref) + (#1,-\height/2) $)
   }
 }
 
