@@ -5364,7 +5364,9 @@
   -- +(#1,0)%
   -- +(0,0)
   {[\nstyle]
-    ++($ (#1,\height) + (\slope,0) $)%
+    ++(#1,\height/2)%
+      coordinate (timing@ref)
+    ++(\slope,\height/2)%
   }
   \newdraw
   \code{\setcounter{tikztimingtrans}{1}}%
@@ -5472,9 +5474,9 @@
    -- +(#1,0)%
    -- +(0,0)%
    {[\nstyle]
-     ++($ (#1,0) + (0, -\height * \value{tikztimingtrans}) $)%
+     ++($ (#1,0) + (0, -\height/2 * \value{tikztimingtrans}) $)%
        coordinate (timing@ref)
-     ++(\slope, 0)%
+     ++(\slope, -\height/2 * \value{tikztimingtrans})%
    }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
@@ -5605,17 +5607,18 @@
   \tikztiming@oldnodecenter@%
   \newdraw [\bgstyle]
   -- +(\dslope/2,\height/2)
-  -- +($ (#1,\height/2) - (\dslope/2,0) $)%
-  -- +($ (#1,-\height/2) - (\dslope/2,0) $)%
-  -- +(\dslope/2,-\height/2)
-  -- +(0,0)
+  --  ($ (timing@ref) + (#1,\height/2) $)%
+  --  ($ (timing@ref) + (#1,-\height/2) $)%
+  --  ($ (timing@save) + (\dslope/2,-\height/2) $)
+  --  (timing@save)
   \newdraw [\style]
   -- +(\dslope/2,\height/2)
-  -- +($ (#1,\height/2) - (\dslope/2,0) $)%
-     +($ (#1,-\height/2) - (\dslope/2,0) $)%
-  -- +(\dslope/2,-\height/2)
-  -- +(0,0)
-     ++($ (#1,0) - (\dslope/2,0) $)%
+  --  ($ (timing@ref) + (#1,\height/2) $)%
+      ($ (timing@ref) + (#1,-\height/2) $)%
+  --  ($ (timing@save) + (\dslope/2,-\height/2) $)
+  --  (timing@save)
+      ($ (timing@ref) + (#1,0) $)%
+      coordinate (timing@ref)
 }
 
 \tikztimingdef{EEE}{%
@@ -5624,6 +5627,7 @@
    -- +($ (#1,\height) + (\slope * \value{tikztimingtrans}, 0) $)%
    -- +(#1,0)%
    -- +(0,0)%
+       coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
      ++(#1,0)%
 }%
 
@@ -5662,7 +5666,7 @@
   -- +($ (#1,\height) + (\slope/2 + \slope/2 * \value{tikztimingtrans} ,0)$)%
   -- +($ (#1,0) - (\slope/2 - \slope/2 * \value{tikztimingtrans} ,0)$)%
   -- +(0,0)
-      coordinate (timing@ref) at +(#1,\height/2)
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
     ++($ (#1,\height) + (\slope/2 + \slope/2 * \value{tikztimingtrans} ,0)$)%
   \newdraw
 }
@@ -5726,13 +5730,14 @@
   \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
   {[\nstyle]
-  --  ($ (timing@ref) + (#1, \height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)
-  --  ($ (timing@ref) + (#1,-\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)
+  -- +($ (#1, \height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)
+  -- +($ (#1,-\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)
   }
-  --  ($ (timing@save) + (\zslope, -\height/2) $)
-  --  (timing@save)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
   {[\nstyle]
-      ($ (timing@ref) + (#1,-\height/2 * \value{tikztimingtrans}) + (\slope, 0) $)
+     ++(#1,0) coordinate (timing@ref)
+     ++(\slope,-\height/2 * \value{tikztimingtrans})
   }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
@@ -5749,7 +5754,8 @@
   --  ($ (timing@save) + (\dslope/2, -\height/2) $)
   --  (timing@save)
   {[\nstyle]
-      ($ (timing@ref) + (#1,-\height/2 * \value{tikztimingtrans}) + (\slope, 0) $)
+       ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
+     ++(\slope,-\height/2 * \value{tikztimingtrans})
   }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
@@ -5898,19 +5904,20 @@
   \newdraw [\bgstyle]
   -- +(0,\height)
   {[\nstyle]
-  -- +($ (#1,\height) + (\slope,0) $)
+  --  ($ (timing@ref) + (#1,\height/2) + (\slope,0) $)
   }
-  -- +(#1,0)
-  -- +(0,0)
+  --  ($ (timing@ref) + (#1,-\height/2) $)
+  --  (timing@save)
   \newdraw [\style]
-      +(0,\height)
+     +(0,\height)
   {[\nstyle]
-   -- +($ (#1,\height) + (\slope,0) $)
+  --  ($ (timing@ref) + (#1,\height/2) + (\slope,0) $)
   }
-   -- +(#1,0)
-   -- +(0,0)
+  --  ($ (timing@ref) + (#1,-\height/2) $)
+  --  (timing@save)
   {[\nstyle]
-     ++($ (#1,\height) + (\slope,0) $)
+      ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
+    ++(\slope,\height/2)
   }
   \newdraw
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
@@ -5918,7 +5925,7 @@
 
 \tikztimingdef{ET}{%
   {[\style]
-  --   ($ (timing@ref) + (#1,\value{tikztimingtrans} * \height/2) $)
+  --   ($ (timing@ref) + (#1,\height/2 * \value{tikztimingtrans}) $)
   }
 }
 
