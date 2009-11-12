@@ -3479,11 +3479,12 @@
     \ifx\list\empty
       \def\list{1,2,...,\nrows}%
     \fi
-    \foreach \row in \list%
+    \foreach \row in \list {%
       \draw [timing/table/lines,#1] let
         \p1 = (timing/table/bottom right)
       in
         (0,\rowdist-\row*\rowdist) -- +(\x1,0);
+    }%
   \endgroup
 }
 %    \end{macrocode}
