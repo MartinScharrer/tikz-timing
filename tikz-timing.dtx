@@ -4172,7 +4172,10 @@
 \def\tikztiming@internaldefs{%
   \let\draw\relax
   \let\path\relax
-  \let\fill\relax
+  \let\p\relax
+  \let\x\relax
+  \let\y\relax
+  \let\n\relax
   \let\@iftikztiming@oldnodecenter\relax
   \let\tikztiming@oldnodecenter@\relax
   \def\width{####1*\noexpand\timingwidth}%
@@ -5405,9 +5408,14 @@
   \newdraw [\style,preaction={\bgstyle}]
    -- +(\slope, -\height * \value{tikztimingtrans})%
    -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)
-       coordinate (timing@refb)
-   -- +(#1,0) coordinate (timing@refa)
+   -- +(#1,0)
    -- +(0,0)%
+      \code{\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+      \addtocounter{tikztimingtranspos}{+1}}
+      +($ (#1,0) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, -\height/2 * \value{tikztimingtranspos}) $)
+        coordinate (timing@refa)
+      +($ (#1,0) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, \height - \height/2 * \value{tikztimingtranspos}) $)
+        coordinate (timing@refb)
      ++(#1,0) 
       coordinate [shift={(0,-\height/2 * \value{tikztimingtrans})}] (timing@ref)
      ++(
@@ -5417,6 +5425,7 @@
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   \newdraw
 }%
+
 
 \tikztimingdef{TEH}{%
   \newdraw [\style,preaction={\bgstyle}]
@@ -5631,11 +5640,13 @@
 \tikztimingdef{EEE}{%
   \newdraw [\style,preaction={\bgstyle}]
    --   (timing@refb)
-   --   ($ (timing@ref)  + (#1,0) + (\slope,\height/2 * \value{tikztimingtrans}) $) coordinate (timing@refb)
-   --   ($ (timing@ref)  + (#1,-\height/2 * \value{tikztimingtrans}) $)
+   --   ($ (timing@refb)  + (#1,0) $)
+   --   ($ (timing@refa)  + (#1,0) $)
    --   (timing@refa)
-        ($ (timing@ref)  + (#1,-\height/2 * \value{tikztimingtrans}) $) coordinate (timing@refa)
-        coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+      ++(#1,0) coordinate (timing@refa)
+        coordinate (timing@refb) at ($ (timing@refb) + (#1,0) $)
+        coordinate (timing@ref)  at ($ (timing@ref)  + (#1,0) $)
+  \newdraw
 }%
 
 \tikztimingdef{EET}{%
@@ -5680,17 +5691,19 @@
 
 \tikztimingdef{EE@}{%
   \newdraw [\bgstyle]
-  --  (timing@refb)
-  --  ($ (timing@ref) + (#1,\height/2) $)
-  -- +(0,-\height)
-  --  (timing@refa)
+      let \p0 = (timing@ref), \p1 = (timing@refa), \p2 = (timing@refb) in
+  --  (\p2)
+  --  ($ (\x0,\y2) + (#1,0) $)
+  -- +(0,\y1-\y2)
+  --  (\p1)
   \newdraw [\style]
-  --  (timing@refb)
-  --  ($ (timing@ref) + (#1,\height/2) $)
-     +(0,-\height)
-  --  (timing@refa)
-      ($ (timing@ref) + (#1,0) $)
-      coordinate (timing@ref)
+      let \p0 = (timing@ref), \p1 = (timing@refa), \p2 = (timing@refb) in
+  --  (\p2)
+  --  ($ (\x0,\y2) + (#1,0) $)
+     +(0,\y1-\y2)
+  --  (\p1)
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+  \newdraw
 }%
 
 \tikztimingdef{ZE@}{
@@ -5784,10 +5797,11 @@
 \tikztimingdef{ZEE}{%
   \newdraw [\style,preaction={\bgstyle}]
   -- +(\zslope, \height/2)
-  -- +($ (#1,0) + (\slope, \height/2) $)
-  -- +(#1,-\height/2)
+  -- +($ (#1,0) + (\slope, \height/2) $) coordinate (timing@refb)
+  -- +(#1,-\height/2) coordinate (timing@refa)
   -- +(\zslope, -\height/2)
   -- +(0,0)
+     +(#1,0) coordinate (timing@ref)
     ++(#1,-\height/2)
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
@@ -5797,11 +5811,12 @@
   \tikztiming@oldnodecenter@
   \newdraw [\style,preaction={\bgstyle}]
   -- +(\dslope/2, \height/2)
-  -- +($ (#1,0) + (-\dslope/2 + \slope, \height/2) $)
-  -- +($ (#1,-\height/2) - (\dslope/2,0) $)
-  -- +(\dslope/2, -\height/2)
-  -- +(0,0)
-    ++($ (#1,-\height/2) - (\dslope/2,0) $)
+  --  ($ (timing@ref) + (#1,0) + (\slope, \height/2) $) coordinate (timing@refb)
+  --  ($ (timing@ref) + (#1,-\height/2) $) coordinate (timing@refa)
+  --  ($ (timing@save) + (\dslope/2, -\height/2) $)
+  --  (timing@save)
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+      (timing@refa)
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
 }
