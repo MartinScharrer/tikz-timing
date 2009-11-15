@@ -1,0 +1,45 @@
+%&pdflatex
+\documentclass[landscape]{article}
+\usepackage[margin=1pt]{geometry}
+
+\usepackage{tikz-timing}
+\usetikztiminglibrary{advnodes,either}
+
+\parindent0pt\relax
+
+\tikzset{%
+  timing/u/text/.style={timing/d/text},
+}
+\def\chars{H,L,Z,X,M,U,U{x},D,D{x},G,S,T,tt,C,cc}
+
+\begin{document}
+\ttfamily
+
+\mbox{}\\
+\foreach \x in \chars {
+\message{^^J \x }%
+\hspace*{1cm}\llap{\x:}
+\foreach \y in \chars {
+\message{ \y }%
+{\tiny\llap{\y:}\ }%
+\hbox to 3em{\hbox{}\hss
+\begin{tikzpicture}[timing/picture,timing/slope=.25,timing/draw grid,baseline]
+  \edef\t{ at (0,0) { \x N(A) \y N(B) \x } }
+  \expandafter\timing\t;
+  \draw         (A)      circle (1pt);
+  \draw[red]    (A.LOW)  circle (1.1pt);
+  \draw[yellow] (A.MID)  circle (1.2pt);
+  \draw[green]  (A.HIGH) circle (1.3pt);
+
+  \draw         (B)      circle (1pt);
+  \draw[red]    (B.LOW)  circle (1.1pt);
+  \draw[yellow] (B.MID)  circle (1.2pt);
+  \draw[green]  (B.HIGH) circle (1.3pt);
+\end{tikzpicture}
+\hss\hbox{}}}
+\\
+}
+
+\end{document}
+
+
