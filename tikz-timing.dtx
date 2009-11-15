@@ -2659,6 +2659,8 @@
     \def\tikztiming@str{%
       \useasboundingbox (0,0) rectangle (\tikztimingwidth,\timingheight);
       \draw (0,0)
+        coordinate (timing@refa)
+        coordinate [shift={(0,\timingheight)}]   (timing@refb)
         coordinate [shift={(0,\timingheight/2)}] (timing@ref)
         coordinate (timing/start)
         coordinate (timing/start base)
@@ -4412,7 +4414,9 @@
   \pgfmathparse{\tikztimingwidth + \tikztiming@num}%
   \global\let\tikztimingwidth\pgfmathresult
   \tikztiming@output@Eaddcode{%
-    coordinate (timing@ref) at ($ (timing@ref) + (\tikztiming@num,0) $)
+    coordinate (timing@ref)  at ($ (timing@ref)  + (\tikztiming@num,0) $)
+    coordinate (timing@refa) at ($ (timing@refa) + (\tikztiming@num,0) $)
+    coordinate (timing@refb) at ($ (timing@refb) + (\tikztiming@num,0) $)
     ++(\tikztiming@num,0)
   }%
   \tikztiming@parser
@@ -4422,7 +4426,9 @@
   \pgfmathparse{\tikztimingwidth + \tikztiming@num/2}%
   \global\let\tikztimingwidth\pgfmathresult
   \tikztiming@output@Eaddcode{%
-    coordinate (timing@ref) at ($ (timing@ref) + (\tikztiming@num/2,0) $)
+    coordinate (timing@ref)  at ($ (timing@ref)  + (\tikztiming@num/2,0) $)
+    coordinate (timing@refa) at ($ (timing@refa) + (\tikztiming@num/2,0) $)
+    coordinate (timing@refb) at ($ (timing@refb) + (\tikztiming@num/2,0) $)
     ++(\tikztiming@num/2,0)
   }%
   \tikztiming@parser
@@ -5694,7 +5700,7 @@
   --  ($ (\x0,\y2) + (#1,0) $)
      +(0,\y1-\y2)
   --  (\p1)
-      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+      ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
   \newdraw
 }%
 
