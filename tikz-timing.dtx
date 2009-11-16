@@ -3975,7 +3975,7 @@
 %
 % \begin{macro}{\tikztiming@tablegrid}[1]{Optional settings}
 %    \begin{macrocode}
-\newcommand*\tikztiming@tablegrid[1][]{%
+\def\tikztiming@tablegrid{%
   \@ifnextchar{*}%
     {\tikztiming@tablegrid@{row\row.high end}}%
     {\tikztiming@tablegrid@{timing/table/top right}}%
