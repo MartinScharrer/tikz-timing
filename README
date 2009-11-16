@@ -2,10 +2,11 @@
  tikz-timing
 --------------------------------------------------------------
 
-This package lets you typeset keywords of the version
-control system Subversion inside your LaTeX files anywhere
-you like. Unlike the very similar package 'svn' the usage of
-multiple files for one LaTeX document is well supported.
+This package provides macros and an environment to generate timing diagrams
+(digital waveforms) without much effort.  The TikZ (pgf) package is used to
+produce the graphics.  The diagrams may be inserted into text (paragraphs,
+\hbox, etc.) and into tikzpictures.  A tabular-like environment is provided to
+produce larger timing diagrams.
 
 Copyright (C) 2009 Martin Scharrer
 E-mail: martin@scharrer-online.de

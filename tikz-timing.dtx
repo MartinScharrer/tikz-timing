@@ -72,6 +72,7 @@
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
 \usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters,advnodes}
+\tikzset{timing/no nice tabs}
 \makeatother
 %%%^^A\usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -88,7 +89,7 @@
 \usepackage{placeins}
 \makeFNbottom
 \makeFNbelow
-\usepackage{microtype}
+\usepackage{microtype}[2005/10/28]
 \DisableLigatures{encoding = T1, family = tt* }%
 \newsavebox{\mysb}
 \makeatletter
@@ -2237,22 +2238,20 @@
 %
 % \begin{example}
 % \centering
-% \iffalse
 % \begin{examplecode}
 %   \Huge
 %   \begin{tikzpicture}[timing/picture,thick]
 %     \timing at (0,2) {hH N(A) LHLHL};
 %     \timing[timing/slope=.25] at (0,0) {HLL N(B) HHLl};
 %     \draw [orange,semithick]
-%       (A.mid lslope/2) ellipse (.2 and .6)
-%       (B.mid lslope/2) ellipse (.2 and .6);
+%       (A.mid) ellipse (.2 and .6)
+%       (B.mid) ellipse (.2 and .6);
 %     \draw [orange,semithick,->]
-%       ($ (A.low lslope/2) - (0,.1) $)
+%       ($ (A.mid) - (0,.6) $)
 %       parabola [bend pos=0.5]
-%       ($ (B.high lslope/2) + (0,.1) $);
+%       ($ (B.mid) + (0,.6) $);
 %   \end{tikzpicture}
 % \end{examplecode}
-% \fi
 % \caption{Using In-Line Nodes to draw Relationships.}\label{exa:inlinenodes}
 % \end{example}
 %
