@@ -747,7 +747,7 @@
 % \begin{macro}{\tikztimingfullexampletable}
 %    \begin{macrocode}
 \def\tikztimingfullexampletable{
-  \begin{tikzpicture}[x=1em,y=1em,font=\sffamily]
+  \begin{tikzpicture}[timing/picture,x=1em,y=1em,font=\sffamily]
     \tikzset{timing/d/background/.style={fill={gray!25},fill opacity=0.5}}%
     \let\chars\tikztiming@chars@default
     \node (charnode) at (0,0) {%
@@ -1037,7 +1037,7 @@
 % can cause side-effects. \Example{H[blue]LH} \\
 % {}[<\meta{TikZ Settings}>]  & Executes given TikZ settings during the drawing 
 % process like \texttt{[ ]} but does not re-executes them.
-% {\Example{D{.} [< /utils/exec={\def\m{...}} >] D{.} D{.}}} \\
+% {\Example{D{.} [</utils/exec={\def\m{...}}>] D{.} D{.}}} \\
 % {}[!\meta{TikZ Settings}!]  & Executes given TikZ settings during the 
 % \emph{parsing} process. Because this makes only sense for internal settings 
 % the default path is `\texttt{/tikz/timing}', not `\texttt{/tikz}' like in all  
@@ -1054,7 +1054,7 @@
 % \emph{Example:} See Example~\ref{exa:adv} on page~\pageref{exa:adv}. \\
 % @\{\meta{code}\}  & Executes the given code immediately during the parsing 
 % process. This can be used to change parsing parameters. To execute code during 
-% the drawing process use \texttt{[< /utils/exec=}\meta{code}\texttt{ >]} instead. 
+% the drawing process use \texttt{[</utils/exec=}\meta{code}\texttt{>]} instead. 
 % \Example{L @{\setwscale{2}} H} \\
 % \texttt{\$}\meta{math expression}\texttt{\$} & Takes a valid \texttt{pgfmath} 
 % expression (See \pkg{pgf} manual), evaluates it and places the result back in 
@@ -1817,7 +1817,7 @@
 % \begin{table}[H]
 % \centering
 % \caption{Examples for the `\texttt{E}' Character.}\label{tab:either}
-% \begin{tikztimingexampletable}
+% \begin{tikztimingexampletable}[timing/e/background/.style={fill=black!20}]
 %   L E H \\
 %   L D H \\
 %   H E L \\
@@ -4421,9 +4421,9 @@
 %
 % \subsection{Definition of Timing Characters}
 %
-% Pre-Define list of Timing Characters.
+% Pre-define list of timing characters to have it in a sorted fashion.
 %    \begin{macrocode}
-\def\tikztiming@chars{H,L,Z,D,M,T}%
+\def\tikztiming@chars{H,L,Z,X,M,D,U,T,C}%
 %    \end{macrocode}
 %
 % \subsubsection{Character `S'}
