@@ -1033,7 +1033,11 @@
 % current position.  All three arguments are optional.  \Example{H N(a1) L}\\
 %   \midrule
 % {}[\meta{TikZ Settings}]  & Executes given TikZ settings during the drawing 
-% process. \Example{H[blue]LH} \\
+% process. This settings will be re-executed when the internal drawing path is renewed which 
+% can cause side-effects. \Example{H[blue]LH} \\
+% {}[<\meta{TikZ Settings}>]  & Executes given TikZ settings during the drawing 
+% process like \texttt{[ ]} but does not re-executes them.
+% {\Example{D{.} [< /utils/exec={\def\m{...}} >] D{.} D{.}}} \\
 % {}[!\meta{TikZ Settings}!]  & Executes given TikZ settings during the 
 % \emph{parsing} process. Because this makes only sense for internal settings 
 % the default path is `\texttt{/tikz/timing}', not `\texttt{/tikz}' like in all  
@@ -1050,7 +1054,7 @@
 % \emph{Example:} See Example~\ref{exa:adv} on page~\pageref{exa:adv}. \\
 % @\{\meta{code}\}  & Executes the given code immediately during the parsing 
 % process. This can be used to change parsing parameters. To execute code during 
-% the drawing process use \texttt{[/utils/exec=}\meta{code}\texttt{]} instead. 
+% the drawing process use \texttt{[< /utils/exec=}\meta{code}\texttt{ >]} instead. 
 % \Example{L @{\setwscale{2}} H} \\
 % \texttt{\$}\meta{math expression}\texttt{\$} & Takes a valid \texttt{pgfmath} 
 % expression (See \pkg{pgf} manual), evaluates it and places the result back in 
@@ -1585,12 +1589,12 @@
 % \\[\bigskipamount]
 % |\newcounter{mycount}|\\
 % |\tikztimingmetachar{Q}{2D{\stepcounter{mycount}\arabic{mycount}}}|\\
-% |\tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}|\\
+% |\tikztimingmetachar{R}{[< /utils/exec=\setcounter{mycount}{0} >]}|\\
 % |\texttiming{ 5Q R 3Q R 10Q }|\\
 % gives:
 % {\newcounter{mycount}%
 % \tikztimingmetachar{Q}{2D{\stepcounter{mycount}\arabic{mycount}}}%
-% \tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}%
+% \tikztimingmetachar{R}{[< /utils/exec=\setcounter{mycount}{0} >]}%
 % \texttiming{ 5Q R 3Q R 10Q }}
 % \\[\bigskipamount]
 % Redefining the glitch `|G|' character:\\
@@ -2178,9 +2182,10 @@
 %   LLL 0.4U 0.6H HH \\
 %   [L][timing/slope=1.0] HL HL HL HL HL \\
 %   LLLLL !{-- +(.5,.5) -- ++(1,0)} HHHHHH \\
-%   LLLLL [/utils/exec={\somemacro\code}] HHHHHH \\
+%   LLLLL [< /utils/exec={\somemacro\code} >] HHHHHH \\
 %   LL [green] HH [brown] XX LL ZZ [orange] HH \\
 %   [][line width=1pt] HLXZDU  [line width=0.1pt] HLXZDU \\
+%   [][line width=1pt] HLXZDU ,[line width=0.1pt] HLXZDU \\
 %   [][line width=1pt] HLXZDU ;[line width=0.1pt] HLXZDU \\
 % \end{tikztimingexampletable}%
 % }
@@ -3466,14 +3471,19 @@
 % \begin{macro}{\tikztiming@defcode []}[1]{Options}
 % Single brackets are in-picture options.
 % Brackets and a `|!|' sign `|[! !]|' are parser options.
-% Double brackets are are both.
+% Double brackets are both.
+%
+% Brackets and `|< >|' signs `|[< >]|' are only-once in-picture options.
 %    \begin{macrocode}
 \tikztiming@defcode[{%}]{
   \@ifnextchar[%]
     {\tikztiming@bothoption}%
     {\@ifnextchar{!}%
       {\tikztiming@parseroption}%
-      {\tikztiming@addoption}%
+      {\@ifnextchar{<}%
+        {\tikztiming@onceoption}%
+        {\tikztiming@addoption}%
+      }%
     }%
 }
 %    \end{macrocode}
@@ -3491,7 +3501,7 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@addoption}[1]{Options}
-% Simply adds the options to the output code buffer.
+% Adds the options to the internal list of timing options.
 %    \begin{macrocode}
 \def\tikztiming@addoption#1]{%
   \tikztiming@output@addcode{ [timing/option={#1}] }%
@@ -3510,6 +3520,17 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\tikztiming@onceoption}[1]{Options}
+% Simply adds the options to the output code buffer.
+%    \begin{macrocode}
+\def\tikztiming@onceoption<#1>]{%
+  \tikztiming@output@addcode{ [#1] }%
+  \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \subsubsection{Add-Node Macros}
 %
@@ -6484,7 +6505,7 @@
     \fi
   \fi
   \ifx\tikztiming@counter@resetchar\empty\else
-    \tikztimingmetachar{#4}[1]{[/utils/exec=\tikztiming@counter@reset{#1}{##1}]}%
+    \tikztimingmetachar{#4}[1]{[</utils/exec=\tikztiming@counter@reset{#1}{##1}>]}%
   \fi
 }
 %    \end{macrocode}
