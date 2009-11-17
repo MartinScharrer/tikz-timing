@@ -34,20 +34,33 @@
 %<lib-arrows>\ProvidesPackageSVN[tikz-timing-arrows]
 %<lib-either>\ProvidesPackageSVN[tikz-timing-either]
 %<lib-overlays>\ProvidesPackageSVN[tikz-timing-overlays]
+%<lib-clockarrows>\ProvidesPackageSVN[tikz-timing-clockarrows]
+%<lib-columntype>\ProvidesPackageSVN[tikz-timing-columntype]
+%<lib-nicetabs>\ProvidesPackageSVN[tikz-timing-nicetabs]
+%<lib-counters>\ProvidesPackageSVN[tikz-timing-counters]
+%<lib-advnodes>\ProvidesPackageSVN[tikz-timing-advnodes]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.6a
+  [v0.7
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
-%<lib-arrows>   TikZ-Timing Library for timing arrows]
-%<lib-either>   TikZ-Timing Library for uncertain transitions]
-%<lib-overlays>   TikZ-Timing Library for timing overlays]
+%<lib>   TikZ-Timing Library for
+%<lib-arrows|      >   timing arrows]
+%<lib-either|      >   uncertain transitions]
+%<lib-overlays|    >   timing overlays]
+%<lib-clockarrows| >   timing clock arrows]
+%<lib-columntype|  >   timing cell types]
+%<lib-nicetabs|    >   nice timing tables]
+%<lib-counters|    >   counter values]
+%<lib-advnodes|    >   advanced nodes]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
+%<lib>\GetFileInfoSVN*%
+%<lib>\RequirePackage{tikz-timing}[\filedate]%
 %<*package|driver>
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
@@ -767,7 +780,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{2221}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1735,28 +1748,6 @@
     {\RequirePackage{amsmath}}
 \fi
 
-\newcommand*\usetikztiminglibrary[2][]{%
-  \edef\tikztiming@library@options{#1}%
-  \@ifnextchar{[}%]
-    {\tikztiming@library{#2}}%
-    {\tikztiming@library{#2}[]}%
-}
-\def\tikztiming@library#1[#2]{%
-  \edef\tikztiming@library@date{#2}%
-  \tikztiming@library@#1,\relax
-}
-
-\def\tikztiming@library@#1,{%
-  \IfFileExists{tikz-timing-#1.sty}%
-    {\RequirePackage[\tikztiming@library@options]{tikz-timing-#1}%
-      [\tikztiming@library@date]}%
-    {\PackageError{tikz-timing}%
-      {No tikz-timing library `#1' found!}%
-      {}{}{}{}%
-    }%
-  \@ifnextchar\relax{}{\tikztiming@library@}%
-}
-
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
@@ -2560,50 +2551,6 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
-%    \begin{macrocode}
-%</package>
-%<*lib-overlays>
-%    \end{macrocode}
-% \begin{macro}{\tikztiming@defcode{O}}
-%    \begin{macrocode}
-\tikztiming@defcode{O}{%
-  \@ifnextchar\relax
-    {\tikztiming@\relax}%
-    {\tikztiming@overlay}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@overlays}
-%    \begin{macrocode}
-\def\tikztiming@overlay#1#2{%
-  \ifx\relax#1\relax
-    \tikztiming@output@flush
-    \def\next{\tikztiming@\relax}%
-  \else
-    \ifx\relax#2\relax
-      \def\next{\tikztiming@#1\relax}%
-    \else
-      \tikztiming@output@flush
-      \let\tikztiming@overlay@lastchar\lastchar
-      \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
-      \tikztiming@#1\relax
-      \tikztiming@output@flush
-      \let\lastchar\tikztiming@overlay@lastchar
-      \tikztiming@addtostr{ (timing@overlay@start) }%
-      \def\next{\tikztiming@#2}%
-    \fi
-  \fi
-  \next
-}
-%    \end{macrocode}
-% \end{macro}
-%
-%    \begin{macrocode}
-%</lib-overlays>
-%<*package>
-%    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@handlecode}[1]{Code to add to string}
 %    \begin{macrocode}
@@ -3741,10 +3688,546 @@
 \let\tikztiming@chars@default\tikztiming@chars
 
 %    \end{macrocode}
+%
 %    \begin{macrocode}
-%</package>
-%<*lib-either>
+
+\tikztimingecopy{C}{T}
+\def\tikztiming@nocombine@T{}%
+\def\tikztiming@nocombine@C{}%
+\def\tikztiming@nocombine@t{}%
+\def\tikztiming@nocombine@c{}%
+\def\tikztiming@nocombine@M{}%
+\def\tikztiming@nocombine@m{}%
+\def\tikztiming@nocombine@W{}%
+\def\tikztiming@nocombine@w{}%
+
+\tikztimingecopy{U}{D}
+\tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
+\tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
+
+%\tikztimingecopy{O}{D}
+\tikztimingecopy{X}{Z}
+
 %    \end{macrocode}
+%
+% \clearpage
+% \subsection{Libraries}
+%
+%    \begin{macrocode}
+\newcommand*\usetikztiminglibrary[2][]{%
+  \edef\tikztiming@library@options{#1}%
+  \@ifnextchar{[}%]
+    {\tikztiming@library{#2}}%
+    {\tikztiming@library{#2}[]}%
+}
+\def\tikztiming@library#1[#2]{%
+  \edef\tikztiming@library@date{#2}%
+  \tikztiming@library@#1,\relax
+}
+%    \end{macrocode}
+% Load the library as package. The \LaTeX\ core macro \cs{zap@space} is patched 
+% to a no-op to keep spaces in the option text. Otherwise the option keys may 
+% not contain spaces.
+%    \begin{macrocode}
+\def\tikztiming@zap@space#1 \@empty{#1}
+
+\def\tikztiming@library@#1,{%
+  \IfFileExists{tikz-timing-#1.sty}%
+    { \let\tikztiming@orig@zap@space\zap@space
+      \let\zap@space\tikztiming@zap@space
+      \RequirePackage
+        [\tikztiming@library@options]%
+        {tikz-timing-#1}%
+        [\tikztiming@library@date]%
+      \let\zap@space\tikztiming@orig@zap@space
+    }%
+    {\PackageError{tikz-timing}%
+      {No tikz-timing library `#1' found!}%
+      {}{}{}{}%
+    }%
+  \@ifnextchar\relax{}{\tikztiming@library@}%
+}
+%    \end{macrocode}
+%
+% \iffalse
+%</package>
+% \fi
+%
+%
+% \subsubsection{Clock Arrows}
+%
+%  \iffalse
+%<*lib-clockarrows>
+%  \fi
+%    \begin{macrocode}
+\tikztiming@iftrans{CC}%
+  {\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC}%
+  {\PackageError{\@currname}{No 'CC' transition defined by the main tikz-timing 
+  package.}{}{}}%
+
+\tikztimingdef{CC}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  [timing/c/save]
+  \newdraw 
+  [\style,timing/c/restore,>=\noexpand\tikztiming@c@arrow@tip,timing/c/arrow@style]
+  -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
+  ; \draw [timing/restore,timing/c/restore] (timing@save) ++(0,0) [\style]
+  -- ++(\slope,\value{tikztimingtrans}*\height)
+  -- ++($ (#1,0) - (\slope,0) $)
+}
+\let\tikztiming@trans@C@arrow@C\tikztiming@trans@CC
+
+\tikzset{timing/c/.cd,
+  rising arrows/.code={%
+    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
+    \def\tikztiming@clockarrow@style{\ifnum1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
+  },%
+  falling arrows/.code={%
+    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
+    \def\tikztiming@clockarrow@style{\ifnum-1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
+  },%
+  dual arrows/.code={%
+    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
+    \def\tikztiming@clockarrow@style{\tikzset{->,timing/c/arrow}}%
+  },%
+  no arrows/.code={%
+    \def\tikztiming@trans@CC{\tikztiming@trans@C@normal@C}%
+    \def\tikztiming@clockarrow@style{}%
+  },%
+  arrow@style/.code={\tikztiming@clockarrow@style},%
+  arrow/.style={},%
+  arrow pos/.store in=\tikztiming@c@arrow@pos,
+  arrow tip/.store in=\tikztiming@c@arrow@tip,
+  save/.code={%
+    \global\let\tikztiming@clockarrow@savedstyle\tikztiming@clockarrow@style
+    \global\let\tikztiming@trans@saved@CC\tikztiming@trans@CC
+    \global\let\tikztiming@c@arrow@savedpos\tikztiming@c@arrow@pos
+    \global\let\tikztiming@c@arrow@savedtip\tikztiming@c@arrow@tip
+  },
+  restore/.code={%
+    \let\tikztiming@clockarrow@style\tikztiming@clockarrow@savedstyle
+    \let\tikztiming@trans@CC\tikztiming@trans@saved@CC
+    \let\tikztiming@c@arrow@pos\tikztiming@c@arrow@savedpos
+    \let\tikztiming@c@arrow@tip\tikztiming@c@arrow@savedtip
+  },
+}
+\tikzset{timing/c/.cd,
+  no arrows,
+  arrow pos=0.95,
+  arrow tip=to,
+}
+
+%    \end{macrocode}
+% Use the \pkg{pgfopts} to handle the package options.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\ProcessPgfOptions{/tikz/timing/c}
+%    \end{macrocode}
+% \iffalse
+%</lib-clockarrows>
+% \fi
+%
+% \subsubsection{Arrows}
+%
+% \iffalse
+%<*lib-arrows>
+% \fi
+%    \begin{macrocode}
+\tikzset{timing/.cd,
+  A/.style={timing/a},
+  W/.style={timing/w},
+  a/.style={->},
+  w/.style={<-},
+}
+
+\tikztimingchar{A}{++(0,0)}{%
+  \newdraw [\style] -- ++(0,\height)
+  \newdraw ++(#1,-\height)
+}
+\def\tikztiming@nocombine@A{}%
+
+\tikztimingecopy{W}{A}
+%    \end{macrocode}
+%
+% \iffalse
+%</lib-arrows>
+% \fi
+%
+%
+% \subsubsection{Overlays}
+%
+% \iffalse
+%<*lib-overlays>
+% \fi
+%
+% \begin{macro}{\tikztiming@defcode{O}}
+%    \begin{macrocode}
+\tikztiming@defcode{O}{%
+  \@ifnextchar\relax
+    {\tikztiming@\relax}%
+    {\tikztiming@overlay}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@overlays}
+%    \begin{macrocode}
+\def\tikztiming@overlay#1#2{%
+  \ifx\relax#1\relax
+    \tikztiming@output@flush
+    \def\next{\tikztiming@\relax}%
+  \else
+    \ifx\relax#2\relax
+      \def\next{\tikztiming@#1\relax}%
+    \else
+      \tikztiming@output@flush
+      \let\tikztiming@overlay@lastchar\lastchar
+      \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
+      \tikztiming@#1\relax
+      \tikztiming@output@flush
+      \let\lastchar\tikztiming@overlay@lastchar
+      \tikztiming@addtostr{ (timing@overlay@start) }%
+      \def\next{\tikztiming@#2}%
+    \fi
+  \fi
+  \next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \iffalse
+%</lib-overlays>
+% \fi
+%
+%
+% \subsubsection{Column Type}
+% The \pkg{array} package is needed to define the column type.
+%
+% \iffalse
+%<*lib-columntype>
+% \fi
+%    \begin{macrocode}
+\RequirePackage{array}
+
+\tikzset{timing/columntype/.code 2 args =
+  \newcolumntype{#1}{>{\celltiming}#2<{\endcelltiming}}%
+}%
+%    \end{macrocode}
+% 
+% The options |type| (calls |timing/columntype|) and |notype| are defined.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\tikzset{timing/columntype/.cd,
+  type/.style 2 args={/tikz/timing/columntype={#1}{#2}},%
+  notype/.code={},
+  notype/.value forbidden={},
+}
+
+\ProcessPgfOptions{/tikz/timing/columntype}
+%    \end{macrocode}
+% Use default settings if no options where given. This works because all options 
+% so far will change the default type.
+%    \begin{macrocode}
+\expandafter\ifx\csname opt@\@currname.\@currext\endcsname\empty
+  \tikzset{timing/columntype={T}{l}}%
+\fi
+%    \end{macrocode}
+%
+% \begin{macro}{\celltiming}[1]{Some ignored tokens}
+% The macro first reads everything to the |\ignorespaces| placed by the 
+% |tabular|. After placing the tokens except |\ignorespaces| back a 
+% |tikzpicture| is started. The \cs{tikztiming@endhook} is defined to call 
+% \cs{end@celltiming}.
+% After the usual init process the input is tested for an optional argument and 
+% \cs{tikztiming@celltiming} is called accordantly.
+%    \begin{macrocode}
+\def\celltiming#1\ignorespaces{%
+  #1%
+  \begin{tikzpicture}[timing/picture,baseline={(0,0)}]
+    \def\tikztiming@endhook{\end@celltiming}
+    \tikztiming@init
+    \let\tikztiming@settings\empty
+    \@ifnextchar{[}%
+      {\tikztiming@celltiming}%
+      {\tikztiming@celltiming[]}%
+}
+\let\endcelltiming\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@celltiming}[1]{Optional Initial Character or 
+% Settings}
+% First the optional argument is tested to see if it is a single initial 
+% character or some settings. The \cs{tikztiming@testoptarg} macro sets the 
+% \cs{lastchar} and \cs{settings} macros to the appropriate values.
+%
+% If the \cs{lastchar} is empty it is set to the normal start value.
+%
+% Then a \pkg{pgf} scope with the potential user settings is started. The macros  
+% |\unskip| and |\\| which are used internally by the |tabular| environment are 
+% |\let| to |\relax| to work as end marker for the \cs{tikztiming@parser}.  This 
+% will not influence the table because they will revert to their original 
+% definition at the end of the |tikzpicture| environment.
+%
+% Finally the \cs{tikztiming@parser} is called.
+%    \begin{macrocode}
+\def\tikztiming@celltiming[#1]{%
+  \ifx\relax#1\relax\else
+    \tikztiming@testoptarg#1\relax\relax
+  \fi
+  \ifx\tikztiming@lastchar\empty
+    \def\tikztiming@lastchar{@}%
+  \fi
+  \expandafter\scope\expandafter[\tikztiming@settings]%
+    \begingroup
+    \let\unskip\relax
+    \let\\\relax
+    \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\end@celltiming}
+% This macro is called from the \cs{tikztiming@endhook} which is located in 
+% \cs{tikztiming@parser@end} when the end marker (|\relax| or alias) is 
+% encountered. It executes the accumulated \cs{tikztiming@str} and places the 
+% timing shape. Finally the |scope| and |tikzpicture| is 
+% closed.
+%     \begin{macrocode}
+\def\end@celltiming{%
+    \tikztiming@str;
+    \expandafter\node 
+    \expandafter[\tikztiming@settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
+  \endscope
+  \end{tikzpicture}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \iffalse
+%</lib-columntype>
+% \fi
+%
+%
+% \subsubsection{Nice Timing Tables}
+%
+% \iffalse
+%<*lib-nicetabs>
+% \fi
+%
+% The dimensions of the following packages are used.
+%    \begin{macrocode}
+\RequirePackage{array}
+\RequirePackage{booktabs}
+%    \end{macrocode}
+
+%
+% \begin{macro}{\tikztiming@nicetabs@tableheader}[3]{Optional Settings}{Text 
+% title}{Diagram title}
+%    \begin{macrocode}
+\newcommand*\tikztiming@nicetabs@tableheader[3][]{%
+  \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
+  \path [timing/table/header,#1]
+    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa + \arraystretch * 
+    {(\ht\strutbox + \extrarowheight)} + \arraystretch\dp\strutbox) in
+    node [anchor=base west] (tikztiming@header) at (0,\y1) {\ignorespaces 
+    #3\unskip\strut}
+    node [anchor=base east] at (-1*{(\tikztiming@coldist)},\y1) {\ignorespaces 
+    #2\unskip\strut}
+  ;
+  \tikztiming@tableheadtrue
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@nicetabs@tablerules}[1]{Optional Settings}
+%    \begin{macrocode}
+\newcommand*\tikztiming@nicetabs@tablerules[1][]{%
+  \begin{scope}[#1]
+    \coordinate (NW) at (current bounding box.north west);
+    \coordinate (SE) at (current bounding box.south east);
+    %
+    \draw [timing/table/rules]
+    let
+      \p1 = (NW),
+      \p2 = (SE),
+      \p3 = (last row text.base),
+      \p4 = ($ (0,\y3) - (0,\arraystretch\dp\strutbox + \aboverulesep +
+        .5\pgflinewidth) $)
+    in
+      (\x1-\tabcolsep,\y4) -- (\x2+\tabcolsep,\y4)
+     \iftikztiming@tablehead
+      let
+        \p5 = (tikztiming@header.base),
+        \p6 = ($ (0,\y5) + (0,\arraystretch * {(\ht\strutbox + \extrarowheight 
+        )} + \belowrulesep + .5\pgflinewidth) $)
+      in
+        (\x1-\tabcolsep,\y6) -- (\x2+\tabcolsep,\y6)
+     \fi
+    ;
+    \draw
+     \iftikztiming@tablehead [timing/table/midrules] \else [timing/table/rules] \fi
+    let
+      \p1 = (NW),
+      \p2 = (SE),
+      \p3 = (0, \arraystretch * {( \ht\strutbox + \extrarowheight )} +
+        \belowrulesep + .5\pgflinewidth)
+    in
+      (\x1-\tabcolsep, \y3)
+       --
+      (\x2+\tabcolsep, \y3)
+    ;
+  \end{scope}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\let\tikztiming@normal@tableheader\tikztiming@tableheader
+\let\tikztiming@normal@tablerules\tikztiming@tablerules
+\let\tikztiming@normal@coldist\tikztiming@coldist
+\let\tikztiming@normal@rowdist\tikztiming@rowdist
+
+\tikzset{%
+  timing/no nice tabs/.code={%
+    \let\tikztiming@coldist\tikztiming@normal@coldist
+    \let\tikztiming@rowdist\tikztiming@normal@rowdist
+    \let\tikztiming@tableheader\tikztiming@normal@tableheader
+    \let\tikztiming@tablerules\tikztiming@normal@tablerules
+  },
+  timing/nice tabs/.code={%
+    \ifx\tikztiming@tableheader\tikztiming@nicetabs@tableheader\else
+      \let\tikztiming@normal@coldist\tikztiming@coldist
+      \let\tikztiming@normal@rowdist\tikztiming@rowdist
+    \fi
+    \def\tikztiming@rowdist{%
+        \arraystretch * {(\ht\strutbox+\extrarowheight)}%
+      +\arraystretch\dp\strutbox
+    }%
+    \def\tikztiming@coldist{2\tabcolsep}%
+    \let\tikztiming@tableheader\tikztiming@nicetabs@tableheader
+    \let\tikztiming@tablerules\tikztiming@nicetabs@tablerules
+  }%
+}
+%
+\tikzset{timing/nice tabs}%
+%    \end{macrocode}
+%
+% Use the \pkg{pgfopts} to handle the package options.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\ProcessPgfOptions{/tikz/timing}
+%    \end{macrocode}
+% \iffalse
+%</lib-nicetabs>
+% \fi
+%
+%
+% \subsubsection{Counters}
+%
+% \iffalse
+%<*lib-counters>
+% \fi
+%    \begin{macrocode}
+\tikzset{%
+  timing/new counter/.style={timing/counter/new={#1}},
+  timing/counter/.cd,
+  new/.code={\tikztiming@counter@new{#1}},
+  new/.value required,
+  opt/.cd,
+  char/.estore in=\tikztiming@counter@char,
+  reset char/.estore in=\tikztiming@counter@resetchar,
+  base/.estore in=\tikztiming@counter@base,
+  half width char/.estore in=\tikztiming@counter@hwchar,
+  char/.value required,
+  reset char/.value required,
+  base/.value required,
+  half width char/.value required,
+}
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@counter@new}[1]{Styles}
+%    \begin{macrocode}
+\def\tikztiming@counter@new#1{%
+  \let\tikztiming@counter@char\empty
+  \let\tikztiming@counter@resetchar\empty
+  \def\tikztiming@counter@base{10}%
+  \let\tikztiming@counter@hwchar\relax
+  \pgfqkeys{/tikz/timing/counter/opt}{#1}%
+  \ifx\tikztiming@counter@char\empty
+    \PackageError{tikz-timing-counters}{Counter character must be given using 
+    the 'char' key!}%
+  \else
+    \edef\@tempa{%
+      \noexpand\tikztiming@counter@new@{\tikztiming@counter@char}{\tikztiming@counter@base}%
+        {\tikztiming@counter@hwchar}{\tikztiming@counter@resetchar}%
+    }%
+    \expandafter\@tempa
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@counter@new@}[4]{Character}{Base}{Half Width 
+% Character}{Reset Character}
+%    \begin{macrocode}
+\def\tikztiming@counter@new@#1#2#3#4{%
+  \newcounter{tikztiming@counter@#1}%
+  \tikzset{timing/counter/#1/.append style={}}%
+  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+  \ifx\tikztiming@counter@hwchar\empty\else
+    \ifx\tikztiming@counter@hwchar\relax
+      \tikztiming@iflower{#1}{}%
+        {\lowercase{\tikztimingmetachar{#1}}[1]%
+          {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}}%
+    \else
+      \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+    \fi
+  \fi
+  \ifx\tikztiming@counter@resetchar\empty\else
+    \tikztimingmetachar{#4}[1]{[</utils/exec=\tikztiming@counter@reset{#1}{##1}>]}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@counter@reset}[2]{Character to Reset}{Reset value}
+% The counter is set first using pgf to round the value correctly and then again 
+% with \cs{setcounter} to make it global.
+%    \begin{macrocode}
+\def\tikztiming@counter@reset#1#2{%
+  \pgfmathsetcounter{tikztiming@counter@#1}{round((#2)/\tikztiming@wscale)}%
+  \setcounter{tikztiming@counter@#1}{\value{tikztiming@counter@#1}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@counter@vs}[2]{Character}{Base}
+%    \begin{macrocode}
+\def\tikztiming@counter@vs#1#2{%
+  \pgfmathdectoBase\pgfmathresult{\value{tikztiming@counter@#1}}{#2}%
+  \pgfmathresult
+  \stepcounter{tikztiming@counter@#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% Use the \pkg{pgfopts} to handle the package options.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\ProcessPgfOptions{/tikz/timing/counter}
+%    \end{macrocode}
+% \iffalse
+%</lib-counters>
+% \fi
+%
+% \subsubsection{Either High or Low}
+%  Provides character `E'.
+%
+% \iffalse
+%<*lib-either>
+% \fi
+%
 %    \begin{macrocode}
 
 \tikztimingecopy{E}{D}
@@ -3818,78 +4301,10 @@
 \def\tikztiming@nocombine@E{}%%
 \def\tikztiming@nocombine@e{}%%
 %    \end{macrocode}
-%    \begin{macrocode}
+%
+% \iffalse
 %</lib-either>
-%<*package>
-%    \end{macrocode}
-%    \begin{macrocode}
-
-\tikztimingecopy{C}{T}
-\def\tikztiming@nocombine@T{}%
-\def\tikztiming@nocombine@C{}%
-\def\tikztiming@nocombine@t{}%
-\def\tikztiming@nocombine@c{}%
-\def\tikztiming@nocombine@M{}%
-\def\tikztiming@nocombine@m{}%
-\def\tikztiming@nocombine@W{}%
-\def\tikztiming@nocombine@w{}%
-
-\tikztimingecopy{U}{D}
-\tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
-\tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
-
-%\tikztimingecopy{O}{D}
-\tikztimingecopy{X}{Z}
-
-%    \end{macrocode}
-%    \begin{macrocode}
-%</package>
-%<*lib-arrows>
-%    \end{macrocode}
-%    \begin{macrocode}
-\tikztimingchar{A}{++(0,0)}{%
-  \newdraw [\style] -- ++(0,\height)
-  \newdraw ++(#1,-\height)
-}
-\def\tikztiming@nocombine@A{}%
-\def\tikztiming@nocombine@a{}%
-\tikztiminglet{AS}{SS}
-\tikztiminglet{AH}{H}
-\tikztiminglet{AZ}{Z}
-\tikztimingdef{ZA}{
-  ++(0,-0.5*\height)
-  \tikztiminguse{A}{#1}
-}
-\tikztimingdef{HA}{
-  ++(0,-\height)
-  \tikztiminguse{A}{#1}
-}
-\tikztiminglet{XA}{ZA}
-\tikztiminglet{MA}{ZA}
-\tikztiminglet{AX}{AZ}
-\tikztiminglet{AM}{AZ}
-\tikztiminglet{LA}{A}
-\tikztiminglet{AL}{LL}
-\tikztiminglet{AD}{DD}
-\tikztiminglet{AE}{LE}
-\tikztiminglet{AU}{UU}
-\tikztiminglet{SA}{A}
-\tikztiminglet{AG}{G}
-\tikztiminglet{AT}{LT}
-\tikztiminglet{AC}{LC}
-\tikztiminglet{DA}{A}
-\tikztiminglet{UA}{A}
-\tikztiminglet{TA}{A}
-\tikztiminglet{CA}{A}
-\tikztiminglet{EA}{A}
-
-\tikztimingecopy{W}{A}
-%    \end{macrocode}
-%    \begin{macrocode}
-%</lib-arrows>
-%<*package>
-%    \end{macrocode}
+% \fi
 %
 % \Finale
 \endinput
-%</package>
