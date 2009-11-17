@@ -1,4 +1,2 @@
-* Table head line macro
-* Define `\texttiming` to simply use `\timing`.
-* Allow user definition of macro-letters, i.e. a letter which stands for 
-  multiple other characters.
+* Transition dependent node anchors.
+* Write list of changes.
