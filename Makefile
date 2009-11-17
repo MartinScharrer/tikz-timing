@@ -42,6 +42,9 @@ reload:
 
 example:
 
+ctanify: ${PACKFILES}
+	ctanify $^
+
 one_run: ${PACKAGE}.dtx
 	${LATEX} $<
 
