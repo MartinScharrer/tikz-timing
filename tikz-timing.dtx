@@ -685,6 +685,8 @@
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
   \def\twidth{\tikztiming@maxwidth}%
+  \def\background{\pgfonlayer{background}\scope}%
+  \def\endbackground{\endscope\endpgfonlayer}%
   \tikzpicture[timing/table,#1]%
     \coordinate (last row)  at (0,-1);
     \coordinate (label pos) at (-1,0);
@@ -1387,11 +1389,21 @@
 % The following macros are only defined inside a \env{tikztimingtable} after the 
 % macro \cs{extracode}. They are useful for drawing additional material.
 %
+% \DescribeEnv{background}{\oarg{TikZ Settings}\\\meta{drawing commands}}
+% This environment can be used to draw material on the |background| layer and is 
+% an abbreviation for:\\[\medskipamount]
+% |\begin{pgfonlayer}{background}|\\
+% |  \begin{scope}|\oarg{TikZ Settings}\\
+% |    |\meta{drawing commands}\\
+% |  \end{scope}|\\
+% |\end{pgfonlayer}|\\
+%
 % \DescribeMacro{tablegrid}{\meta{*}\oarg{TikZ Settings}}
 % After \css{extracode} this macro draws a grid in the background of the table.
 % A separate grid is drawn for each row. The normal version draws all grids with 
 % the width of the widest row while the star version draws them with the width 
-% of the corresponding row.
+% of the corresponding row. Because this macro draws material into the |background|
+% layer it must not be placed inside a |pgfonlayer| environment itself.
 %
 % \DescribeMacro{fulltablegrid}{\oarg{TikZ Settings}}
 % After \css{extracode} this macro draws a big grid over all rows in the 
