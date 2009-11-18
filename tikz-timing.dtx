@@ -71,9 +71,11 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays}
+\usetikztiminglibrary{arrows,either,columntype}^^A,clockarrows}
+\usetikztiminglibrary{nicetabs,counters,overlays}
+\tikzset{timing/no nice tabs}
 \makeatother
-\usepackage[electronic]{ifsym}
+%%%^^A\usepackage[electronic]{ifsym}
 \usepackage{calc}
 \usepackage{graphicx}
 \usepackage{ifpdf}
@@ -82,13 +84,15 @@
 \usepackage{array}
 \usepackage{flafter,fnpos}
 \usepackage{booktabs}
+\usepackage{supertabular}
+%\usepackage{xtab}
 \usepackage{amsmath}
 \usepackage{placeins}
 \makeFNbottom
 \makeFNbelow
-\usepackage{microtype}
+\usepackage{microtype}[2005/10/28]
 \DisableLigatures{encoding = T1, family = tt* }%
-
+\newsavebox{\mysb}
 \makeatletter
 %</driver>
 %<*ydoc>
@@ -194,7 +198,8 @@
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash #1}{desc@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
+  %#1}{desc@#1}}%
   \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
   \noindent\mbox{}\macroargformat{#2}\nopagebreak
   \macroline*[0.2\baselineskip]%
@@ -218,7 +223,8 @@
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash #1}{desc@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
+  %#1}{desc@#1}}%
   \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
   \noindent\mbox{}\macroargformat{#2}\nopagebreak
   \macroline*[0.2\baselineskip]%
@@ -242,7 +248,7 @@
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{desc@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{desc@#1}}%
   \css{begin}%
   \{\macrolink{\macroformat{\textcolor{macrodesccolor}{#1}}}\}%
   \noindent\mbox{}\macroargformat{#2}\\*\relax
@@ -262,7 +268,8 @@
 }
 \def\DescribeScriptS*#1#2{%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Script #1}{script@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Script 
+  %#1}{script@#1}}%
   \scriptformat{\textcolor{scriptcolor}{#1}}%
   \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
   \nopagebreak
@@ -273,7 +280,8 @@
 }
 \def\DescribeOptionS*#1{%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Option #1}{option@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Option 
+  %#1}{option@#1}}%
   \optionformat{\textcolor{optioncolor}{#1}}%
   \noindent\mbox{}\macroline*[0.2\baselineskip]%
   \nopagebreak
@@ -301,10 +309,12 @@
     {\let\macrolink\relax}%
     {\def\macrolink{\hyperlink{desc@#1.3}}}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash #1}{impl@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
+  %#1}{impl@#1}}%
   \macrolink{\macroformat{%
     \textcolor{macroimplcolor}{\textbackslash #1}}}%
   \\*[\smallskipamount]%
+  \noindent
   \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
 }
 
@@ -327,7 +337,7 @@
     {\let\macrolink\relax}%
     {\def\macrolink{\hyperlink{desc@#1.3}}}%
   \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{impl@#1}}%
+  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{impl@#1}}%
   \macrolink{\macroformat{%
     \textcolor{macroimplcolor}{#1}}}%
   \\*[\smallskipamount]%
@@ -346,10 +356,11 @@
 }
 \newcommand*{\aftermacroargs}{%
   \@ifnextchar\begin
-    {\\*[-2ex]\ignorespaces}%
-    {\\*[\smallskipamount]\ignorespaces}%
+    {\\*[0ex]\noindent\ignorespaces}%
+    {\\*[\smallskipamount]\noindent\ignorespaces}%
 }
 \newcommand*{\imacroargX}[1]{%
+  \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
   \ifnum\c@macroargs>1
     \newline
   \fi
@@ -770,7 +781,7 @@
 \EnableCrossrefs
 %\CodelineIndex
 \RecordChanges
-%\OnlyDescription
+\OnlyDescription
 \listfiles
 \begin{document}
   \DocInput{tikz-timing.dtx}
@@ -838,7 +849,7 @@
 % \DoNotIndex{\ignorespaces,\lccode,\sffamily,\@gobble,\@ifundefined,\@for,\or}
 % \DoNotIndex{\@firstoftwo,\@ifnextchar,\@namedef,\@nameuse,\@secondoftwo}
 % \DoNotIndex{\@temptokena,\toks@,\BODY,\do,\g@addto@macro,\lowercase,\uppercase,\the}
-% \DoNotIndex{\height,\width,\slope,\style,\draw,\path,\newdraw,\lastchar,\currentchar}
+% \DoNotIndex{\height,\width,\slope,\style,\draw,\path,\newdraw,\newdrawns}
 % \DoNotIndex{\dslope,\zslope}
 %
 % \ifpdf
@@ -3760,10 +3771,14 @@
 %<*lib-clockarrows>
 %  \fi
 %    \begin{macrocode}
+\iffalse
 \tikztiming@iftrans{CC}%
   {\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC}%
   {\PackageError{\@currname}{No 'CC' transition defined by the main tikz-timing 
   package.}{}{}}%
+\else
+  \let\tikztiming@trans@C@normal@C\tikztiming@trans@CC
+\fi
 
 \tikztimingdef{CC}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
