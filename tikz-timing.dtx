@@ -673,9 +673,26 @@
 % \begin{environment}{tikztimingexampletable}
 %    \begin{macrocode}
 \newenvironment{tikztimingexampletable}[1][]{%
+  \begingroup
+  \setcounter{tikztiming@nrows}{0}%
+  \def\tikztiming@maxwidth{0.0}%
+  \let\extracode\tikztiming@extracode
+  \let\tablegrid\tikztiming@tablegrid
+  \let\fulltablegrid\tikztiming@fulltablegrid
+  \let\horlines\tikztiming@horlines
+  \let\vertlines\tikztiming@vertlines
+  \let\tablerules\tikztiming@tablerules
+  \def\rowdist{\tikztiming@rowdist}%
+  \def\coldist{\tikztiming@coldist}%
+  \def\nrows{\the\c@tikztiming@nrows}%
+  \def\twidth{\tikztiming@maxwidth}%
+  \def\background{\pgfonlayer{background}\scope}%
+  \def\endbackground{\endscope\endpgfonlayer}%
   \tikzpicture[timing/table,#1]%
-  \coordinate (last row) at (0,-1);
-  \coordinate (label pos) at (-1,0);
+    \coordinate (last row)  at (0,-1);
+    \coordinate (label pos) at (-1,0);
+    \coordinate (timing/table/top left) at (0,1);
+    \coordinate (timing/table/bottom right) at (0,0);
   \collect@body\tikztimingexampletable@
 }{}%
 %    \end{macrocode}
@@ -685,9 +702,9 @@
 %    \begin{macrocode}
 \def\tikztimingexampletable@#1{%
   \tikztimingexampletable@row#1\endtikztimingtable@
-  \path (0,-1) +(-\tikztiming@coldist,0.5*\tikztiming@rowdist) node
+  \path (0,-1) +(-1*{(\tikztiming@coldist)},0.5*{(\tikztiming@rowdist)}) node
     [anchor=base east,timing/name] {Characters};
-  \path (0,-1) +(0,0.5*\tikztiming@rowdist) node
+  \path (0,-1) +(0,0.5*{(\tikztiming@rowdist)}) node
     [anchor=base west,timing/name] {Resulting Diagram};
   \draw [line width=\lightrulewidth]
      (current bounding box.north west) +(-1,-2) --
@@ -699,6 +716,7 @@
      (current bounding box.south west) +(0,-1) --
       ($ (current bounding box.south east) +(0,0) $);
   \endtikzpicture
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -706,15 +724,21 @@
 % \begin{macro}{\tikztimingexampletable@row}
 %    \begin{macrocode}
 \def\tikztimingexampletable@row#1\\{%
+  \addtocounter{tikztiming@nrows}{1}%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
-  \path (last row) +(0,-1*\tikztiming@rowdist) coordinate (last row);
-  \path (last row) +(-1*\tikztiming@coldist,0) node
-    [anchor=base east,timing/name]
-    {\ttfamily\tikztiming@text};
-  \timing at (last row) {#1};
+  \coordinate (last row) at ($ (last row) - (0,\tikztiming@rowdist) $);
+  \node [anchor=base east,timing/name] (last row text)
+    at ($ (last row) - (\tikztiming@coldist,0) $)
+    {\ttfamily\expandafter\ignorespaces\tikztiming@text\unskip\strut};
+  \@ifnextchar{[}%
+  {\tikztiming@tabletiming}%
+  {\tikztiming@tabletiming[]}%
+  #1\relax%
+  \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
+    coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
   \@ifnextchar\extracode
-    {\tikztimingextracode}%
+    {\tikztiming@extracode}%
     {%
       \@ifnextchar\endtikztimingtable@
         {\@gobble}{\tikztimingexampletable@row}%
@@ -726,7 +750,7 @@
 % \begin{macro}{\tikztimingfullexampletable}
 %    \begin{macrocode}
 \def\tikztimingfullexampletable{
-  \begin{tikzpicture}[x=1em,y=1em,font=\sffamily]
+  \begin{tikzpicture}[timing/picture,x=1em,y=1em,font=\sffamily]
     \tikzset{timing/d/background/.style={fill={gray!25},fill opacity=0.5}}%
     \let\chars\tikztiming@chars@default
     \node (charnode) at (0,0) {%
@@ -1179,29 +1203,25 @@
 % The following macros are only defined inside a \env{tikztimingtable} after the 
 % macro \cs{extracode}. They are useful for drawing additional material.
 %
+% \DescribeEnv{background}{\oarg{TikZ Settings}\\\meta{drawing commands}}
+% This environment can be used to draw material on the |background| layer and is 
+% an abbreviation for:\\[\medskipamount]
+% |\begin{pgfonlayer}{background}|\\
+% |  \begin{scope}|\oarg{TikZ Settings}\\
+% |    |\meta{drawing commands}\\
+% |  \end{scope}|\\
+% |\end{pgfonlayer}|\\
 %
-% \DescribeMacro{tablegrid}{\oarg{TikZ Settings}}
-% \DescribeMacro*{fulltablegrid}{\oarg{TikZ Settings}}
-% After \css{extracode} this macros draw a grid in the background of the table.
-% The first one draws a separate grid for each row and the second one a big grid 
-% over all rows.
+% \DescribeMacro{tablegrid}{\meta{*}\oarg{TikZ Settings}}
+% After \css{extracode} this macro draws a grid in the background of the table.
+% A separate grid is drawn for each row. The normal version draws all grids with 
+% the width of the widest row while the star version draws them with the width 
+% of the corresponding row. Because this macro draws material into the |background|
+% layer it must not be placed inside a |pgfonlayer| environment itself.
 %
-% \DescribeMacro{rowdist}{}
-% \DescribeMacro*{coldist}{}
-% This macros return the row and column distance.  There are useful for drawing 
-% additional material relative to the rows and columns.  This values can be set 
-% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
-% and \texttt{timing/coldist} settings which are explained in 
-% Section~\ref{sec:styles}.
-%
-% \DescribeMacro{nrows}{}
-% Returns the number of rows in the current table. Useful for use in 
-% \cs{horlines}.
-%
-% \DescribeMacro{twidth}{}
-% Returns the width (as multiple of the `period width') of the longest timing 
-% diagram line in the table.\\Example: If the longest line would be
-% `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
+% \DescribeMacro{fulltablegrid}{\oarg{TikZ Settings}}
+% After \css{extracode} this macro draws a big grid over all rows in the 
+% background of the table.
 %
 % \DescribeMacro{horlines}{\oarg{TikZ Settings}\marg{list}}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
@@ -1220,12 +1240,35 @@
 % If the list is empty the default `|0,1,...,\twidth|' is used which draws lines 
 % after every period width.
 %
+% \DescribeMacro{tableheader}{\oarg{TikZ Settings}\marg{Description 
+% Title}\marg{Signal Title}}
+% This macro adds a table head row on top of the table. The two mandatory 
+% arguments provide the header text for the description and signal columns.
+%
 % \DescribeMacro{tablerules}{\oarg{TikZ Settings}}
 % This macro adds top and bottom rules to the table in the same (or at least 
 % very similar) way as the \texttt{booktabs} package is doing it for normal 
 % \texttt{tabular}s. The current bounding box is used to calculate the needed 
-% rule length, which makes this macro position dependent if further code is 
-% changing the bounding box.
+% rule length, which makes this macro position dependent if further code
+% changes bounding box. If the \cs{tableheader} macro was used beforehand it 
+% also draws a thinner horizontal line between the table head and body.
+%
+% \DescribeMacro{nrows}{}
+% Returns the number of rows in the current table. Useful for use in 
+% \cs{horlines}.
+%
+% \DescribeMacro{rowdist}{}
+% \DescribeMacro*{coldist}{}
+% This macros return the row and column distance.  There are useful for drawing 
+% additional material relative to the rows and columns.  This values can be set 
+% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
+% and \texttt{timing/coldist} settings which are explained in 
+% Section~\ref{sec:styles}.
+%
+% \DescribeMacro{twidth}{}
+% Returns the width (as multiple of the `period width') of the longest timing 
+% diagram line in the table. Example: If the longest line would be
+% `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
 %
 % \subsubsection*{Positions \& Scalings inside the Table}
 % The first row starts at $y=0$ and the next rows are each
@@ -1622,6 +1665,7 @@
 % \bigskip
 % \begin{example}
 % \centering
+% \iffalse
 % \begin{examplecode}
 %   \begin{tabular}{lcT}
 %     \toprule
@@ -1633,6 +1677,7 @@
 %     \bottomrule
 %   \end{tabular}
 % \end{examplecode}
+% \fi
 % \caption{Example for use of Timing Column Type.}\label{exa:columntype}
 % \end{example}
 %
@@ -1655,6 +1700,7 @@
 % settings can be given as a library option, but without the `|timing/|' path.
 % 
 % \bigskip
+% \iffalse
 % \begin{table}[H]
 %   \caption{Timing tables using `nice' (left) and normal (right) Layout. For 
 %   comparison a \texttt{\{tabular\}\{rT\}} table is placed in grey below the 
@@ -1694,6 +1740,7 @@
 %   \end{tikztimingtable}
 %   \hfill\hbox{}^^A
 % \end{table}
+% \fi
 %
 % \clearpage
 % \subsection{Counter Character}
@@ -1740,6 +1787,7 @@
 % \end{table}
 %
 % \subsubsection*{Example:}
+% \iffalse
 % \noindent
 % Counter character `|Q|' with base 16 (hexadecimal). `|R|' resets the 
 % counter:\\*\noindent
@@ -1752,6 +1800,7 @@
 % \tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}%
 % \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
 % }%
+% \fi
 
 % \clearpage
 % \section{Examples}
@@ -2057,7 +2106,7 @@
 \tikzset{%
   timing/.cd,
   initchar/.value required,
-  initchar/.code={\ifx\lastchar\empty\uppercase{\def\lastchar{#1}}\fi},
+  initchar/.code={\ifx\tikztiming@lastchar\empty\uppercase{\def\tikztiming@lastchar{#1}}\fi},
   metachar/.code 2 args={\tikztimingmetachar{#1}{#2}},
   grid/.style={timing,help lines},
   picture/.style={timing,line width=0.15ex},
@@ -2143,15 +2192,15 @@
       \tikztiming@testoptarg#1\relax\relax%
     \fi
     \def\@tempa{\begin{tikzpicture}[timing/intext,}%]}[
-    \expandafter\@tempa\settings]
-      \@ifundefined{tikztiming@initcode@\lastchar}%
+    \expandafter\@tempa\tikztiming@settings]
+      \@ifundefined{tikztiming@initcode@\tikztiming@lastchar}%
         {}%
-        {\@nameuse{tikztiming@initcode@\lastchar}}%
-      \ifx\lastchar\empty\else
-      \@ifundefined{\tikztiming@prefix\lastchar @start}%
-        {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
+        {\@nameuse{tikztiming@initcode@\tikztiming@lastchar}}%
+      \ifx\tikztiming@lastchar\empty\else
+      \@ifundefined{\tikztiming@prefix\tikztiming@lastchar @start}%
+        {\PackageWarning{tikz-timing}{Start value for timing character '\tikztiming@lastchar' 
         is not defined and will be ignored!}{}{}{}}%
-        {\tikztiming@nameaddtostr{\lastchar @start}{}}%
+        {\tikztiming@nameaddtostr{\tikztiming@lastchar @start}{}}%
       \fi
       \tikztiming@#2\relax
       %\message{^^J\meaning\tikztiming@str^^J}%
@@ -2172,9 +2221,9 @@
 %    \begin{macrocode}
 \def\tikztiming@testoptarg#1#2\relax{%
   \ifx\relax#2\relax
-    \uppercase{\def\lastchar{#1}}%
+    \uppercase{\def\tikztiming@lastchar{#1}}%
   \else
-    \def\settings{#1#2}%
+    \def\tikztiming@settings{#1#2}%
   \fi
 }
 %    \end{macrocode}
@@ -2183,9 +2232,9 @@
 % \begin{macro}{\tikztiming@init}
 %    \begin{macrocode}
 \def\tikztiming@init{%
-    \let\lastchar\empty%
+    \let\tikztiming@lastchar\empty%
     \let\currentchar\empty
-    \let\settings\empty
+    \let\tikztiming@settings\empty
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \setcounter{tikztimingtranspos}{0}%
@@ -2277,16 +2326,16 @@
 %    \begin{macrocode}
 \def\timing@@@init[#1]{%
   \ifx\relax#1\relax\else
-    \uppercase{\def\lastchar{#1}}%
+    \uppercase{\def\tikztiming@lastchar{#1}}%
   \fi
-  \@ifundefined{tikztiming@initcode@\lastchar}%
+  \@ifundefined{tikztiming@initcode@\tikztiming@lastchar}%
     {}%
-    {\@nameuse{tikztiming@initcode@\lastchar}}%
-  \ifx\lastchar\empty\else
-  \@ifundefined{\tikztiming@prefix\lastchar @start}%
-    {\PackageWarning{tikz-timing}{Start value for timing character '\lastchar' 
+    {\@nameuse{tikztiming@initcode@\tikztiming@lastchar}}%
+  \ifx\tikztiming@lastchar\empty\else
+  \@ifundefined{\tikztiming@prefix\tikztiming@lastchar @start}%
+    {\PackageWarning{tikz-timing}{Start value for timing character '\tikztiming@lastchar' 
     is not defined and will be ignored!}{}{}{}}%
-    {\tikztiming@nameaddtostr{\lastchar @start}{}}%
+    {\tikztiming@nameaddtostr{\tikztiming@lastchar @start}{}}%
   \fi
   \tikztiming@
 }
@@ -2337,7 +2386,7 @@
 % \begin{macro}{\tikztiming@aftercode@G}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@G{%
-  \let\lastchar\secondlastchar
+  \let\tikztiming@lastchar\secondlastchar
   \let\tikztimingwidth\lasttikztimingwidth
 }
 %    \end{macrocode}
@@ -2346,7 +2395,7 @@
 % \begin{macro}{\tikztiming@aftercode@g}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@g{%
-  \let\lastchar\secondlastchar
+  \let\tikztiming@lastchar\secondlastchar
   \let\tikztimingwidth\lasttikztimingwidth
 }
 %    \end{macrocode}
@@ -2355,7 +2404,7 @@
 % \begin{macro}{\tikztiming@aftercode@S}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@S{%
-  \let\lastchar\secondlastchar
+  \let\tikztiming@lastchar\secondlastchar
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2363,7 +2412,7 @@
 % \begin{macro}{\tikztiming@aftercode@s}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@s{%
-  \let\lastchar\secondlastchar
+  \let\tikztiming@lastchar\secondlastchar
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2373,7 +2422,7 @@
 \def\tikztiming@beforenextcode@D@edge@{%
   \if D\currentchar\else
     \if d\currentchar\else
-      \def\lastchar{D}%
+      \def\tikztiming@lastchar{D}%
     \fi
   \fi
 }
@@ -2385,7 +2434,7 @@
 \def\tikztiming@beforenextcode@d@edge@{%
   \if D\currentchar\else
     \if d\currentchar\else
-      \def\lastchar{D}%
+      \def\tikztiming@lastchar{D}%
     \fi
   \fi
 }
@@ -2395,7 +2444,7 @@
 % \begin{macro}{\tikztiming@initcode@D}
 %    \begin{macrocode}
 \def\tikztiming@initcode@D{%
-  \def\lastchar{D@edge@}%
+  \def\tikztiming@lastchar{D@edge@}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2403,7 +2452,7 @@
 % \begin{macro}{\tikztiming@initcode@d}
 %    \begin{macrocode}
 \def\tikztiming@initcode@d{%
-  \def\lastchar{d@edge@}%
+  \def\tikztiming@lastchar{d@edge@}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2596,21 +2645,21 @@
     \let\tikztimingwidth\pgfmathresult
     \def\currentchar{#1}%
     \uppercase{\def\currentcharuc{#1}}%
-    \@ifundefined{tikztiming@beforenextcode@\lastchar}%
+    \@ifundefined{tikztiming@beforenextcode@\tikztiming@lastchar}%
       {}%
-      {\@nameuse{tikztiming@beforenextcode@\lastchar}}%
+      {\@nameuse{tikztiming@beforenextcode@\tikztiming@lastchar}}%
     \@ifundefined{tikztiming@beforecode@\currentchar}%
       {}%
       {\@nameuse{tikztiming@beforecode@\currentchar}}%
-    \@ifundefined{\tikztiming@prefix\lastchar\currentchar}%
-      {\@ifundefined{\tikztiming@prefix\lastchar\currentcharuc}%
-        {\PackageWarning{tikz-timing}{Timing transition '\lastchar\currentchar' 
+    \@ifundefined{\tikztiming@prefix\tikztiming@lastchar\currentchar}%
+      {\@ifundefined{\tikztiming@prefix\tikztiming@lastchar\currentcharuc}%
+        {\PackageWarning{tikz-timing}{Timing transition '\tikztiming@lastchar\currentchar' 
         is not defined and will be ignored!}{}{}{}}%
-        {\tikztiming@output{\lastchar}{\currentcharuc}}%
+        {\tikztiming@output{\tikztiming@lastchar}{\currentcharuc}}%
       }%
-      {\tikztiming@output{\lastchar}{\currentchar}}%
-    \let\secondlastchar\lastchar
-    \let\lastchar\currentcharuc
+      {\tikztiming@output{\tikztiming@lastchar}{\currentchar}}%
+    \let\secondlastchar\tikztiming@lastchar
+    \let\tikztiming@lastchar\currentcharuc
     \@ifundefined{tikztiming@aftercode@\currentcharuc}%
       {}%
       {\@nameuse{tikztiming@aftercode@\currentcharuc}}%
@@ -2664,7 +2713,7 @@
       #1%
       ] {#2}%
   }%
-  \def\lastchar{D@edge@}%
+  \def\tikztiming@lastchar{D@edge@}%
   }{%
     \endgroup
     \PackageWarning{tikz-timing}{Ignoring text for character 
@@ -3021,14 +3070,15 @@
   \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
   \let\vertlines\tikztiming@vertlines
-  \let\tablerules\tikztiming@tablerules
+  \def\tablerules{\tikztiming@tablerules}%
+  \def\tableheader{\tikztiming@tableheader}%
   \def\rowdist{\tikztiming@rowdist}%
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
   \def\twidth{\tikztiming@maxwidth}%
   \tikzpicture[timing/table,#1]%
     \coordinate (last row)  at (0,\rowdist);
-    \coordinate (label pos) at (-1*\coldist,0);
+    \coordinate (label pos) at (-1*{(\coldist)},0);
     \coordinate (timing/table/top left) at (0,1);
     \coordinate (timing/table/bottom right) at (0,0);
   \collect@body\tikztiming@table
@@ -3053,9 +3103,9 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\tikztimingextracode}[2]{Token to gobble}{Extra drawing code}
+% \begin{macro}{\tikztiming@extracode}[2]{Token to gobble}{Extra drawing code}
 %    \begin{macrocode}
-\long\def\tikztimingextracode#1#2\endtikztimingtable@{%
+\long\def\tikztiming@extracode#1#2\endtikztimingtable@{%
   \path let
      \p1 = (timing/table/top left),
      \p2 = (timing/table/bottom right)
@@ -3102,11 +3152,11 @@
     \endgroup
   \fi
   \ifx\tikztiming@emptycell#2%
-    \def\next{\tikztimingtable@row@@{#1}{}}%
+    \def\tikztiming@next{\tikztimingtable@row@@{#1}{}}%
   \else
-    \def\next{\tikztimingtable@row@@{#1}{#2}}%
+    \def\tikztiming@next{\tikztimingtable@row@@{#1}{#2}}%
   \fi
-  \next
+  \tikztiming@next
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -3115,9 +3165,9 @@
 %    \begin{macrocode}
 \def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
-  \path ($ (last row) + (0,-1*\rowdist) $) coordinate (last row);
-  \path ($ (last row) + (-1*\coldist,0) $) node [anchor=base east,timing/name]
-    {\tikztiminglabel{#1}};
+  \coordinate (last row) at ($ (last row) - (0,\tikztiming@rowdist) $);
+  \node [anchor=base east,timing/name] (last row text)
+    at ($ (last row) - (\tikztiming@coldist,0) $) {\ignorespaces #1\unskip};
   \@ifnextchar{[}%
     {\tikztiming@tabletiming}%
     {\tikztiming@tabletiming[]}%
@@ -3130,7 +3180,7 @@
   \@ifnextchar\extracode
     {%
       \let\extracode\relax
-      \tikztimingextracode
+      \tikztiming@extracode
     }%
     {%
       \@ifnextchar\endtikztimingtable@
@@ -3143,14 +3193,17 @@
 % \begin{macro}{\tikztiming@tabletiming}
 %    \begin{macrocode}
 \def\tikztiming@tabletiming[#1]#2\relax{%
-  \let\lastchar\empty
-  \let\settings\empty
+  \let\tikztiming@lastchar\empty
+  \let\tikztiming@settings\empty
   \ifx\relax#1\relax\else
     \tikztiming@testoptarg#1\relax\relax
   \fi
-  \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\settings]
+  \ifx\tikztiming@lastchar\empty
+    \def\tikztiming@lastchar{}%
+  \fi
+  \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\tikztiming@settings]
     at (last row)}%
-  \expandafter\@tempa\expandafter{\expandafter[\lastchar]#2};
+  \expandafter\@tempa\expandafter{\expandafter[\tikztiming@lastchar]#2};
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3171,13 +3224,32 @@
 %
 % \begin{macro}{\tikztiming@tablegrid}[1]{Optional settings}
 %    \begin{macrocode}
-\newcommand*\tikztiming@tablegrid[1][]{%
+\def\tikztiming@tablegrid{%
+  \@ifnextchar{*}%
+    {\tikztiming@tablegrid@{row\row.high end}}%
+    {\tikztiming@tablegrid@{timing/table/top right}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablegrid@@}[2]{Optional settings}{End point}
+%    \begin{macrocode}
+\def\tikztiming@tablegrid@#1{%
+  \@ifnextchar{[}%]
+    {\tikztiming@tablegrid@@{#1}}%
+    {\tikztiming@tablegrid@@{#1}[]}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tablegrid@@}[2]{Optional settings}{End point}
+%    \begin{macrocode}
+\def\tikztiming@tablegrid@@#1[#2]{%
   \begin{pgfonlayer}{background}
-    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#1]
-      \foreach \y in {1,...,\nrows} {%
-        \draw {[shift={($ (timing/table/bottom left) + (0,\y*\rowdist) - 
-        (0,\rowdist) $)}] let \p1 = (timing/table/bottom right) in (0,0) grid 
-        (\x1,1)};
+    \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/table/grid,#2]
+      \foreach \row in {1,...,\nrows} {%
+        \draw {[shift={(row\row.low start)}]
+          let \p1 = (#1) in (0,0) grid (\x1,1)};
       }%
     \endscope
   \end{pgfonlayer}
@@ -3185,18 +3257,50 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@tableheader}[3]{Optional Settings}{Text 
+% title}{Diagram title}
+%    \begin{macrocode}
+\newcommand*\tikztiming@tableheader[3][]{%
+  \path [timing/table/header,#1]
+    (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)}) node
+      [anchor=base east] {\ignorespaces #2\unskip\strut}
+    (0,1.5*{(\tikztiming@rowdist)}) node
+      [anchor=base west] {\ignorespaces #3\unskip\strut}
+  ;
+  \tikztiming@tableheadtrue
+}
+\newif\iftikztiming@tablehead
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@tablerules}[1]{Optional Settings}
 %    \begin{macrocode}
 \newcommand*\tikztiming@tablerules[1][]{%
-    \draw [timing/table/rules,#1] let
-      \p1 = (current bounding box.north west),
-      \p2 = (current bounding box.south east),
+  \begin{scope}[#1]
+    \coordinate (NW) at (current bounding box.north west);
+    \coordinate (SE) at (current bounding box.south east);
+    %
+    \draw [timing/table/rules]
+    let
+      \p1 = (NW),
+      \p2 = (SE),
       \p3 = (last row)
     in
-      (\x1-\tabcolsep,\rowdist) -- (\x2+\tabcolsep,\rowdist)
-      ($ (\x1-\tabcolsep,\y3) - (0,\rowdist-1) $) --
-      ($ (\x2+\tabcolsep,\y3) - (0,\rowdist-1) $)
+      ($ (\x1-\tabcolsep,\y3) - (0,.5*{(\rowdist)}) $) --
+      ($ (\x2+\tabcolsep,\y3) - (0,.5*{(\rowdist)}) $)
+     \iftikztiming@tablehead
+      (\x1-\tabcolsep,2.5*{(\rowdist)}) -- (\x2+\tabcolsep,2.5*{(\rowdist)})
+     \fi
     ;
+    \draw
+     \iftikztiming@tablehead [timing/table/midrules] \else [timing/table/rules] \fi
+    let
+      \p1 = (NW),
+      \p2 = (SE)
+    in
+      (\x1-\tabcolsep,\rowdist) -- (\x2+\tabcolsep,\rowdist)
+    ;
+  \end{scope}
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3209,11 +3313,12 @@
     \ifx\list\empty
       \def\list{1,2,...,\nrows}%
     \fi
-    \foreach \row in \list%
+    \foreach \row in \list {%
       \draw [timing/table/lines,#1] let
         \p1 = (timing/table/bottom right)
       in
-        (0,\rowdist-\row*\rowdist) -- +(\x1,0);
+        ($ (0,\rowdist) -  (0,\row * {(\rowdist)}) $) -- +(\x1,0);
+    }%
   \endgroup
 }
 %    \end{macrocode}
@@ -4167,11 +4272,11 @@
       \def\next{\tikztiming@#1\relax}%
     \else
       \tikztiming@output@flush
-      \let\tikztiming@overlay@lastchar\lastchar
+      \let\tikztiming@overlay@lastchar\tikztiming@lastchar
       \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
       \tikztiming@#1\relax
       \tikztiming@output@flush
-      \let\lastchar\tikztiming@overlay@lastchar
+      \let\tikztiming@lastchar\tikztiming@overlay@lastchar
       \tikztiming@addtostr{ (timing@overlay@start) }%
       \def\next{\tikztiming@#2}%
     \fi
@@ -4262,7 +4367,7 @@
     \tikztiming@testoptarg#1\relax\relax
   \fi
   \ifx\tikztiming@lastchar\empty
-    \def\tikztiming@lastchar{@}%
+    \def\tikztiming@lastchar{}%
   \fi
   \expandafter\scope\expandafter[\tikztiming@settings]%
     \begingroup
