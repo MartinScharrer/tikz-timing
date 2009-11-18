@@ -1801,7 +1801,7 @@
 % \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
 % }%
 % \fi
-
+%
 % \clearpage
 % \section{Examples}
 % This section shows some examples by putting either the full source code or 
@@ -2202,7 +2202,7 @@
         is not defined and will be ignored!}{}{}{}}%
         {\tikztiming@nameaddtostr{\tikztiming@lastchar @start}{}}%
       \fi
-      \tikztiming@#2\relax
+      \tikztiming@parser#2\relax
       %\message{^^J\meaning\tikztiming@str^^J}%
       \path[use as bounding box] (0,0) rectangle 
       (\timingwidth*\tikztimingwidth,\timingheight);%
@@ -2247,74 +2247,74 @@
 %    \begin{macrocode}
 \def\timing{%
   \@ifnextchar{[}%
-    {\timing@}%
-    {\timing@[]}%
+    {\tikz@timing@}%
+    {\tikz@timing@[]}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@}[1]{Optional TikZ Settings}
+% \begin{macro}{\tikz@timing@}[1]{Optional TikZ Settings}
 %    \begin{macrocode}
-\def\timing@[#1]{%
+\def\tikz@timing@[#1]{%
   \@ifnextchar{a}%
-    {\timing@at{#1}}%
+    {\tikz@timing@at{#1}}%
     {\PackageWarning{tikz-timing}{The \string\timing\space command awaits now an 
     `at' before the coordinate, like the \string\node\space command is doing.  
     Please update your source code to ensure compatibility with newer 
     versions}{}{}{}%
      \@ifnextchar{+}%
-      {\timing@@{#1}}%
+      {\tikz@timing@@{#1}}%
       {\@ifnextchar(%)
-        {\timing@@{#1}}%
-        {\timing@@{#1}++(0,0)}%
+        {\tikz@timing@@{#1}}%
+        {\tikz@timing@@{#1}++(0,0)}%
       }%
     }%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@at}[1]{Optional TikZ Settings}
+% \begin{macro}{\tikz@timing@at}[1]{Optional TikZ Settings}
 %    \begin{macrocode}
-\def\timing@at#1at#2(#3){%
-  \timing@@@{#1}{#2(#3)}%
+\def\tikz@timing@at#1at#2(#3){%
+  \tikz@timing@@@{#1}{#2(#3)}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@}[3]{Optional TikZ Settings}{Potential `+' or 
+% \begin{macro}{\tikz@timing@@}[3]{Optional TikZ Settings}{Potential `+' or 
 % empty}{Coordinate}
 %    \begin{macrocode}
-\def\timing@@#1#2(#3){%
-  \timing@@@{#1}{#2(#3)}%
+\def\tikz@timing@@#1#2(#3){%
+  \tikz@timing@@@{#1}{#2(#3)}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@}[3]{Optional TikZ Settings}{Coordinate}{Timing 
+% \begin{macro}{\tikz@timing@@@}[3]{Optional TikZ Settings}{Coordinate}{Timing 
 % Characters}
 %    \begin{macrocode}
-\def\timing@@@#1#2#3{%
+\def\tikz@timing@@@#1#2#3{%
   \begingroup
     \tikztiming@init
     \let\tikz@alias=\pgfutil@empty%
     \begin{scope}[shift={#2},timing,#1]%
       \@ifnextchar{[}%
-        {\timing@@@init}%
-        {\timing@@@init[]}%
+        {\tikz@timing@@@init}%
+        {\tikz@timing@@@init[]}%
       #3\relax
       %\message{^^J\meaning\tikztiming@str^^J}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
     \end{scope}%
   \endgroup
-  \timing@@@end
+  \tikz@timing@@@end
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@end}[1]{Token behind \cs{timing} macro.}
+% \begin{macro}{\tikz@timing@@@end}[1]{Token behind \cs{timing} macro.}
 %    \begin{macrocode}
-\def\timing@@@end#1;{%
+\def\tikz@timing@@@end#1;{%
   \ifx;#1;\else
     \PackageError{tikz-package}{Can not parse timing path}{}{}{}%
   \fi
@@ -2322,9 +2322,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\timing@@@init}[1]{Initial character.}
+% \begin{macro}{\tikz@timing@@@init}[1]{Initial character.}
 %    \begin{macrocode}
-\def\timing@@@init[#1]{%
+\def\tikz@timing@@@init[#1]{%
   \ifx\relax#1\relax\else
     \uppercase{\def\tikztiming@lastchar{#1}}%
   \fi
@@ -2337,7 +2337,7 @@
     is not defined and will be ignored!}{}{}{}}%
     {\tikztiming@nameaddtostr{\tikztiming@lastchar @start}{}}%
   \fi
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2388,6 +2388,16 @@
 \def\tikztiming@aftercode@G{%
   \let\tikztiming@lastchar\secondlastchar
   \let\tikztimingwidth\lasttikztimingwidth
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@parser}
+%    \begin{macrocode}
+\def\tikztiming@parser{%
+  \@ifnextchar\relax
+    {\tikztiming@parser@end}%
+    {\tikztiming@testfornum}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2457,19 +2467,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@}
-% The |\@ifnextchar\bgroup| is a trick to remove following spaces which would 
-% break the number test.
-%    \begin{macrocode}
-\def\tikztiming@{%
-  \@ifnextchar\bgroup
-    {\tikztiming@testfornum}%
-    {\tikztiming@testfornum}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@eaddtostr}[1]{Tokens to add to string.}
+% \begin{macro}{\tikztiming@eaddtostr}
+% [1]{Tokens to add to string.}
 %    \begin{macrocode}
 \def\tikztiming@eaddtostr#1{%
   \begingroup
@@ -2612,9 +2611,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@@end}
+% \subsection{Parser}
+% \begin{macro}{\tikztiming@parser@end}
 %    \begin{macrocode}
-\def\tikztiming@@end{%
+\def\tikztiming@parser@end{%
+  \def\tikztiming@output@nextchar{@}%
+  \let\tikztiming@fromchar\tikztiming@tochar
+  \edef\tikztiming@tochar{@}%
   \tikztiming@output@flush
   \global\let\tikztimingwidth\tikztimingwidth
   \tikztiming@addtostr{ coordinate (timing/end)
@@ -2622,15 +2625,18 @@
       coordinate (timing/end base) at (\x2,\y1)
       coordinate (timing/end top)  at (\x2,1+\y1)
   }%
+  \endgroup
+  \tikztiming@endhook%
 }
+\let\tikztiming@endhook\relax
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@@}[1]{Next Character}
+% \begin{macro}{\tikztiming@parser@}[1]{Next Character}
 %    \begin{macrocode}
-\def\tikztiming@@#1{%
+\def\tikztiming@parser@#1{%
   \ifx\relax#1\empty
-    \expandafter\tikztiming@@end
+    \expandafter\tikztiming@parser@end
   \else
     \let\lasttikztimingwidth\tikztimingwidth
     \tikztiming@iflower{#1}%
@@ -2675,7 +2681,7 @@
 \def\tikztiming@testfortext{%
   \@ifnextchar\bgroup
     {\tikztiming@handletext}%
-    {\tikztiming@}%
+    {\tikztiming@parser}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2719,7 +2725,7 @@
     \PackageWarning{tikz-timing}{Ignoring text for character 
     '\currentchar'!}{}{}{}%
   }%
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2739,7 +2745,7 @@
   \tikztiming@eaddtostr{%
     \newdraw
   }%
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2751,7 +2757,7 @@
   \tikztiming@eaddtostr{%
     \newdrawns
   }%
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2810,7 +2816,7 @@
     \fi
     \expandafter\tikztiming@addtostr\expandafter{\@tempa {#3} }%
   \endgroup
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2821,7 +2827,7 @@
   \@ifnextchar{!}%
     {\tikztiming@testforcode@}%
     {\@ifundefined{tikztiming@code@\meaning\@let@token}%
-      {\tikztiming@@}%
+      {\tikztiming@parser@}%
       {\csname tikztiming@code@\meaning\@let@token\expandafter
        \endcsname\@gobble}%
     }%
@@ -2837,7 +2843,7 @@
     {%
       \PackageWarning{tikz-timing}{Missing braces after '!' character. Ignoring 
       this character}{}{}{}%
-      \tikztiming@
+      \tikztiming@parser
     }%
 }
 %    \end{macrocode}
@@ -2848,7 +2854,7 @@
 \tikztiming@defcode{B}{%
   \pgfmathparse{\tikztiming@back+\tikztiming@num}%
   \let\tikztiming@back\pgfmathresult
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2858,7 +2864,7 @@
 \tikztiming@defcode{b}{%
   \pgfmathparse{\tikztiming@back+\tikztiming@num/2}%
   \let\tikztiming@back\pgfmathresult
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2868,7 +2874,7 @@
 \tikztiming@defcode{F}{%
   \pgfmathparse{\tikztiming@back-\tikztiming@num}%
   \let\tikztiming@back\pgfmathresult
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2878,7 +2884,7 @@
 \tikztiming@defcode{f}{%
   \pgfmathparse{\tikztiming@back-\tikztiming@num/2}%
   \let\tikztiming@back\pgfmathresult
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2888,7 +2894,7 @@
 \def\tikztiming@handlecode#1{%
   \tikztiming@output@flush
   \tikztiming@addtostr{ #1 }%
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2897,7 +2903,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode[#1]{%
   \tikztiming@addtostr{ [#1] }%
-  \tikztiming@
+  \tikztiming@parser
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2942,8 +2948,13 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@testfornum@}
+% The \cs{@let@token} set in \cs{tikztiming@parser} is used to handle `|0|' 
+% which can not be detected using the \cs{tikztiming@numint} value.
 %    \begin{macrocode}
 \def\tikztiming@testfornum@{%
+  \ifx0\@let@token
+    \let\tikztiming@next\tikztiming@testfornum@@
+  \else
   \ifnum0<\tikztiming@numint
     \let\tikztiming@next\tikztiming@testfornum@@
   \else
@@ -2964,7 +2975,7 @@
             {\tikztiming@testforcode}%
         }%
     }%
-  \fi
+  \fi\fi
   \tikztiming@next
 }
 %    \end{macrocode}
@@ -4269,16 +4280,16 @@
     \def\next{\tikztiming@\relax}%
   \else
     \ifx\relax#2\relax
-      \def\next{\tikztiming@#1\relax}%
+      \def\next{\tikztiming@parser#1\relax}%
     \else
       \tikztiming@output@flush
       \let\tikztiming@overlay@lastchar\tikztiming@lastchar
       \tikztiming@addtostr{ node [timing/save] (timing@overlay@start) {} }%
-      \tikztiming@#1\relax
+      \tikztiming@parser#1\relax
       \tikztiming@output@flush
       \let\tikztiming@lastchar\tikztiming@overlay@lastchar
       \tikztiming@addtostr{ (timing@overlay@start) }%
-      \def\next{\tikztiming@#2}%
+      \def\next{\tikztiming@parser#2}%
     \fi
   \fi
   \next
