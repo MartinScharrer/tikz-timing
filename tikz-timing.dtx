@@ -71,7 +71,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,columntype}^^A,clockarrows}
+\usetikztiminglibrary{arrows,either,columntype,clockarrows}
 \usetikztiminglibrary{nicetabs,counters,overlays}
 \tikzset{timing/no nice tabs}
 \makeatother
@@ -1377,6 +1377,7 @@
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
 % \end{table}}
 %
+% \clearpage
 % \section{Libraries for Further Characters}
 % All default timing characters described in Table~\ref{tab:chars} are always 
 % made available by this package. Further, less-common characters are provided 
@@ -1397,7 +1398,7 @@
 %
 % The width provided with these character is added as whitespace after the 
 % ``zero-width'' arrow: `|A2AA|' results in `\,\texttiming{A2AA}'. This space 
-% can be avoided by specifying the width to zero: `|0.A|'. Like the `|C|' and 
+% can be avoided by specifying the width to zero: `|0A|'. Like the `|C|' and 
 % `|T|' characters the subsequent arrow characters are not combined into one.
 %
 % The arrow tips can be changed using the TikZ styles for this characters. See 
@@ -1408,6 +1409,7 @@
 % \centering
 % \caption{Examples for Arrow Characters.}\label{tab:arrows}
 % \begin{tikztimingexampletable}
+%   0A \\
 %   AAA \\
 %   3A  \\
 %   3{A} \\
@@ -1417,11 +1419,14 @@
 %   3{AW} \\
 %   3{aw} \\
 %   2S 2A 3W A W \\
+%   \extracode
+%   \tablegrid*
 % \end{tikztimingexampletable}
 % \end{table}
 %
+% \clearpage
 % \subsection{Either High or Low}
-% The library `|either|' is enabling the `|E|' character which stands for 
+% The library `|either|' enables the `|E|' character which stands for 
 % `\textit{either high or low}'. This character is designed to be used with the 
 % `|H|' and `|L|' characters to display a uncertainty of a transition.  
 % Sometimes a, e.g.\ low signal can go either to high or stay at low for a 
@@ -1430,10 +1435,14 @@
 % Like the `|C|' and `|T|' characters subsequent `|E|' characters are not 
 % combined into one.
 %
+% The drawing style can be changed using the |timing/e| and 
+% |timing/e/background| TikZ style. The latter should always include 
+% `|draw=none|' to avoid drawing the background border.
+%
 % \begin{table}[H]
 % \centering
 % \caption{Examples for the `\texttt{E}' Character.}\label{tab:either}
-% \begin{tikztimingexampletable}
+% \begin{tikztimingexampletable}[timing/e/background/.style={fill=black!20}]
 %   L E H \\
 %   L D H \\
 %   H E L \\
@@ -1450,23 +1459,45 @@
 %   H E E H \\
 %   L E E L \\
 % \end{tikztimingexampletable}
+% \par\medskip
+% \makebox[\textwidth][c]{%
+%   \begin{tabular}{lc}
+%     \toprule
+%      Settings (\texttt{timing/e/.cd}) & Resulting Diagram (\texttt{LL EE HH})
+%      \\\midrule
+%     \texttt{.style=\{dotted,gray\}} & 
+%     \texttiming[timing/e/.style={dotted,gray}]{LL EE HH} \\
+%     \texttt{background/.style=\{draw=none,fill=gray\}} & 
+%     \texttiming[timing/e/background/.style={draw=none,fill=gray}]
+%     {LL EE HH} \\
+%     \bottomrule
+%   \end{tabular}
+% }%
 % \end{table}
 %
+% \clearpage
 % \subsection{Overlays}
-% The library `|overlays|' is enabling the `|O|' character which allows the 
-% overlaying of two different groups of timing characters. This character awaits 
-% two groups enclosed by braces which are drawn in the given order. The position 
-% before the `|O|' character is saved and restored to draw the second group.  
-% The characters of the first group connect to the characters before the `|O|' 
-% modifier but then simply end.
-% The characters following after the groups connect to the characters of the 
-% second group as normal.
+% The library `|overlays|' enables the `|O|' character which allows the 
+% overlaying of timing characters. This character awaits a set of character 
+% enclosed by braces which are drawn as normal. The position before the `|O|' 
+% character is then restored and the following characters are drawn over them.  
+% Older versions of this character awaited a second set of characters in braces 
+% but this braces are now optional. The exact syntax is:\\[\smallskipamount]
+% \hspace*{2em} \meta{chars before} |O|\marg{background chars} \marg{foreground 
+% chars} \meta{chars after}\\[\smallskipamount]
+% or, without second set of braces, but equal:\\[\smallskipamount]
+% \hspace*{2em} \meta{chars before} |O|\marg{background chars} \meta{foreground 
+% chars, \dots}\\
+%
 % It is the responsibility of the user to make sure that the lines drawn by the 
-% first group reconnect to the main lines or do something else useful.  The 
-% modifier `|;|' can be used in the first group to restart the drawn line, e.g.\ 
-% to change to a different color. This is not done automatically to give the 
-% user the freedom if and where this should happen. It is recommended to start 
-% and end both groups with the same character to avoid ugly connection points.  
+% first set reconnect to the main lines or do something else useful.  The 
+% modifier `|;|' can be used to restart the drawn line, e.g.\ to change to a 
+% different color. This is not done automatically to give the user the freedom 
+% if and where this should happen. It is recommended to start and end the set 
+% with characters identical with the main line to avoid ugly connection points.
+%
+% Overlays can be cascaded, \ie an overlay can be included in the first argument 
+% of another overlay. 
 %
 % \begin{table}[H]
 % \centering
@@ -1478,10 +1509,250 @@
 %   LLL O{;[gray]HH.1H;}{LLH} HH \\
 %   LL  O{L;[gray]HH.1H;}{LLLH} HH \\
 %   HHH O{;[gray]HH.1L;}{LL} LLL \\
+%   DD{} O{zd}{D}d 2D \\
+%   ZZ O{Z D Z}{Z 1.1M .9Z} ZZ \\
+%   ZZ O{d Z}O{DZ}{dD} ZZ  \\
+%   ZZ O{dDZ}O{DZ}{dZ} ZZ  \\
+%   ZZ 3D O{dDZ}{DZ} ZZ  \\
+%   ZZ 3D O{dDZ}O{DZ}{dZ} ZZ  \\
+%   ZZ 3D O{3D} DZZ \\
+%   Z O{DD} ZDDD O{DDZZ} DZ  \\
+%   Z O{6D Z}{Z 4D Z} Z  \\
+%   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z  \\
 % \end{tikztimingexampletable}
 % \end{table}
 %
+% \clearpage
+% \subsection{Clock Arrows}
+% The library `|clockarrows|' is changing the `|C|' clock character to contain 
+% arrows which mark the rising and/or falling clock edge. By default the rising 
+% edges are marked. To simplify the implementation only the transition from a 
+% `|C|' to another `|C|' character contains the arrows but not transitions from 
+% or to different characters, like `|HCH|' or `|LCL|'.
 %
+% The arrows can be controlled using the TikZ styles shown in 
+% Table~\ref{tab:clockarrowstyles} below. This styles can also be used as 
+% library options. The key ``directory'' `|timing/c|' must be dropped for 
+% options, e.g.\\\hspace*{2em}
+% \cs{usetikztiminglibrary}|[rising arrows]{clockarrows}|.
+
+% \begin{table}[H]
+%   \centering
+%   \caption{TikZ Styles for Clock Arrows.}
+%   \label{tab:clockarrowstyles}
+%   \makebox[\textwidth][c]{%
+%   \begin{tabularx}{1\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont Style/Setting & Description \\
+%       \midrule
+%       timing/c/rising arrows & Mark (only) rising edges with arrows.\\
+%       timing/c/falling arrows & Mark (only) falling edges with arrows.\\
+%       timing/c/dual arrows & Mark both rising and falling edges with arrows.\\
+%       timing/c/no arrows & Do not mark any edges with arrows. (Default)\\
+%       \midrule
+%       timing/c/arrow & Style for arrows. Can be modified to change arrow tip 
+%       etc.  (Default: \{\})\\
+%       timing/c/arrow pos=\meta{0.\!-\!\!-1.} & Position of arrows, i.e.\ its 
+%       tip, on the edge.  May needs adjustment if different arrow tip shapes 
+%       are selected.  (Default: 0.95)\\
+%       timing/c/arrow tip=\meta{name} & Tip shape of arrows. See the PGF manual 
+%       for the list of arrow tips. (Default: `\texttt{to}')\\
+%       \bottomrule
+%   \end{tabularx}}
+% \end{table}
+%
+% \begin{table}[H]
+%   \caption{Examples for the Clock Arrows.}\label{tab:clockarrows}
+%   \tikzset{timing/c/dual arrows}%
+%   \centering
+%   \begin{tabular}{lc}
+%     \toprule
+%      Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{10\{C\}})
+%      \\\midrule
+%     \texttt{rising arrows} & \texttiming[timing/c/rising arrows]{10{C}} \\
+%     \texttt{falling arrows}& \texttiming[timing/c/falling arrows]{10{C}} \\
+%     \texttt{no arrows}     & \texttiming[timing/c/no arrows]{10{C}}\\
+%     \texttt{dual arrows}   & \texttiming[timing/c/dual arrows]{10{C}}\\
+%     \midrule
+%     \texttt{arrow pos=.5}  & \texttiming[timing/c/arrow pos=.5]{10{C}}\\
+%  \texttt{arrow tip=latex}  & \texttiming[timing/c/arrow tip=latex]{10{C}}\\
+%  \texttt{arrow tip=stealth}& \texttiming[timing/c/arrow tip=stealth]{10{C}}\\
+%     \bottomrule
+%   \end{tabular}
+% \end{table}
+%
+% \clearpage
+% \subsection{Column Type}
+% The library `|columntype|' uses the \pkg{array} package to define a new 
+% |tabular| column type for timing characters. The tabular column can then hold 
+% timing characters like the \env{tikztimingtable}. An initial option block 
+% `|[...]|' is taken as initial character or diagram line wide settings. The 
+% main difference between these two table types is that \env{tikztimingtable} 
+% creates a big common |tikzpicture| with one coordinate system with potential 
+% extra drawing code and the column type creates single pictures for each 
+% diagram line without common coordinate system.
+%
+% By default the letter `|T|' and left alignment are used for the timing column 
+% type. The TikZ style |timing/columntype=|\marg{letter}\marg{alignment} can be 
+% used to select different column letters and alignments. The \meta{alignment} 
+% represents here the \emph{real} column letter like `|l|', `|c|' or `|r|'.  
+% Additional column code can be added using the `|>|\marg{code}' and 
+% `|<|\marg{code}' argument of the \pkg{array} package.
+% \iffalse
+% \noindent\textbf{Examples:}\\
+% \hspace*{1em}|\tikzset{timing/columntype={T}{r}}| \hspace{2em} Change to right 
+% alignment.\\
+% \hspace*{1em}|\tikzset{timing/columntype={I}{>{code}c<{code}}| \hspace{2em} 
+% Defines letter `|I|' to create centered timing diagrams with some code before   
+% and after it.
+% \fi
+%
+% More complex column types (\eg one holding |@{..}| or |!{..}| arguments, 
+% multiple columns, etc.) must be defined manually using \pkg{array}'s 
+% \cs{newcolumntype} macro.  The default definition is equal 
+% to\\[\smallskipamount]
+% \hspace*{2em}|\newcolumntype{T}{>{\celltiming}l<{\endcelltiming}}|.
+%
+% \smallskip
+% The default `|T|' definition can be suppressed by using either the library 
+% option |notype| or a different |type| (equal to |timing/columntype|):
+% \\[\smallskipamount]
+% \hspace*{2em}|\usetikzlibrary[type={U}{l}]{columntype}|\\[\smallskipamount]
+%
+% \bigskip
+% \begin{example}
+% \centering
+% \begin{examplecode}
+%   \begin{tabular}{lcT}
+%     \toprule
+%       Description & Num & \multicolumn{1}{l}{Signal} \\
+%     \midrule
+%       Example  & A  &           HLHZLHL \\
+%       Example  & B  & [][green] HLHZLHL \\
+%       Example  & C  &   [green] HLHZLHL \\
+%     \bottomrule
+%   \end{tabular}
+% \end{examplecode}
+% \caption{Example for use of Timing Column Type.}\label{exa:columntype}
+% \end{example}
+%
+% \clearpage
+% \subsection{Nice Timing Tables}
+% The library `|nicetabs|' uses the settings of the \pkg{array} and 
+% \pkg{booktabs} packages to improve the layout of \env{tikztimingtables}. The 
+% resulting table matches a \env{tabular}|{rT}| table which uses the above 
+% packages and the |columntype| library.  The table macros \cs{tabcolsep}, 
+% \cs{arraystretch} and \cs{extrarowheight} are obeyed.
+% 
+% The original table layout is designed to produce integer coordinates between 
+% the rows to simplify the drawing of extra drawings (see \cs{extracode}). The 
+% improved layout will cause non-integer coordinates, but in-line nodes and the 
+% \cs{rowdist} and \cs{coldist} macros can be used to draw extra material 
+% relatively to the rows.
+% 
+% The TikZ styles `|timing/nice tabs|' (default) and `|timing/no nice tabs|' can 
+% be used to activate and deactivate the layout, \eg for each table. Both 
+% settings can be given as a library option, but without the `|timing/|' path.
+% 
+% \bigskip
+% \begin{table}[H]
+%   \caption{Timing tables using `nice' (left) and normal (right) Layout. For 
+%   comparison a \texttt{\{tabular\}\{rT\}} table is placed in grey below the 
+%   left table.}^^A
+%   \hbox{}\hfill
+%   \begin{tikzpicture}
+%     \node [gray] {\sffamily\ignorespaces
+%   \begin{tabular}{rT}
+%    \toprule
+%     Name    & \multicolumn{1}{l}{Timing} \\
+%    \midrule
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%    \bottomrule
+%   \end{tabular}^^A
+%     };
+%     \node {\ignorespaces
+%   \begin{tikztimingtable}[timing/nice tabs]
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%    \extracode
+%     \tableheader{Name}{Timing}
+%     \tablerules
+%   \end{tikztimingtable}^^A
+%     };
+%  \end{tikzpicture}
+%  \hfill
+%   \begin{tikztimingtable}[timing/no nice tabs]
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%     Example & HLHLLHHH \\
+%    \extracode
+%     \tableheader{Name}{Timing}
+%     \tablerules
+%   \end{tikztimingtable}
+%   \hfill\hbox{}^^A
+% \end{table}
+%
+% \clearpage
+% \subsection{Counter Character}
+% The library `|counters|' allows the easy definition of meta-characters which 
+% implement up-counters. These characters show the counter value using the 
+% `|D{}|' character and increment it by one every time they are used. A second 
+% character can be defined to (re-)set the counter to a specific value. The 
+% counter values can be decimal (base-10, default), hexadecimal (base-16) or any 
+% other base from 2 till 36. By default the lower case version of the counter 
+% character is defined to produce the same output only with half the width.
+% The style `\texttt{timing/counter/\meta{char}}' (initially empty) is used to 
+% format the graphic style of this counter.\\
+%
+% Counter characters are defined using the TikZ key
+% `\texttt{timing/counter/new=}\linebreak[3]\ignorespaces
+% \texttt{\{char=\meta{char},\meta{settings}\}}' which can also be written as 
+% `|timing/new counter|'. The \meta{settings} are TikZ keys themselves and are 
+% shown by Table~\ref{tab:countersettings}.  One or more `|new|` keys (path 
+% `|timing/counter|` removed) can be given as library options.
+%
+% \begin{table}
+%   \caption{Settings for Counter Meta-Characters}
+%   \label{tab:countersettings}
+% \begin{tabularx}{\textwidth}{>{\ttfamily}lX}
+%  \toprule
+%   \multicolumn{1}{l}{Key name} & Description \\
+%  \midrule
+%   char=\meta{char} & Defines the given \meta{char} to be a counter 
+%   meta-character. If it is a upper case character the lower case character 
+%   will produce the same output but with the half width, as long this is not 
+%   overwritten with the \texttt{half with char} key. \\
+%   reset char=\meta{char} & Defines the given \meta{char} to (re-)set the 
+%   counter value to the `width' of the character, \ie the number preceding it.  
+%   The lower case version of \meta{char} is not defined.\\
+%   base=\meta{Num 2-36} & Defines the numeric base of the counter. The default 
+%   is 10.\\
+%   half width char=\meta{char} & Defines the given \meta{char} to be the half 
+%   width version of the counter value. By default this is the lower case 
+%   version of the counter character given with \texttt{char}. An empty value 
+%   for \meta{char} deactivates the definition of a half width character, which 
+%   is the main application of this key.\\
+%  \bottomrule
+% \end{tabularx}
+% \end{table}
+%
+% \subsubsection*{Example:}
+% \noindent
+% Counter character `|Q|' with base 16 (hexadecimal). `|R|' resets the 
+% counter:\\*\noindent
+% |\tikzset{timing/new counter={char=Q,base=16,reset char=R}}|\\*\noindent
+% The counter value should be in blue text typer font.\\*\noindent
+% |\tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}|\\*\noindent
+% |\texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }|\\*\noindent
+% gives: {%
+% \tikzset{timing/counter/new={char=Q,base=16,reset char=R}}%
+% \tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}%
+% \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
+% }%
+
 % \clearpage
 % \section{Examples}
 % This section shows some examples by putting either the full source code or 
