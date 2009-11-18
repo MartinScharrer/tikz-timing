@@ -1166,7 +1166,7 @@
 % Example: |\tikz \timing [green] at (1,2) {[L]HLZDZLH};| gives `\tikz \timing 
 % [green] at (1,2) {[L]HLZDZLH};'.
 % 
-% \subsubsection*{Timing Shape Anchors}
+% \subsubsection{Timing Shape Anchors}\label{sec:timingshape}
 % Every timing diagram line produced by \cs{timing}, which includes the rows in 
 % \env{tikztimingtable}, is also a PGF shape (node) with several anchors. These 
 % are shown in Figure~\ref{fig:shape}.
@@ -2167,8 +2167,10 @@
 % \subsection{Package Header}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[2
-%    \begin{macrocode}
+% \iffalse
 %<*package>
+% \fi
+%    \begin{macrocode}
 \RequirePackage{tikz}
 
 \usetikzlibrary{calc}
@@ -2179,7 +2181,16 @@
     {\RequirePackage{environ}}
     {\RequirePackage{amsmath}}
 \fi
-
+%    \end{macrocode}
+%
+%
+% ^^A ]>>2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{General Definitions}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[2
+%
+%    \begin{macrocode}
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
@@ -2262,11 +2273,11 @@
 %
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{Macros}
+% \subsection{Text-Mode Macros}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[2
 % \begin{macro}{\texttimingbefore}
-% This macro is executed inside the tikzpicture environment of \cs{texttiming} 
+% This macro is executed inside the |tikzpicture| environment of \cs{texttiming} 
 % before the timing diagram is drawn.
 %    \begin{macrocode}
 \def\texttimingbefore{}
@@ -2274,7 +2285,7 @@
 % \end{macro}
 %
 % \begin{macro}{\texttimingafter}
-% This macro is executed inside the tikzpicture environment of \cs{texttiming} 
+% This macro is executed inside the |tikzpicture| environment of \cs{texttiming} 
 % after the timing diagram is drawn.
 %    \begin{macrocode}
 \def\texttimingafter{}
@@ -2291,6 +2302,12 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% ^^A ]>>2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{User Level Macros}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[2
 %
 % \begin{macro}{\texttiming}[2]{Optional initial character}{Timing characters}
 %    \begin{macrocode}
@@ -2511,6 +2528,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% ^^A ]>>2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Add-to-Macro Macros}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[2
 % \begin{macro}{\tikztiming@aftercode@g}
 %    \begin{macrocode}
 \def\tikztiming@aftercode@g{%
@@ -2600,6 +2622,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% ^^A ]>>2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Output Routine}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[2
 % \begin{macro}{\tikztiming@output}[2]{Character 1}{Character 2}
 %    \begin{macrocode}
 \def\tikztiming@output#1#2{%
@@ -3568,7 +3595,8 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@internaldefs}[1]{Character}
+% \begin{macro}{\tikztiming@internaldefs}
+% [1]{Character}
 %    \begin{macrocode}
 \def\tikztiming@internaldefs#1{%
   \def\draw{\noexpand\draw}%
@@ -3626,6 +3654,12 @@
 \tikztimingsetdslope{0.20}%
 \tikztimingsetzslope{0.05}%
 %    \end{macrocode}
+%
+% ^^A ]>>2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Timing Character Definition Macros}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[2
 %
 % \begin{macro}{\tikztiminguse}[1]{Character(s)}
 %    \begin{macrocode}
@@ -3688,6 +3722,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
+%
 % \begin{macro}{\tikztiming@chars}[1]{Comma to gobble}
 % Initial definition of character list. Will gobble the separation comma in 
 % front of the first character which is added to the list.
@@ -3711,7 +3746,6 @@
 }
 %    \end{macrocode}
 % \end{macro}
-%
 %
 % \begin{macro}{\tikztiming@addchar}[1]{Character}
 %    \begin{macrocode}
@@ -4866,7 +4900,6 @@
   \tikztiminguse{MD}{#1}%
 }
 \def\tikztiming@nocombine@E{}%%
-\def\tikztiming@nocombine@e{}%%
 %    \end{macrocode}
 %
 % \iffalse
