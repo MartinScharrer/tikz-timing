@@ -1039,44 +1039,63 @@
 % \let\normalfont\sffamily
 % \sffamily\centering
 % \caption{Modifiers for Timing Characters}\label{tab:modifiers}
+% \makeatletter
+% \def\Example#1{\def\@tempa{#1}\@onelevel@sanitize\@tempa
+% \hbox{\emph{E.g.:} `\hbox{\texttt{\@tempa}}' $\to$ \texttiming{#1}}}
 % \makebox[\textwidth][c]{%
-% \begin{tabularx}{1.25\textwidth}{>{\ttfamily}l>{\raggedright}X>{\ttfamily}ll}
+% \begin{tabularx}{1.25\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
 %   \toprule
 %   \normalfont
-%   Modifier Syntax  & Description & \normalfont Example & Example \\
-%                    &             & \normalfont Usage    & Result  \\\midrule
-% D\{\}D & Produces transition between two data values. & D\{\}D & 
-% \texttiming{D{}D} \\
-% D\{\meta{Text}\} & Adds text material into a data signal using a node.  & 
-% D\{A\}D\{B\} & \texttiming{D{A}D{B}} \\
+%   Modifier Syntax  & Description \\
+%                    &             \\\midrule
+% D\{\}D & Produces transition between two data values. \Example{D{}D} \\
+% D\{\meta{Text}\} & Adds text material into a data signal using a node.  
+% \Example{D{A}D{B}} \\
 % D\{[\meta{\scriptsize 
 % \raisebox{-1ex}{\shortstack{TikZ\\Settings}}}]\meta{Text}\} & Adds text 
-% material into a data signal using the given settings.  & D\{[blue]A\} & 
-% \texttiming{D{[blue]A}} \\
+% material into a data signal using the given settings. \Example{D{[blue]A}} \\
 % \meta{\small integer}\{\meta{\small characters}\} &  Repeats the given 
-% characters \texttt{\meta{int}} times.  & 5\{hl\} & \texttiming{5{hl}}\\
+% characters \texttt{\meta{int}} times.  \Example{5{hl}}\\
 % \meta{\small number}\meta{\small character} & Sets width of next signal to 
-% given number.  Half of it if character is in lower case. & 2.6H5.2l & 
-% \texttiming{2.6H5.2l}\\
+% given number.  Half of it if character is in lower case.
+% \Example{2.6H5.2l}\\
 % \meta{\small number}B & Su\underline{b}tracts the given number from the width 
-% of the next character. ``\textit{\texttt{B}ackwards}''& H .5B L & 
-% \texttiming{H.5BL}\\
+% of the next character. ``\textit{\texttt{B}ackwards}''
+% \Example{H.5BL}\\
 % \meta{\small number}F & Adds the given number to the width of the next 
-% character.  ``\textit{\texttt{F}orwards}''& H .5F L & \texttiming{H.5FL}\\
+% character.  ``\textit{\texttt{F}orwards}'' \Example{H.5FL}\\
 % N\oarg{\tiny Settings}\parg{\tiny Name}\marg{\tiny Content} & Adds node at 
-% current position.  All three arguments are optional.  & H N(a1) L & 
-% \texttiming{H N(a1) L}\\
+% current position.  All three arguments are optional.  \Example{H N(a1) L}\\
 %   \midrule
-% {}[\meta{TikZ Settings}]  & Executes given TikZ settings. & H[blue]LH & 
-% \texttiming{H[blue]LH} \\
+% {}[\meta{TikZ Settings}]  & Executes given TikZ settings during the drawing 
+% process. This settings will be re-executed when the internal drawing path is renewed which 
+% can cause side-effects. \Example{H[blue]LH} \\
+% {}[<\meta{TikZ Settings}>]  & Executes given TikZ settings during the drawing 
+% process like \texttt{[ ]} but does not re-executes them.
+% {\Example{D{.} [</utils/exec={\def\m{...}}>] D{.} D{.}}} \\
+% {}[!\meta{TikZ Settings}!]  & Executes given TikZ settings during the 
+% \emph{parsing} process. Because this makes only sense for internal settings 
+% the default path is `\texttt{/tikz/timing}', not `\texttt{/tikz}' like in all  
+% other settings macros. \Example{H[!wscale=2.5!]LH} \\
+% {}[[\meta{TikZ Settings}]]  & Executes given TikZ settings first during the 
+% parsing process and again during the drawing process. This is for settings 
+% which are needed for width calculations and again for the drawing code, \eg 
+% the slope values. \Example{H[[timing/slope=.5]]L $\slope$H} \\
 % ;  & Renews the internal drawing path which ends the scope of all options 
-% given by \texttt{[\,]}. & H;[blue]L;H & \texttiming{H;[blue]L;H} \\
+% given by \texttt{[\,]}. \Example{H;[blue]L;H} \\
 % ,  & Same as `\texttt{;}', but timing specific options (atm.: slopes and line 
-% width) are restored for the new path. & \small H,[lw=1pt]L;H & 
-% \texttiming{H,[line width=1pt]L;H} \\
+% width) are restored for the new path. \Example{H,[line width=1pt]L;H} \\
 % !\{\meta{code}\}  & Places given code into the internal \envv{tikzpicture}.
-%& \multicolumn{2}{l}{\small See Example~\ref{exa:adv} on
-% page~\pageref{exa:adv}.} \\
+% \emph{Example:} See Example~\ref{exa:adv} on page~\pageref{exa:adv}. \\
+% @\{\meta{code}\}  & Executes the given code immediately during the parsing 
+% process. This can be used to change parsing parameters. To execute code during 
+% the drawing process use \texttt{[</utils/exec=}\meta{code}\texttt{>]} instead. 
+% \Example{L @{\setwscale{2}} H} \\
+% \texttt{\$}\meta{math expression}\texttt{\$} & Takes a valid \texttt{pgfmath} 
+% expression (See \pkg{pgf} manual), evaluates it and places the result back in 
+% the input string so it can be used as width for the next character. The macros  
+% \cs{slope}=\cs{lslope}, \cs{dslope}, \cs{zslope} and \cs{wscale} can be used 
+% to access the corresponding values.  \Example{D{} $ \dslope $ D{} D} \\
 % \bottomrule
 % \end{tabularx}}
 % \end{table}
@@ -1120,24 +1139,31 @@
 % \end{minipage}
 % \end{minipage}
 %
-% \DescribeMacro{texttimingbefore}{\hspace{15.5em}(\emph{defaults to}: 
-% \meta{empty})}
-% \DescribeMacro*{texttimingafter}{\hspace{16em}(\emph{defaults to}: 
-% \meta{empty})}
+% \DescribeMacro{texttimingbefore}{\hspace{2em}\textbf{Deprecated!}\hspace{8em}(\emph{defaults 
+% to}: \meta{empty})}
+% \DescribeMacro*{texttimingafter}{\hspace{2.5em}\textbf{Deprecated!}\hspace{8em}(\emph{defaults 
+% to}: \meta{empty})}
 % This two macros are executed before and after every timing diagram line 
 % created by \cs{texttiming} macro inside the same \envv{tikzpicture} 
 % environment and can be used to add drawing macros. The argument of the 
 % \cs{texttiming} macro is already processed before any of these macros are 
 % expanded, therefore this macros can access the width of the diagram.
 %
+% These macros should not be used directly in newer code but instead the new 
+% TikZ styles `|timing/before text|' and `|timing/after text|'. For backward 
+% compatibility these styles default to the two macros.
+%
 % Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
 % background of the \cs{texttiming} diagram. A more \LaTeX-stylish way to do 
 % this is |\renewcommand*{\textttimingbefore}{\texttiminggrid}|.
 %
-% \DescribeMacro{texttiminggrid}{}
+% \DescribeMacro{texttiminggrid}{\hspace{2.5em}\textbf{Deprecated!}}
 % This macro should only be used inside \cs{texttimingbefore} or 
 % \cs{texttimingafter} and draws a grid of the full size of the
 % \cs{texttiming} diagram.
+% For newer code the TikZ styles `|timing/draw grid|' and `|timing/no grid|' 
+% should be used instead, \eg
+% |\tikzset{timing/intext/.append style={timing/draw grid}}|
 %
 % \clearpage
 % ^^A ]>>2
@@ -1316,6 +1342,10 @@
 % `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
 %
 % \subsubsection*{Positions \& Scalings inside the Table}
+% \textbf{Note:} The anchors provided by the timing shape 
+% (Section~\ref{sec:timingshape}) should now be used to position additional 
+% graphics.
+%
 % The first row starts at $y=0$ and the next rows are each
 % |-1*\rowdist| lower than the previous one.
 % ^^A The very last one can be accessed by the tikz coordinate `\texttt{(last
@@ -1336,6 +1366,62 @@
 %
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Macros for use inside the Character String}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[2
+% The modifiers `|@|' and `\texttt{\$}' allow the user to include macros.  These 
+% macros are evaluated when the |tikz-timing| parser encounters them in the 
+% input character string, \ie before any diagram element is drawn or any single 
+% bracket `|[ ]|' options are processed. Therefore their values should be set 
+% either outside the |tikz-timing| diagram or with the `|[! .. !]|' or
+% `|[[ .. ]]|' option blocks.
+%
+% The following macros are provided for the user.
+%
+% \DescribeMacro{tikztimingsetwscale}{\marg{math expression}}
+% \DescribeMacro*{setwscale}{\marg{math expression}}
+% This macro, which can be called |\setwscale| for short inside modifier code, 
+% sets the |wscale| value. This value is used during the parsing process to 
+% scale the width of the characters, \eg |wscale=3.2| makes |1H| as long as 
+% |3.2H| normally would be. Slopes are not affected, but the `width' values of 
+% meta-characters are. It can also be set with the |timing/wscale| TikZ setting.  
+% The current value can be accessed using \cs{wscale}.
+%
+% \DescribeMacro{wscale}{}
+% Returns the current width scaling `|wscale|' value. 
+%
+% \DescribeMacro{slope}{}
+% \DescribeMacro*{lslope}{\hspace{1em}\small(alias)}
+% Returns the current logic slope, \ie the slope justed between |L| and |H| 
+% levels.
+% Set by the |timing/lslope| or indirectly by the |timing/slope| TikZ setting.  
+% See Table~\ref{tab:styles} for more information.
+%
+% \DescribeMacro{zslope}{}
+% Returns the current Z slope. Set by the |timing/zslope| or indirectly by the 
+% |timing/slope| TikZ setting.
+%
+% \DescribeMacro{dslope}{}
+% Returns the current Z slope. Set by the |timing/dslope| or indirectly by the 
+% |timing/slope| TikZ setting.
+%
+% \subsubsection*{Examples:}
+% Changing the slope and using its value to calculate the width of a 
+% character:\\
+% |\texttiming{ HLHLHL [[timing/slope=.5]] H $\slope$L }|\\
+% gives:
+% {\texttiming{ HLHLHL [[timing/slope=.5]] H $\slope$L }}
+% \\[\bigskipamount]
+% Changing the width scaling for a curtain group of characters:\\
+% |\texttiming|\ignorespaces
+% |{ HL [!wscale=\wscale/3!] 3D{a} Z D Z [!wscale=3*\wscale!] HL  }|\\
+% gives:
+% {\texttiming{ HL [!wscale=\wscale/3!] 3D{a} Z D Z [!wscale=3*\wscale!] HL }}
+% \\[\bigskipamount]
+%
+% \clearpage
+% ^^A ]>>2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Meta-Characters}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[2
@@ -1350,37 +1436,70 @@
 % suppresses its normal meaning. Using the meta-character in its own definition 
 % group causes a infinite loop which will lead to an \TeX\ error.
 % 
-% \DescribeMacro{tikztimingmetachar}{\marg{Meta-Character}\marg{Character 
-% Group}}
+% \DescribeMacro{tikztimingmetachar}{\marg{Meta-Character}\oarg{Number of 
+% arguments}\marg{Character Group}}
 % This macro defines the given \meta{meta-character} to be identical to the 
 % given \meta{character group}. Alternatively this can also be done using the 
-% TikZ style `|timing/metachar=|\marg{Meta-Character}\marg{Character~Group}'.
+% TikZ style `|timing/metachar=|\marg{Meta-Character}\oarg{Number of 
+% arguments}\marg{Character~Group}'. 
 %
 % An empty group deletes the meta-character, which  might be necessary in cases 
 % when normal characters are temporary redefined as meta-characters. However, if 
 % the group only contains spaces the meta-character is practically ignored.
 %
+% \subsubsection*{Meta-Characters with Arguments}
+% The\marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in v0.7}}}}
+% replacement text of meta-character can now include macro arguments.
+% This allows the creation of more complex and flexible meta-characters.  The 
+% optional argument \meta{Number of arguments} selects the number of macro 
+% arguments in the same way it does for \cs{newcommand}. However, the first 
+% argument |#1| is always set to the given `width' of the meta-character, \ie 
+% the number value preceding it. All further arguments are read as normal for 
+% macros from the text after the meta-character. It is recommended to enclose 
+% them in braces.
+%
+% The default behaviour of meta-character without arguments is, as mentioned 
+% above, to repeat the replacement group by the preceding number (`width'). This 
+% is now archived by defining them internally as `|#1|\marg{Character Group}',
+% which creates a repetition group. Users which want to include an own argument 
+% but still want to repeat the group need to define a meta-character with at 
+% least two arguments and define it as `|#1{ .. #2 .. }|'. If the repetition is 
+% not wanted the |#1| argument can be used as a real width for one or more group 
+% internal characters: `|{Y}[1]{Z #1D Z}|', so `|4Y|' will give `|Z 4D Z|' 
+% instead of `|4{Z D Z}|'.
+% 
+% Also the modifier `|@|' (see Table~\ref{tab:modifiers}) together with the 
+% \cs{setwscale} macro can be used to scale the whole group dependent on the 
+% first argument:\\
+% `|{Y}[1]}{ @{\setwscale{#1*\wscale}} Z 2D Z @{\setwscale{\wscale/#1}} }|', so
+% `|4Y|' is equivalent to `|4Z 8D 4Z|'.
+%
+% The new `\texttt{\$}' modifier can be used to calculate the width of the group 
+% characters: |{Y}[1]{$#1/3$D{A} $#1/3D${B} $#1/3$D{C}}|, so `|4Y|` results in 
+% `|1.333D{A} 1.333D{B} 1.333D{C}|'.
+%
+%
 % \bigskip
 % \noindent
-% \textit{Examples:}\\[\medskipamount]
+% \textit{Examples:}\\*[\medskipamount]
 % |\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}|\\
-% gives:\\
+% gives:
 % {\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}}
 % \\[\bigskipamount]
 % |\tikztimingmetachar{Y}{2D{Text}}  \tikztimingmetachar{y}{1D{\tiny Text}}|
 % |\texttiming{ZZ Y Z 3y ZZ}|\\
-% gives:\\
+% gives:
 % {\tikztimingmetachar{Y}{2D{Text}}  \tikztimingmetachar{y}{1D{\tiny Text}}
 % \texttiming{ZZ Y Z 3y ZZ}}
 % \\[\bigskipamount]
 % |\newcounter{mycount}|\\
 % |\tikztimingmetachar{Q}{2D{\stepcounter{mycount}\arabic{mycount}}}|\\
-% |\tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}|\\
+% |\tikztimingmetachar{R}{[< /utils/exec=\setcounter{mycount}{0} >]}|\\
 % |\texttiming{ 5Q R 3Q R 10Q }|\\
-% gives:\\
+% gives:
 % {\newcounter{mycount}%
 % \tikztimingmetachar{Q}{2D{\stepcounter{mycount}\arabic{mycount}}}%
-% \tikztimingmetachar{R}{[/utils/exec=\setcounter{mycount}{0}]}%
+% \tikztimingmetachar{R}{[< /utils/exec=\setcounter{mycount}{0} >]}%
 % \texttiming{ 5Q R 3Q R 10Q }}
 % \\[\bigskipamount]
 % Redefining the glitch `|G|' character:\\
@@ -1394,6 +1513,35 @@
 % \texttiming{ 10{H G L G} H }\\
 % \texttiming{ 10{H g L g} H }\\
 % \texttiming{ 10{H   L  } H }}
+% \\[\bigskipamount]
+% |\tikztimingmetachar{J}[2]{ 1.8D{#2} .2D{} }|\\
+% |\texttiming{ D{} J{A} J{B} J{C} D }|\\
+% gives:
+% {\tikztimingmetachar{J}[2]{ 1.8D{\strut #2} .2D{} }%
+%  \texttiming{ D{} J{A} J{B} J{C} D }}
+% \\[\bigskipamount]
+% |\tikztimingmetachar{Y}[3]{#1{ D{\strut #2} D{#3} }}|\\
+% |\texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}|\\
+% gives:
+% {\tikztimingmetachar{Y}[3]{#1{ D{#2} D{#3} }}%
+%  \texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}}
+% \\[\bigskipamount]
+% |\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }|\\
+% |\texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}|\\
+% gives:
+% {\tikztimingmetachar{Y}[3]{ .2D .2B #1d{\strut #2} .2D .2B #1d{\strut #3} }%
+%  \texttiming{ Z 2Y{a}{b} Z 4Y{1}{2} Z}}
+% \\[\bigskipamount]
+% Mata-chars to set the width scaling. Because the scaling also affects the 
+% meta-char width (|#1|) argument a compensation is needed to achieve absolute 
+% values (|W|) instead of relative ones (|w|).\\
+% |\tikztimingmetachar{w}[1]{ [! wscale=#1 !] }         % relative|\\
+% |\tikztimingmetachar{W}[1]{ [! wscale=#1/\wscale !] } % absolute|\\
+% |\texttiming{ HL .2w HLHLH 3w LH 1W LH }|\\
+% gives:
+% {\tikztimingmetachar{w}[1]{ [! wscale=#1 !] }%
+%  \tikztimingmetachar{W}[1]{ [! wscale=#1/\wscale !] }\\
+%  \texttiming{ HL .2w HLHLH 3w LH 1W LH }}
 %
 % \clearpage
 % ^^A ]>>2
@@ -1420,58 +1568,98 @@
 % ^^A`|/tikz/timing/slope|'.
 %
 % ^^AThe Table~\ref{tab:styles} lists all styles defined by this package.
-% {%
-% \begin{table}[b]
-%   \centering
-%   \caption{TikZ Styles and Settings provided and used by this Package.}
+% \begin{center}^^A{table}[b]
+%   \tablecaption{TikZ Styles and Settings provided and used by this Package.}
 %   \label{tab:styles}
 %   \def\en{\,\textsf{--}\,}
-%   \makebox[\textwidth][c]{^^A
-%   \begin{tabularx}{1.15\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
+%   \let\origtabular\tabular
+%   \let\endorigtabular\endtabular
+%   \def\tabular{\begingroup
+%     \setbox\mysb\hbox\bgroup
+%     \origtabular}%
+%   \def\endtabular{\endorigtabular\egroup\makebox[\textwidth][c]{\usebox\mysb}
+%   \endgroup}%
+%   \tablefirsthead{%
 %     \toprule
 %     \normalfont Style/Setting & Description \\
 %     \midrule
+%   }%
+%   \tablehead{%
+%     \multicolumn{2}{c}%
+%     {\raisebox{\belowcaptionskip}{\tablename\ \thetable{} --
+%     continued from previous page}} \\
+%     \toprule
+%     \normalfont Style/Setting & Description \\
+%     \midrule
+%   }%
+%   \tabletail{%
+%     \bottomrule
+%     ^^A\multicolumn{2}{r}{Continued on next page}\\
+%   }
+%   \tablelasttail{%
+%     \bottomrule
+%   }
+%   \begin{supertabular}{>{\ttfamily}l>{\raggedright\arraybackslash}p{.675\textwidth}}
 %     timing      & Base settings like signal height \& period width.\\
-%     timing/intext & Used for \cs{texttiming}. Depends on |timing|.\\
+%     timing/font & Sets the normal \texttt{font} key and sets
+%     \texttt{x}/\texttt{y} keys to 1.6ex.\\
+%     timing/intext & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
 %     timing/picture & Usable for own \texttt{tikzpictures} to set timing 
 %     settings.\\
-%     timing/grid   & Used for grids. Depends on |help lines| and |timing|.  \\
-%     timing/table & Used for \env{tikztimingtable}. Depends on |timing|.\\
-%     timing/table/grid & Used for table grid. Depends on |timing/grid|.\\
+%     timing/grid   & Used for grids. Depends on \texttt{help lines} and \texttt{timing}.  \\
+%     timing/draw grid & Enables background grids for \cs{timing} macros. \\
+%     timing/no grid & Disabled background grids for \cs{timing} macros. \\
+%     timing/table & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
+%     timing/table/grid & Used for table grid. Depends on \texttt{timing/grid}.\\
 %     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
-%     timing/table/rules & Used for \cs{tablerules}. \\
-%     timing/inline node & Used for nodes created by the |N| character.  
+%     timing/table/rules & Used for \cs{tablerules} for top and bottom lines.  
+%     \\
+%     timing/table/midrules & Used for \cs{tablerules} between table head and 
+%     body.  \\
+%     timing/table/header & Used for \cs{tableheader}. \\
+%     timing/inline node & Used for nodes created by the \texttt{N} character.  
 %     Defaults to \texttt{coordinate}.\\
 %     \midrule
-%     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
-%     for `|H|' and `|L|'. \\
-%     timing/\meta{lc char}/background & Background style for characters `|D|' 
-%     and `|U|'. \\
-%     timing/\meta{lc char}/text & Text style for character \meta{char}.  Only 
-%     defined for `|D|'. \\
+%     timing/outer sep=\meta{dim} & Sets outer separation around \cs{texttiming} 
+%     macros. \\
+%     timing/outer xsep=\meta{dim} & See above. Only X-Coordinate. 
+%     (Default:~0pt) \\
+%     timing/outer ysep=\meta{dim} & See above. Only Y-Coordinate. 
+%     (Default:~0pt) \\
 %     \midrule
-%     timing/initchar=\meta{char} & Sets initial character. Only valid as first  
+%     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
+%     for `\texttt{H}' and `\texttt{L}'. \\
+%     timing/\meta{lc char}/background & Background style for characters `\texttt{D}' 
+%     and `\texttt{U}'. \\
+%     timing/\meta{lc char}/text & Text style for character \meta{char}.  Only 
+%     defined for `\texttt{D}'. \\
+%     \midrule
+%     timing/text format=\meta{macros} & Define macros which are placed before 
+%     the text of `\texttt{D\{text\}}'. The text is enclosed in braces to allow 
+%     the last macro to take it as an argument. A \cs{strut} is a good choice to 
+%     ensure a common baseline.\\
+%     timing/initchar=\meta{char} & Sets initial character.  Only valid as first  
 %     optional argument in table rows or \cs{texttiming}.\\
-%     timing/metachar=\meta{C}\meta{G} & Sets meta-character \meta{C} to 
-%     character group \meta{G}.\\
+%     timing/metachar=\marg{C}\oarg{\#arg}\marg{G} & Sets meta-character 
+%     \meta{C} to character group \meta{G}.\\
 %     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
-%     \newline This also sets |dslope=2*slope|, |zslope=slope/2|.\\
+%     \newline This also sets \texttt{dslope=2*slope}, 
+%     \texttt{zslope=slope/2}.\\
 %     timing/lslope=\meta{0.0\en1.0} & Sets slope for logic transitions only.  
 %     Default: 0.1\\
 %     timing/dslope=\meta{0.0\en1.0} & Sets slope for data transitions.  
 %     Default: 0.2\\
 %     timing/zslope=\meta{0.0\en1.0} & Sets slope for Z transitions. Default: 
 %     0.05\\
+%     \midrule
 %     timing/rowdist=\meta{distance} & Sets (baseline) distance between rows in 
 %     a tikztimingtable. Default: 2 (=$2\times$signal height)\\
 %     timing/coldist=\meta{distance} & Sets distance between columns in a 
 %     tikztimingtable. Default: 1 (=$1\times$period width)\\
-%     \bottomrule
-%   \end{tabularx}
-%   }
+%   \end{supertabular}
 %   ^^A\\[\smallskipamount]
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
-% \end{table}}
+% \end{center}^^A{table}
 %
 % \clearpage
 % ^^A ]>>2
@@ -1948,6 +2136,7 @@
 %   LLLLL [/utils/exec={\somemacro\code}] HHHHHH \\
 %   LL [green] HH [brown] XX LL ZZ [orange] HH \\
 %   [][line width=1pt] HLXZDU  [line width=0.1pt] HLXZDU \\
+%   [][line width=1pt] HLXZDU ,[line width=0.1pt] HLXZDU \\
 %   [][line width=1pt] HLXZDU ;[line width=0.1pt] HLXZDU \\
 % \end{tikztimingexampletable}%
 % }
@@ -2019,7 +2208,7 @@
 %       (Ax) parabola[bend pos=0.5] (Bx);
 %   \end{tikzpicture}
 % \end{examplecode}
-% \caption{Using In-Line Nodes to draw Relationships.}
+% \caption{Using In-Line Nodes to draw Relationships.}\label{exa:inlinenodes}
 % \end{example}
 %
 % \begin{example}
@@ -2150,9 +2339,9 @@
 % \url{http://en.wikipedia.org/wiki/File:SPI_timing_diagram.svg}}}
 % \end{example}
 %
+% \clearpage
 % ^^A ]>>2
 % \StopEventually{}
-% \FloatBarrier
 % \clearpage
 %
 % ^^A ]>>1
@@ -2268,6 +2457,9 @@
   zslope/.code={\tikztimingsetzslope{#1}},
   coldist/.store in=\tikztiming@coldist,
   rowdist/.store in=\tikztiming@rowdist,
+  outer xsep/.store in=\tikztiming@xsep,
+  outer ysep/.store in=\tikztiming@ysep,
+  outer sep/.style={/tikz/timing/outer xsep=#1,/tikz/timing/outer ysep=#1},
 }
 %    \end{macrocode}
 %
@@ -2637,6 +2829,8 @@
 \let\tikztiming@trans@\@gobble
 %    \end{macrocode}
 % \end{macro}
+%
+%
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Output Routine}
@@ -4016,128 +4210,48 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%
 % ^^A ]>>2
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Definition of Timing Characters}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[2
+%
+% Pre-define list of timing characters to have it in a sorted fashion.
 %    \begin{macrocode}
-\tikztimingchar{H}{++(0,\height)}{-- ++(#1,0)}
-
-\tikztimingchar{L}{++(0,0)}{-- ++(#1,0)}
-
-\tikztimingchar{Z}{++(0,\height/2.)}{%
-  \newdraw [\style]
-  -- ++(#1,0)
-}
-
-\tikztimingchar{X}{}{}%
-\tikztimingchar{D}{}{}%
-\tikztimingchar{U}{}{}%
-%\tikztimingchar{O}{}{}%
-\tikztimingchar{M}{}{}%
-
-\tikztimingchar{G}{++(0,0)}{-- ++(\gslope,\height) -- ++(\gslope,-\height)}
+\def\tikztiming@chars{H,L,Z,X,M,D,U,T,C}%
+%    \end{macrocode}
+%
+%
+% ^^A ]>>3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Character `S'}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
+%
 \tikztimingchar{S}{++(0,0)}{++(#1,0)}
 
+\tikztiminglet{DS}{S}
 
+\tikztiminglet{HS}{S}
 
-\tikztimingdef{DD}{
-  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
-     +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
-  -- +(#1,0)
-  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
-  -- +(#1,\height)
-  -- +(\dslope,\height) -- cycle;
-  \draw [timing/restore,\style] (timing@save) ++(0,0)
-  node [timing/save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
-  --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
-  --  +(\dslope,-\height) -- ++(#1,-\height)
-}
-\tikztiming@namelet{D@edge@D}{DD}
-\tikztiming@namelet{D@edge@D@general}{DD@general}
+\tikztiminglet{LS}{S}
 
-\tikztimingchar{D}{++(0,0)}{
-  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
-  -- +(#1,0)
-  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
-  -- +(#1,\height)
-  -- +(0,\height)
-  -- cycle;
-  \draw [timing/restore,\style] (timing@save) ++(0,0)
-  node [timing/save] (timing@dstart) at +(-\dslope/2.,\height/2.0) {}
-  --  +(#1,0) ++(0,+\height)
-  -- ++(#1,0) ++(0,-\height)
-}
+\tikztiminglet{TS}{S}
 
-
-
-\tikztimingdef{DD}{
-  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
-  -- +(#1,0)
-  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
-  -- +(#1,\height)
-  -- +(0,\height)
-  -- cycle;
-  \newdraw [\style]
-  --  +(#1,0) ++(0,+\height)
-  -- ++(#1,0) ++(0,-\height)
-}
-\tikztiming@namelet{D@edge@@start}{D@start}
-\tikztiming@namelet{d@edge@@start}{d@start}
-
+\tikztiminglet{ZS}{S}
+%
 %    \end{macrocode}
 %
+% ^^A ]>>3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Character `G'}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
 %
-% \begin{macro}{\tikztiming@trans@D@fill}[2]{Original width}{Width to subtract}
 %    \begin{macrocode}
-\def\tikztiming@trans@D@fill#1#2{%
-  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
-  -- +(0.5*\dslope,-0.5*\height)
-  -- ++($ (#1,-0.5*\height) - (#2,0) $)
-  -- +(0.5*\dslope,0.5*\height)
-  -- +(0,\height)
-  -- ++($ (#2,\height) - (#1,0) + (0.5*\dslope,0) $)
-  -- cycle;
-  \draw [timing/restore,\style] (timing@save) ++(0,0)
-  node [timing/save] (timing@dstart) {}
-}
-%    \end{macrocode}
-% \end{macro}
-%    \begin{macrocode}
-
-
-\tikztimingdef{HD}{
-  -- ++(0.5*\dslope,-0.5*\height)
-  \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
-  -- ++(0.5*\dslope,-0.5*\height)
-  -- ++($ (#1,0) - (\dslope,0) $)
-     ++($ -1*(#1,0) + (0,+\height) $)          ++(\dslope/2.,-\height/2.)
-  -- ++(\dslope/2.,+\height/2.) -- ++($ (#1,0) - (\dslope,0) $)
-     ++(0,-\height)
-}
-
-\tikztimingdef{LD}{
-  -- ++(0.5*\dslope,0.5*\height)
-  \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
-  -- ++(0.5*\dslope,0.5*\height)
-  -- ++($ (#1,0) - (\dslope,0) $)
-     ++($ -1*(#1,0) + (0,-\height) $)          ++(\dslope/2.,+\height/2.)
-  -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope,0) $)
-}
-
-\tikztimingdef{ZD}{
-  \tikztiming@trans@D@fill{#1}{0}%
-  -- ++(\dslope/2.,\height/2.)  -- ++($ (#1,0) - (\dslope/2.,0) $)
-     ++($ -1*(#1,0) + (0,-\height/2.) $)
-  -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope/2.,0) $)
-}
+\tikztimingchar{G}{++(0,0)}{-- ++(\gslope,\height) -- ++(\gslope,-\height)}
 
 \tikztiminglet{DG}{LG}
 
@@ -4150,6 +4264,17 @@
   -- ++(\gslope,+\height)
   -- ++(\gslope,-\height/2.0)
 }
+
+%
+% ^^A ]>>3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Character `H'}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
+%
+%    \begin{macrocode}
+
+\tikztimingchar{H}{++(0,\height)}{-- ++(#1,0)}
 
 \tikztimingdef{DH}{
      ++(0,+\height)
@@ -4170,6 +4295,17 @@
   -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 
+%    \end{macrocode}
+%
+% ^^A ]>>3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Character `L'}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
+%
+%    \begin{macrocode}
+\tikztimingchar{L}{++(0,0)}{-- ++(#1,0)}
+
 \tikztimingdef{DL}{
   -- ++( \dslope/2.,+\height/2.)
      ++(-\dslope/2.,+\height/2.)
@@ -4188,15 +4324,19 @@
   -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
 }
 
-\tikztiminglet{DS}{S}
-
-\tikztiminglet{HS}{S}
-
-\tikztiminglet{LS}{S}
-
-\tikztiminglet{TS}{S}
-
-\tikztiminglet{ZS}{S}
+%    \end{macrocode}
+%
+% ^^A ]>>3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Character `Z'}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
+%
+%    \begin{macrocode}
+\tikztimingchar{Z}{++(0,\height/2.)}{%
+  \newdraw [\style]
+  -- ++(#1,0)
+}
 
 \tikztimingdef{DZ}{
   -- ++( \dslope/2.,+\height/2.)
@@ -4226,6 +4366,7 @@
 %
 %    \begin{macrocode}
 \tikztimingalias{M}{Z}
+
 \tikztimingchar{M}{++(0,\height/2.)}{
   \newdraw [\style/decoration,\style]
   -- ++(#1,0)
@@ -4288,27 +4429,6 @@
 }
 \def\tikztiming@nocombine@T{}%
 \def\tikztiming@nocombine@t{}%
-
-
-\tikztimingdef{TD}{
-  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \code{\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
-  \addtocounter{tikztimingtranspos}{-1}}
-  -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
-  \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
-  -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
-  -- ++($ (#1,0) - (\dslope,0) $)
-     ++($ -1*(#1,\value{tikztimingtrans}*\height) $)
-     ++(\dslope/2.,+1*\value{tikztimingtrans}*\height/2.)
-  -- ++(\dslope/2.,-1*\value{tikztimingtrans}*\height/2.)
-  -- ++($ (#1,0) - (\dslope,0) $)
-     ++(0,\value{tikztimingtranspos}*\height/2.)
-}
-
-\tikztimingdef{TG}{%
-  -- +(\gslope,-1*\value{tikztimingtrans}*\height)
-  -- +(\gslope,0)
-}
 
 \tikztimingdef{TH}{%
   \code{\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
@@ -4378,6 +4498,27 @@
   -- ++(\zslope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\zslope,0) $)
 }
+
+\tikztimingdef{TD}{
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \code{\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+  \addtocounter{tikztimingtranspos}{-1}}
+  -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
+  \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
+  -- ++(0.5*\dslope,+0.5*\value{tikztimingtrans} * \height)
+  -- ++($ (#1,0) - (\dslope,0) $)
+     ++($ -1*(#1,\value{tikztimingtrans}*\height) $)
+     ++(\dslope/2.,+1*\value{tikztimingtrans}*\height/2.)
+  -- ++(\dslope/2.,-1*\value{tikztimingtrans}*\height/2.)
+  -- ++($ (#1,0) - (\dslope,0) $)
+     ++(0,\value{tikztimingtranspos}*\height/2.)
+}
+
+\tikztimingdef{TG}{%
+  -- +(\gslope,-1*\value{tikztimingtrans}*\height)
+  -- +(\gslope,0)
+}
+
 %    \end{macrocode}
 %
 % ^^A ]>>3
@@ -4402,12 +4543,124 @@
 \tikztimingecopy{U}{D}
 
 
+
 \tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
 
 \tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
 %\tikztimingecopy{O}{D}
 
 
+%
+% ^^A ]>>3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Character `D'}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
+%
+%    \begin{macrocode}
+\tikztimingchar{D}{}{}%
+
+\tikztimingchar{U}{}{}%
+
+\tikztimingchar{X}{}{}%
+
+%\tikztimingchar{O}{}{}%
+
+\tikztimingchar{M}{}{}%
+
+\tikztimingdef{DD}{
+  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
+     +(0.5*\dslope,0.5*\height) -- +(\dslope,0)
+  -- +(#1,0)
+  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
+  -- +(#1,\height)
+  -- +(\dslope,\height) -- cycle;
+  \draw [timing/restore,\style] (timing@save) ++(0,0)
+  node [timing/save] (timing@dstart) at +(\dslope/2.,\height/2.) {}
+  --  +(\dslope,+\height) --  +(#1,+\height) ++(0,+\height)
+  --  +(\dslope,-\height) -- ++(#1,-\height)
+}
+\tikztiming@namelet{D@edge@D}{DD}
+\tikztiming@namelet{D@edge@D@general}{DD@general}
+
+
+\tikztimingchar{D}{++(0,0)}{
+  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
+  -- +(#1,0)
+  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
+  -- +(#1,\height)
+  -- +(0,\height)
+  -- cycle;
+  \draw [timing/restore,\style] (timing@save) ++(0,0)
+  node [timing/save] (timing@dstart) at +(-\dslope/2.,\height/2.0) {}
+  --  +(#1,0) ++(0,+\height)
+  -- ++(#1,0) ++(0,-\height)
+}
+
+\tikztimingdef{DD}{
+  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
+  -- +(#1,0)
+  -- +($ (#1,0) + 0.5*(\dslope,\height) $)
+  -- +(#1,\height)
+  -- +(0,\height)
+  -- cycle;
+  \newdraw [\style]
+  --  +(#1,0) ++(0,+\height)
+  -- ++(#1,0) ++(0,-\height)
+}
+\tikztiming@namelet{D@edge@@start}{D@start}
+\tikztiming@namelet{d@edge@@start}{d@start}
+
+%    \end{macrocode}
+%
+%
+% \begin{macro}{\tikztiming@trans@D@fill}[2]{Original width}{Width to subtract}
+%    \begin{macrocode}
+\def\tikztiming@trans@D@fill#1#2{%
+  node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
+  -- +(0.5*\dslope,-0.5*\height)
+  -- ++($ (#1,-0.5*\height) - (#2,0) $)
+  -- +(0.5*\dslope,0.5*\height)
+  -- +(0,\height)
+  -- ++($ (#2,\height) - (#1,0) + (0.5*\dslope,0) $)
+  -- cycle;
+  \draw [timing/restore,\style] (timing@save) ++(0,0)
+  node [timing/save] (timing@dstart) {}
+}
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+
+
+
+\tikztimingdef{HD}{
+  -- ++(0.5*\dslope,-0.5*\height)
+  \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
+  -- ++(0.5*\dslope,-0.5*\height)
+  -- ++($ (#1,0) - (\dslope,0) $)
+     ++($ -1*(#1,0) + (0,+\height) $)          ++(\dslope/2.,-\height/2.)
+  -- ++(\dslope/2.,+\height/2.) -- ++($ (#1,0) - (\dslope,0) $)
+     ++(0,-\height)
+}
+
+\tikztimingdef{LD}{
+  -- ++(0.5*\dslope,0.5*\height)
+  \tikztiming@trans@D@fill{#1}{0.5*\dslope}%
+  -- ++(0.5*\dslope,0.5*\height)
+  -- ++($ (#1,0) - (\dslope,0) $)
+     ++($ -1*(#1,0) + (0,-\height) $)          ++(\dslope/2.,+\height/2.)
+  -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope,0) $)
+}
+
+\tikztimingdef{ZD}{
+  \tikztiming@trans@D@fill{#1}{0}%
+  -- ++(\dslope/2.,\height/2.)  -- ++($ (#1,0) - (\dslope/2.,0) $)
+     ++($ -1*(#1,0) + (0,-\height/2.) $)
+  -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope/2.,0) $)
+}
+
+%    \end{macrocode}
+%
 % ^^A ]>>3
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsubsection{Character `X'}
@@ -4494,6 +4747,7 @@
 
 
 
+
 \tikztimingdef{CC}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   [timing/c/save]
@@ -4573,6 +4827,7 @@
   a/.style={->},
   w/.style={<-},
 }
+
 
 \tikztimingchar{A}{++(0,0)}{%
   \newdraw [\style] -- ++(0,\height)
@@ -4982,6 +5237,7 @@
 %    \begin{macrocode}
 
 \tikztimingecopy{E}{D}
+
 \tikztimingchar{E}{
   ++(0,0)
   \code{\setcounter{tikztimingtranspos}{0}}%
@@ -4991,6 +5247,7 @@
   \code{\setcounter{tikztimingtrans}{1}}%
   \tikztiminguse{D}{#1}%
 }
+
 
 
 \tikztimingdef{EE}{%
