@@ -3088,6 +3088,140 @@
 % \end{macro}
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Parser Macros: Numbers}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[2
+%
+%
+% \begin{macro}{\tikztiming@numloop}
+%    \begin{macrocode}
+\def\tikztiming@numloop{%
+  \ifnum\tikztiming@numint>0%
+    \toks@\expandafter{\tikztiming@numchars}%
+    \xdef\tikztiming@numchars{%
+      \the\toks@
+      \the\@temptokena
+    }%
+    \advance\tikztiming@numint by -1\relax
+    \expandafter\tikztiming@numloop
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornum}
+%    \begin{macrocode}
+\def\tikztiming@testfornum{%
+  \let\tikztiming@numchars\empty
+  \tikztiming@numfrac0\relax
+  \afterassignment
+  \tikztiming@testfornum@
+  \tikztiming@numint0%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornum@}
+% The \cs{@let@token} set in \cs{tikztiming@parser} is used to handle `|0|' 
+% which can not be detected using the \cs{tikztiming@numint} value.
+%    \begin{macrocode}
+\def\tikztiming@testfornum@{%
+  \ifx0\@let@token
+    \let\tikztiming@next\tikztiming@testfornum@@
+  \else
+  \ifnum0<\tikztiming@numint
+    \let\tikztiming@next\tikztiming@testfornum@@
+  \else
+    \def\tikztiming@next{%
+      \@ifnextchar{.}%
+        {\expandafter\tikztiming@testfornumfrac\@gobble}%
+        {%
+          \tikztiming@numint1\relax
+          \tikztiming@numfrac0\relax
+          \def\tikztiming@num{1.0}%
+          \if@tikztiming@metachar
+            {\def\@tempa{\expandafter\expandafter\expandafter
+            \tikztiming@testfornum@@@@
+            \expandafter\expandafter\expandafter{%
+            \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
+            \expandafter\@tempa\@gobble
+            }%
+            {\tikztiming@testforcode}%
+        }%
+    }%
+  \fi\fi
+  \tikztiming@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornum@@}
+%    \begin{macrocode}
+\def\tikztiming@testfornum@@{%
+  \@ifnextchar{.}%
+    {\expandafter\tikztiming@testfornumfrac\@gobble}%
+    {\tikztiming@testfornum@@@}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornum@@@}
+%    \begin{macrocode}
+\def\tikztiming@testfornum@@@{%
+  \xdef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
+  \@ifnextchar\bgroup
+    {%
+      \expandafter\tikztiming@numfrac\expandafter0\expandafter
+      \@gobble\the\tikztiming@numfrac\relax
+      \ifnum0=\tikztiming@numfrac\else
+        \pgfmathparse{round(\tikztiming@num)}%
+        \PackageWarning{tikz-timing}%
+          {Can not repeat group by a non-integer factor!^^J%
+           Rounding '\tikztiming@num' to '\pgfmathresult'.}{}{}{}%
+        \let\tikztiming@num\pgfmathresult
+      \fi
+      \tikztiming@testfornum@@@@
+    }%
+    {%
+      \if@tikztiming@metachar
+        {\def\@tempa{\expandafter\expandafter\expandafter
+        \tikztiming@testfornum@@@@
+        \expandafter\expandafter\expandafter{%
+        \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
+        \expandafter\@tempa\@gobble
+        }%
+        {\tikztiming@testforcode}%
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornum@@@@}
+% [1]{Characters and other tokens to repeat}
+%    \begin{macrocode}
+\def\tikztiming@testfornum@@@@#1{%
+  \begingroup
+    \@temptokena{#1}%
+    \tikztiming@numloop%
+  \endgroup
+  \tikztiming@numint1\relax
+  \tikztiming@numfrac0\relax
+  \expandafter\tikztiming@parser\tikztiming@numchars
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@testfornumfrac}
+%    \begin{macrocode}
+\def\tikztiming@testfornumfrac{%
+  \afterassignment
+  \tikztiming@testfornum@@@
+  \tikztiming@numfrac1%
+}
+%    \end{macrocode}
+% \end{macro}
+% ^^A ]>>2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Definition of Modifiers}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[2
@@ -3312,140 +3446,6 @@
       this character}{}{}{}%
       \tikztiming@parser
     }%
-}
-%    \end{macrocode}
-% \end{macro}
-% ^^A ]>>2
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{Parser Macros: Numbers}
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ^^A <<[2
-%
-%
-% \begin{macro}{\tikztiming@numloop}
-%    \begin{macrocode}
-\def\tikztiming@numloop{%
-  \ifnum\tikztiming@numint>0%
-    \toks@\expandafter{\tikztiming@numchars}%
-    \xdef\tikztiming@numchars{%
-      \the\toks@
-      \the\@temptokena
-    }%
-    \advance\tikztiming@numint by -1\relax
-    \expandafter\tikztiming@numloop
-  \fi
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornum}
-%    \begin{macrocode}
-\def\tikztiming@testfornum{%
-  \let\tikztiming@numchars\empty
-  \tikztiming@numfrac0\relax
-  \afterassignment
-  \tikztiming@testfornum@
-  \tikztiming@numint0%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornum@}
-% The \cs{@let@token} set in \cs{tikztiming@parser} is used to handle `|0|' 
-% which can not be detected using the \cs{tikztiming@numint} value.
-%    \begin{macrocode}
-\def\tikztiming@testfornum@{%
-  \ifx0\@let@token
-    \let\tikztiming@next\tikztiming@testfornum@@
-  \else
-  \ifnum0<\tikztiming@numint
-    \let\tikztiming@next\tikztiming@testfornum@@
-  \else
-    \def\tikztiming@next{%
-      \@ifnextchar{.}%
-        {\expandafter\tikztiming@testfornumfrac\@gobble}%
-        {%
-          \tikztiming@numint1\relax
-          \tikztiming@numfrac0\relax
-          \def\tikztiming@num{1.0}%
-          \if@tikztiming@metachar
-            {\def\@tempa{\expandafter\expandafter\expandafter
-            \tikztiming@testfornum@@@@
-            \expandafter\expandafter\expandafter{%
-            \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
-            \expandafter\@tempa\@gobble
-            }%
-            {\tikztiming@testforcode}%
-        }%
-    }%
-  \fi\fi
-  \tikztiming@next
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornum@@}
-%    \begin{macrocode}
-\def\tikztiming@testfornum@@{%
-  \@ifnextchar{.}%
-    {\expandafter\tikztiming@testfornumfrac\@gobble}%
-    {\tikztiming@testfornum@@@}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornum@@@}
-%    \begin{macrocode}
-\def\tikztiming@testfornum@@@{%
-  \xdef\tikztiming@num{\the\tikztiming@numint.\expandafter\@gobble\the\tikztiming@numfrac}%
-  \@ifnextchar\bgroup
-    {%
-      \expandafter\tikztiming@numfrac\expandafter0\expandafter
-      \@gobble\the\tikztiming@numfrac\relax
-      \ifnum0=\tikztiming@numfrac\else
-        \pgfmathparse{round(\tikztiming@num)}%
-        \PackageWarning{tikz-timing}%
-          {Can not repeat group by a non-integer factor!^^J%
-           Rounding '\tikztiming@num' to '\pgfmathresult'.}{}{}{}%
-        \let\tikztiming@num\pgfmathresult
-      \fi
-      \tikztiming@testfornum@@@@
-    }%
-    {%
-      \if@tikztiming@metachar
-        {\def\@tempa{\expandafter\expandafter\expandafter
-        \tikztiming@testfornum@@@@
-        \expandafter\expandafter\expandafter{%
-        \csname tikztiming@metachar@\meaning\@let@token\endcsname}}%
-        \expandafter\@tempa\@gobble
-        }%
-        {\tikztiming@testforcode}%
-    }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornum@@@@}
-% [1]{Characters and other tokens to repeat}
-%    \begin{macrocode}
-\def\tikztiming@testfornum@@@@#1{%
-  \begingroup
-    \@temptokena{#1}%
-    \tikztiming@numloop%
-  \endgroup
-  \tikztiming@numint1\relax
-  \tikztiming@numfrac0\relax
-  \expandafter\tikztiming@parser\tikztiming@numchars
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@testfornumfrac}
-%    \begin{macrocode}
-\def\tikztiming@testfornumfrac{%
-  \afterassignment
-  \tikztiming@testfornum@@@
-  \tikztiming@numfrac1%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4251,13 +4251,22 @@
 % ^^A <<[3
 %
 %    \begin{macrocode}
-\tikztimingchar{G}{++(0,0)}{-- ++(\gslope,\height) -- ++(\gslope,-\height)}
+\tikztimingchar{G}{++(0,0)}{
+  -- ++(\gslope,\height)
+  -- ++(\gslope,-\height)
+}
 
 \tikztiminglet{DG}{LG}
 
-\tikztimingdef{HG}{-- ++(\gslope,-\height) -- ++(\gslope,+\height)}
+\tikztimingdef{HG}{
+  -- ++(\gslope,-\height)
+  -- ++(\gslope,+\height)
+}
 
-\tikztimingdef{LG}{-- ++(\gslope,+\height) -- ++(\gslope,-\height)}
+\tikztimingdef{LG}{
+  -- ++(\gslope,+\height)
+  -- ++(\gslope,-\height)
+}
 
 \tikztimingdef{ZG}{
   -- ++(\gslope,-\height/2.0)
@@ -4265,6 +4274,7 @@
   -- ++(\gslope,-\height/2.0)
 }
 
+%    \end{macrocode}
 %
 % ^^A ]>>3
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4286,13 +4296,19 @@
   -- ++($ (#1,0) - (\dslope,0) $)
 }
 
-\tikztimingdef{HH}{-- ++(#1,0)}
+\tikztimingdef{HH}{
+  -- ++(#1,0)
+}
 
-\tikztimingdef{LH}{-- ++(\slope, \height) \tikztiminguse{LL}{#1-\slope}}
+\tikztimingdef{LH}{
+  -- ++(\slope, \height)
+  \tikztiminguse{LL}{#1-\slope}
+}
 
 \tikztimingdef{ZH}{
     \newdraw
-  -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
+  -- ++(\zslope,+\height/2.)
+  -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 %    \end{macrocode}
@@ -4534,22 +4550,6 @@
 \def\tikztiming@nocombine@m{}%
 %    \end{macrocode}
 %
-% ^^A ]>>3
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsubsection{Character `U'}
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ^^A <<[3
-%    \begin{macrocode}
-\tikztimingecopy{U}{D}
-
-
-
-\tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
-
-\tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
-%\tikztimingecopy{O}{D}
-
-
 %
 % ^^A ]>>3
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4559,14 +4559,6 @@
 %
 %    \begin{macrocode}
 \tikztimingchar{D}{}{}%
-
-\tikztimingchar{U}{}{}%
-
-\tikztimingchar{X}{}{}%
-
-%\tikztimingchar{O}{}{}%
-
-\tikztimingchar{M}{}{}%
 
 \tikztimingdef{DD}{
   node [timing/save] (timing@save) {}; \path [\bgstyle] (timing@save) ++(0,0)
@@ -4658,6 +4650,20 @@
      ++($ -1*(#1,0) + (0,-\height/2.) $)
   -- ++(\dslope/2.,-\height/2.) -- ++($ (#1,0) - (\dslope/2.,0) $)
 }
+
+%    \end{macrocode}
+%
+% ^^A ]>>3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Character `U'}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
+%    \begin{macrocode}
+\tikztimingecopy{U}{D}
+
+\tikztimingdef{UD}{\tikztiminguse{D@edge@D}{#1}}
+
+\tikztimingdef{DU}{\tikztiminguse{D@edge@D}{#1}}
 
 %    \end{macrocode}
 %
