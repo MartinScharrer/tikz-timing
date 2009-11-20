@@ -1930,7 +1930,6 @@
 % \bigskip
 % \begin{example}
 % \centering
-% \iffalse
 % \begin{examplecode}
 %   \begin{tabular}{lcT}
 %     \toprule
@@ -1942,7 +1941,6 @@
 %     \bottomrule
 %   \end{tabular}
 % \end{examplecode}
-% \fi
 % \caption{Example for use of Timing Column Type.}\label{exa:columntype}
 % \end{example}
 %
@@ -1969,7 +1967,6 @@
 % settings can be given as a library option, but without the `|timing/|' path.
 % 
 % \bigskip
-% \iffalse
 % \begin{table}[H]
 %   \caption{Timing tables using `nice' (left) and normal (right) Layout. For 
 %   comparison a \texttt{\{tabular\}\{rT\}} table is placed in grey below the 
@@ -2009,7 +2006,6 @@
 %   \end{tikztimingtable}
 %   \hfill\hbox{}^^A
 % \end{table}
-% \fi
 %
 % \clearpage
 % ^^A ]>>3
@@ -2060,7 +2056,6 @@
 % \end{table}
 %
 % \subsubsection*{Example:}
-% \iffalse
 % \noindent
 % Counter character `|Q|' with base 16 (hexadecimal). `|R|' resets the 
 % counter:\\*\noindent
@@ -2073,7 +2068,6 @@
 % \tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}%
 % \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
 % }%
-% \fi
 %
 % \clearpage
 % ^^A ]>>3
@@ -2383,17 +2377,40 @@
 \def\tikztimingwidth{0.0}
 \newcount\tikztiming@numint
 \newcount\tikztiming@numfrac
-\def\tikztiming@num{1.0}%
+\def\tikztiming@wscale{1.0}%
+\def\tikztimingsetwscale#1{%
+  \pgfmathparse{#1}%
+  \let\tikztiming@wscale\pgfmathresult
+}
+\def\tikztiming@num{0.0}%
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
+\setlength{\tikztiming@xunit}{1.6ex}%
+\setlength{\tikztiming@yunit}{1.6ex}%
+
+\def\tikztiming@setnum#1{%
+  \pgfmathparse{#1}%
+  \global\let\tikztiming@num\pgfmathresult
+}
+
+\newcount\tikztiming@debug
+
+\def\tikztiming@xsep{0pt}
+\def\tikztiming@ysep{0pt}
 
 \newcounter{tikztiming@nrows}%
 \def\tikztiming@rowdist{2}%
 \def\tikztiming@coldist{1}%
-\def\tikztiminglabel#1{#1}%
 
-\def\tikztiming@prefix{tikztiming@trans@}
+\def\tikztiming@prefix{tikztiming@trans@}%
+\def\tikztiming@ttt#1#2#3{#1#2#3}%
+\def\tikztiming@pfxtr{%
+  \tikztiming@prefix\expandafter\tikztiming@ttt
+}
+
+\def\timingwidth{1}%
+\def\timingheight{1}%
 %    \end{macrocode}
 
 % ^^A ]>>2
@@ -2402,11 +2419,11 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[2
 %    \begin{macrocode}
-\tikzset{timing/.style={%
-    x=1.6ex, y=1.6ex,
+\tikzset{%
+  timing/.style={%
     line cap=round, line join=round,
-    /utils/exec={\setlength{\tikztiming@xunit}{1.6ex}\setlength{\tikztiming@yunit}{1.6ex}},
-  }%
+    timing/adjust@xy
+  },%
 }
 \tikzset{%
   timing/.cd,
@@ -2424,22 +2441,19 @@
   name/.style={inner sep=0pt,outer sep=0pt},
   d/text/.style={timing,scale=0.6,font=\sffamily},
   d/background/.style={},
+  u/background/.style={fill=gray},
+  u/.style={},
   h/.style={},
   l/.style={},
   d/.style={},
   e/.style={},
-  e/background/.style={},
-  a/.style={->},
-  w/.style={<-},
-  m/.style={black!40!brown},
-  m/decoration/.style={decorate,decoration={zigzag,segment 
-  length=.25\tikztiming@xunit,amplitude=.225\tikztiming@yunit}},
-  k/.style={black!40!blue,semitransparent},
-  u/background/.style={fill=gray},
-  u/.style={},
-  o/background/.style={},
-  o/.style={timing/d,line width=0.10ex,dotted},
-  g/.style={},
+  e/background/.style={draw=none},
+  m/decoration/.style={decorate,%
+    decoration={zigzag,segment length=.25\tikztiming@xunit,
+    amplitude=.225\tikztiming@yunit}},
+  m/base/.style={black!40!brown},
+  m/.style={timing/m/base,timing/m/decoration},
+  g/.style={decorate=false},
   z/.style={blue},
   t/.style={},
   c/.style={timing/slope=0.0},
@@ -2495,6 +2509,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{User Level Macros}
@@ -2598,9 +2613,26 @@
         {\tikz@timing@@@init}%
         {\tikz@timing@@@init[]}%
       #3\relax
-      %\message{^^J\meaning\tikztiming@str^^J}%
+      \ifnum\tikztiming@debug>1
+      \message{^^J\meaning\tikztiming@str^^J}%
+      \ifnum\tikztiming@debug>2
+      {%
+      \def\@protect##1{\def##1{\noexpand##1}}%
+      \@protect\useasboundingbox
+      \@protect\draw
+      \@protect\p
+      \@protect\n
+      \@protect\x
+      \@protect\y
+      \edef\@tempa{\tikztiming@str}%
+      \message{^^J\meaning\@tempa^^J}%
+      }%
+      \fi
+      \fi
+      \tikzset{timing/before}%
       \tikztiming@str;%
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
+      \tikzset{timing/after}%
     \end{scope}%
   \endgroup
   \tikz@timing@@@end
@@ -2652,14 +2684,6 @@
 %    \begin{macrocode}
 \g@addto@macro\tikz@uninstallcommands{%
   \let\timing=\tikz@origtiming%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@addtostr}
-%    \begin{macrocode}
-\def\tikztiming@addtostr{%
-  \g@addto@macro\tikztiming@str
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2754,22 +2778,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@eaddtostr}
-% [1]{Tokens to add to string.}
-%    \begin{macrocode}
-\def\tikztiming@eaddtostr#1{%
-  \begingroup
-    \tikztiming@internaldefs{}%
-    \@temptokena\expandafter{\tikztiming@str}%
-    \xdef\tikztiming@str{%
-      \the\@temptokena
-      #1%
-    }%
-  \endgroup
-}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\tikztiming@init}
 %    \begin{macrocode}
 \def\tikztiming@init{%
@@ -2800,16 +2808,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@parser}
-%    \begin{macrocode}
-\def\tikztiming@parser{%
-  \@ifnextchar\relax
-    {\tikztiming@parser@end}%
-    {\tikztiming@testfornum}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\tikztiming@testoptarg}
 %    \begin{macrocode}
 \def\tikztiming@testoptarg#1#2\relax{%
@@ -2833,9 +2831,35 @@
 %
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{Output Routine}
+% \subsection{Add-to-Macro Macros}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[2
+%
+% \begin{macro}{\tikztiming@addtostr}
+%    \begin{macrocode}
+\def\tikztiming@addtostr{%
+  \g@addto@macro\tikztiming@str
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tikztiming@eaddtostr}
+% [1]{Tokens to add to string.}
+%    \begin{macrocode}
+\def\tikztiming@eaddtostr#1{%
+  \begingroup
+    \tikztiming@internaldefs{}%
+    \@temptokena\expandafter{\tikztiming@str}%
+    \xdef\tikztiming@str{%
+      \the\@temptokena
+      #1%
+    }%
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \begin{macro}{\tikztiming@nameaddtostr}[1]{Name of macro without prefix
 % to add}
@@ -2853,69 +2877,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@output}[2]{Character 1}{Character 2}
-%    \begin{macrocode}
-\def\tikztiming@output#1#2{%
-  \ifx\relax#2\relax
-    \tikztiming@nameaddtostr{#1}%
-  \else
-    \ifcase0%
-      \ifx\tikztiming@output@bufchara\empty
-        \ifx\tikztiming@output@bufcharb\empty
-          1%
-        \fi
-      \fi\relax
-      % not empty
-      \edef\tikztiming@output@currentchar{#2}%
-      \ifcase0%
-      \expandafter\ifx\csname tikztiming@nocombine@#2\endcsname\relax
-      \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
-        1%
-      \fi\fi
-      \relax
-        \tikztiming@output@flush
-        \edef\tikztiming@output@bufchara{#1}%
-        \edef\tikztiming@output@bufcharb{#2}%
-      \or
-        \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
-        \let\tikztiming@output@bufnum\pgfmathresult
-        \def\tikztiming@num{1.0}%
-      \fi
-    \else % empty
-      \edef\tikztiming@output@bufchara{#1}%
-      \edef\tikztiming@output@bufcharb{#2}%
-      \let\tikztiming@output@bufnum\tikztiming@num
-      \def\tikztiming@num{1.0}%
-    \fi
-  \fi
-}
-%    \end{macrocode}
 %
-% Init buffer macros:
-%    \begin{macrocode}
-\def\tikztiming@output@bufchara{}%
-\def\tikztiming@output@bufcharb{}%
-\def\tikztiming@output@bufnum{0}%
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztiming@output@flush}
-%    \begin{macrocode}
-\def\tikztiming@output@flush{%
-  \begingroup
-    \let\tikztiming@num\tikztiming@output@bufnum
-    \tikztiming@nameaddtostr{%
-      \tikztiming@output@bufchara
-      \tikztiming@output@bufcharb
-    }%
-  \endgroup%
-  \gdef\tikztiming@output@bufchara{}%
-  \gdef\tikztiming@output@bufcharb{}%
-  \global\let\tikztiming@output@bufnum\tikztiming@num
-  \gdef\tikztiming@num{1.0}%
-}
-%    \end{macrocode}
-% \end{macro}
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Macros for Character Definitions}
@@ -2964,51 +2926,91 @@
 % \end{macro}
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{Parser}
+% \subsection{Output Routine}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[2
 %
-%
-% \begin{macro}{\tikztiming@handletext}[1]{Text}
+% Init buffer macros:
 %    \begin{macrocode}
-\def\tikztiming@handletext#1{%
-  \@ifnextchar{[}%
-    {\tikztiming@handletext@}%
-    {\tikztiming@handletext@[]}%
-  #1\relax
+\def\tikztiming@output@bufchara{}%
+\def\tikztiming@output@bufcharb{}%
+\def\tikztiming@output@bufnum{0}%
+%    \end{macrocode}
+%
+%
+% \begin{macro}{\tikztiming@output}[2]{Character 1}{Character 2}
+%    \begin{macrocode}
+\def\tikztiming@output#1#2{%
+  \ifx\relax#2\relax
+    \tikztiming@nameaddtostr{#1}%
+  \else
+    \ifcase0%
+      \ifx\tikztiming@output@bufchara\empty
+        \ifx\tikztiming@output@bufcharb\empty
+          1%
+        \fi
+      \fi\relax
+      % not empty
+      \edef\tikztiming@output@currentchar{#2}%
+      \ifcase0%
+      \expandafter\ifx\csname tikztiming@nocombine@#2\endcsname\relax
+      \ifx\tikztiming@output@currentchar\tikztiming@output@bufcharb
+        1%
+      \fi\fi
+      \relax
+        \tikztiming@output@flush
+        \edef\tikztiming@output@bufchara{#1}%
+        \edef\tikztiming@output@bufcharb{#2}%
+      \or
+        \pgfmathparse{\tikztiming@output@bufnum + \tikztiming@num}%
+        \let\tikztiming@output@bufnum\pgfmathresult
+        \def\tikztiming@num{1.0}%
+      \fi
+    \else % empty
+      \edef\tikztiming@output@bufchara{#1}%
+      \edef\tikztiming@output@bufcharb{#2}%
+      \let\tikztiming@output@bufnum\tikztiming@num
+      \def\tikztiming@num{1.0}%
+    \fi
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@handletext@}[2]{Optional Settings}{Text}
+% \begin{macro}{\tikztiming@output@flush}
 %    \begin{macrocode}
-\def\tikztiming@handletext@[#1]#2\relax{%
+\def\tikztiming@output@flush{%
   \begingroup
-  \expandafter\lowercase\expandafter{%
-    \expandafter\def\expandafter\tikztiming@currentcharlc
-    \expandafter{\tikztiming@currentchar}%
-  }%
-  \pgfkeysifdefined{/tikz/timing/\tikztiming@currentcharlc/text/.@cmd}%
-  {%
-  \tikztiming@output@flush
-  \tikztiming@eaddtostr{%
-    node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
-    node [%]
-      shift={($ (timing@dstart)!0.5!(timing@dend) $)},%
-      timing/\tikztiming@currentcharlc/text,%
-  }%
-  \endgroup
-  \tikztiming@addtostr{%[
-      #1%
-      ] {#2}%
-  }%
-  \def\tikztiming@lastchar{D@edge@}%
-  }{%
-    \endgroup
-    \PackageWarning{tikz-timing}{Ignoring text for character 
-    '\tikztiming@currentchar'!}{}{}{}%
-  }%
-  \tikztiming@parser
+    \let\tikztiming@num\tikztiming@output@bufnum
+    \tikztiming@nameaddtostr{%
+      \tikztiming@output@bufchara
+      \tikztiming@output@bufcharb
+    }%
+  \endgroup%
+  \gdef\tikztiming@output@bufchara{}%
+  \gdef\tikztiming@output@bufcharb{}%
+  \global\let\tikztiming@output@bufnum\tikztiming@num
+  \gdef\tikztiming@num{1.0}%
+}
+%    \end{macrocode}
+% \end{macro}
+% ^^A ]>>2
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Parser}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[2
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Parser: Basic Macros}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
+%
+% \begin{macro}{\tikztiming@parser}
+%    \begin{macrocode}
+\def\tikztiming@parser{%
+  \@ifnextchar\relax
+    {\tikztiming@parser@end}%
+    {\tikztiming@testfornum}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3077,6 +3079,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
+%
+% ^^A ]>>3
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Parser: Handle Text}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ^^A <<[3
+%
 % \begin{macro}{\tikztiming@testfortext}
 %    \begin{macrocode}
 \def\tikztiming@testfortext{%
@@ -3086,11 +3095,57 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% ^^A ]>>2
+%
+%
+% \begin{macro}{\tikztiming@handletext}[1]{Text}
+%    \begin{macrocode}
+\def\tikztiming@handletext#1{%
+  \@ifnextchar{[}%
+    {\tikztiming@handletext@}%
+    {\tikztiming@handletext@[]}%
+  #1\relax
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@handletext@}[2]{Optional Settings}{Text}
+%    \begin{macrocode}
+\def\tikztiming@handletext@[#1]#2\relax{%
+  \begingroup
+  \expandafter\lowercase\expandafter{%
+    \expandafter\def\expandafter\tikztiming@currentcharlc
+    \expandafter{\tikztiming@currentchar}%
+  }%
+  \pgfkeysifdefined{/tikz/timing/\tikztiming@currentcharlc/text/.@cmd}%
+  {%
+  \tikztiming@output@flush
+  \tikztiming@eaddtostr{%
+    node (timing@dend) at +(\dslope/2.0,\height/2.0) {}
+    node [%]
+      shift={($ (timing@dstart)!0.5!(timing@dend) $)},%
+      timing/\tikztiming@currentcharlc/text,%
+  }%
+  \endgroup
+  \tikztiming@addtostr{%[
+      #1%
+      ] {#2}%
+  }%
+  \def\tikztiming@lastchar{D@edge@}%
+  }{%
+    \endgroup
+    \PackageWarning{tikz-timing}{Ignoring text for character 
+    '\tikztiming@currentchar'!}{}{}{}%
+  }%
+  \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% ^^A ]>>3
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Parser Macros: Numbers}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ^^A <<[2
+% ^^A <<[3
 %
 %
 % \begin{macro}{\tikztiming@numloop}
@@ -3220,6 +3275,8 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% ^^A ]>>3
 % ^^A ]>>2
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Definition of Modifiers}
@@ -3365,7 +3422,6 @@
 % \subsubsection{Add-Node Macros}
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ^^A <<[3
-%
 %
 % \begin{macro}{\tikztiming@addnode}[1]{Options}
 %    \begin{macrocode}
@@ -4422,6 +4478,7 @@
 \tikztimingdef{ZM}{
   \newdraw [\style]
   \tikztiminguse{MM}{#1}
+  \newdraw [\style/base]
 }
 
 \tikztimingdef{MZ}{
