@@ -73,7 +73,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters,advnodes}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters,advnodes,altztrans}
 \tikzset{timing/no nice tabs}
 \makeatother
 %%%^^A\usepackage[electronic]{ifsym}
@@ -2141,6 +2141,49 @@
 % \tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}%
 % \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
 % }%
+%
+% \clearpage
+% \subsection{Alternative Z/X Transitions}
+% The |altztrans| library provides a modified definition of Z and X transitions
+% where the transition edge is \emph{not} coloured like the rest of the Z or X signal, but
+% is kept in the color of the previous signal, i.e.\ normally black.
+%
+% After this library is loaded the following transitions are redefined to the `alternative' definition.
+% The two styles below can be used to switch between the normal and alternative definitions.
+%
+% \par\medskip
+% \noindent
+% \begingroup
+% \tikzset{timing/draw grid}\sffamily
+% \def\ttN#1{\texttiming[timing/no altztrans]{#1}}%
+% \def\ttA#1{\texttiming[timing/altztrans]{#1}}%
+% \centerline{\begin{tabular}{ll c@{~}c@{~~}c@{~~}c@{~~}c@{~~}c@{~~}c@{~~}c@{~~}c}
+% \toprule
+% Transition  & Style & LZ & HZ & TZ & CZ & LX & LX & TX & CX \\
+% \midrule
+% Normal      & [timing/no altztrans] & \ttN{LZ} & \ttN{HZ} & \ttN{TZ} & \ttN{CZ} & \ttN{LX} & \ttN{LX} & \ttN{TX} & \ttN{CX} \\
+% Alternative & [timing/altztrans]    & \ttA{LZ} & \ttA{HZ} & \ttA{TZ} & \ttA{CZ} & \ttA{LX} & \ttA{LX} & \ttA{TX} & \ttA{CX} \\
+% \bottomrule
+% \end{tabular}}
+% \endgroup
+% \par\bigskip
+%
+% \noindent
+% A meta-character can be 
+% defined for quick changes if necessary:\\[\smallskipamount]
+% \begingroup
+% |\tikztimingmetachar{Y}{[timing/altztrans]}|\\
+% |\tikztimingmetachar{y}{[timing/no altztrans]}|\\
+% |\texttiming[timing/draw grid]{ L Z  Y  H Z  y  L Z  Y  L Z } |\\
+% gives:
+% \tikztimingmetachar{Y}{[timing/altztrans]}
+% \tikztimingmetachar{y}{[timing/no altztrans]}
+% \texttiming[timing/draw grid]{ L Z  Y H Z y  L Z  Y  L Z }
+% \endgroup
+%
+% \bigskip\par
+% This library was requested by an user which needs to indicate whether the edge is part of an
+% interval or not.
 %
 % \clearpage
 % \section{Examples}
@@ -7095,6 +7138,15 @@
   {-- ++(\zslope,-\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
 }
+
+\tikztimingdef{TZ}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \tikztiming@ztrans
+  {\newdraw [\style]}
+  {-- ++(\zslope,\value{tikztimingtrans}*\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
 
 \let\tikztiming@glitch@normal\tikztiming@glitch
 
