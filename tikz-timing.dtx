@@ -39,6 +39,7 @@
 %<lib-nicetabs>\ProvidesPackageSVN[tikz-timing-nicetabs]
 %<lib-counters>\ProvidesPackageSVN[tikz-timing-counters]
 %<lib-advnodes>\ProvidesPackageSVN[tikz-timing-advnodes]
+%<lib-altztrans>\ProvidesPackageSVN[tikz-timing-altztrans]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -56,6 +57,7 @@
 %<lib-nicetabs|    >   nice timing tables]
 %<lib-counters|    >   counter values]
 %<lib-advnodes|    >   advanced nodes]
+%<lib-altztrans|   >   alternative Z transitions]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
@@ -7075,6 +7077,43 @@
 %    \end{macrocode}
 % \iffalse
 %</lib-advnodes>
+%<*lib-altztrans>
+% \fi
+
+\let\tikztiming@ztrans\relax
+
+\tikztimingdef{LZ}{
+  \tikztiming@ztrans
+  {\newdraw [\style]}
+  {-- ++(\zslope,+\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\tikztimingdef{HZ}{%
+  \tikztiming@ztrans
+  {\newdraw [\style]}
+  {-- ++(\zslope,-\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\let\tikztiming@glitch@normal\tikztiming@glitch
+
+\def\tikztiming@glitch{
+  \tikztiming@ztrans{\@gobble}{\tikztiming@newdraw}\empty
+  \tikztiming@glitch@normal
+  \tikztiming@ztrans{\@gobble}{\tikztiming@newdraw}\empty
+}
+
+\def\tikztiming@ztrans#1#2{#2#1}
+
+\tikzset{timing/.cd,
+  altztrans/.code={\def\tikztiming@ztrans##1##2{##2##1}},
+  no altztrans/.code={\def\tikztiming@ztrans##1##2{##1##2}},
+}
+
+
+% \iffalse
+%</lib-altztrans>
 % \fi
 % \Finale
 \endinput
