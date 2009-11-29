@@ -795,10 +795,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-%    \begin{macrocode}
+% \iffalse
 %</examplecode>
 %<*driver>
-%    \end{macrocode}
+% \fi
 \makeatother
 
 \EnableCrossrefs
@@ -2581,6 +2581,10 @@
   outer xsep/.store in=\tikztiming@xsep,
   outer ysep/.store in=\tikztiming@ysep,
   outer sep/.style={/tikz/timing/outer xsep=#1,/tikz/timing/outer ysep=#1},
+  debug/scope/.style={font=\sffamily\tiny,gray},
+  debug/node/.style={above,inner sep=2pt},
+  debug/mark nodes/.code={\tikztiming@marknodes{#1}},
+  debug/mark nodes/.default={\tikztiming@namednodes},
 }
 \tikzset{timing/inline node/.cd,
   from char={}, to char={}
@@ -2660,6 +2664,7 @@
     \let\tikztiming@settings\empty
     \let\tikztiming@fromchar\empty
     \let\tikztiming@tochar\empty
+    \let\tikztiming@namednodes\empty
     \let\setwscale\tikztimingsetwscale
     \def\wscale{\tikztiming@wscale}%
     \def\slope{\timingslope}%
@@ -3556,8 +3561,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@addnode@getname}[2]{Previous read options}{Node 
-% name}
+% \begin{macro}{\tikztiming@addnode@getname}[2]{Previous read options}{Node name}
 %    \begin{macrocode}
 \def\tikztiming@addnode@getname#1(#2){%
   \@ifnextchar\bgroup
@@ -3578,16 +3582,34 @@
       timing/inline node/from char={\tikztiming@fromchar},%
       timing/inline node/to char={\tikztiming@tochar},%
       \unexpanded{#1}] }%
+    \def\@tempb{}%
   \else
     \def\@tempa{ node [timing/inline node,%
       timing/inline node/from char={\tikztiming@fromchar},%
       timing/inline node/to char={\tikztiming@tochar},%
       \unexpanded{#1}] (\unexpanded{#2}) }%
+    \xdef\tikztiming@namednodes{\tikztiming@namednodes,#2}%
   \fi
-  \expandafter\tikztiming@output@eaddcode\expandafter{\@tempa \unexpanded{{#3}} 
-  }%
+  \expandafter\tikztiming@output@eaddcode\expandafter{\@tempa \unexpanded{{#3}}}%
   \tikztiming@parser
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@marknodes}
+%    \begin{macrocode}
+\def\tikztiming@marknodes#1{%
+  \scope[timing/debug/scope]
+    \foreach \N in #1 {%
+      \ifx\N\empty\else
+        \tikztiming@markcmd{\N}
+        \path let \p1=(\N) in
+          node [timing/debug/node] at (\x1,1) {\N};
+      \fi
+    }%
+  \endscope
+}
+\def\tikztiming@markcmd#1{ \draw (#1) circle (1pt); }%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6331,13 +6353,14 @@
 % This macro is called from the \cs{tikztiming@endhook} which is located in 
 % \cs{tikztiming@parser@end} when the end marker (|\relax| or alias) is 
 % encountered. It executes the accumulated \cs{tikztiming@str} and places the 
-% timing shape. Finally the |scope| and |tikzpicture| is 
-% closed.
-%     \begin{macrocode}
+% timing shape. Finally the |scope| and |tikzpicture| is closed.
+%    \begin{macrocode}
 \def\end@celltiming{%
+    \tikzset{timing/before}%
     \tikztiming@str;
     \expandafter\node 
     \expandafter[\tikztiming@settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
+    \tikzset{timing/after}%
   \endscope
   \end{tikzpicture}%
 }
