@@ -2505,6 +2505,8 @@
   inline node/from char/.store in=\tikztiming@node@fromchar,
   inline node/to char/.store in=\tikztiming@node@tochar,
   table/.style={font=\sffamily,timing,line width=0.15ex},
+  before table/.code={},
+  after table/.code={},
   coord/.style={coordinate},
   save/.style={coordinate},
   restore/.style={/utils/exec={\expandafter\tikzset\expandafter{\tikztiming@saved@options}}},
@@ -2581,10 +2583,15 @@
   outer xsep/.store in=\tikztiming@xsep,
   outer ysep/.store in=\tikztiming@ysep,
   outer sep/.style={/tikz/timing/outer xsep=#1,/tikz/timing/outer ysep=#1},
+  %
+  debug/level/.code={\tikztiming@debug=#1\relax},
+  debug/level/.value required,
   debug/scope/.style={font=\sffamily\tiny,gray},
   debug/node/.style={above,inner sep=2pt},
-  debug/mark nodes/.code={\tikztiming@marknodes{#1}},
-  debug/mark nodes/.default={\tikztiming@namednodes},
+  debug/nodes/.style={%
+    /tikz/timing/after table/.append code={\tikztiming@marknodes{\tikztiming@namednodes}},
+    /tikz/timing/after text/.append code={\tikztiming@marknodes{\tikztiming@namednodes}}
+  },
 }
 \tikzset{timing/inline node/.cd,
   from char={}, to char={}
@@ -2629,12 +2636,13 @@
   \begingroup
     \let\tikztiming@lastchar\empty
     \let\tikztiming@settings\empty
-    \tikzset{timing/before/.style={timing/before text}}%
-    \tikzset{timing/after/.style={timing/after text}}%
+    \tikzset{timing/before/.append style={timing/before text}}%
+    \tikzset{timing/after/.prefix style={timing/after text}}%
     \ifx\relax#1\relax\else
       \tikztiming@testoptarg#1\relax\relax%
     \fi
     \begin{tikzpicture}[timing/intext,baseline={(0,0)}]
+      \tikztiming@picinit
       \def\@tempa{\expandafter\timing\expandafter[\tikztiming@settings] at (0,0)}%
       \expandafter\@tempa\expandafter{\expandafter[\tikztiming@lastchar]#2};%
     \end{tikzpicture}%
@@ -2655,6 +2663,15 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@picinit}
+% For things which should only by initialised once per |tikzpicture|.
+%    \begin{macrocode}
+\def\tikztiming@picinit{%
+    \global\let\tikztiming@namednodes\empty
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@init}
 %    \begin{macrocode}
 \def\tikztiming@init{%
@@ -2664,7 +2681,6 @@
     \let\tikztiming@settings\empty
     \let\tikztiming@fromchar\empty
     \let\tikztiming@tochar\empty
-    \let\tikztiming@namednodes\empty
     \let\setwscale\tikztimingsetwscale
     \def\wscale{\tikztiming@wscale}%
     \def\slope{\timingslope}%
@@ -3596,20 +3612,41 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@marknodes}
+% \begin{macro}{\tikztiming@marknodes}[1]{Comma-separated list of node names}
 %    \begin{macrocode}
-\def\tikztiming@marknodes#1{%
+\newcommand*\tikztiming@marknodes[2][]{%
   \scope[timing/debug/scope]
-    \foreach \N in #1 {%
+    \edef\@tempa{floor((\noexpand\y1-\tikztiming@xunit) / \tikztiming@rowdist\tikztiming@xunit) * \tikztiming@rowdist\tikztiming@xunit}%
+    \foreach \N in #2 {%
       \ifx\N\empty\else
         \tikztiming@markcmd{\N}
-        \path let \p1=(\N) in
-          node [timing/debug/node] at (\x1,1) {\N};
+        \path let \p1=(\N) in 
+          node [timing/debug/node,#1] at ($ (\x1,\noexpand\@tempa) + (0,1) $) {\N};
       \fi
     }%
   \endscope
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@markcmd}[1]{name of node to mark}
+%    \begin{macrocode}
 \def\tikztiming@markcmd#1{ \draw (#1) circle (1pt); }%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@mark@nodes}[1]{Comma-separated list of node names}
+%    \begin{macrocode}
+\newcommand*\tikztiming@mark@nodes[2][]{%
+  \begingroup
+    \def\@tempa{#2}%
+    \ifx\@tempa\empty \let\@tempa\tikztiming@namednodes \fi
+    \ifx\@tempa\space \let\@tempa\tikztiming@namednodes \fi
+    \def\@tempb{\tikztiming@marknodes[#1]}%
+    \show\@tempa
+    \expandafter\@tempb\expandafter{\expandafter{\@tempa}}%
+  \endgroup
+}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -3855,6 +3892,7 @@
   \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
   \let\vertlines\tikztiming@vertlines
+  \let\marknodes\tikztiming@mark@nodes
   \def\tablerules{\tikztiming@tablerules}%
   \def\tableheader{\tikztiming@tableheader}%
   \def\rowdist{\tikztiming@rowdist}%
@@ -3866,7 +3904,9 @@
     \coordinate (label pos) at (-1*{(\coldist)},0);
     \coordinate (timing/table/top left) at (0,1);
     \coordinate (timing/table/bottom right) at (0,0);
-  \collect@body\tikztiming@table
+    \tikztiming@picinit
+    \tikzset{timing/before table}%
+    \collect@body\tikztiming@table
 }{%
 }
 %    \end{macrocode}
@@ -3876,6 +3916,7 @@
 %    \begin{macrocode}
 \def\tikztiming@table#1{%
   \tikztimingtable@row#1\endtikztimingtable@
+  \tikzset{timing/after table}%
   \endtikzpicture
   \endgroup
 }
