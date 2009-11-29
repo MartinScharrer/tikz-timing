@@ -75,6 +75,7 @@
 \usepackage{tikz-timing}[\tikztiming@date]
 \usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters,advnodes,altztrans}
 \tikzset{timing/no nice tabs}
+\tikzset{timing/interval/normal}
 \makeatother
 %%%^^A\usepackage[electronic]{ifsym}
 \usepackage{calc}
@@ -816,7 +817,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{4772}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -934,28 +935,27 @@
 % \fi
 %
 % \begin{table}[b!]
-% \let\texttimingbefore\texttiminggrid
+% \tikzset{timing/draw grid}
+% \let\ttt\texttiming
 % \sffamily\centering
 % \caption{Timing Characters}\label{tab:chars}
 % \begin{tabular}{clccc}
 %   \toprule
-%   Character & Description & Full Width & Half Width & Transition \\
-%             &             & \small (Uppercase) & \small (Lowercase) & Example 
-%             \\\midrule
-% \texttt{H} & High & \texttiming{H} & \texttiming{h} & \texttiming[L]{H} \\
-% \texttt{L} & Low & \texttiming{L} & \texttiming{l} & \texttiming[H]{L} \\
-% \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming{z} & \texttiming[L]{Z} \\
-% \texttt{X} & Undefined / Don't Care & \texttiming{X} & \texttiming{x} & \texttiming[L]{X} \\
-% \texttt{D} & Data / Double & \texttiming{D} & \texttiming{d} & \texttiming[L]{D{A}D} \\
-% \texttt{U} & Unknown Data & \texttiming{U} & \texttiming{u} & \texttiming[D]{U} \\
-% \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{l} or 
-% \texttiming{h} & \texttiming{TTTT} \\
-% \texttt{C} & Clock (no slope) & \texttiming{L} or \texttiming{H} & 
-% \texttiming{l} or \texttiming{h} & \texttiming{CCCC} \\
-% \texttt{M} & Metastable Condition & \texttiming{M} & \texttiming{m} & \texttiming[H]{Ml} \\
+%   Character & Description            & Full Width         & Half Width         & Transition \\
+%             &                        & \small (Uppercase) & \small (Lowercase) & Example    \\
 %   \midrule
-% \texttt{G} & Glitch (zero width) & \texttiming{G} & \texttiming{g} & \texttiming{HGH} \\
-% \texttt{S} & Space (nothing) & \texttiming{S} & \texttiming{s} & \texttiming{HSL} \\
+% \texttt{H}  & High                   & \ttt{H}            & \ttt{h}            & \ttt[L]{H} \\
+% \texttt{L}  & Low                    & \ttt{L}            & \ttt{l}            & \ttt[H]{L} \\
+% \texttt{Z}  & High Impedance         & \ttt{Z}            & \ttt{z}            & \ttt[L]{Z} \\
+% \texttt{X}  & Undefined / Don't Care & \ttt{X}            & \ttt{x}            & \ttt[L]{X} \\
+% \texttt{D}  & Data / Double          & \ttt{D}            & \ttt{d}            & \ttt[L]{D{A}D} \\
+% \texttt{U}  & Unknown Data           & \ttt{U}            & \ttt{u}            & \ttt[D]{U} \\
+% \texttt{T}  & Toggle                 & \ttt{L} or \ttt{H} & \ttt{l} or \ttt{h} & \ttt{TTTT} \\
+% \texttt{C}  & Clock (no slope)       & \ttt{L} or \ttt{H} & \ttt{l} or \ttt{h} & \ttt{CCCC} \\
+% \texttt{M}  & Metastable Condition   & \ttt{M}            & \ttt{m}            & \ttt[H]{Ml} \\
+%   \midrule
+% \texttt{G}  & Glitch (zero width)    & \ttt{G}            & \ttt{g}            & \ttt{HGH} \\
+% \texttt{S}  & Space (nothing)        & \ttt{S}            & \ttt{s}            & \ttt{HSL} \\
 % \bottomrule
 % \end{tabular}
 % \end{table}
@@ -2155,30 +2155,37 @@
 % \noindent
 % \begingroup
 % \tikzset{timing/draw grid}\sffamily
-% \def\ttN#1{\texttiming[timing/no altztrans]{#1}}%
-% \def\ttA#1{\texttiming[timing/altztrans]{#1}}%
-% \centerline{\begin{tabular}{ll c@{~}c@{~~}c@{~~}c@{~~}c@{~~}c@{~~}c@{~~}c@{~~}c}
-% \toprule
-% Transition  & Style & LZ & HZ & TZ & CZ & LX & LX & TX & CX \\
-% \midrule
-% Normal      & [timing/no altztrans] & \ttN{LZ} & \ttN{HZ} & \ttN{TZ} & \ttN{CZ} & \ttN{LX} & \ttN{LX} & \ttN{TX} & \ttN{CX} \\
-% Alternative & [timing/altztrans]    & \ttA{LZ} & \ttA{HZ} & \ttA{TZ} & \ttA{CZ} & \ttA{LX} & \ttA{LX} & \ttA{TX} & \ttA{CX} \\
-% \bottomrule
-% \end{tabular}}
+% \newcommand*\ttt[2][]{\texttiming[timing/interval={#1}]{#2}}
+% \newcommand*\extab[1]{%
+%     \begin{tabular}{rcc}
+%          & ro              & rc              \\
+%       lo & \ttt[lo,ro]{#1} & \ttt[lo,rc]{#1} \\
+%       lc & \ttt[lc,ro]{#1} & \ttt[lc,rc]{#1} \\
+%     \end{tabular}
+% }
+% \extab{zlzlz}
 % \endgroup
 % \par\bigskip
 %
 % \noindent
-% A meta-character can be 
-% defined for quick changes if necessary:\\[\smallskipamount]
+% A meta-character can be defined for quick changes if necessary:\\[\smallskipamount]
 % \begingroup
-% |\tikztimingmetachar{Y}{[timing/altztrans]}|\\
-% |\tikztimingmetachar{y}{[timing/no altztrans]}|\\
-% |\texttiming[timing/draw grid]{ L Z  Y  H Z  y  L Z  Y  L Z } |\\
+% |\tikztimingmetachar{Y}{[timing/interval={lo,ro}]}|\\
+% |\tikztimingmetachar{y}{[timing/interval/normal]}|\\
+% |\texttiming[timing/draw grid]{ LZH Y HZH y LZH Y LZL } |\\
+% |\texttiming[timing/draw grid]{ LXH Y HXH y LXH Y LXL } |\\
 % gives:
-% \tikztimingmetachar{Y}{[timing/altztrans]}
-% \tikztimingmetachar{y}{[timing/no altztrans]}
-% \texttiming[timing/draw grid]{ L Z  Y H Z y  L Z  Y  L Z }
+% \tikztimingmetachar{Y}{[timing/interval={lo,ro}]}
+% \tikztimingmetachar{y}{[timing/interval/normal]}
+% \texttiming[timing/draw grid]{ LZH Y HZH y LZH Y LZL }
+% \texttiming[timing/draw grid]{ LXH Y HXH y LXH Y LXL } \\
+% \endgroup
+%
+% \noindent
+% \begingroup
+% |\texttiming[timing/draw grid]{ X G X G L G X G L } |\\
+% gives:
+% \texttiming[timing/draw grid]{ X G X G L G X G L } \\
 % \endgroup
 %
 % \bigskip\par
@@ -4626,15 +4633,18 @@
 
 \tikztimingdef{LZ}{
   \newdraw [\style]
-  -- ++(\zslope,+\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
+  -- ++(\zslope,+\height/2.)
+  -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{HZ}{%
   \newdraw [\style]
-  -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
+  -- ++(\zslope,-\height/2.)
+  -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{ZL}{%
   \newdraw
-  -- ++(\zslope,-\height/2.) -- ++($ (#1,0) - (\zslope,0) $)
+  -- ++(\zslope,-\height/2.)
+  -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 \tikztimingdef{DZ}{
@@ -6648,11 +6658,11 @@
   \fi\fi
   \tikztiming@next
 }
-%   \end{macrocode}
+%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@tryanchor@}[4]{Alias From}{Alias To}{From}{To}
-%   \begin{macrocode}
+%    \begin{macrocode}
 \def\tikztiming@tryanchor@#1#2#3#4{%
   \tikztiming@tryanchor{#3}{#2}%
   \tikztiming@tryanchor{#1}{#4}%
@@ -6661,7 +6671,7 @@
   \tikztiming@tryanchor{#3}{}%
   \tikztiming@tryanchor{}{#4}%
 }
-%   \end{macrocode}
+%    \end{macrocode}
 % \end{macro}
 %
 %    \begin{macrocode}
@@ -7123,17 +7133,18 @@
 %<*lib-altztrans>
 % \fi
 
-\let\tikztiming@ztrans\relax
+\let\tikztiming@linterval\relax
+\let\tikztiming@rinterval\relax
 
 \tikztimingdef{LZ}{
-  \tikztiming@ztrans
+  \tikztiming@linterval
   {\newdraw [\style]}
   {-- ++(\zslope,+\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 \tikztimingdef{HZ}{%
-  \tikztiming@ztrans
+  \tikztiming@linterval
   {\newdraw [\style]}
   {-- ++(\zslope,-\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
@@ -7141,28 +7152,55 @@
 
 \tikztimingdef{TZ}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \tikztiming@ztrans
+  \tikztiming@linterval
   {\newdraw [\style]}
   {-- ++(\zslope,\value{tikztimingtrans}*\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
 }
 
-
-\let\tikztiming@glitch@normal\tikztiming@glitch
-
-\def\tikztiming@glitch{
-  \tikztiming@ztrans{\@gobble}{\tikztiming@newdraw}\empty
-  \tikztiming@glitch@normal
-  \tikztiming@ztrans{\@gobble}{\tikztiming@newdraw}\empty
+\tikztimingdef{ZL}{%
+  \tikztiming@rinterval
+  {\newdraw}
+  {-- ++(\zslope,-\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
 }
 
-\def\tikztiming@ztrans#1#2{#2#1}
-
-\tikzset{timing/.cd,
-  altztrans/.code={\def\tikztiming@ztrans##1##2{##2##1}},
-  no altztrans/.code={\def\tikztiming@ztrans##1##2{##1##2}},
+\tikztimingdef{ZH}{%
+  \tikztiming@rinterval
+  {\newdraw}
+  {-- ++(\zslope,\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
 }
 
+\tikztimingdef{ZT}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \tikztiming@rinterval
+  {\newdraw [\style]}
+  {-- ++(\zslope,\value{tikztimingtrans}*\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\def\tikztiming@onetwo#1#2{#1#2}
+\def\tikztiming@twoone#1#2{#2#1}
+
+\let\tikztiming@linterval\tikztiming@onetwo
+\let\tikztiming@rinterval\tikztiming@onetwo
+
+\tikzset{timing/interval/.code={\pgfqkeys{/tikz/timing/interval}{#1}}}
+\tikzset{timing/interval/.cd,
+   lo/.style={/tikz/timing/interval/left open},
+   lc/.style={/tikz/timing/interval/left close},
+   ro/.style={/tikz/timing/interval/right open},
+   rc/.style={/tikz/timing/interval/right close},
+   left close/.code={\let\tikztiming@linterval\tikztiming@onetwo},
+    left open/.code={\let\tikztiming@linterval\tikztiming@twoone},
+   right open/.code={\let\tikztiming@rinterval\tikztiming@onetwo},
+  right close/.code={\let\tikztiming@rinterval\tikztiming@twoone},
+}
+\tikzset{
+  timing/interval/normal/.style={timing/interval/left close,timing/interval/right open},
+  timing/interval/verilog/.style={timing/interval/normal},
+}
 
 % \iffalse
 %</lib-altztrans>
