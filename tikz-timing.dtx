@@ -2153,10 +2153,11 @@
 % following combinations: `|{lo,ro}|', `|{lc,ro}|', `|{lo,rc}|' and `|{lc,rc}|'. However, every of them can also be set on its own, 
 % e.g.\ `|timing/interval={lc}|' simply sets the interval to `left-closed' without changing the right border.
 %
-% The key `|timing/interval/normal|', which can also be written as `|timing/interval={normal}|', sets the transitions back to their default.
+% The key `|timing/interval/normal|' (alternative: `|timing/interval={normal}|') sets the transitions back to their default.
 %
 % \par\medskip
 % \noindent
+% Examples:
 % \begingroup
 % \tikzset{timing/draw grid}\sffamily
 % \newcommand*\ttt[2][]{\texttiming[timing/interval={#1}]{#2}}
@@ -2185,6 +2186,7 @@
 % \texttiming[timing/draw grid]{ LXH Y HXH y LXH Y LXL } \\
 % \endgroup
 %
+% \par\bigskip
 % \noindent
 % A further alternative is to use a meta-character with an argument.
 % Note that `|#2|' must be used, because `|#1|' holds the width, which is irrelevant here.
