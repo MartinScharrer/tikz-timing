@@ -39,7 +39,7 @@
 %<lib-nicetabs>\ProvidesPackageSVN[tikz-timing-nicetabs]
 %<lib-counters>\ProvidesPackageSVN[tikz-timing-counters]
 %<lib-advnodes>\ProvidesPackageSVN[tikz-timing-advnodes]
-%<lib-altztrans>\ProvidesPackageSVN[tikz-timing-altztrans]
+%<lib-interval>\ProvidesPackageSVN[tikz-timing-interval]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -57,7 +57,7 @@
 %<lib-nicetabs|    >   nice timing tables]
 %<lib-counters|    >   counter values]
 %<lib-advnodes|    >   advanced nodes]
-%<lib-altztrans|   >   alternative Z transitions]
+%<lib-interval|   >   alternative Z transitions]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
@@ -73,7 +73,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters,advnodes,altztrans}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters,advnodes,interval}
 \tikzset{timing/no nice tabs}
 \tikzset{timing/interval/normal}
 \makeatother
@@ -2143,13 +2143,17 @@
 % }%
 %
 % \clearpage
-% \subsection{Alternative Z/X Transitions}
-% The |altztrans| library provides a modified definition of Z and X transitions
-% where the transition edge is \emph{not} coloured like the rest of the Z or X signal, but
-% is kept in the color of the previous signal, i.e.\ normally black.
+% \subsection{Intervals}
+% The |interval| library allows the drawing of intervals using the `|H|', `|L|', `|Z|' and `|X|' logic levels.
+% It provides modified definitions of X and Z transitions (e.g.~`|LX|', '|XH|') where the transition edges can 
+% be coloured either way to indicate interval borders.
 %
-% After this library is loaded the following transitions are redefined to the `alternative' definition.
-% The two styles below can be used to switch between the normal and alternative definitions.
+% The interval borders can be set using the `|timing/interval=|\marg{settings}' TikZ style. The 
+% \meta{settings} are `|lo|' (left-open), `|lc|' (left-closed) and `|ro|' (right-open), `|rc|' (right-closed), which build the
+% following combinations: `|{lo,ro}|', `|{lc,ro}|', `|{lo,rc}|' and `|{lc,rc}|'. However, every of them can also be set on its own, 
+% e.g.\ `|timing/interval={lc}|' simply sets the interval to `left-closed' without changing the right border.
+%
+% The key `|timing/interval/normal|', which can also be written as `|timing/interval={normal}|', sets the transitions back to their default.
 %
 % \par\medskip
 % \noindent
@@ -2182,11 +2186,16 @@
 % \endgroup
 %
 % \noindent
+% A further alternative is to use a meta-character with an argument.
+% (Note that `|#2|' must be used, because `|#1|' holds the width, which is irrelevant here.)\\[\smallskipamount]
 % \begingroup
-% |\texttiming[timing/draw grid]{ X G X G L G X G L } |\\
+% |\tikztimingmetachar{Y}[2]{[timing/interval={#2}]}|\\
+% |\texttiming[timing/draw grid]{ LZH Y{lo,rc} HZH Y{ro} LZH Y{normal} LZL } |\\
 % gives:
-% \texttiming[timing/draw grid]{ X G X G L G X G L } \\
+% \tikztimingmetachar{Y}[2]{[timing/interval={#2}]}
+% \texttiming[timing/draw grid]{ LZH Y{lo,rc} HZH Y{ro} LZH Y{normal} LZL }\\
 % \endgroup
+%
 %
 % \bigskip\par
 % This library was requested by an user which needs to indicate whether the edge is part of an
@@ -7130,7 +7139,7 @@
 %    \end{macrocode}
 % \iffalse
 %</lib-advnodes>
-%<*lib-altztrans>
+%<*lib-interval>
 % \fi
 
 \let\tikztiming@linterval\relax
@@ -7198,12 +7207,12 @@
   right close/.code={\let\tikztiming@rinterval\tikztiming@twoone},
 }
 \tikzset{
-  timing/interval/normal/.style={timing/interval/left close,timing/interval/right open},
-  timing/interval/verilog/.style={timing/interval/normal},
+  timing/interval/normal/.style={/tikz/timing/interval/left close,/tikz/timing/interval/right open},
+  timing/interval/verilog/.style={/tikz/timing/interval/normal},
 }
 
 % \iffalse
-%</lib-altztrans>
+%</lib-interval>
 % \fi
 % \Finale
 \endinput
