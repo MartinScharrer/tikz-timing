@@ -2187,19 +2187,19 @@
 %
 % \noindent
 % A further alternative is to use a meta-character with an argument.
-% (Note that `|#2|' must be used, because `|#1|' holds the width, which is irrelevant here.)\\[\smallskipamount]
+% Note that `|#2|' must be used, because `|#1|' holds the width, which is irrelevant here.
+% This definition is also provided by the `|timing/interval/metachar|=\meta{Character}' key.
+% \\[\smallskipamount]
 % \begingroup
-% |\tikztimingmetachar{Y}[2]{[timing/interval={#2}]}|\\
-% |\texttiming[timing/draw grid]{ LZH Y{lo,rc} HZH Y{ro} LZH Y{normal} LZL } |\\
+% |\tikztimingmetachar{I}[2]{[timing/interval={#2}]}|\\
+% or
+% |\tikzset{timing/interval/metachar=I}|\\
+% |\texttiming[timing/draw grid]{ LZH I{lo,rc} HZH I{ro} LZH I{normal} LZL } |\\
 % gives:
-% \tikztimingmetachar{Y}[2]{[timing/interval={#2}]}
-% \texttiming[timing/draw grid]{ LZH Y{lo,rc} HZH Y{ro} LZH Y{normal} LZL }\\
+% \tikztimingmetachar{I}[2]{[timing/interval={#2}]}
+% \texttiming[timing/draw grid]{ LZH I{lo,rc} HZH I{ro} LZH I{normal} LZL }\\
 % \endgroup
 %
-%
-% \bigskip\par
-% This library was requested by an user which needs to indicate whether the edge is part of an
-% interval or not.
 %
 % \clearpage
 % \section{Examples}
@@ -7209,6 +7209,7 @@
 \tikzset{
   timing/interval/normal/.style={/tikz/timing/interval/left close,/tikz/timing/interval/right open},
   timing/interval/verilog/.style={/tikz/timing/interval/normal},
+  timing/interval/metachar/.style={/tikz/timing/metachar={#1}[2]{[timing/interval={##2}]}},
 }
 
 % \iffalse
