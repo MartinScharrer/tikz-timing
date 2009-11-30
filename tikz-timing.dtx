@@ -1759,6 +1759,12 @@
 %     a tikztimingtable. Default: 2 (=$2\times$signal height)\\
 %     timing/coldist=\meta{distance} & Sets distance between columns in a 
 %     tikztimingtable. Default: 1 (=$1\times$period width)\\
+%     \midrule
+%     timing/debug/nodes & Enables marking of named inline nodes. \\
+%     timing/debug/node  & Format style for inline node marker label, which itself is a TikZ node. \\
+%     timing/debug/markcmd=\meta{code} & TikZ drawing code to draw marker (except label). The code can access the node name as \cs{N}. \\
+%     timing/debug/scope & Format for scope of node markers. \\
+%     timing/debug/level=\meta{integer} & Sets debug output level. This is only important for developers. \\
 %   \end{supertabular}
 %   ^^A\\[\smallskipamount]
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
@@ -2592,6 +2598,7 @@
     /tikz/timing/after table/.append code={\tikztiming@marknodes{\tikztiming@namednodes}},
     /tikz/timing/after text/.append code={\tikztiming@marknodes{\tikztiming@namednodes}}
   },
+  debug/markcmd/.store in={\tikztiming@markcmd},
 }
 \tikzset{timing/inline node/.cd,
   from char={}, to char={}
@@ -3615,13 +3622,13 @@
 % \begin{macro}{\tikztiming@marknodes}[1]{Comma-separated list of node names}
 %    \begin{macrocode}
 \newcommand*\tikztiming@marknodes[2][]{%
-  \scope[timing/debug/scope]
+  \scope[timing/debug/scope,#1]
     \edef\@tempa{floor((\noexpand\y1-\tikztiming@xunit) / \tikztiming@rowdist\tikztiming@xunit) * \tikztiming@rowdist\tikztiming@xunit}%
     \foreach \N in #2 {%
       \ifx\N\empty\else
-        \tikztiming@markcmd{\N}
+        \tikztiming@markcmd
         \path let \p1=(\N) in 
-          node [timing/debug/node,#1] at ($ (\x1,\noexpand\@tempa) + (0,1) $) {\N};
+          node [timing/debug/node] at ($ (\x1,\noexpand\@tempa) + (0,1) $) {\N};
       \fi
     }%
   \endscope
@@ -3629,9 +3636,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@markcmd}[1]{name of node to mark}
+% \begin{macro}{\tikztiming@markcmd}
 %    \begin{macrocode}
-\def\tikztiming@markcmd#1{ \draw (#1) circle (1pt); }%
+\def\tikztiming@markcmd{ \draw (\N) circle (1pt); }%
 %    \end{macrocode}
 % \end{macro}
 %
