@@ -2883,6 +2883,7 @@
       \@protect\n
       \@protect\x
       \@protect\y
+      \@protect\tikztiming@overlay@save
       \edef\@tempa{\tikztiming@str}%
       \message{^^J\meaning\@tempa^^J}%
       }%
@@ -6328,6 +6329,7 @@
     \def\tikztiming@next{\tikztiming@parser#1}%
   \else
     \let\tikztiming@overlay@lastchar\tikztiming@lastchar
+    \let\tikztiming@overlay@width\tikztimingwidth
     \tikztiming@output@addcode{\tikztiming@overlay@begin}%
     \begingroup
       \def\tikztiming@parser@end{%
@@ -6339,7 +6341,8 @@
       \endgroup
     \endgroup
     \tikztiming@output@addcode{\tikztiming@overlay@end}%
-    \let\tikztiming@lastchar\tikztiming@overlay@lastchar
+    \global\let\tikztiming@lastchar\tikztiming@overlay@lastchar
+    \global\let\tikztimingwidth\tikztiming@overlay@width
     \def\tikztiming@next{\expandafter\tikztiming@parser\@firstofone}%
   \fi
   \tikztiming@next
@@ -6368,6 +6371,12 @@
       \noexpand\global\noexpand\c@tikztimingtranspos\the\c@tikztimingtranspos\relax%
       \noexpand\gdef\noexpand\pgf@sh@nt@tikztiming@overlay@node
         {\csname pgf@sh@nt@tikztiming@overlay@node\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@refa
+        {\csname pgf@sh@nt@timing@refa\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@refb
+        {\csname pgf@sh@nt@timing@refb\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@ref
+        {\csname pgf@sh@nt@timing@ref\endcsname}%
       \noexpand\gdef\noexpand\tikztiming@overlay@save{%
         \expandafter\unexpanded\expandafter{\tikztiming@overlay@save}%
       }%
@@ -6383,7 +6392,7 @@
 %    \begin{macrocode}
 \def\tikztiming@overlay@end{%
   \tikztiming@newdraw (tikztiming@overlay@node)
-  [/utils/exec= \tikztiming@overlay@save]
+  [/utils/exec={\tikztiming@overlay@save}]
 }%
 %    \end{macrocode}
 % \end{macro}
