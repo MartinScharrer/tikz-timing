@@ -1968,6 +1968,11 @@
 % if and where this should happen. It is recommended to start and end the set 
 % with characters identical with the main line to avoid ugly connection points.
 %
+% Please note that the width of the first argument is ignored and does not count to the 
+% total width of the diagram line. The characters following the overlay should therefore
+% be as wide or wider as the one of the overlay, otherwise the bounding box and background grid
+% will be incorrect. 
+%
 % Overlays can be cascaded, \ie an overlay can be included in the first argument 
 % of another overlay. 
 %
@@ -1977,10 +1982,8 @@
 % \begin{tikztimingexampletable}[timing/draw grid]
 %   LLL O{HH}{LL} HHH \\
 %   LLL O{HHH}{LL} HHH \\
-%   LLL O{[gray]HHH}{LLH} HH \\
 %   LLL O{;[gray]HH.1H;}{LLH} HH \\
 %   LL  O{L;[gray]HH.1H;}{LLLH} HH \\
-%   HHH O{;[gray]HH.1L;}{LL} LLL \\
 %   DD{} O{zd}{D}d 2D \\
 %   ZZ O{Z D Z}{Z 1.1M .9Z} ZZ \\
 %   ZZ O{d Z}O{DZ}{dD} ZZ  \\
@@ -1988,7 +1991,7 @@
 %   ZZ 3D O{dDZ}{DZ} ZZ  \\
 %   ZZ 3D O{dDZ}O{DZ}{dZ} ZZ  \\
 %   ZZ 3D O{3D} DZZ \\
-%   Z O{DD} ZDDD O{DDZZ} DZ  \\
+%   Z O{DD} ZDDD O{DDZZ} DZ 2S \\
 %   Z O{6D Z}{Z 4D Z} Z  \\
 %   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z  \\
 % \end{tikztimingexampletable}
