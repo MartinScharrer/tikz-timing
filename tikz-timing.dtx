@@ -2633,7 +2633,7 @@
       \setlength{\tikztiming@xunit}{1.6ex}%
       \setlength{\tikztiming@yunit}{1.6ex}%
     },%
-    x=1.6ex, y=1.6ex,
+    /tikz/x=1.6ex, /tikz/y=1.6ex,
   },
   font/.style={%
     /tikz/font={#1},
@@ -3799,7 +3799,6 @@
     \ifx\@tempa\empty \let\@tempa\tikztiming@namednodes \fi
     \ifx\@tempa\space \let\@tempa\tikztiming@namednodes \fi
     \def\@tempb{\tikztiming@marknodes[#1]}%
-    \show\@tempa
     \expandafter\@tempb\expandafter{\expandafter{\@tempa}}%
   \endgroup
 }
@@ -6673,7 +6672,11 @@
     \def\tikztiming@coldist{2\tabcolsep}%
     \let\tikztiming@tableheader\tikztiming@nicetabs@tableheader
     \let\tikztiming@tablerules\tikztiming@nicetabs@tablerules
-  }%
+  },
+  timing/nicetabs/no nice tabs/.style={/tikz/timing/no nice tabs},
+  timing/nicetabs/off/.style={/tikz/timing/no nice tabs},
+  timing/nicetabs/nice tabs/.style={/tikz/timing/nice tabs},
+  timing/nicetabs/on/.style={/tikz/timing/nice tabs},
 }
 %
 \tikzset{timing/nice tabs}%
@@ -6682,7 +6685,7 @@
 % Use the \pkg{pgfopts} to handle the package options.
 %    \begin{macrocode}
 \RequirePackage{pgfopts}
-\ProcessPgfOptions{/tikz/timing}
+\ProcessPgfOptions{/tikz/timing/nicetabs}
 %    \end{macrocode}
 % \iffalse
 %</lib-nicetabs>

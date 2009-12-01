@@ -112,6 +112,10 @@ ${TDSZIPFILE}: .tds
 install: .tds
 	test -d "${TEXMFDIR}" && ${CP} -a tds/* "${TEXMFDIR}/" && texhash ${TEXMFDIR}
 
+sinstall:
+	@touch ${PACKAGE}.pdf
+	${MAKE} install
+
 uninstall:
 	test -d "${TEXMFDIR}" && ${RM} -rv "${TEXMFDIR}/tex/latex/${PACKAGE}" \
 	"${TEXMFDIR}/doc/latex/${PACKAGE}" "${TEXMFDIR}/source/latex/${PACKAGE}" && texhash ${TEXMFDIR}
