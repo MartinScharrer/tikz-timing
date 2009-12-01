@@ -38,7 +38,7 @@ pdf: one_run reload
 package: ${PACKAGE}.sty
 
 reload:
-	-@pdfreload --file ${PACKAGE}.pdf
+	-@pdfreload --file ${PACKAGE}.pdf 2>/dev/null || pdfopen --file ${PACKAGE}.pdf
 
 example:
 
