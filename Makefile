@@ -5,7 +5,7 @@ PACKAGE_STY = ${PACKAGE}.sty ${PACKAGE}-*.sty
 PACKAGE_DOC = ${PACKAGE}.pdf
 PACKAGE_SRC = ${PACKAGE}.dtx ${PACKAGE}.ins Makefile
 PACKFILES = ${PACKAGE_SRC} ${PACKAGE_DOC} README
-TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.fdb_latexmk
+TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.thm *.fdb_latexmk
 TESTDIR = tests
 INSGENERATED = ${PACKAGE_STY}
 ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
@@ -38,7 +38,7 @@ pdf: one_run reload
 package: ${PACKAGE}.sty
 
 reload:
-	-@pdfreload --file ${PACKAGE}.pdf
+	-@pdfreload --file ${PACKAGE}.pdf 2>/dev/null || pdfopen --file ${PACKAGE}.pdf
 
 example:
 
@@ -111,6 +111,10 @@ ${TDSZIPFILE}: .tds
 
 install: .tds
 	test -d "${TEXMFDIR}" && ${CP} -a tds/* "${TEXMFDIR}/" && texhash ${TEXMFDIR}
+
+sinstall:
+	@touch ${PACKAGE}.pdf
+	${MAKE} install
 
 uninstall:
 	test -d "${TEXMFDIR}" && ${RM} -rv "${TEXMFDIR}/tex/latex/${PACKAGE}" \

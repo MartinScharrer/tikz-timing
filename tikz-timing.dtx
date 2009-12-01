@@ -89,6 +89,7 @@
 \usepackage{supertabular}
 %\usepackage{xtab}
 \usepackage{amsmath}
+\usepackage{flafter}
 \usepackage{placeins}
 \makeFNbottom
 \makeFNbelow
@@ -655,9 +656,10 @@
 \makeatother
 
 \def\topfraction{0.91}
-\def\bottomfraction{0.89}
-\def\floatpagefraction{0.9}
-\def\textfraction{0.09}
+\def\bottomfraction{0.95}
+\def\floatpagefraction{0.98}
+\def\textfraction{0.05}
+\setcounter{bottomnumber}{2}
 
 \makeatletter
 % The following code is only needed to produce package examples and therefor not 
@@ -798,17 +800,44 @@
 %    \end{macrocode}
 % \end{macro}
 %
-%    \begin{macrocode}
+% \iffalse
 %</examplecode>
 %<*driver>
-%    \end{macrocode}
-\makeatother
+% \fi
 
+\usepackage{relsize}
+
+\def\thesection{\texorpdfstring{\larger\texttiming[X]{D{\arabic{section}}.1X[black]}}{\arabic{section}}}
+\def\thesubsection{\texorpdfstring{\larger\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}.1X[black]}}{\arabic{section}.\arabic{subsection}}}
+\def\thesubsubsection{\texorpdfstring{\larger\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}D{\arabic{subsubsection}}.1X[black]}}
+{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}}
+
+ %\def\timingsectionformat#1{%
+ %  \sbox{\mysb}{\tikz \draw node [timing/d/text] {#1};}%
+ %  \texttiming{ $ \wd\mysb / \tikztiming@xunit $ DD{#1} }%
+ %}
+
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\normalfont\Large\bfseries\sffamily}}
+                                   %[#1]{\texorpdfstring{\larger\timingsectionformat{#2}}{#2}}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\large\bfseries\sffamily}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries\sffamily}}
+
+\makeatother
 \EnableCrossrefs
 %\CodelineIndex
 \RecordChanges
 \OnlyDescription
 \listfiles
+
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
@@ -836,33 +865,6 @@
 %   Right brace   \}     Tilde         \~}
 %
 %
-% \changes{v0.3}{2009/04/24}{First released version}
-% \changes{v0.4}{2009/04/28}{Added output routine which combines successive 
-% occurrences of the same character. This improves screen display quality and 
-% reduces rendering time and file size.}
-% \changes{v0.4}{2009/04/28}{Removed own macros for lowercase characters. They 
-% are now handled by the uppercase macros which receive half of the width.  
-% Exceptions are possible like for the `m' character.}
-% \changes{v0.4}{2009/04/29}{Added parser for rows in \env{tikztimingtable}.  
-% This makes the syntax much more stable. Also replaced row counter with TikZ 
-% coordinates which is more user-friendly.}
-% \changes{v0.4}{2009/04/30}{User macros to draw grids and lines inside table.}
-% \changes{v0.4}{2009/05/01}{In-line Nodes, \eg to mark positions inside the 
-% diagram.}
-% \changes{v0.4}{2009/05/03}{Released as v0.4}
-% \changes{v0.4a}{2009/05/05}{Added \cs{tablerules} macro. Changed default style 
-% of inline nodes to \texttt{coordinate}.}
-% \changes{v0.5}{2009/05/15}{Added PGF shape for timing diagrams. Added 
-% meta-characters. Changed `M' character to use PGF decorations. Added special 
-% `B' character to reduce width of next character. Changed \cs{timing} syntax to 
-% include an `at' before the coordinate. Bug fix for use with the `calc' 
-% package.}
-% \changes{v0.6}{2009/07/27}{Added ``forward'' modifier `\texttt{F}' as reverse 
-% version of the ``backward'' modifier `\texttt{B}'. Added support for 
-% lower-case modifiers ``\texttt{b}',`\texttt{f}' and \texttt{n}'.  Added new 
-% optional characters `\texttt{A}'/`\texttt{W}' for arrows and '\texttt{E}' for 
-% uncertain low-to-high and high-to-low transitions.}
-% \changes{v0.6a}{2009/07/28}{Added library for overlay modifier `\texttt{O}'.}
 %
 % \GetFileInfo{tikz-timing.dtx}
 %
@@ -913,52 +915,54 @@
 % inside text or \envv{tikzpicture} environments.  Also a tabular-like 
 % environment is provided to produce a larger timing diagram with multiple 
 % labeled signals and the possibility to add own drawing material.
+% Additional optional functionality is provided by libraries.
 %
 % The signal levels of the timing diagram can be given by corresponding 
 % characters/letters like `|H|' for \emph{Logical High} or `|L|' for 
-% \emph{Logical Low}. So e.g.\ `|{HLZXD}|' gives `\texttiming{HLZXD}'.  
-% Lowercase characters only produce a signal with half the width while uppercase 
-% characters produce one with the ``full'' width, called the `\textsf{period 
-% width}' in this document and which is by default identical to there height, 
-% called `\textsf{signal height}', which defaults to 1.6ex (about the height of 
-% the uppercase `X' of the current font).
-% Table~\ref{tab:chars} shows all by default defined logic characters and 
-% Table~\ref{tab:full} all possible transitions.
-% Additional functionality is provided by the ``modifiers'' shown in 
-% Table~\ref{tab:modifiers}.
-% 
+% \emph{Logical Low}. So e.g.\ `|{HLZXD}|' gives `\texttiming{HLZXD}'.
+% In order to fit (in)to normal text the diagram size (\ie its height, width and line width)
+% is defined relatively to the currently active font size. The diagram height is about the height of an
+% uppercase `X' (+$2\times\frac12$ line width). This way the diagrams
+% can also be scaled using font size commands like \cs{small}.
+% (Example: {\sffamily
+%  \large        X\texttiming{LH}X
+%  \normalsize   X\texttiming{LH}X
+%  \small        X\texttiming{LH}X
+%  \footnotesize X\texttiming{LH}X
+%  \scriptsize   X\texttiming{LH}X
+%  \tiny         X\texttiming{LH}X
+% })
+% \makeatletter
+% \def\iex#1{^^A
+%  \def\@tempa{#1}\@onelevel@sanitize\@tempa
+%  `\texttt{\@tempa}'~$\rightarrow$~`\texttiming{#1}'}
+% \makeatother
+% A single timing character produces a diagram with a width identical to its height
+% (\iex{H}). Longer diagrams can be produces by either 
+% using the same character multiple times (\iex{HHH})
+% or writing the width as number in front of the character (\iex{3.2H}).
+% For (partial) compatibility with similar packages lowercase characters only produce
+% a signal with half the width (\iex{h}, \iex{3.2h}).
+%
+% Recurring character combinations can be repeated using character groups
+% (\iex{3{hlz}}) or be defined as so called \emph{meta-characters}
+% ({\tikztimingmetachar{Y}{hlz} `|Y|'=`|hlz|', \iex{3Y}}),
+% which are similar to a \TeX~macro.
+% Since v0.7 meta-characters can also include macro arguments.
+%
+% Additional features are the inclusion of in-line TikZ styles (\iex{H ;[orange] L}),
+% in-line nodes (\iex{2H N[rectangle](Name){Text} 2L}), automatic width calculations
+% (`|H $ 1+\mymacro-\slope $ L |`~$\rightarrow$~`\texttiming{H2.5L}')
+% and much more.
+%
+% \centerline{\texttiming[D]{50{D{}}$\dslope$ D{}}}
+%
 % \iffalse
 % The package is build to make it possible to define new characters from scratch 
 % or as modified copy of other characters. However, no user macros nor 
 % documentation for this are provided at the moment. Interested \LaTeX\ users 
 % should look at the default definitions at the end of the source code.
 % \fi
-%
-% \begin{table}[b!]
-% \tikzset{timing/draw grid}
-% \let\ttt\texttiming
-% \sffamily\centering
-% \caption{Timing Characters}\label{tab:chars}
-% \begin{tabular}{clccc}
-%   \toprule
-%   Character & Description            & Full Width         & Half Width         & Transition \\
-%             &                        & \small (Uppercase) & \small (Lowercase) & Example    \\
-%   \midrule
-% \texttt{H}  & High                   & \ttt{H}            & \ttt{h}            & \ttt[L]{H} \\
-% \texttt{L}  & Low                    & \ttt{L}            & \ttt{l}            & \ttt[H]{L} \\
-% \texttt{Z}  & High Impedance         & \ttt{Z}            & \ttt{z}            & \ttt[L]{Z} \\
-% \texttt{X}  & Undefined / Don't Care & \ttt{X}            & \ttt{x}            & \ttt[L]{X} \\
-% \texttt{D}  & Data / Double          & \ttt{D}            & \ttt{d}            & \ttt[L]{D{A}D} \\
-% \texttt{U}  & Unknown Data           & \ttt{U}            & \ttt{u}            & \ttt[D]{U} \\
-% \texttt{T}  & Toggle                 & \ttt{L} or \ttt{H} & \ttt{l} or \ttt{h} & \ttt{TTTT} \\
-% \texttt{C}  & Clock (no slope)       & \ttt{L} or \ttt{H} & \ttt{l} or \ttt{h} & \ttt{CCCC} \\
-% \texttt{M}  & Metastable Condition   & \ttt{M}            & \ttt{m}            & \ttt[H]{Ml} \\
-%   \midrule
-% \texttt{G}  & Glitch (zero width)    & \ttt{G}            & \ttt{g}            & \ttt{HGH} \\
-% \texttt{S}  & Space (nothing)        & \ttt{S}            & \ttt{s}            & \ttt{HSL} \\
-% \bottomrule
-% \end{tabular}
-% \end{table}
 %
 % \iffalse
 % \subsection{Similar Packages}
@@ -994,17 +998,89 @@
 % \end{description}
 % \fi
 %
+% \clearpage
+% \subsection{Changelog}
+% \begingroup
+% \renewcommand{\changes}[3]{\paragraph{#1 from #2}\begin{itemize}\item #3\end{itemize}}
+% \changes{v0.3}{2009/04/24}{First released version}
+% \changes{v0.4}{2009/05/03}{Added output routine which combines successive 
+% occurrences of the same character. This improves screen display quality and 
+% reduces rendering time and file size.
+% \item Removed own macros for lowercase characters. They 
+% are now handled by the uppercase macros which receive half of the width. 
+% Exceptions are possible like for the `m' character.
+% \item Added parser for rows in \env{tikztimingtable}. 
+% This makes the syntax much more stable. Also replaced row counter with TikZ 
+% coordinates which is more user-friendly.
+% \item User macros to draw grids and lines inside table.
+% \item In-line Nodes, \eg to mark positions inside the diagram.}
+% \changes{v0.4a}{2009/05/05}{Added \cs{tablerules} macro. Changed default style 
+% of inline nodes to \texttt{coordinate}.}
+% \changes{v0.5}{2009/05/15}{Added PGF shape for timing diagrams. Added 
+% meta-characters. Changed `M' character to use PGF decorations. Added special 
+% `B' character to reduce width of next character. Changed \cs{timing} syntax to 
+% include an `at' before the coordinate. Bug fix for use with the `calc' 
+% package.}
+% \changes{v0.6}{2009/07/27}{Added ``forward'' modifier `\texttt{F}' as reverse 
+% version of the ``backward'' modifier `\texttt{B}'.
+% \item Added support for 
+% lower-case modifiers ``\texttt{b}',`\texttt{f}' and \texttt{n}'.
+% \item Added libaries for characters `\texttt{A}'/`\texttt{W}' for arrows and 
+% '\texttt{E}' for uncertain low-to-high and high-to-low transitions.}
+% \changes{v0.6a}{2009/07/28}{Added library for overlay modifier `\texttt{O}'.}
+% \endgroup
+%
+% \clearpage
 % \section{Usage}
 %
+% \subsection{Timing Characters}
+% As mentioned in the introduction section the logic levels are described by so called 
+% \emph{timing characters}. Actually all of them are letters, but the general term \emph{character} is used here.
+% Table~\ref{tab:chars} shows all by default defined logic characters and 
+% Table~\ref{tab:full} all possible two-character transitions.
+% Additional functionality is provided by the \emph{modifiers} shown in 
+% Table~\ref{tab:modifiers}.
+%
 % \begin{table}
-% \let\texttimingbefore\texttiminggrid
-% \sffamily
+% \tikzset{timing/draw grid}
+% \sffamily\centering
+% \caption{Timing Characters}\label{tab:chars}
+% \begin{tabular}{clccc}
+%   \toprule
+%   Character & Description & Full Width & Half Width & Transition \\
+%             &             & \small (Uppercase) & \small (Lowercase) & Example 
+%             \\\midrule
+% \texttt{H} & High & \texttiming{H} & \texttiming{h} & \texttiming[L]{H} \\
+% \texttt{L} & Low & \texttiming{L} & \texttiming{l} & \texttiming[H]{L} \\
+% \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming{z} & \texttiming[L]{Z} \\
+% \texttt{X} & Undefined / Don't Care & \texttiming{X} & \texttiming{x} & \texttiming[L]{X} \\
+% \texttt{D} & Data / Double & \texttiming{D} & \texttiming{d} & \texttiming[L]{D{A}D} \\
+% \texttt{U} & Unknown Data & \texttiming{U} & \texttiming{u} & \texttiming[D]{U} \\
+% \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{l} or 
+% \texttiming{h} & \texttiming{TTTT} \\
+% \texttt{C} & Clock (no slope) & \texttiming{L} or \texttiming{H} & 
+% \texttiming{l} or \texttiming{h} & \texttiming{CCCC} \\
+% \texttt{M} & Metastable Condition & \texttiming{M} & \texttiming{m} & \texttiming[H]{Ml} \\
+%   \midrule
+% \texttt{G} & Glitch (zero width) & \texttiming{G} & \texttiming{g} & \texttiming{HGH} \\
+% \texttt{S} & Space (nothing) & \texttiming{S} & \texttiming{s} & \texttiming{HSL} \\
+% \bottomrule
+% \end{tabular}
+%  ^^A\par\bigskip
+%  ^^A\makebox[\textwidth][c]{\tikztimingfullexampletable}
+% \end{table}
+%
+% \iftrue
+% \begin{table}
+% \tikzset{timing/draw grid}
+% \sffamily\small
 % \caption{Overview over all transitions.}\label{tab:full}
 %  \makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
+% \fi
 %
 % \begin{table}
-% \let\texttimingbefore\texttiminggrid
+% \tikzset{timing/draw grid}
 % \let\normalfont\sffamily
 % \sffamily\centering
 % \caption{Modifiers for Timing Characters}\label{tab:modifiers}
@@ -1018,11 +1094,11 @@
 %   Modifier Syntax  & Description \\
 %                    &             \\\midrule
 % D\{\}D & Produces transition between two data values. \Example{D{}D} \\
-% D\{\meta{Text}\} & Adds text material into a data signal using a node.  
+% D\{\meta{Text}\} & Adds \meta{text} into a data signal using a node.  
 % \Example{D{A}D{B}} \\
 % D\{[\meta{\scriptsize 
-% \raisebox{-1ex}{\shortstack{TikZ\\Settings}}}]\meta{Text}\} & Adds text 
-% material into a data signal using the given settings. \Example{D{[blue]A}} \\
+% \raisebox{-1ex}{\shortstack{TikZ\\Settings}}}]\meta{Text}\} & Adds \meta{text} 
+% using the given node \meta{settings}. \Example{D{[blue]A}} \\
 % \meta{\small integer}\{\meta{\small characters}\} &  Repeats the given 
 % characters \texttt{\meta{int}} times.  \Example{5{hl}}\\
 % \meta{\small number}\meta{\small character} & Sets width of next signal to 
@@ -1053,9 +1129,9 @@
 % ;  & Renews the internal drawing path which ends the scope of all options 
 % given by \texttt{[\,]}. \Example{H;[blue]L;H} \\
 % ,  & Same as `\texttt{;}', but timing specific options (atm.: slopes and line 
-% width) are restored for the new path. \Example{H,[line width=1pt]L;H} \\
+% width) are restored for the new path. \Example{[line width=1pt]L,H;L} \\
 % !\{\meta{code}\}  & Places given code into the internal \envv{tikzpicture}.
-% \emph{Example:} See Example~\ref{exa:adv} on page~\pageref{exa:adv}. \\
+% See Example~\ref{exa:adv}. \\
 % @\{\meta{code}\}  & Executes the given code immediately during the parsing 
 % process. This can be used to change parsing parameters. To execute code during 
 % the drawing process use \texttt{[</utils/exec=}\meta{code}\texttt{>]} instead. 
@@ -1069,7 +1145,7 @@
 % \end{tabularx}}
 % \end{table}
 %
-%
+% \clearpage
 % \subsection{Macro for use in Text Mode}
 % \vspace{-\bigskipamount}%
 % \DescribeMacro{texttiming}{\oarg{initial~character/TikZ 
@@ -1119,9 +1195,10 @@
 % TikZ styles `|timing/before text|' and `|timing/after text|'. For backward 
 % compatibility these styles default to the two macros.
 %
-% Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
+% (Deprecated) Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
 % background of the \cs{texttiming} diagram. A more \LaTeX-stylish way to do 
-% this is |\renewcommand*{\textttimingbefore}{\texttiminggrid}|.
+% this is |\renewcommand*{\textttimingbefore}{\texttiminggrid}|. See below for an up-to-date way
+% to achieve this.
 %
 % \DescribeMacro{texttiminggrid}{\hspace{2.5em}\textbf{Deprecated!}}
 % This macro should only be used inside \cs{texttimingbefore} or 
@@ -1129,7 +1206,9 @@
 % \cs{texttiming} diagram.
 % For newer code the TikZ styles `|timing/draw grid|' and `|timing/no grid|' 
 % should be used instead, \eg
-% |\tikzset{timing/intext/.append style={timing/draw grid}}|
+% |\tikzset{timing/intext/.append style={timing/draw grid}}| or simply enable the grid globally
+% for all in-text and other timing diagrams with |\tikzset{timing/draw grid}|.
+%
 %
 % \newpage
 % \subsection{Macro for use inside TikZ-Pictures}
@@ -1141,7 +1220,7 @@
 % (\css{path}, \css{drawn}, \css{node}) it allows an optional argument with TikZ 
 % settings and an optional TikZ-coordinate.  However, a own argument parser, not 
 % the one used by TikZ, is used to detect and read these optional arguments.  
-% Therefore the order of the arguments is mandatory and might not be reversed.  
+% Therefore the order of the arguments is mandatory and must not be reversed.  
 % This small limitation might be overcome in future versions of this package.
 %
 % Please note that the optional initial character may be given \emph{inside} and 
@@ -1438,8 +1517,8 @@
 % very similar) way as the \texttt{booktabs} package is doing it for normal 
 % \texttt{tabular}s. The current bounding box is used to calculate the needed 
 % rule length, which makes this macro position dependent if further code
-% changes bounding box. If the \cs{tableheader} macro was used beforehand it 
-% also draws a thinner horizontal line between the table head and body.
+% changes the bounding box. If the \cs{tableheader} macro was used beforehand it 
+% also draws a thinner horizontal line (like \texttt{booktabs} \cs{midrule}) between the table head and body.
 %
 % \DescribeMacro{nrows}{}
 % Returns the number of rows in the current table. Useful for use in 
@@ -1472,7 +1551,7 @@
 % three rows goes from $y=+1$ (base line at 0 + 1 \textsf{signal height}) to 
 % $y=-4$ (first row:~+0, second row:~-2, third row:~-4).  This are relative to 
 % the middle of the drawn lines, \ie the bounding box is 
-% $2\times\frac{\text{\textsf{line width}}}{2}=1\cdot $\textsf{line width} 
+% $2\times\frac{\text{\textsf{line width}}}{2}=1\times $\textsf{line width} 
 % higher.
 %
 % The timing column starts at $x=0$ and goes into the positive range while 
@@ -1481,6 +1560,7 @@
 % The label column starts at $x=-$|\coldist| and the text is right align with 
 % the right border at this position.
 %
+% \clearpage
 % \subsection{Macros for use inside the Character String}
 % The modifiers `|@|' and `\texttt{\$}' allow the user to include macros.  These 
 % macros are evaluated when the |tikz-timing| parser encounters them in the 
@@ -1505,7 +1585,7 @@
 %
 % \DescribeMacro{slope}{}
 % \DescribeMacro*{lslope}{\hspace{1em}\small(alias)}
-% Returns the current logic slope, \ie the slope justed between |L| and |H| 
+% Returns the current logic slope, \ie the slope between |L| and |H| 
 % levels.
 % Set by the |timing/lslope| or indirectly by the |timing/slope| TikZ setting.  
 % See Table~\ref{tab:styles} for more information.
@@ -1655,7 +1735,7 @@
 % \clearpage
 % \section{Styles}\label{sec:styles}
 % The generated logic signals are drawn using the style mechanism provided by 
-% \pkg{tikz}. This styles are defined and can be redefined using 
+% \pkg{tikz}, which itself uses |pgfkeys| for this purpose. This styles are defined and can be redefined using 
 % \css{tikzset}|{|\meta{style name}|/.style=|\meta{value}|,}|.  They can also be 
 % used in all places where \meta{TikZ Settings} is mentioned.  Please note that 
 % path/draw specific settings might not survive the transition to characters 
@@ -1761,6 +1841,12 @@
 %     a tikztimingtable. Default: 2 (=$2\times$signal height)\\
 %     timing/coldist=\meta{distance} & Sets distance between columns in a 
 %     tikztimingtable. Default: 1 (=$1\times$period width)\\
+%     \midrule
+%     timing/debug/nodes & Enables marking of named inline nodes. \\
+%     timing/debug/node  & Format style for inline node marker label, which itself is a TikZ node. \\
+%     timing/debug/markcmd=\meta{code} & TikZ drawing code to draw marker (except label). The code can access the node name as \cs{N}. \\
+%     timing/debug/scope & Format for scope of node markers. \\
+%     timing/debug/level=\meta{integer} & Sets debug output level. This is only important for developers. \\
 %   \end{supertabular}
 %   ^^A\\[\smallskipamount]
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
@@ -1776,8 +1862,9 @@
 % user-defined (meta-)characters.
 % The full syntax for the above macro is
 % \cs{usetikztiminglibrary}\oarg{options}\marg{library,\dots}\oarg{date}, like 
-% the one for \cs{usepackage}. However, no library provides any options so far.  
-% The date is used as a version number like for packages.
+% the one for \cs{usepackage}. 
+% The date is used as a version number like for packages and is identical to the date 
+% of the |tikztiming| package.
 %
 % \subsection{Arrows}
 % The library `|arrows|' enables two characters `|A|' and `|W|' which draw 
@@ -1791,7 +1878,7 @@
 % `|T|' characters the subsequent arrow characters are not combined into one.
 %
 % The arrow tips can be changed using the TikZ styles for this characters. See 
-% \ref{sec:styles} for more information. The `|A|' character should not be used 
+% section~\ref{sec:styles} for more information. The `|A|' character should not be used 
 % together with any other characters except with `|S|' (space).
 %
 % \begin{table}[H]
@@ -1825,8 +1912,7 @@
 % combined into one.
 %
 % The drawing style can be changed using the |timing/e| and 
-% |timing/e/background| TikZ style. The latter should always include 
-% `|draw=none|' to avoid drawing the background border.
+% |timing/e/background| TikZ style.
 %
 % \begin{table}[H]
 % \centering
@@ -1856,8 +1942,8 @@
 %      \\\midrule
 %     \texttt{.style=\{dotted,gray\}} & 
 %     \texttiming[timing/e/.style={dotted,gray}]{LL EE HH} \\
-%     \texttt{background/.style=\{draw=none,fill=gray\}} & 
-%     \texttiming[timing/e/background/.style={draw=none,fill=gray}]
+%     \texttt{background/.style=\{fill=gray\}} & 
+%     \texttiming[timing/e/background/.style={fill=gray}]
 %     {LL EE HH} \\
 %     \bottomrule
 %   \end{tabular}
@@ -1885,19 +1971,22 @@
 % if and where this should happen. It is recommended to start and end the set 
 % with characters identical with the main line to avoid ugly connection points.
 %
+% Please note that the width of the first argument is ignored and does not count to the 
+% total width of the diagram line. The characters following the overlay should therefore
+% be as wide or wider as the one of the overlay, otherwise the bounding box and background grid
+% will be incorrect. 
+%
 % Overlays can be cascaded, \ie an overlay can be included in the first argument 
 % of another overlay. 
 %
 % \begin{table}[H]
 % \centering
 % \caption{Examples for the `\texttt{O}' Overlay Character.}\label{tab:overlays}
-% \begin{tikztimingexampletable}
+% \begin{tikztimingexampletable}[timing/draw grid]
 %   LLL O{HH}{LL} HHH \\
 %   LLL O{HHH}{LL} HHH \\
-%   LLL O{[gray]HHH}{LLH} HH \\
 %   LLL O{;[gray]HH.1H;}{LLH} HH \\
 %   LL  O{L;[gray]HH.1H;}{LLLH} HH \\
-%   HHH O{;[gray]HH.1L;}{LL} LLL \\
 %   DD{} O{zd}{D}d 2D \\
 %   ZZ O{Z D Z}{Z 1.1M .9Z} ZZ \\
 %   ZZ O{d Z}O{DZ}{dD} ZZ  \\
@@ -1905,7 +1994,7 @@
 %   ZZ 3D O{dDZ}{DZ} ZZ  \\
 %   ZZ 3D O{dDZ}O{DZ}{dZ} ZZ  \\
 %   ZZ 3D O{3D} DZZ \\
-%   Z O{DD} ZDDD O{DDZZ} DZ  \\
+%   Z O{DD} ZDDD O{DDZZ} DZ 2S \\
 %   Z O{6D Z}{Z 4D Z} Z  \\
 %   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z  \\
 % \end{tikztimingexampletable}
@@ -2544,7 +2633,7 @@
       \setlength{\tikztiming@xunit}{1.6ex}%
       \setlength{\tikztiming@yunit}{1.6ex}%
     },%
-    x=1.6ex, y=1.6ex,
+    /tikz/x=1.6ex, /tikz/y=1.6ex,
   },
   font/.style={%
     /tikz/font={#1},
@@ -2570,6 +2659,8 @@
   inline node/from char/.store in=\tikztiming@node@fromchar,
   inline node/to char/.store in=\tikztiming@node@tochar,
   table/.style={font=\sffamily,timing,line width=0.15ex},
+  before table/.code={},
+  after table/.code={},
   coord/.style={coordinate},
   save/.style={coordinate},
   restore/.style={/utils/exec={\expandafter\tikzset\expandafter{\tikztiming@saved@options}}},
@@ -2646,6 +2737,16 @@
   outer xsep/.store in=\tikztiming@xsep,
   outer ysep/.store in=\tikztiming@ysep,
   outer sep/.style={/tikz/timing/outer xsep=#1,/tikz/timing/outer ysep=#1},
+  %
+  debug/level/.code={\tikztiming@debug=#1\relax},
+  debug/level/.value required,
+  debug/scope/.style={font=\sffamily\tiny,gray},
+  debug/node/.style={above,inner sep=2pt},
+  debug/nodes/.style={%
+    /tikz/timing/after table/.append code={\tikztiming@marknodes{\tikztiming@namednodes}},
+    /tikz/timing/after text/.append code={\tikztiming@marknodes{\tikztiming@namednodes}}
+  },
+  debug/markcmd/.store in={\tikztiming@markcmd},
 }
 \tikzset{timing/inline node/.cd,
   from char={}, to char={}
@@ -2690,12 +2791,13 @@
   \begingroup
     \let\tikztiming@lastchar\empty
     \let\tikztiming@settings\empty
-    \tikzset{timing/before/.style={timing/before text}}%
-    \tikzset{timing/after/.style={timing/after text}}%
+    \tikzset{timing/before/.append style={timing/before text}}%
+    \tikzset{timing/after/.prefix style={timing/after text}}%
     \ifx\relax#1\relax\else
       \tikztiming@testoptarg#1\relax\relax%
     \fi
     \begin{tikzpicture}[timing/intext,baseline={(0,0)}]
+      \tikztiming@picinit
       \def\@tempa{\expandafter\timing\expandafter[\tikztiming@settings] at (0,0)}%
       \expandafter\@tempa\expandafter{\expandafter[\tikztiming@lastchar]#2};%
     \end{tikzpicture}%
@@ -2712,6 +2814,15 @@
   \else
     \def\tikztiming@settings{#1#2}%
   \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@picinit}
+% For things which should only by initialised once per |tikzpicture|.
+%    \begin{macrocode}
+\def\tikztiming@picinit{%
+    \global\let\tikztiming@namednodes\empty
 }
 %    \end{macrocode}
 % \end{macro}
@@ -2841,6 +2952,7 @@
       \@protect\n
       \@protect\x
       \@protect\y
+      \@protect\tikztiming@overlay@save
       \edef\@tempa{\tikztiming@str}%
       \message{^^J\meaning\@tempa^^J}%
       }%
@@ -3621,8 +3733,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@addnode@getname}[2]{Previous read options}{Node 
-% name}
+% \begin{macro}{\tikztiming@addnode@getname}[2]{Previous read options}{Node name}
 %    \begin{macrocode}
 \def\tikztiming@addnode@getname#1(#2){%
   \@ifnextchar\bgroup
@@ -3643,15 +3754,53 @@
       timing/inline node/from char={\tikztiming@fromchar},%
       timing/inline node/to char={\tikztiming@tochar},%
       \unexpanded{#1}] }%
+    \def\@tempb{}%
   \else
     \def\@tempa{ node [timing/inline node,%
       timing/inline node/from char={\tikztiming@fromchar},%
       timing/inline node/to char={\tikztiming@tochar},%
       \unexpanded{#1}] (\unexpanded{#2}) }%
+    \xdef\tikztiming@namednodes{\tikztiming@namednodes,#2}%
   \fi
-  \expandafter\tikztiming@output@eaddcode\expandafter{\@tempa \unexpanded{{#3}} 
-  }%
+  \expandafter\tikztiming@output@eaddcode\expandafter{\@tempa \unexpanded{{#3}}}%
   \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@marknodes}[1]{Comma-separated list of node names}
+%    \begin{macrocode}
+\newcommand*\tikztiming@marknodes[2][]{%
+  \scope[timing/debug/scope,#1]
+    \edef\@tempa{floor((\noexpand\y1-\tikztiming@xunit) / \tikztiming@rowdist\tikztiming@xunit) * \tikztiming@rowdist\tikztiming@xunit}%
+    \foreach \N in #2 {%
+      \ifx\N\empty\else
+        \tikztiming@markcmd
+        \path let \p1=(\N) in 
+          node [timing/debug/node] at ($ (\x1,\noexpand\@tempa) + (0,1) $) {\N};
+      \fi
+    }%
+  \endscope
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@markcmd}
+%    \begin{macrocode}
+\def\tikztiming@markcmd{ \draw (\N) circle (1pt); }%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@mark@nodes}[1]{Comma-separated list of node names}
+%    \begin{macrocode}
+\newcommand*\tikztiming@mark@nodes[2][]{%
+  \begingroup
+    \def\@tempa{#2}%
+    \ifx\@tempa\empty \let\@tempa\tikztiming@namednodes \fi
+    \ifx\@tempa\space \let\@tempa\tikztiming@namednodes \fi
+    \def\@tempb{\tikztiming@marknodes[#1]}%
+    \expandafter\@tempb\expandafter{\expandafter{\@tempa}}%
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3898,6 +4047,7 @@
   \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
   \let\vertlines\tikztiming@vertlines
+  \let\marknodes\tikztiming@mark@nodes
   \def\tablerules{\tikztiming@tablerules}%
   \def\tableheader{\tikztiming@tableheader}%
   \def\rowdist{\tikztiming@rowdist}%
@@ -3909,7 +4059,9 @@
     \coordinate (label pos) at (-1*{(\coldist)},0);
     \coordinate (timing/table/top left) at (0,1);
     \coordinate (timing/table/bottom right) at (0,0);
-  \collect@body\tikztiming@table
+    \tikztiming@picinit
+    \tikzset{timing/before table}%
+    \collect@body\tikztiming@table
 }{%
 }
 %    \end{macrocode}
@@ -3919,6 +4071,7 @@
 %    \begin{macrocode}
 \def\tikztiming@table#1{%
   \tikztimingtable@row#1\endtikztimingtable@
+  \tikzset{timing/after table}%
   \endtikzpicture
   \endgroup
 }
@@ -6247,6 +6400,7 @@
     \def\tikztiming@next{\tikztiming@parser#1}%
   \else
     \let\tikztiming@overlay@lastchar\tikztiming@lastchar
+    \let\tikztiming@overlay@width\tikztimingwidth
     \tikztiming@output@addcode{\tikztiming@overlay@begin}%
     \begingroup
       \def\tikztiming@parser@end{%
@@ -6258,7 +6412,8 @@
       \endgroup
     \endgroup
     \tikztiming@output@addcode{\tikztiming@overlay@end}%
-    \let\tikztiming@lastchar\tikztiming@overlay@lastchar
+    \global\let\tikztiming@lastchar\tikztiming@overlay@lastchar
+    \global\let\tikztimingwidth\tikztiming@overlay@width
     \def\tikztiming@next{\expandafter\tikztiming@parser\@firstofone}%
   \fi
   \tikztiming@next
@@ -6287,6 +6442,12 @@
       \noexpand\global\noexpand\c@tikztimingtranspos\the\c@tikztimingtranspos\relax%
       \noexpand\gdef\noexpand\pgf@sh@nt@tikztiming@overlay@node
         {\csname pgf@sh@nt@tikztiming@overlay@node\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@refa
+        {\csname pgf@sh@nt@timing@refa\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@refb
+        {\csname pgf@sh@nt@timing@refb\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@ref
+        {\csname pgf@sh@nt@timing@ref\endcsname}%
       \noexpand\gdef\noexpand\tikztiming@overlay@save{%
         \expandafter\unexpanded\expandafter{\tikztiming@overlay@save}%
       }%
@@ -6302,7 +6463,7 @@
 %    \begin{macrocode}
 \def\tikztiming@overlay@end{%
   \tikztiming@newdraw (tikztiming@overlay@node)
-  [/utils/exec= \tikztiming@overlay@save]
+  [/utils/exec={\tikztiming@overlay@save}]
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6399,13 +6560,14 @@
 % This macro is called from the \cs{tikztiming@endhook} which is located in 
 % \cs{tikztiming@parser@end} when the end marker (|\relax| or alias) is 
 % encountered. It executes the accumulated \cs{tikztiming@str} and places the 
-% timing shape. Finally the |scope| and |tikzpicture| is 
-% closed.
-%     \begin{macrocode}
+% timing shape. Finally the |scope| and |tikzpicture| is closed.
+%    \begin{macrocode}
 \def\end@celltiming{%
+    \tikzset{timing/before}%
     \tikztiming@str;
     \expandafter\node 
     \expandafter[\tikztiming@settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
+    \tikzset{timing/after}%
   \endscope
   \end{tikzpicture}%
 }
@@ -6510,7 +6672,11 @@
     \def\tikztiming@coldist{2\tabcolsep}%
     \let\tikztiming@tableheader\tikztiming@nicetabs@tableheader
     \let\tikztiming@tablerules\tikztiming@nicetabs@tablerules
-  }%
+  },
+  timing/nicetabs/no nice tabs/.style={/tikz/timing/no nice tabs},
+  timing/nicetabs/off/.style={/tikz/timing/no nice tabs},
+  timing/nicetabs/nice tabs/.style={/tikz/timing/nice tabs},
+  timing/nicetabs/on/.style={/tikz/timing/nice tabs},
 }
 %
 \tikzset{timing/nice tabs}%
@@ -6519,7 +6685,7 @@
 % Use the \pkg{pgfopts} to handle the package options.
 %    \begin{macrocode}
 \RequirePackage{pgfopts}
-\ProcessPgfOptions{/tikz/timing}
+\ProcessPgfOptions{/tikz/timing/nicetabs}
 %    \end{macrocode}
 % \iffalse
 %</lib-nicetabs>
