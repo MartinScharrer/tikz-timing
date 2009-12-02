@@ -1,3 +1,2 @@
-* Transition dependent node anchors.
-* Make \style handling better. Removes need of `@general` macros.
 * Write list of changes.
+* Support for `beamber` package. Dynamical tables etc.
