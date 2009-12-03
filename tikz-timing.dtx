@@ -40,6 +40,7 @@
 %<lib-counters>\ProvidesPackageSVN[tikz-timing-counters]
 %<lib-advnodes>\ProvidesPackageSVN[tikz-timing-advnodes]
 %<lib-interval>\ProvidesPackageSVN[tikz-timing-interval]
+%<lib-beamer>\ProvidesPackageSVN[tikz-timing-beamer]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -58,6 +59,7 @@
 %<lib-counters|    >   counter values]
 %<lib-advnodes|    >   advanced nodes]
 %<lib-interval|   >   alternative Z transitions]
+%<lib-beamer|      >   beamer overlay support]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
@@ -805,11 +807,9 @@
 %<*driver>
 % \fi
 
-\usepackage{relsize}
-
-\def\thesection{\texorpdfstring{\larger\texttiming[X]{D{\arabic{section}}.1X[black]}}{\arabic{section}}}
-\def\thesubsection{\texorpdfstring{\larger\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}.1X[black]}}{\arabic{section}.\arabic{subsection}}}
-\def\thesubsubsection{\texorpdfstring{\larger\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}D{\arabic{subsubsection}}.1X[black]}}
+\def\thesection{\texorpdfstring{\LARGE\texttiming[X]{D{\arabic{section}}.1X[black]}}{\arabic{section}}}
+\def\thesubsection{\texorpdfstring{\Large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}.1X[black]}}{\arabic{section}.\arabic{subsection}}}
+\def\thesubsubsection{\texorpdfstring{\large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}D{\arabic{subsubsection}}.1X[black]}}
 {\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}}
 
  %\def\timingsectionformat#1{%
@@ -1953,7 +1953,12 @@
 % \clearpage
 % \subsection{Overlays}
 % The library `|overlays|' enables the `|O|' character which allows the 
-% overlaying of timing characters. This character awaits a set of character 
+% overlaying of timing characters, i.e.~different groups of timing characters
+% are drawn on top of each other. This is not to be confused with `dynamic' overlay
+% provided by the presentation class |beamer|. The |tikz-timing| library |beamer| provides
+% some support for such overlays.
+%
+% The `|O|' character awaits a set of character 
 % enclosed by braces which are drawn as normal. The position before the `|O|' 
 % character is then restored and the following characters are drawn over them.  
 % Older versions of this character awaited a second set of characters in braces 
@@ -2293,6 +2298,79 @@
 % \texttiming[timing/draw grid]{ LZH I{lo,rc} HZH I{ro} LZH I{normal} LZL }\\
 % \endgroup
 %
+% \clearpage
+% \subsection{Beamer Overlay Support (experimental)}
+% \textbf{This library is under development and might change in the future.}
+%
+% The library `beamer' provides (at the moment) marginal support for overlays of the \pkg{beamer} class.
+% It allows the usage of beamer \emph{overlay specifications} (|<|\meta{spec}|>|) inside the timing string.
+% However, the current simple implementation might not work properly and cause strange results.
+% The support is designed for use inside \env{tikztimingtable}.
+% See the \pkg{beamer} manual for more informations about overlays specifications.
+%
+% \subsubsection*{Usage}
+% Insert an overlay specification, e.g.~|<|\meta{number}|>|, inside the timing string. It will affect the 
+% rest of the timing characters of the current diagram line.
+% Unfortunate due to the global nature of overlays it also affects the rest of the table. Therefore all 
+% diagram lines should end with a specification which turns overlays off, i.e. |<*>| or |<0->|. Otherwise
+% strange results can occur (e.g.~wrong/missing background graphics).
+%
+% \subsubsection*{Example}
+% | Timing Table Row  & H L <2> Z L H <3> D{last} Z <*> \\ |
+%
+% \subsubsection*{Display Rows Stepwise}
+% The rows of a \env{tikztimingtable} can be uncovered row-by-row using the way shown below. The signal names
+% must be enclosed into a \cs{mbox} because \cs{uncover} needs to be inside horizontal mode. Instead
+% of \cs{uncover} another beamer overlay command like \cs{only} or \cs{invisible} can be used. To highlight
+% the signal name use \cs{alert}|<|\meta{\dots}|>|\marg{signal name} inside \cs{uncover}.
+% At the moment there is no simple way to highlight the timing lines.
+%
+% \begin{lstlisting}[gobble=4]
+%   \begin{tikztimingtable}
+%     \mbox{\uncover<+->{Signal Name 1}} & <.-> HL <*> \\
+%     \mbox{\uncover<+->{Signal Name 2}} & <.-> HL <*> \\
+%       % ...
+%     \mbox{\uncover<+->{Signal Name n}} & <.-> HL <*> \\
+%   \end{tikztimingtable}
+% \end{lstlisting}
+%
+% \subsubsection*{Display Columns Stepwise}
+% Different sections (`columns') of timing diagrams in a \env{tikztimingtable} can be uncovered stepwise using the way shown below.
+% In this example the second section/column will be uncovered in the second slide. The first is always visible. Further sections/columns
+% can be uncovered in further slides. 
+%
+% Please note that the total width of the table is constant and e.g.~\cs{tablerules} will always cover the full width independent of overlays.
+%
+% \begin{lstlisting}[gobble=4]
+%   \begin{tikztimingtable}
+%     Signal Name 1  &  10D{Sec. 1} <2> 10D{Sec. 2} <*> \\
+%     Signal Name 2  &  10D{Sec. 1} <2> 10D{Sec. 2} <*> \\
+%       % ...
+%     Signal Name n  &  10D{Sec. 1} <2> 10D{Sec. 2} <*> \\
+%   \end{tikztimingtable}
+% \end{lstlisting}
+%
+% \subsubsection*{Overlay Extra Code}
+% The |beamer| overlay specifications can be used inside the \cs{extracode} section like in a normal \env{tikzpicture} environment.
+% However, in both cases strange results will occur if the end of the environment is hidden by an overlay specification. Due to this
+% reason it is recommended to only use overlay commands which affect only an argument, like \cs{only}|<|\meta{\dots}|>|\marg{code},
+% or to place a plain \cs{onlayer} before the end of the environment.
+%
+% \begin{lstlisting}[gobble=4]
+%   \begin{tikztimingtable}
+%     Signal Name 1  &  10D{Sec. 1} <2> 10D{Sec. 2} <*> \\
+%       % ...
+%    \extracode
+%      % either
+%       \draw<2> (0,0) -- (2,0);
+%       \only<3> { ... }
+%      % or
+%       \onlayer<2>
+%         ...
+%      % and then at the very end:
+%       \onlayer   % or \onlayer<*>
+%   \end{tikztimingtable}
+% \end{lstlisting}
 %
 % \clearpage
 % \section{Examples}
@@ -7384,6 +7462,27 @@
 
 % \iffalse
 %</lib-interval>
+% \fi
+%
+% \subsection{Beamer Overlay Support}
+% Experimental library for marginal beamer overlay support. It will change in future versions. Use at own risk!
+%
+% \iffalse
+%<*lib-beamer>
+% \fi
+
+\PackageWarning{\@currname}{This library is experimental and will change in future versions!}{}{}
+
+\tikztiming@defcode<#1>{
+  \tikztiming@output@addcode{
+    node [timing/save] (timing@save) {};%
+    \onslide<#1>
+    \draw [timing/restore] (timing@save) ++(0,0)
+  }
+  \tikztiming@parser
+}
+% \iffalse
+%</lib-beamer>
 % \fi
 % \Finale
 \endinput
