@@ -4135,16 +4135,8 @@
     \coordinate (timing/table/bottom right) at (0,0);
     \tikztiming@picinit
     \tikzset{timing/before table}%
-    \collect@body\tikztiming@table
-}{%
-}
-%    \end{macrocode}
-% \end{environment}
-
-% \begin{macro}{\tikztiming@table}[1]{Table content}
-%    \begin{macrocode}
-\def\tikztiming@table#1{%
-  \tikztimingtable@startrows#1\endtikztimingtable@
+  \tikztimingtable@startrows
+}{
   \tikzset{timing/after table}%
   \endtikzpicture
   \endgroup
@@ -4176,8 +4168,8 @@
 % \begin{macro}{\tikztimingtable@startrows}
 %    \begin{macrocode}
 \def\tikztimingtable@startrows{%
-  \@ifnextchar\endtikztimingtable@
-    {\@gobble}%
+  \@ifnextchar\end
+    {}%
     {\ifx\@let@token\extracode\else
       \expandafter\tikztimingtable@row
      \fi
@@ -4197,7 +4189,7 @@
 %
 % \begin{macro}{\tikztimingtable@row}[1]{Row content}
 %    \begin{macrocode}
-\def\tikztimingtable@row#1\\{%
+\long\def\tikztimingtable@row#1\\{%
   \tikztimingtable@row@#1&\tikztiming@emptycell&\\
 }
 %    \end{macrocode}
@@ -4206,7 +4198,7 @@
 % \begin{macro}{\tikztimingtable@row@}[3]{Cell 1}{Cell 2 or empty}{Potential 
 % further cells}
 %    \begin{macrocode}
-\def\tikztimingtable@row@#1&#2&#3\\{%
+\long\def\tikztimingtable@row@#1&#2&#3\\{%
   \ifx\\#3\\\else
     \begingroup
       \def\@tempa{\tikztiming@emptycell&}%
@@ -4230,7 +4222,7 @@
 %
 % \begin{macro}{\tikztimingtable@row@@}[2]{Name/Label}{Timing characters}
 %    \begin{macrocode}
-\def\tikztimingtable@row@@#1#2{%
+\long\def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
   \coordinate (last row) at ($ (last row) - (0,\tikztiming@rowdist) $);
   \node [anchor=base east,timing/name] (last row text)
@@ -4244,13 +4236,7 @@
   %
   \pgfmathparse{max(\tikztiming@maxwidth,\tikztimingwidth)}%
   \let\tikztiming@maxwidth\pgfmathresult
-  \@ifnextchar\extracode
-    {%
-    }%
-    {%
-      \@ifnextchar\endtikztimingtable@
-        {\@gobble}{\tikztimingtable@row}%
-    }%
+  \tikztimingtable@startrows
 }
 %    \end{macrocode}
 % \end{macro}
