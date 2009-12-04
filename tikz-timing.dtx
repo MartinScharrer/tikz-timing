@@ -683,6 +683,7 @@
   \setcounter{tikztiming@nrows}{0}%
   \def\tikztiming@maxwidth{0.0}%
   \let\extracode\tikztiming@extracode
+  \let\endextracode\tikztimingtable@startrows
   \let\tablegrid\tikztiming@tablegrid
   \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
@@ -744,7 +745,7 @@
   \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
     coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
   \@ifnextchar\extracode
-    {\tikztiming@extracode}%
+    {}%
     {%
       \@ifnextchar\endtikztimingtable@
         {\@gobble}{\tikztimingexampletable@row}%
@@ -4108,12 +4109,6 @@
 \newcounter{tikztimingrows}
 %    \end{macrocode}
 %
-% \begin{macro}{\tikztiming@extracode}
-%    \begin{macrocode}
-\def\tikztiming@extracode{\@gobble{EXTRACODE}}%
-%    \end{macrocode}
-% \end{macro}
-
 % \begin{environment}{tikztimingtable}[1]{Optional settings}
 %    \begin{macrocode}
 \newenvironment{tikztimingtable}[1][]{%
@@ -4121,6 +4116,7 @@
   \setcounter{tikztiming@nrows}{0}%
   \def\tikztiming@maxwidth{0.0}%
   \let\extracode\tikztiming@extracode
+  \let\endextracode\tikztimingtable@startrows
   \let\tablegrid\tikztiming@tablegrid
   \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
@@ -4148,7 +4144,7 @@
 % \begin{macro}{\tikztiming@table}[1]{Table content}
 %    \begin{macrocode}
 \def\tikztiming@table#1{%
-  \tikztimingtable@row#1\endtikztimingtable@
+  \tikztimingtable@startrows#1\endtikztimingtable@
   \tikzset{timing/after table}%
   \endtikzpicture
   \endgroup
@@ -4162,9 +4158,9 @@
 %    \end{macrocode}
 % \end{macro}
 
-% \begin{macro}{\tikztiming@extracode}[2]{Token to gobble}{Extra drawing code}
+% \begin{macro}{\tikztiming@extracode}
 %    \begin{macrocode}
-\long\def\tikztiming@extracode#1#2\endtikztimingtable@{%
+\def\tikztiming@extracode{%
   \path let
      \p1 = (timing/table/top left),
      \p2 = (timing/table/bottom right)
@@ -4173,7 +4169,19 @@
      coordinate (timing/table/top right) at (\x2,\y1)
      coordinate (timing/table/size) at (\x2-\x1,\y1-\y2)
    ;
-  #2%
+}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\tikztimingtable@startrows}
+%    \begin{macrocode}
+\def\tikztimingtable@startrows{%
+  \@ifnextchar\endtikztimingtable@
+    {\@gobble}%
+    {\ifx\@let@token\extracode\else
+      \expandafter\tikztimingtable@row
+     \fi
+    }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4238,8 +4246,6 @@
   \let\tikztiming@maxwidth\pgfmathresult
   \@ifnextchar\extracode
     {%
-      \let\extracode\relax
-      \tikztiming@extracode
     }%
     {%
       \@ifnextchar\endtikztimingtable@
