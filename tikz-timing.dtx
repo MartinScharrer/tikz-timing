@@ -1402,12 +1402,13 @@
 % names, respectively.  Additional \pkg{tikz} drawing code can be insert at the 
 % end of the table using \cs{extracode}.
 %
-% \DescribeMacro{extracode}{}
+% \DescribeMacro{extracode}{\oarg{TikZ Settings}}
 % This macro is only defined inside a \env{tikztimingtable} environment. In earlier
 % versions of this package it could only be used after the last table line (\ie after a |\\|).
 % If used there all code between it and the |\end{tikztimingtable}| will be placed inside the same 
 % \envv{tikzpicture}. This allows to add some drawing lines or a grid to the 
 % picture. The macro does \emph{not} start a TikZ |scope| or a \TeX\ group by itself.
+% The optional \meta{settings} therefore affect all following code until the end of the picture.
 %
 % It is also possible to draw something behind the timing diagram by 
 % using using the \env{background} environment or the PGF background layer:
@@ -1420,11 +1421,11 @@
 % anywhere inside the table, including at the very start before any rows are processed. Early
 % insertion of extra code is necessary for \eg limiting the bounding box or setting up a clipping path.
 %
-% \DescribeEnv{extracode}{}
+% \DescribeEnv{extracode}{\oarg{TikZ Settings}}
 % Instead of using \cs{extracode} \dots \cs{endextracode}, which is actual plain\TeX\ syntax, this 
 % \LaTeX\ style environment can be used. Like any environment it creates a \TeX\ group around its 
 % content, but no TikZ |scope| is created to allow drawing code (\eg clipping paths) to affect the
-% rest of the table.
+% rest of the table. The optional \meta{settings}, however, only affect the environment content.
 %
 % Please note that while \cs{endextracode} is optional if \cs{extracode} is used at the end of the table,
 % a \cs{begin}\env{extracode} must always be closed by \cs{end}\env{extracode}.
