@@ -4055,12 +4055,13 @@
 %
 % \begin{environment}{tikztimingtable}[1]{Optional settings}
 %    \begin{macrocode}
+\def\abc{\tracingassigns=1}
 \newenvironment{tikztimingtable}[1][]{%
   \begingroup
   \setcounter{tikztiming@nrows}{0}%
   \def\tikztiming@maxwidth{0.0}%
   \let\extracode\tikztiming@extracode
-  \let\endextracode\tikztimingtable@startrows
+  \let\endextracode\tikztiming@endextracode
   \let\tablegrid\tikztiming@tablegrid
   \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
@@ -4087,7 +4088,7 @@
 }
 %    \end{macrocode}
 % \end{macro}
-
+%
 % \begin{macro}{\tikztiming@extracode}
 %    \begin{macrocode}
 \def\tikztiming@extracode{%
@@ -4102,16 +4103,52 @@
 }
 %    \end{macrocode}
 % \end{macro}
-
+%
+% \begin{macro}{\tikztiming@endextracode}
+% Checks if it is inside \cs{end} and calls \cs{tikztimingtable@startrows} appropriately.
+%    \begin{macrocode}
+\def\tikztiming@endextracode{%
+  \@ifnextchar\@checkend
+    {\aftergroup\expandafter\aftergroup\tikztimingtable@startrows}%
+    {\tikztimingtable@startrows}%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztimingtable@startrows}
 %    \begin{macrocode}
 \def\tikztimingtable@startrows{%
   \@ifnextchar\end
-    {}%
-    {\ifx\@let@token\extracode\else
-      \expandafter\tikztimingtable@row
+    {}
+    {\ifx\@let@token\extracode
+       \let\tikztiming@next\empty
+     \else
+       \ifx\@let@token\begin
+         \def\tikztiming@next{\tikztimingtable@chkbegec}%
+       \else
+         \def\tikztiming@next{\tikztimingtable@row}%
+       \fi
      \fi
+     \tikztiming@next
     }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@chkbegec}
+%    \begin{macrocode}
+\def\tikztimingtable@chkbegec\begin#1{
+  \begingroup
+  \def\@tempa{#1}%
+  \def\@tempb{extracode}%
+  \ifx\@tempa\@tempb
+    \endgroup
+    \def\tikztiming@next{\begin{extracode}}%
+  \else
+    \endgroup
+    \def\tikztiming@next{\tikztimingtable@row\begin{#1}}%
+  \fi
+  \tikztiming@next
 }
 %    \end{macrocode}
 % \end{macro}
