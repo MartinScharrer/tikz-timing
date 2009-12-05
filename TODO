@@ -1,3 +1,2 @@
 * Write list of changes.
 * Support for `beamber` package. Dynamical tables etc.
-* Allow more rows after \extracode section: command \morerows or so

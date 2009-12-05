@@ -666,89 +666,34 @@
 \makeatletter
 % The following code is only needed to produce package examples and therefor not 
 % included in the style file but might be written to an additional file.
-%    \begin{macrocode}
+% \iffalse
 %</driver>
 %<*examplecode>
-\ifx\collect@body\@undefined
-  \IfFileExists{environ.sty}
-    {\RequirePackage{environ}}
-    {\RequirePackage{amsmath}}
-\fi
-%    \end{macrocode}
+% \fi
 
 % \begin{environment}{tikztimingexampletable}
 %    \begin{macrocode}
-\newenvironment{tikztimingexampletable}[1][]{%
+\newenvironment{tikztimingexampletable}{%
   \begingroup
-  \setcounter{tikztiming@nrows}{0}%
-  \def\tikztiming@maxwidth{0.0}%
-  \let\extracode\tikztiming@extracode
-  \let\tablegrid\tikztiming@tablegrid
-  \let\fulltablegrid\tikztiming@fulltablegrid
-  \let\horlines\tikztiming@horlines
-  \let\vertlines\tikztiming@vertlines
-  \let\tablerules\tikztiming@tablerules
-  \def\rowdist{\tikztiming@rowdist}%
-  \def\coldist{\tikztiming@coldist}%
-  \def\nrows{\the\c@tikztiming@nrows}%
-  \def\twidth{\tikztiming@maxwidth}%
-  \def\background{\pgfonlayer{background}\scope}%
-  \def\endbackground{\endscope\endpgfonlayer}%
-  \tikzpicture[timing/table,#1]%
-    \coordinate (last row)  at (0,-1);
-    \coordinate (label pos) at (-1,0);
-    \coordinate (timing/table/top left) at (0,1);
-    \coordinate (timing/table/bottom right) at (0,0);
-  \collect@body\tikztimingexampletable@
-}{}%
+  \let\tikztimingtable@row\tikztimingexampletable@row
+  \tikzset{timing/nice tabs}
+  \tikztimingtable
+}{%
+  \extracode
+    \tableheader{Characters}{Resulting Diagram}%
+    \tablerules
+\endtikztimingtable
+\endgroup
+}%
 %    \end{macrocode}
 % \end{environment}
-
-% \begin{macro}{\tikztimingexampletable@}
+%
+% \begin{macro}{\tikztimingexampletable@row}[1]{Row content}
 %    \begin{macrocode}
-\def\tikztimingexampletable@#1{%
-  \tikztimingexampletable@row#1\endtikztimingtable@
-  \path (0,-1) +(-1*{(\tikztiming@coldist)},0.5*{(\tikztiming@rowdist)}) node
-    [anchor=base east,timing/name] {Characters};
-  \path (0,-1) +(0,0.5*{(\tikztiming@rowdist)}) node
-    [anchor=base west,timing/name] {Resulting Diagram};
-  \draw [line width=\lightrulewidth]
-     (current bounding box.north west) +(-1,-2) --
-     ($ (current bounding box.north east) +(+1,-2) $);
-  \draw [line width=\heavyrulewidth]
-     (current bounding box.north west) +(0,1) --
-     ($ (current bounding box.north east) +(0,0) $);
-  \draw [line width=\heavyrulewidth]
-     (current bounding box.south west) +(0,-1) --
-      ($ (current bounding box.south east) +(0,0) $);
-  \endtikzpicture
-  \endgroup
-}
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\tikztimingexampletable@row}
-%    \begin{macrocode}
-\def\tikztimingexampletable@row#1\\{%
-  \addtocounter{tikztiming@nrows}{1}%
+\long\def\tikztimingexampletable@row#1\\{%
   \def\tikztiming@text{#1}%
   \@onelevel@sanitize\tikztiming@text
-  \coordinate (last row) at ($ (last row) - (0,\tikztiming@rowdist) $);
-  \node [anchor=base east,timing/name] (last row text)
-    at ($ (last row) - (\tikztiming@coldist,0) $)
-    {\ttfamily\expandafter\ignorespaces\tikztiming@text\unskip\strut};
-  \@ifnextchar{[}%
-  {\tikztiming@tabletiming}%
-  {\tikztiming@tabletiming[]}%
-  #1\relax%
-  \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
-    coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
-  \@ifnextchar\extracode
-    {\tikztiming@extracode}%
-    {%
-      \@ifnextchar\endtikztimingtable@
-        {\@gobble}{\tikztimingexampletable@row}%
-    }%
+  \tikztimingtable@row@@{\ttfamily\tikztiming@text}{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -806,6 +751,10 @@
 %</examplecode>
 %<*driver>
 % \fi
+
+\def\NewIn#1{
+  \marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
+}
 
 \def\thesection{\texorpdfstring{\LARGE\texttiming[X]{D{\arabic{section}}.1X[black]}}{\arabic{section}}}
 \def\thesubsection{\texorpdfstring{\Large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}.1X[black]}}{\arabic{section}.\arabic{subsection}}}
@@ -1457,14 +1406,33 @@
 % names, respectively.  Additional \pkg{tikz} drawing code can be insert at the 
 % end of the table using \cs{extracode}.
 %
-% \DescribeMacro{extracode}{}
-% This macro is only defined inside a \env{tikztimingtable} environment and can 
-% only be used after the last table line (\ie after a |\\|). If used all code 
-% between it and the |\end{tikztimingtable}| will be placed inside the same 
+% \DescribeMacro{extracode}{\oarg{TikZ Settings}}
+% This macro is only defined inside a \env{tikztimingtable} environment. In earlier
+% versions of this package it could only be used after the last table line (\ie after a |\\|).
+% If used there all code between it and the |\end{tikztimingtable}| will be placed inside the same 
 % \envv{tikzpicture}. This allows to add some drawing lines or a grid to the 
-% picture. It is also possible to draw something behind the timing diagram by 
-% using the PGF background layer:
+% picture. The macro does \emph{not} start a TikZ |scope| or a \TeX\ group by itself.
+% The optional \meta{settings} therefore affect all following code until the end of the picture.
+%
+% It is also possible to draw something behind the timing diagram by 
+% using using the \env{background} environment or the PGF background layer:
 % |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|.
+%
+% \DescribeMacro{endextracode}{}
+% From\NewIn{v0.7} version 0.7 on it is possible to add further timing rows after an |extracode| section by using
+% \cs{endextracode}. Everything after this macro is taken as part of a new row. It is allowed to use
+% this macro direct before \cs{end}\env{tikztimingtable}. This makes it possible to use \cs{extracode} 
+% anywhere inside the table, including at the very start before any rows are processed. Early
+% insertion of extra code is necessary for \eg limiting the bounding box or setting up a clipping path.
+%
+% \DescribeEnv{extracode}{\oarg{TikZ Settings}}
+% Instead\NewIn{v0.7} of using \cs{extracode} \dots \cs{endextracode}, which is actual plain\TeX\ syntax, this 
+% \LaTeX\ style environment can be used. Like any environment it creates a \TeX\ group around its 
+% content, but no TikZ |scope| is created to allow drawing code (\eg clipping paths) to affect the
+% rest of the table. The optional \meta{settings}, however, only affect the environment content.
+%
+% Please note that while \cs{endextracode} is optional if \cs{extracode} is used at the end of the table,
+% a \cs{begin}\env{extracode} must always be closed by \cs{end}\env{extracode}.
 %
 % \subsubsection{Macros for \cs{extracode} Section}
 % The following macros are only defined inside a \env{tikztimingtable} after the 
@@ -1637,7 +1605,7 @@
 % the group only contains spaces the meta-character is practically ignored.
 %
 % \subsubsection*{Meta-Characters with Arguments}
-% The\marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in v0.7}}}}
+% The\NewIn{v0.7}
 % replacement text of meta-character can now include macro arguments.
 % This allows the creation of more complex and flexible meta-characters.  The 
 % optional argument \meta{Number of arguments} selects the number of macro 
@@ -4108,19 +4076,15 @@
 \newcounter{tikztimingrows}
 %    \end{macrocode}
 %
-% \begin{macro}{\tikztiming@extracode}
-%    \begin{macrocode}
-\def\tikztiming@extracode{\@gobble{EXTRACODE}}%
-%    \end{macrocode}
-% \end{macro}
-
 % \begin{environment}{tikztimingtable}[1]{Optional settings}
 %    \begin{macrocode}
+\def\abc{\tracingassigns=1}
 \newenvironment{tikztimingtable}[1][]{%
   \begingroup
   \setcounter{tikztiming@nrows}{0}%
   \def\tikztiming@maxwidth{0.0}%
   \let\extracode\tikztiming@extracode
+  \let\endextracode\tikztiming@endextracode
   \let\tablegrid\tikztiming@tablegrid
   \let\fulltablegrid\tikztiming@fulltablegrid
   \let\horlines\tikztiming@horlines
@@ -4139,32 +4103,18 @@
     \coordinate (timing/table/bottom right) at (0,0);
     \tikztiming@picinit
     \tikzset{timing/before table}%
-    \collect@body\tikztiming@table
+    \tikztimingtable@checkrow
 }{%
-}
-%    \end{macrocode}
-% \end{environment}
-
-% \begin{macro}{\tikztiming@table}[1]{Table content}
-%    \begin{macrocode}
-\def\tikztiming@table#1{%
-  \tikztimingtable@row#1\endtikztimingtable@
   \tikzset{timing/after table}%
   \endtikzpicture
   \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
-
-% \begin{macro}{\endtikztimingtable@}
+%
+% \begin{macro}{\tikztiming@extracode}
 %    \begin{macrocode}
-\def\endtikztimingtable@{\@gobble{ENDTIKSTIMING}}
-%    \end{macrocode}
-% \end{macro}
-
-% \begin{macro}{\tikztiming@extracode}[2]{Token to gobble}{Extra drawing code}
-%    \begin{macrocode}
-\long\def\tikztiming@extracode#1#2\endtikztimingtable@{%
+\def\tikztiming@extracode{%
   \path let
      \p1 = (timing/table/top left),
      \p2 = (timing/table/bottom right)
@@ -4173,7 +4123,75 @@
      coordinate (timing/table/top right) at (\x2,\y1)
      coordinate (timing/table/size) at (\x2-\x1,\y1-\y2)
    ;
-  #2%
+   \@ifnextchar[{\tikztiming@oset}{}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@endextracode}
+% Checks if it is inside \cs{end} and calls \cs{tikztimingtable@checkrow} appropriately.
+%    \begin{macrocode}
+\def\tikztiming@endextracode{%
+  \@ifnextchar\@checkend
+    {\aftergroup\expandafter\aftergroup\tikztimingtable@checkrow}%
+    {\tikztimingtable@checkrow}%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@checkrow}
+% Checks the next token to be either \cs{end}, \cs{extracode} or
+% \cs{begin}. In the case of the latter \cs{tikztimingtable@chkbegec}
+% is called to test if it is \cs{begin}|{extracode}|.
+%    \begin{macrocode}
+\def\tikztimingtable@checkrow{%
+  \@ifnextchar\end
+    {}%
+    {\ifx\@let@token\extracode
+       \let\tikztiming@next\empty
+     \else
+       \ifx\@let@token\begin
+         \def\tikztiming@next{\tikztimingtable@chkbegec}%
+       \else
+         \def\tikztiming@next{\tikztimingtable@row}%
+       \fi
+     \fi
+     \tikztiming@next
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@chkbegec}
+% Checks if value of \cs{begin} is |{extracode}|. If so
+% it is executed, otherwise it is taken as normal row and so
+% \cs{tikztimingtable@row} is called.
+%    \begin{macrocode}
+\def\tikztimingtable@chkbegec\begin#1{
+  \begingroup
+  \def\@tempa{#1}%
+  \def\@tempb{extracode}%
+  \ifx\@tempa\@tempb
+    \endgroup
+    \def\tikztiming@next{\begin{extracode}}%
+  \else
+    \endgroup
+    \def\tikztiming@next{\tikztimingtable@row\begin{#1}}%
+  \fi
+  \tikztiming@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@oset}
+% [1]{TikZ Settings}
+% Handle optional TikZ settings. The \cs{tikz@options} must be used
+% to ensure that the settings apply for the following graphic paths.
+%    \begin{macrocode}
+\def\tikztiming@oset[#1]{%
+  \let\tikz@options\pgfutil@empty
+  \tikzset{#1}%
+  \tikz@options
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4189,7 +4207,7 @@
 %
 % \begin{macro}{\tikztimingtable@row}[1]{Row content}
 %    \begin{macrocode}
-\def\tikztimingtable@row#1\\{%
+\long\def\tikztimingtable@row#1\\{%
   \tikztimingtable@row@#1&\tikztiming@emptycell&\\
 }
 %    \end{macrocode}
@@ -4198,7 +4216,7 @@
 % \begin{macro}{\tikztimingtable@row@}[3]{Cell 1}{Cell 2 or empty}{Potential 
 % further cells}
 %    \begin{macrocode}
-\def\tikztimingtable@row@#1&#2&#3\\{%
+\long\def\tikztimingtable@row@#1&#2&#3\\{%
   \ifx\\#3\\\else
     \begingroup
       \def\@tempa{\tikztiming@emptycell&}%
@@ -4222,7 +4240,7 @@
 %
 % \begin{macro}{\tikztimingtable@row@@}[2]{Name/Label}{Timing characters}
 %    \begin{macrocode}
-\def\tikztimingtable@row@@#1#2{%
+\long\def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
   \coordinate (last row) at ($ (last row) - (0,\tikztiming@rowdist) $);
   \node [anchor=base east,timing/name] (last row text)
@@ -4236,15 +4254,7 @@
   %
   \pgfmathparse{max(\tikztiming@maxwidth,\tikztimingwidth)}%
   \let\tikztiming@maxwidth\pgfmathresult
-  \@ifnextchar\extracode
-    {%
-      \let\extracode\relax
-      \tikztiming@extracode
-    }%
-    {%
-      \@ifnextchar\endtikztimingtable@
-        {\@gobble}{\tikztimingtable@row}%
-    }%
+  \tikztimingtable@checkrow
 }
 %    \end{macrocode}
 % \end{macro}
