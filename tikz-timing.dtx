@@ -752,6 +752,10 @@
 %<*driver>
 % \fi
 
+\def\NewIn#1{
+  \marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
+}
+
 \def\thesection{\texorpdfstring{\LARGE\texttiming[X]{D{\arabic{section}}.1X[black]}}{\arabic{section}}}
 \def\thesubsection{\texorpdfstring{\Large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}.1X[black]}}{\arabic{section}.\arabic{subsection}}}
 \def\thesubsubsection{\texorpdfstring{\large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}D{\arabic{subsubsection}}.1X[black]}}
@@ -1415,14 +1419,14 @@
 % |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|.
 %
 % \DescribeMacro{endextracode}{}
-% From version 0.7 on it is possible to add further timing rows after an |extracode| section by using
+% From\NewIn{v0.7} version 0.7 on it is possible to add further timing rows after an |extracode| section by using
 % \cs{endextracode}. Everything after this macro is taken as part of a new row. It is allowed to use
 % this macro direct before \cs{end}\env{tikztimingtable}. This makes it possible to use \cs{extracode} 
 % anywhere inside the table, including at the very start before any rows are processed. Early
 % insertion of extra code is necessary for \eg limiting the bounding box or setting up a clipping path.
 %
 % \DescribeEnv{extracode}{\oarg{TikZ Settings}}
-% Instead of using \cs{extracode} \dots \cs{endextracode}, which is actual plain\TeX\ syntax, this 
+% Instead\NewIn{v0.7} of using \cs{extracode} \dots \cs{endextracode}, which is actual plain\TeX\ syntax, this 
 % \LaTeX\ style environment can be used. Like any environment it creates a \TeX\ group around its 
 % content, but no TikZ |scope| is created to allow drawing code (\eg clipping paths) to affect the
 % rest of the table. The optional \meta{settings}, however, only affect the environment content.
@@ -1601,7 +1605,7 @@
 % the group only contains spaces the meta-character is practically ignored.
 %
 % \subsubsection*{Meta-Characters with Arguments}
-% The\marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in v0.7}}}}
+% The\NewIn{v0.7}
 % replacement text of meta-character can now include macro arguments.
 % This allows the creation of more complex and flexible meta-characters.  The 
 % optional argument \meta{Number of arguments} selects the number of macro 
