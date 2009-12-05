@@ -4118,6 +4118,7 @@
      coordinate (timing/table/top right) at (\x2,\y1)
      coordinate (timing/table/size) at (\x2-\x1,\y1-\y2)
    ;
+   \@ifnextchar[{\tikztiming@oset}{}
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4173,6 +4174,19 @@
     \def\tikztiming@next{\tikztimingtable@row\begin{#1}}%
   \fi
   \tikztiming@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@oset}
+% [1]{TikZ Settings}
+% Handle optional TikZ settings. The \cs{tikz@options} must be used
+% to ensure that the settings apply for the following graphic paths.
+%    \begin{macrocode}
+\def\tikztiming@oset[#1]{%
+  \let\tikz@options\pgfutil@empty
+  \tikzset{#1}%
+  \tikz@options
 }
 %    \end{macrocode}
 % \end{macro}
