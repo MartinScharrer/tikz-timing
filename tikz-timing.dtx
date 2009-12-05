@@ -4080,8 +4080,8 @@
     \coordinate (timing/table/bottom right) at (0,0);
     \tikztiming@picinit
     \tikzset{timing/before table}%
-  \tikztimingtable@startrows
-}{
+    \tikztimingtable@checkrow
+}{%
   \tikzset{timing/after table}%
   \endtikzpicture
   \endgroup
@@ -4105,21 +4105,24 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@endextracode}
-% Checks if it is inside \cs{end} and calls \cs{tikztimingtable@startrows} appropriately.
+% Checks if it is inside \cs{end} and calls \cs{tikztimingtable@checkrow} appropriately.
 %    \begin{macrocode}
 \def\tikztiming@endextracode{%
   \@ifnextchar\@checkend
-    {\aftergroup\expandafter\aftergroup\tikztimingtable@startrows}%
-    {\tikztimingtable@startrows}%
+    {\aftergroup\expandafter\aftergroup\tikztimingtable@checkrow}%
+    {\tikztimingtable@checkrow}%
 }%
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztimingtable@startrows}
+% \begin{macro}{\tikztimingtable@checkrow}
+% Checks the next token to be either \cs{end}, \cs{extracode} or
+% \cs{begin}. In the case of the latter \cs{tikztimingtable@chkbegec}
+% is called to test if it is \cs{begin}|{extracode}|.
 %    \begin{macrocode}
-\def\tikztimingtable@startrows{%
+\def\tikztimingtable@checkrow{%
   \@ifnextchar\end
-    {}
+    {}%
     {\ifx\@let@token\extracode
        \let\tikztiming@next\empty
      \else
@@ -4136,6 +4139,9 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztimingtable@chkbegec}
+% Checks if value of \cs{begin} is |{extracode}|. If so
+% it is executed, otherwise it is taken as normal row and so
+% \cs{tikztimingtable@row} is called.
 %    \begin{macrocode}
 \def\tikztimingtable@chkbegec\begin#1{
   \begingroup
@@ -4211,7 +4217,7 @@
   %
   \pgfmathparse{max(\tikztiming@maxwidth,\tikztimingwidth)}%
   \let\tikztiming@maxwidth\pgfmathresult
-  \tikztimingtable@startrows
+  \tikztimingtable@checkrow
 }
 %    \end{macrocode}
 % \end{macro}
