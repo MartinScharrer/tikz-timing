@@ -902,7 +902,7 @@
 %
 % Additional features are the inclusion of in-line TikZ styles (\iex{H ;[orange] L}),
 % in-line nodes (\iex{2H N[rectangle](Name){Text} 2L}), automatic width calculations
-% (`|H $ 1+\mymacro-\slope $ L |`~$\rightarrow$~`\texttiming{H2.5L}')
+% (`|H $ 1+\mymacro-\slope $ L |'~$\rightarrow$~`\texttiming{H2.5L}')
 % and much more.
 %
 % \centerline{\texttiming[D]{50{D{}}$\dslope$ D{}}}
@@ -1701,7 +1701,7 @@
 % `|4Y|' is equivalent to `|4Z 8D 4Z|'.
 %
 % The new `\texttt{\$}' modifier can be used to calculate the width of the group 
-% characters: |{Y}[1]{$#1/3$D{A} $#1/3D${B} $#1/3$D{C}}|, so `|4Y|` results in 
+% characters: |{Y}[1]{$#1/3$D{A} $#1/3D${B} $#1/3$D{C}}|, so `|4Y|' results in 
 % `|1.333D{A} 1.333D{B} 1.333D{C}|'.
 %
 %
@@ -1710,7 +1710,7 @@
 % \textit{Examples:}\\*[\medskipamount]
 % |\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}|\\
 % gives:
-% {\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y /ZZ}}
+% {\tikztimingmetachar{Y}{2D 0.5U 2D{}}  \texttiming{ZZ Y Z 3Y ZZ}}
 % \\[\bigskipamount]
 % |\tikztimingmetachar{Y}{2D{Text}}  \tikztimingmetachar{y}{1D{\tiny Text}}|
 % |\texttiming{ZZ Y Z 3y ZZ}|\\
@@ -2235,8 +2235,8 @@
 % `\texttt{timing/counter/new=}\linebreak[3]\ignorespaces
 % \texttt{\{char=\meta{char},\meta{settings}\}}' which can also be written as 
 % `|timing/new counter|'. The \meta{settings} are TikZ keys themselves and are 
-% shown by Table~\ref{tab:countersettings}.  One or more `|new|` keys (path 
-% `|timing/counter|` removed) can be given as library options.
+% shown by Table~\ref{tab:countersettings}.  One or more `|new|' keys (path 
+% `|timing/counter|' removed) can be given as library options.
 %
 % \begin{table}
 %   \caption{Settings for Counter Meta-Characters}
@@ -2276,6 +2276,13 @@
 % \tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}%
 % \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
 % }%
+%
+% \clearpage
+% \subsection{Advanced Nodes (experimental)}
+% \textbf{This library is under development and might change in the future.}
+%
+% The |advnodes| library changes the in-line nodes, \ie the `|N|' character, to provide multiple 
+% transition dependent node anchors. 
 %
 % \clearpage
 % \subsection{Intervals (experimental)}
@@ -2945,6 +2952,7 @@
 \def\tikztiming@picinit{%
     \global\let\tikztiming@namednodes\empty
 }
+\let\tikztiming@namednodes\empty
 %    \end{macrocode}
 % \end{macro}
 %
@@ -4544,17 +4552,17 @@
 }
 %    \end{macrocode}
 %
-% By default use the old node centers for backwards compability.
+% By default use the old node centers for backwards compatibility.
 %    \begin{macrocode}
 \gdef\tikztiming@oldnodecenter@{}%
-\tikzset{timing/oldnodecenter/.code={\xdef\tikztiming@oldnodecenter@{%
+\tikzset{timing/old@node@center/.code={\xdef\tikztiming@oldnodecenter@{%
   ++($ (0,0) - #1 $)
-  [timing/nooldnodecenter]}}%
+  [timing/no@old@node@center]}}%
 }%
-\tikzset{timing/nooldnodecenter/.code={\gdef\tikztiming@oldnodecenter@{}}}%
+\tikzset{timing/no@old@node@center/.code={\gdef\tikztiming@oldnodecenter@{}}}%
 
 \def\tikztiming@oldnodecenter#1{%
-  [timing/oldnodecenter={#1}]
+  [timing/old@node@center={#1}]
   ++#1
 }
 
@@ -4956,8 +4964,14 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\tikztimingdef{LL}{-- ++(#1,0)}
-\tikztimingdef{HL}{-- ++(\slope,-\height) \tikztiminguse{HH}{#1-\slope}}
+\tikztimingdef{LL}{
+  -- ++(#1,0)
+}
+
+\tikztimingdef{HL}{
+  -- ++(\slope,-\height)
+  \tikztiminguse{HH}{#1-\slope}
+}
 
 
 \tikztimingdef{LZ}{
@@ -6952,7 +6966,25 @@
 % \fi
 %    \begin{macrocode}
 
-\def\tikztiming@oldnodecenter#1{}
+\let\tikztiming@orig@oldnodecenter\tikztiming@oldnodecenter
+
+\tikzset{timing/nodes/.cd,
+  old center/.code={%
+    \let\tikztiming@oldnodecenter\tikztiming@orig@oldnodecenter
+    \tikzset{%
+      timing/inline node/.style={coordinate},
+      every tikztiming coordinate node/.style={},
+    }%
+  },
+  new center/.code={%
+    \let\tikztiming@oldnodecenter\@gobble
+    \tikzset{%
+      timing/inline node/.style={shape=tikztiming coordinate},
+      every tikztiming coordinate node/.style={anchor=origin},
+    }%
+  }%
+}
+\tikzset{timing/nodes/new center}
 
 \def\anchoralias#1#2{%
   \expandafter\def
