@@ -982,15 +982,20 @@
 %
 % \begin{Changes}{v0.7}{2009/12/05}
 %   \change New libraries:
-%     \begin{itemize}
-%       \item `|clockarrows|'~~~Library for clock arrows.
-%       \item `|columntype|'~~~Library providing a timing column type for |tabular|.
-%       \item `|nicetabs|'~~~Library to format \cs{tikztimingtable} like a |booktab| |tabular|.
-%       \item `|counters|'~~~Library to defined counter characters which display an incrementing 
-%                            counter value every time there are used.
-%       \item `|advnodes|'~~~Library for advanced nodes with multiple anchor points.
-%       \item `|beamer|'~~~EXPERIMENTAL Library providing some marginal beamer overlay support.
-%     \end{itemize}
+%     \begin{description}
+%       \item[|clockarrows|]  Library for clock arrows.
+%       \item[|columntype|]   Library providing a timing column type for |tabular|.
+%       \item[|nicetabs|]     Library to format \cs{tikztimingtable} like a |booktab| |tabular|.
+%       \item[|counters|]     Library to defined counter characters which display an incrementing 
+%                             counter value every time there are used.
+%     \end{description}
+%   \change Additional experimental libraries:
+%     \begin{description}
+%       \item[|advnodes|]     Library for advanced nodes with multiple anchor points.
+%       \item[|interval|]     Library to change color of `|ZL|', `|ZH|' etc. transitions to 
+%                             indicate borders of an interval.
+%       \item[|beamer|]       Library providing some marginal beamer overlay support.
+%     \end{description}
 %   \change `|overlays|' library:
 %     \begin{itemize}
 %       \item Overlays can now be cascaded, \ie an overlay can be inside another one.
@@ -998,8 +1003,11 @@
 %       \item Fixed issues with `|T|' and `|C|' characters inside overlays.
 %     \end{itemize}
 %   \change Macro-characters can now have arguments.
+%   \change Added more variety for in-line options: `|[[ ]]|', `|[+ +]|' and `\verb+[| |]+.
 %   \change Handling of in-line options and nodes got modified. Options are now placed directly 
-%     where placed and are valid until the next `|;|'.
+%     where placed and are valid until the next `|;|'. Please note that |[/utils/exec={..}]| now 
+%     needs to be written as \verb+[|/utils/exec={..}|]+. Otherwise it is re-executed every time
+%     the drawing path is renewed.
 %   \change Added star version of \cs{tablegrid}.
 %   \change Added background to `|E|' character (`|either|' library).
 %   \change Some fixes for placing of `|D{}|' texts.
@@ -1017,7 +1025,6 @@
 %     The whole character including both edges is drawn in a single process.
 %   \change Character width can now be scaled using |wscale|.
 %   \change Character width can now be calculated by placing code inside `|$ $|'.
-%   \change Added more variety for in-line options: `|[[ ]]|', `|[+ +]|' and `\verb+[| |]+.
 %   \change Fixed issue with \cs{horlines} macro.
 %   \change The \env{tikztimingtable} environment and associated macros got enhanced:
 %     \begin{itemize}
