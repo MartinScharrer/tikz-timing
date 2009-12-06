@@ -951,6 +951,8 @@
 % \subsection{Changelog}
 % \begingroup
 % \renewcommand{\changes}[3]{\paragraph{#1 from #2}\begin{itemize}\item #3\end{itemize}}
+% \newenvironment{Changes}[2]{\paragraph{#1 from #2}\begin{itemize}\let\change\item}{\end{itemize}}
+%
 % \changes{v0.3}{2009/04/24}{First released version}
 % \changes{v0.4}{2009/05/03}{Added output routine which combines successive 
 % occurrences of the same character. This improves screen display quality and 
@@ -973,10 +975,67 @@
 % \changes{v0.6}{2009/07/27}{Added ``forward'' modifier `\texttt{F}' as reverse 
 % version of the ``backward'' modifier `\texttt{B}'.
 % \item Added support for 
-% lower-case modifiers ``\texttt{b}',`\texttt{f}' and \texttt{n}'.
+% lower-case modifiers ``\texttt{b}', `\texttt{f}' and \texttt{n}'.
 % \item Added libaries for characters `\texttt{A}'/`\texttt{W}' for arrows and 
 % '\texttt{E}' for uncertain low-to-high and high-to-low transitions.}
 % \changes{v0.6a}{2009/07/28}{Added library for overlay modifier `\texttt{O}'.}
+%
+% \begin{Changes}{v0.7}{2009/12/05}
+%   \change New libraries:
+%     \begin{itemize}
+%       \item `|clockarrows|'~~~Library for clock arrows.
+%       \item `|columntype|'~~~Library providing a timing column type for |tabular|.
+%       \item `|nicetabs|'~~~Library to format \cs{tikztimingtable} like a |booktab| |tabular|.
+%       \item `|counters|'~~~Library to defined counter characters which display an incrementing 
+%                            counter value every time there are used.
+%       \item `|advnodes|'~~~Library for advanced nodes with multiple anchor points.
+%       \item `|beamer|'~~~EXPERIMENTAL Library providing some marginal beamer overlay support.
+%     \end{itemize}
+%   \change `|overlays|' library:
+%     \begin{itemize}
+%       \item Overlays can now be cascaded, \ie an overlay can be inside another one.
+%       \item The second braces around the second part are now optional.
+%       \item Fixed issues with `|T|' and `|C|' characters inside overlays.
+%     \end{itemize}
+%   \change Macro-characters can now have arguments.
+%   \change Handling of in-line options and nodes got modified. Options are now placed directly 
+%     where placed and are valid until the next `|;|'.
+%   \change Added star version of \cs{tablegrid}.
+%   \change Added background to `|E|' character (`|either|' library).
+%   \change Some fixes for placing of `|D{}|' texts.
+%   \change Fixed wrong slopes (\eg |lslope| instead of |zslope|) for some transitions.
+%   \change Major changes on internal character definition macros, parser and output routine.
+%   \change Fixed problems with expanding code content in user input.
+%   \change The \cs{texttiming} macro now uses a \cs{timing} macro internally.
+%   \change The \cs{timing} macro is now only defined inside |tikzpictures|.
+%           This includes |tikztimingtable|.
+%   \change Added TikZ style |timing/draw grid| for grids behind \cs{timing} macros.
+%   \change Replaced macros \cs{texttimingbefore}, \cs{texttimingafter} and \cs{texttiminggrid} with 
+%           TikZ settings `|timing/before text|', `|timing/after text|' and `|timing/draw grid|'.
+%   \change Added separators `|timing/outer sep|' around \cs{texttiming}.
+%   \change Graphical improvements for `double line' characters like `|D|', `|U|' and `|E|'.
+%     The whole character including both edges is drawn in a single process.
+%   \change Character width can now be scaled using |wscale|.
+%   \change Character width can now be calculated by placing code inside `|$ $|'.
+%   \change Added more variety for in-line options: `|[[ ]]|', `|[+ +]|' and `\verb+[| |]+.
+%   \change Fixed issue with \cs{horlines} macro.
+%   \change The \env{tikztimingtable} environment and associated macros got enhanced:
+%     \begin{itemize}
+%       \item The content is no longer read as macro argument and can now include paragraphs.
+%       \item Multiple |extracode| sections can be now included between rows, not only a single 
+%             section at the very end.
+%       \item A \env{extracode} environment has been added. Both macro and environment have now 
+%             an optional argument for TikZ settings.
+%       \item Added \cs{tableheader} macro to label both columns. The \cs{tablerules} macro got
+%             adjusted to detect the header line and draw also a middle line.
+%       \item Added \env{background} environment to draw things in the background.
+%       \item Fixed broken optional argument of \cs{tablegrid}.
+%       \item Added macro \cs{marknodes} and associated |debug/nodes| style to mark in-line nodes
+%             for debug purposes/orientation during the diagram creation.
+%     \end{itemize}
+% \end{Changes}
+%
+%
 % \endgroup
 %
 % \clearpage
