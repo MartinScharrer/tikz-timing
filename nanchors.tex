@@ -1,0 +1,110 @@
+%&pdflatex
+\documentclass{article}
+
+\usepackage{tikz-timing}
+\usepackage{booktabs}
+\usetikztiminglibrary{advnodes,either}
+\usepgflibrary{plotmarks}
+
+\begin{document}
+
+\begin{table}
+  \caption{Transition dependent anchor points.}
+\makeatletter
+\let\mid\relax
+
+\tikzset{timing/draw grid}
+\tikzset{timing/.cd,
+  lslope=.5,
+  dslope=.5,
+  zslope=.5,
+}
+
+\tikzset{
+  low/.style={draw=red},
+  mid/.style={draw=yellow},
+  high/.style={draw=green},
+  low2/.style={draw=red!50},
+  high2/.style={draw=green!50},
+  LOW/.style={CAPITAL,draw=red},
+  MID/.style={CAPITAL,draw=yellow},
+  HIGH/.style={CAPITAL,draw=green},
+  CAPITAL/.style={mark=x},
+}
+
+\newcommand\namark[2][]{%
+  \draw[mark=o,mark size=1pt,#1] plot coordinates {(#2)};
+}
+
+\def\NodeAnchors#1#2{%
+  \Large
+  \begin{tikzpicture}[timing/picture,semithick]
+    \let\pgf@sh@ma@A\@undefined
+    \timing [name=T] at (0,0) {#1 N(A) #2};
+    \useasboundingbox (T.south west) rectangle (T.north east);
+    %
+    \pgf@sh@ma@A
+    \anchorpoints
+    \namark[thick,blue,mark size=1.5pt]{A}%
+    \foreach \a in {low,mid,high,low2,high2} {%
+      \@ifundefined{\a}{}%
+        {\namark[semithick,\a]{A.\a}}%
+    }%
+    \foreach \a in {LOW,MID,HIGH} {%
+      \namark[thin,\a]{A.\a}%
+    }%
+  \end{tikzpicture}
+  \Large\strut
+}
+
+
+\def\bchars{,L,H,X,D,E}%
+\def\achars{,L,H,X,D,D{A},E,0LE,0HE}%
+
+\def\DA{D{A}}
+\def\tablecontent{%
+\begin{tabular}{lrrrrrrr}
+  \toprule
+    \tikzpicture
+      \useasboundingbox (-1ex,-.5ex) rectangle (1ex,.5ex);
+      \node {%
+    \scalebox{0.4}%
+      {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
+      {\mbox{\rotatebox{45}{from}}}$}}%
+    };%
+  \endtikzpicture
+}
+\def\atc#1{%
+  \begingroup
+    \edef\@tempa{#1}%
+    \expandafter\g@addto@macro\expandafter\tablecontent
+    \expandafter{\@tempa}%
+  \endgroup
+}%
+\foreach \b in \bchars {%
+  \atc{& \noexpand\multicolumn{1}{c}{\b}}%
+}
+ \atc{\noexpand\\ \noexpand\midrule}
+\foreach \a in \achars {%
+  \ifx\a\DA
+    \atc{D\noexpand\{A\noexpand\}}%
+  \else
+    \atc{\a}%
+  \fi
+  \foreach \b in \bchars {%
+    \atc{& \noexpand\NodeAnchors{\a}{\b}}%
+    %\hbox to 5em{\llap{\a\b:} \NodeAnchors{\a}{\b}}%
+  }
+  \atc{\noexpand\\}
+}
+\atc{\noexpand\bottomrule\noexpand\end{tabular}}
+
+\sffamily\centering
+\tablecontent
+
+\end{table}
+
+
+\end{document}
+
+
