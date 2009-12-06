@@ -1,0 +1,55 @@
+%&pdflatex
+\documentclass{article}
+
+\usepackage{tikz,xcolor,svn-prov}
+\usepgflibrary{plotmarks}
+
+\newsavebox\mysba
+\newsavebox\mysbb
+\newsavebox\mysbc
+\newsavebox\mysbd
+\pagestyle{empty}
+%\begin{document}
+
+\makeatletter
+
+\iffalse
+\begingroup
+\tikzset{set/.style={mark=x,gray}}
+\usepackage{tt6a}
+\global\setbox\mysba\hbox{%
+  \input{ot}%
+}
+\endgroup
+\fi
+
+\tikzset{set/.style={mark=x,mark size=2pt,green}}
+\usepackage{tikz-timing}
+\usetikztiminglibrary{either}
+\setbox\mysbb\hbox{%
+  \input{ot}%
+}
+\tikzset{set/.style={mark=o,mark size=2pt,blue}}
+\usetikztiminglibrary{advnodes}
+\setbox\mysbc\hbox{%
+  \input{ot}%
+}
+\tikzset{set/.style={mark=+,mark size=2pt,red}}
+\tikzset{timing/nodes/old center}
+\setbox\mysbd\hbox{%
+  \input{ot}%
+}
+
+
+\begin{document}
+
+\tikzpicture
+  \node {\usebox{\mysba}};
+  \node {\usebox{\mysbb}};
+  \node {\usebox{\mysbc}};
+  \node {\usebox{\mysbd}};
+\endtikzpicture
+
+\end{document}
+
+

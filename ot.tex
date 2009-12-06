@@ -1,0 +1,97 @@
+\color@setgroup%
+%\begin{table}
+%  \caption{Transition dependent anchor points.}
+\let\mid\relax
+
+%\tikzset{timing/draw grid}
+\tikzset{timing/.cd,
+  lslope=.5,
+  dslope=.5,
+  zslope=.5,
+}
+
+\tikzset{
+  low/.style={draw=red},
+  mid/.style={draw=yellow},
+  high/.style={draw=green},
+  low2/.style={draw=red!50},
+  high2/.style={draw=green!50},
+  LOW/.style={CAPITAL,draw=red},
+  MID/.style={CAPITAL,draw=yellow},
+  HIGH/.style={CAPITAL,draw=green},
+  CAPITAL/.style={mark=x},
+}
+
+\newcommand\namark[2][]{%
+  \draw[mark=o,mark size=1pt,#1] plot coordinates {(#2)};
+}
+
+\def\NodeAnchors#1#2{%
+  \Large
+  \begin{tikzpicture}[timing/picture,semithick,baseline]
+    \let\pgf@sh@ma@A\@undefined
+    \node (timing/start) {};
+    %\tikzset{timing/nodes/new center}
+    %\timing [transparent] at (0,0) {#1 N(A) #2};
+    %\tikzset{timing/nodes/old center}
+    \timing [name=T] at (0,0) {#1 N(A) #2};
+    \useasboundingbox (0,0) rectangle (2,1);
+    \pgfonlayer{background}
+      \path[help lines,step=0.5,draw] (0,0) grid (2,1);
+    \endpgfonlayer
+    %
+    %\namark[thick,red,mark size=4pt]{a}%
+    \namark[thick,mark size=2.5pt,set]{A}%
+    %\namark[thick,green,mark=x,mark size=1.5pt]{B}%
+  \end{tikzpicture}
+  \Large\strut
+}
+
+
+\def\bchars{,L,H,X,D,E}%
+\def\achars{,L,H,X,D,D{A},E,0LE,0HE}%
+
+\def\DA{D{A}}
+\def\tablecontent{%
+\begin{tabular}{lrrrrrrr}
+  %\toprule
+    \tikzpicture
+      \useasboundingbox (-1ex,-.5ex) rectangle (1ex,.5ex);
+      \node {%
+    \scalebox{0.4}%
+      {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
+      {\mbox{\rotatebox{45}{from}}}$}}%
+    };%
+  \endtikzpicture
+}
+\def\atc#1{%
+  \begingroup
+    \edef\@tempa{#1}%
+    \expandafter\g@addto@macro\expandafter\tablecontent
+    \expandafter{\@tempa}%
+  \endgroup
+}%
+\foreach \b in \bchars {%
+  \atc{& \noexpand\multicolumn{1}{c}{\b}}%
+}
+\atc{\noexpand\\ }%\noexpand\midrule}
+\foreach \a in \achars {%
+  \ifx\a\DA
+    \atc{D\noexpand\{A\noexpand\}}%
+  \else
+    \atc{\a}%
+  \fi
+  \foreach \b in \bchars {%
+    \atc{& \noexpand\NodeAnchors{\a}{\b}}%
+    %\hbox to 5em{\llap{\a\b:} \NodeAnchors{\a}{\b}}%
+  }
+  \atc{\noexpand\\}
+}
+\atc{%\noexpand\bottomrule
+\noexpand\end{tabular}}
+
+\sffamily\centering
+\tablecontent
+
+%\end{table}
+\color@endgroup
