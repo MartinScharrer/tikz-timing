@@ -2313,7 +2313,30 @@
 % to draw additional material an TikZ styles is provided to select between the old and new node centers. This styles
 % can be used globally or locally as required. The two explicit anchors "new center" and "old center" are also 
 % provided. For existing documents with diagrams using normal nodes it is recommended
-% to switch to the old node centers globally or select the "old center" style for each diagram.
+% to switch to simple nodes or to the old node centers globally or select such a style for each old diagram.
+%
+% The following TikZ settings can be used with the library. The node style settings affect all new nodes after them.
+% The center settings affect all following \emph{references} (\eg "(NodeName)" or "(NodeName.center)") of advanced nodes.
+% The settings can be used as library options with the "timing/node/" part removed.
+%
+% \bigskip\noindent
+% \begin{tabularx}{\textwidth}{lX}
+%  \toprule
+%   TikZ Setting             &  Description \\
+%  \midrule
+%   |timing/node/advanced|   &  Selects advanced in-line nodes. (library default) \\
+%   |timing/node/simple|     &  Selects simple coordinate-style in-line nodes. (package default) \\
+%   |timing/node/new center| &  Center of in-line nodes is in the new position. (default for |advanced|) \\
+%   |timing/node/old center| &  Center of in-line nodes is in the old position. (always on for |simple|) \\
+%  \bottomrule
+% \end{tabularx}
+%
+% \subsubsection*{Examples:}
+% "\usetikztiminglibrary[simple]{advnodes}"\ \ loads the library with nodes default to the old "simple" style.\\\noindent
+% "\usetikztiminglibrary[old center]{advnodes}"\ \ \ loads the library with advanced nodes with have the center at the same
+% place as the normal simple nodes. This is a good ``compatibility mode'' for existing pre-v0.7 diagrams.\\\noindent
+% "\begin{tikztimingtable}[timing/node/simple]"\ \ starts a timing table which uses simple nodes. \\\noindent
+% "\begin{tikztimingtable}[timing/node/.cd,advanced,old center]"\\\noindent starts a timing table which uses advanced nodes with old node centers.
 %
 %
 % \begin{table}
@@ -7128,7 +7151,6 @@
 %    \begin{macrocode}
 
 \let\tikztiming@orig@oldnodecenter\tikztiming@oldnodecenter
-\let\tikztiming@oldnodecenter\@gobble
 
 \tikzset{timing/node/.cd,
   simple/.code={%
@@ -7691,6 +7713,12 @@
   \anchorpoint{HIGH}{0pt}{.5\height}%
 }
 
+%    \end{macrocode}
+%
+% Use the \pkg{pgfopts} to handle the package options.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\ProcessPgfOptions{/tikz/timing/node}
 %    \end{macrocode}
 % \iffalse
 %</lib-advnodes>
