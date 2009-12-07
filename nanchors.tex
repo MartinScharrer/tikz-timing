@@ -1,134 +1,154 @@
-%&pdflatex
+\makeatletter
+\ifx\documentclass\@twoclasseserror
+\def\x{}
+\else
+\def\x{\end{document}}
+
 \documentclass{article}
 
-\usepackage[a3paper]{geometry}
+\usepackage[a4paper]{geometry}
 
 \usepackage{tikz-timing}
 \usepackage{booktabs}
 \usetikztiminglibrary{advnodes,either}
 \usepgflibrary{plotmarks}
 
-\tikzset{timing/node/old center}
+%^^A \tikzset{timing/node/old center}
 
 \makeatletter
-%\let\tikztiming@oldnodecenter\tikztiming@orig@oldnodecenter
 
 \pagestyle{empty}
 \begin{document}
-
-\begin{table}
-  \caption{Transition dependent anchor points.}
+\fi
+\begingroup
+%
 \makeatletter
 \let\mid\relax
-
-\tikzset{timing/draw grid}
+%
+\tikzset{timing/draw grid}%
 \tikzset{timing/.cd,
   lslope=.5,
   dslope=.5,
   zslope=.5,
-}
-
-\tikzset{
-  low/.style={draw=red},
-  mid/.style={draw=yellow},
-  high/.style={draw=green},
-  low2/.style={draw=red!50},
-  high2/.style={draw=green!50},
-  LOW/.style={CAPITAL,draw=red},
-  MID/.style={CAPITAL,draw=yellow},
-  HIGH/.style={CAPITAL,draw=green},
-  CAPITAL/.style={mark=x},
-  origin/.style={mark=x,draw=gray},
-  center/.style={mark=+,draw=black},
-  old center/.style={mark=o,draw=gray},
-  new center/.style={mark size=3pt,mark=o,draw=gray},
-}
-
-\newcommand\namark[2][]{%
-  \draw[mark=o,mark size=1pt,#1] plot coordinates {(#2)};
-}
-
-\def\NodeAnchors#1#2{%
-  \Large
-  \begin{tikzpicture}[timing/picture,semithick]
+}%
+%
+\tikzset{%
+  marker/.style={opacity=.8,fill opacity=.8},
+  low/.style={marker,draw=red},
+  mid/.style={marker,draw=yellow},
+  high/.style={marker,draw=green},
+  low2/.style={marker,draw=red!50!black},
+  high2/.style={marker,draw=green!50!black},
+  LOW/.style={marker,CAPITAL,draw=red},
+  MID/.style={marker,CAPITAL,draw=yellow},
+  HIGH/.style={marker,CAPITAL,draw=green},
+  CAPITAL/.style={marker,mark=x,mark size=2\pgflinewidth},
+  origin/.style={marker,mark=x,draw=gray},
+  center/.style={marker,mark=+,draw=black},
+  old center/.style={marker,mark=+,mark size=2\pgflinewidth,draw=blue},
+  new center/.style={marker,mark size=\pgflinewidth,mark=*,fill=blue,draw=blue},
+}%
+%
+\newcommand\namark[2][]{%^^A 
+  \draw[mark=o,mark size=3\pgflinewidth,#1] plot coordinates {(#2)}
+}%
+%
+\def\NodeAnchors#1#2{%^^A 
+  \Huge
+  {\raisebox{-.5ex}{\scalebox{1}{%^^A 
+  \begin{tikzpicture}[timing/picture,line width=.5\pgflinewidth]
     \let\pgf@sh@ma@A\@undefined
     \timing [name=T] at (0,0) {#1 N(A) #2};
     \useasboundingbox (T.south west) rectangle (T.north east);
-    %
+    %^^A 
     \pgf@sh@ma@A
     \anchorpoints
-    \iffalse
-    \namark[thick,blue,mark=o,mark size=3.pt]{A}%
-    \namark[thick,blue,mark=+,mark size=1.5pt]{A.origin}%
-    \foreach \a in {low,mid,high,low2,high2} {%
-      \@ifundefined{\a}{}%
-        {\namark[semithick,\a]{A.\a}}%
-    }%
-    \foreach \a in {LOW,MID,HIGH,center,origin,old center,new center} {%
-      \namark[gray,\a]{A.\a}%
-    }%
-    \fi
-    \namark[old center,blue]{A.old center}%
-  \end{tikzpicture}
+    \foreach \a in {LOW,MID,HIGH,old center,new center} {%^^A 
+      \namark[gray,\a]{A.\a};%^^A 
+    }%^^A 
+    \foreach \a in {low,mid,high,low2,high2} {%^^A 
+      \@ifundefined{\a}{}%^^A 
+        {\namark[semithick,\a]{A.\a};}%^^A 
+    }%^^A 
+    \namark[old center,blue]{A.old center};%^^A 
+  \end{tikzpicture}%^^A 
+  }}}%^^A 
   \Huge\strut
-}
-
-\iftrue
-\def\bchars{,L,H,X,Z,M,D,U,D{A},E,E0L,E0H,ee,T,C,tt,cc}%
-\def\achars{,L,H,X,Z,M,D,U,D{A},E,0LE,0HE,ee,T,C,tt,cc}%
-
-\def\DA{D{A}}
-\def\tablecontent{%
-\begin{tabular}{lrrrrrrrrrrrrrrrrrr}
-  \toprule
-    \tikzpicture
-      \useasboundingbox (-1ex,-.5ex) rectangle (1ex,.5ex);
-      \node {%
-    \scalebox{0.4}%
-      {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%
-      {\mbox{\rotatebox{45}{from}}}$}}%
-    };%
-  \endtikzpicture
-}
-\def\atc#1{%
-  \begingroup
-    \edef\@tempa{#1}%
-    \expandafter\g@addto@macro\expandafter\tablecontent
-    \expandafter{\@tempa}%
-  \endgroup
 }%
-\foreach \b in \bchars {%
-  \atc{& \noexpand\multicolumn{1}{c}{\b}}%
+%
+\iftrue
+%^^A \def\bchars{,L,H,X,Z,M,D,U,D{A},E,E0L,E0H,ee,T,C,tt,cc}%^^A 
+%^^A \def\achars{,L,H,X,Z,M,D,U,D{A},E,0LE,0HE,ee,T,C,tt,cc}%^^A 
+\def\bchars{,L,H,X,D,E}%^^A 
+\def\achars{,L,H,X,D,D{A},E,0LE,0HE}%^^A 
+%
+\def\DA{D{A}}%
+\def\tablecontent{%^^A 
+  \begin{tabular}{lrrrrrrrrrrrrrrrrrr}%
+    \toprule
+      \tikzpicture
+        \useasboundingbox (-1ex,-.5ex) rectangle (1ex,.5ex);
+        \node {%^^A 
+      \scalebox{0.4}%^^A 
+        {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}%^^A 
+        {\mbox{\rotatebox{45}{from}}}$}}%^^A 
+      };%^^A 
+    \endtikzpicture
 }
- \atc{\noexpand\\ \noexpand\midrule}
-\foreach \a in \achars {%
+%
+\def\atc#1{%^^A 
+  \begingroup
+    \edef\@tempa{#1}%^^A 
+    \expandafter\g@addto@macro\expandafter\tablecontent
+    \expandafter{\@tempa}%^^A 
+  \endgroup
+}%^^A 
+%
+\foreach \b in \bchars {%^^A 
+  \atc{& \noexpand\multicolumn{1}{c}{\b}}%^^A 
+}%
+%
+\atc{\noexpand\\ \noexpand\midrule}%
+%
+\foreach \a in \achars {%^^A 
   \ifx\a\DA
-    \atc{D\noexpand\{A\noexpand\}}%
+    \atc{D\noexpand\{A\noexpand\}}%^^A 
   \else
-    \atc{\a}%
+    \atc{\a}%^^A 
   \fi
-  \foreach \b in \bchars {%
-    \atc{& \noexpand\NodeAnchors{\a}{\b}}%
-    %\hbox to 5em{\llap{\a\b:} \NodeAnchors{\a}{\b}}%
-  }
-  \atc{\noexpand\\}
-}
-\atc{\noexpand\bottomrule\noexpand\end{tabular}}
-
+  \foreach \b in \bchars {%^^A 
+    \atc{& \noexpand\NodeAnchors{\a}{\b}}%^^A 
+    %^^A \hbox to 5em{\llap{\a\b:} \NodeAnchors{\a}{\b}}%^^A 
+  }%
+  \atc{\noexpand\\}%
+}%
+%
+\atc{%^^A 
+  \noexpand\bottomrule
+  \noexpand\end{tabular}%^^A 
+}%
+%
 \sffamily\centering
 \tablecontent
-
-\else
-
-\NodeAnchors{D}{H}
-\makeatletter
-\tikzset{timing/node/old center}
-\NodeAnchors{D}{H}
-\fi
-
-\end{table}
-
-
-\end{document}
-
-
+%
+\def\legend#1#2{%^^A 
+  \namark[#1]{[shift={(0,.125ex)}]#2}; \node [right] at (#2) {\normalsize #1\strut}
+}%
+%
+\Huge
+\begin{tikzpicture}[timing/picture,line width=.5\pgflinewidth]
+  \node [left] at (-1,0) {\large Legend:};
+  \legend{low}{0,0};
+  \legend{mid}{3,0};
+  \legend{high}{6,0};
+  \legend{low2}{0,-.8};
+  \legend{high2}{6,-.8};
+  \legend{LOW}{0,-1.6};
+  \legend{MID}{3,-1.6};
+  \legend{HIGH}{6,-1.6};
+  \legend{new center}{0,-2.4};
+  \legend{old center}{6,-2.4};
+\end{tikzpicture}%
+%
+\endgroup
+\x
