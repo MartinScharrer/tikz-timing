@@ -1,11 +1,19 @@
 %&pdflatex
 \documentclass{article}
 
+\usepackage[a3paper]{geometry}
+
 \usepackage{tikz-timing}
 \usepackage{booktabs}
 \usetikztiminglibrary{advnodes,either}
 \usepgflibrary{plotmarks}
 
+\tikzset{timing/node/old center}
+
+\makeatletter
+%\let\tikztiming@oldnodecenter\tikztiming@orig@oldnodecenter
+
+\pagestyle{empty}
 \begin{document}
 
 \begin{table}
@@ -30,6 +38,10 @@
   MID/.style={CAPITAL,draw=yellow},
   HIGH/.style={CAPITAL,draw=green},
   CAPITAL/.style={mark=x},
+  origin/.style={mark=x,draw=gray},
+  center/.style={mark=+,draw=black},
+  old center/.style={mark=o,draw=gray},
+  new center/.style={mark size=3pt,mark=o,draw=gray},
 }
 
 \newcommand\namark[2][]{%
@@ -45,25 +57,29 @@
     %
     \pgf@sh@ma@A
     \anchorpoints
-    \namark[thick,blue,mark size=1.5pt]{A}%
+    \iffalse
+    \namark[thick,blue,mark=o,mark size=3.pt]{A}%
+    \namark[thick,blue,mark=+,mark size=1.5pt]{A.origin}%
     \foreach \a in {low,mid,high,low2,high2} {%
       \@ifundefined{\a}{}%
         {\namark[semithick,\a]{A.\a}}%
     }%
-    \foreach \a in {LOW,MID,HIGH} {%
-      \namark[thin,\a]{A.\a}%
+    \foreach \a in {LOW,MID,HIGH,center,origin,old center,new center} {%
+      \namark[gray,\a]{A.\a}%
     }%
+    \fi
+    \namark[old center,blue]{A.old center}%
   \end{tikzpicture}
-  \Large\strut
+  \Huge\strut
 }
 
-
-\def\bchars{,L,H,X,D,E}%
-\def\achars{,L,H,X,D,D{A},E,0LE,0HE}%
+\iftrue
+\def\bchars{,L,H,X,Z,M,D,U,D{A},E,E0L,E0H,ee,T,C,tt,cc}%
+\def\achars{,L,H,X,Z,M,D,U,D{A},E,0LE,0HE,ee,T,C,tt,cc}%
 
 \def\DA{D{A}}
 \def\tablecontent{%
-\begin{tabular}{lrrrrrrr}
+\begin{tabular}{lrrrrrrrrrrrrrrrrrr}
   \toprule
     \tikzpicture
       \useasboundingbox (-1ex,-.5ex) rectangle (1ex,.5ex);
@@ -101,6 +117,14 @@
 
 \sffamily\centering
 \tablecontent
+
+\else
+
+\NodeAnchors{D}{H}
+\makeatletter
+\tikzset{timing/node/old center}
+\NodeAnchors{D}{H}
+\fi
 
 \end{table}
 
