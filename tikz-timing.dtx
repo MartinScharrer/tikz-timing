@@ -2278,11 +2278,156 @@
 % }%
 %
 % \clearpage
-% \subsection{Advanced Nodes (experimental)}
-% \textbf{This library is under development and might change in the future.}
-%
+% \subsection{Advanced Nodes}
 % The |advnodes| library changes the in-line nodes, \ie the `|N|' character, to provide multiple 
-% transition dependent node anchors. 
+% transition dependent and independent node anchors shown in Table~\ref{tab:advanchor}.
+%
+% Most transitions provide the three logic level anchors `|low|', `|mid|' and `|high|' which lie
+% on the drawn timing line. Transitions of `double line' characters like `|D|' can have
+% two low and/or high level anchors which are called `|low2|' and `|high2|'.
+%
+% To align marker lines over multiple rows inside a \env{tikztimingtable} a set of transition
+% independent node anchors are provided: `|LOW|', `|MID|', `|HIGH|'.
+% With the normal coordinate-like in-line nodes the vertical node (center) position has to be taken into 
+% account, while the advanced anchors do this automatically.
+%
+% \textbf{Please note} that the node \emph{center} of advanced nodes will be different for some transitions.
+% The `|center|' anchor (used by default if no node anchor is provided) will be placed at the logical center of the 
+% transition, \ie mostly in the middle of it. In order not to break existing diagrams which use nodes as references 
+% to draw additional material an TikZ styles is provided to select between the old and new node centers. This styles
+% can be used globally or locally as required. The two explicit anchors `|new center|' and `|old center|' are also 
+% provided. For existing documents with diagrams using normal nodes it is recommended
+% to switch to the old node centers globally or select the `|old center|' style for each diagram.
+%
+%
+% \begin{table}
+%   \caption{Transition Dependent Anchor Points of Advanced Nodes}^^A
+%   \label{tab:advanchor}^^A
+%   \makeatletter
+%   \let\mid\relax
+%^^A
+%   \tikzset{timing/draw grid}^^A
+%   \tikzset{timing/.cd,
+%     lslope=.5,
+%     dslope=.5,
+%     zslope=.5,
+%   }^^A
+%^^A
+%   \tikzset{^^A
+%     marker/.style={opacity=.8,fill opacity=.8},
+%     low/.style={marker,draw=red},
+%     mid/.style={marker,draw=yellow},
+%     high/.style={marker,draw=green},
+%     low2/.style={marker,draw=red!50!black},
+%     high2/.style={marker,draw=green!50!black},
+%     LOW/.style={marker,CAPITAL,draw=red},
+%     MID/.style={marker,CAPITAL,draw=yellow},
+%     HIGH/.style={marker,CAPITAL,draw=green},
+%     CAPITAL/.style={marker,mark=x,mark size=2\pgflinewidth},
+%     origin/.style={marker,mark=x,draw=gray},
+%     center/.style={marker,mark=+,draw=black},
+%     old center/.style={marker,mark=+,mark size=2\pgflinewidth,draw=blue},
+%     new center/.style={marker,mark size=\pgflinewidth,mark=*,fill=blue,draw=blue},
+%   }^^A
+%^^A
+%   \newcommand\namark[2][]{^^A 
+%     \draw[mark=o,mark size=3\pgflinewidth,#1] plot coordinates {(#2)}
+%   }^^A
+%^^A
+%   \def\NodeAnchors#1#2{^^A 
+%     \Huge
+%     {\raisebox{-.5ex}{\scalebox{1}{^^A 
+%     \begin{tikzpicture}[timing/picture,line width=.5\pgflinewidth]
+%       \let\pgf@sh@ma@A\@undefined
+%       \timing [name=T] at (0,0) {#1 N(A) #2};
+%       \useasboundingbox (T.south west) rectangle (T.north east);
+%       ^^A 
+%       \pgf@sh@ma@A
+%       \anchorpoints
+%       \foreach \a in {LOW,MID,HIGH,old center,new center} {^^A 
+%         \namark[gray,\a]{A.\a};^^A 
+%       }^^A 
+%       \foreach \a in {low,mid,high,low2,high2} {^^A 
+%         \@ifundefined{\a}{}^^A 
+%           {\namark[semithick,\a]{A.\a};}^^A 
+%       }^^A 
+%       \namark[old center,blue]{A.old center};^^A 
+%     \end{tikzpicture}^^A 
+%     }}}^^A 
+%     \Huge\strut
+%   }^^A
+%^^A
+%   \def\bchars{,L,H,X,D,E}^^A 
+%   \def\achars{,L,H,X,D,D{A},E,0LE,0HE}^^A 
+%^^A
+%   \def\DA{D{A}}^^A
+%   \def\tablecontent{^^A 
+%     \begin{tabular}{lrrrrrrrrrrrrrrrrrr}^^A
+%       \toprule
+%         \tikzpicture
+%           \useasboundingbox (-1ex,-.5ex) rectangle (1ex,.5ex);
+%           \node {^^A 
+%         \scalebox{0.4}^^A 
+%           {\rotatebox{-45}{$\frac{\mbox{\rotatebox{45}{to}}}^^A 
+%           {\mbox{\rotatebox{45}{from}}}$}}^^A 
+%         };^^A 
+%       \endtikzpicture
+%   }
+%^^A
+%   \def\atc#1{^^A 
+%     \begingroup
+%       \edef\@tempa{#1}^^A 
+%       \expandafter\g@addto@macro\expandafter\tablecontent
+%       \expandafter{\@tempa}^^A 
+%     \endgroup
+%   }^^A 
+%^^A
+%   \foreach \b in \bchars {^^A 
+%     \atc{& \noexpand\multicolumn{1}{c}{\b}}^^A 
+%   }^^A
+%^^A
+%   \atc{\noexpand\\ \noexpand\midrule}^^A
+%^^A
+%   \foreach \a in \achars {^^A 
+%     \ifx\a\DA
+%       \atc{D\noexpand\{A\noexpand\}}^^A 
+%     \else
+%       \atc{\a}^^A 
+%     \fi
+%     \foreach \b in \bchars {^^A 
+%       \atc{& \noexpand\NodeAnchors{\a}{\b}}^^A 
+%       ^^A \hbox to 5em{\llap{\a\b:} \NodeAnchors{\a}{\b}}^^A 
+%     }^^A
+%     \atc{\noexpand\\}^^A
+%   }^^A
+%^^A
+%   \atc{^^A 
+%     \noexpand\bottomrule
+%     \noexpand\end{tabular}^^A 
+%   }^^A
+%^^A
+%   \sffamily\centering
+%   \tablecontent
+%^^A
+%   \def\legend#1#2{^^A
+%     \namark[#1]{[shift={(0,.125ex)}]#2}; \node [right] at (#2) {\normalsize #1\strut}
+%   }^^A
+%   \par
+%   \Huge
+%   \begin{tikzpicture}[timing/picture,line width=.5\pgflinewidth]
+%     \node [left] at (-1,0) {\large Legend:};
+%     \legend{low}{0,0};
+%     \legend{mid}{3,0};
+%     \legend{high}{6,0};
+%     \legend{low2}{0,-.8};
+%     \legend{high2}{6,-.8};
+%     \legend{LOW}{0,-1.6};
+%     \legend{MID}{3,-1.6};
+%     \legend{HIGH}{6,-1.6};
+%     \legend{new center}{0,-2.4};
+%     \legend{old center}{6,-2.4};
+%   \end{tikzpicture}^^A
+% \end{table}
 %
 % \clearpage
 % \subsection{Intervals (experimental)}
