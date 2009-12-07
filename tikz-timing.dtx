@@ -752,6 +752,22 @@
 %<*driver>
 % \fi
 
+\makeatletter
+
+\def\MakeShortVerbQuote{%
+  \def\@shortvrbdef{\qverb}\@MakeShortVerb
+}
+
+\let\verb@orig@egroup\verb@egroup %@
+
+\def\qverb{%
+  \begingroup
+  \def\verb@egroup{\verb@orig@egroup'\endgroup}%
+  `\verb%
+}
+\MakeShortVerbQuote{\"}
+
+
 \def\NewIn#1{
   \marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
 }
@@ -868,8 +884,8 @@
 % Additional optional functionality is provided by libraries.
 %
 % The signal levels of the timing diagram can be given by corresponding 
-% characters/letters like `|H|' for \emph{Logical High} or `|L|' for 
-% \emph{Logical Low}. So e.g.\ `|{HLZXD}|' gives `\texttiming{HLZXD}'.
+% characters/letters like "H" for \emph{Logical High} or "L" for 
+% \emph{Logical Low}. So e.g.\ "{HLZXD}" gives `\texttiming{HLZXD}'.
 % In order to fit (in)to normal text the diagram size (\ie its height, width and line width)
 % is defined relatively to the currently active font size. The diagram height is about the height of an
 % uppercase `X' (+$2\times\frac12$ line width). This way the diagrams
@@ -896,13 +912,13 @@
 %
 % Recurring character combinations can be repeated using character groups
 % (\iex{3{hlz}}) or be defined as so called \emph{meta-characters}
-% ({\tikztimingmetachar{Y}{hlz} `|Y|'=`|hlz|', \iex{3Y}}),
+% ({\tikztimingmetachar{Y}{hlz} "Y"="hlz", \iex{3Y}}),
 % which are similar to a \TeX~macro.
 % Since v0.7 meta-characters can also include macro arguments.
 %
 % Additional features are the inclusion of in-line TikZ styles (\iex{H ;[orange] L}),
 % in-line nodes (\iex{2H N[rectangle](Name){Text} 2L}), automatic width calculations
-% (`|H $ 1+\mymacro-\slope $ L |'~$\rightarrow$~`\texttiming{H2.5L}')
+% ("H $ 1+\mymacro-\slope $ L "~$\rightarrow$~`\texttiming{H2.5L}')
 % and much more.
 %
 % \centerline{\texttiming[D]{50{D{}}$\dslope$ D{}}}
@@ -922,7 +938,7 @@
 % \begin{description}
 %   \itempkg{ifsym} This package (using the |electronic| option) provides a 
 %   special font which contains graphical representation of the logical levels 
-%   high and low at the corresponding letter `|H|' and `|L|'.  The lower case 
+%   high and low at the corresponding letter "H" and "L".  The lower case 
 %   versions have only half the width of the uppercase ones. Also a transition 
 %   can be added using the `\verb+|+' character which will (sometimes) be added 
 %   automatically between |HL| and |LH|.
@@ -940,7 +956,7 @@
 %
 %   \itempkgnoctan[(TikZ Example Page)]{timing}%
 %   {http://www.texample.net/tikz/examples/timing-diagram/} This package is 
-%   accidentally also called `|timing.sty|' and is not published on CTAN but on 
+%   accidentally also called "timing.sty" and is not published on CTAN but on 
 %   the TikZ example website.  It is a small package which is meant as an 
 %   example for the graphics package \texttt{tikz} which is used to draw the 
 %   diagram.  The logical levels must be provided using macros like 
@@ -993,25 +1009,25 @@
 %   \change Additional experimental libraries:
 %     \begin{description}
 %       \item[|advnodes|]     Library for advanced nodes with multiple anchor points.
-%       \item[|interval|]     Library to change color of `|ZL|', `|ZH|' etc. transitions to 
+%       \item[|interval|]     Library to change color of "ZL", "ZH" etc. transitions to 
 %                             indicate borders of an interval.
 %       \item[|beamer|]       Library providing some marginal beamer overlay support.
 %     \end{description}
-%   \change `|overlays|' library:
+%   \change "overlays" library:
 %     \begin{itemize}
 %       \item Overlays can now be cascaded, \ie an overlay can be inside another one.
 %       \item The second braces around the second part are now optional.
-%       \item Fixed issues with `|T|' and `|C|' characters inside overlays.
+%       \item Fixed issues with "T" and "C" characters inside overlays.
 %     \end{itemize}
 %   \change Macro-characters can now have arguments.
-%   \change Added more variety for in-line options: `|[[ ]]|', `|[+ +]|' and `\verb+[| |]+.
+%   \change Added more variety for in-line options: "[[ ]]", "[+ +]" and "[| |]".
 %   \change Handling of in-line options and nodes got modified. Options are now placed directly 
-%     where placed and are valid until the next `|;|'. Please note that |[/utils/exec={..}]| now 
+%     where placed and are valid until the next ";". Please note that |[/utils/exec={..}]| now 
 %     needs to be written as \verb+[|/utils/exec={..}|]+. Otherwise it is re-executed every time
 %     the drawing path is renewed.
 %   \change Added star version of \cs{tablegrid}.
-%   \change Added background to `|E|' character (`|either|' library).
-%   \change Some fixes for placing of `|D{}|' texts.
+%   \change Added background to "E" character ("either" library).
+%   \change Some fixes for placing of "D{}" texts.
 %   \change Fixed wrong slopes (\eg |lslope| instead of |zslope|) for some transitions.
 %   \change Major changes on internal character definition macros, parser and output routine.
 %   \change Fixed problems with expanding code content in user input.
@@ -1020,12 +1036,12 @@
 %           This includes |tikztimingtable|.
 %   \change Added TikZ style |timing/draw grid| for grids behind \cs{timing} macros.
 %   \change Replaced macros \cs{texttimingbefore}, \cs{texttimingafter} and \cs{texttiminggrid} with 
-%           TikZ settings `|timing/before text|', `|timing/after text|' and `|timing/draw grid|'.
-%   \change Added separators `|timing/outer sep|' around \cs{texttiming}.
-%   \change Graphical improvements for `double line' characters like `|D|', `|U|' and `|E|'.
+%           TikZ settings "timing/before text", "timing/after text" and "timing/draw grid".
+%   \change Added separators "timing/outer sep" around \cs{texttiming}.
+%   \change Graphical improvements for `double line' characters like "D", "U" and "E".
 %     The whole character including both edges is drawn in a single process.
 %   \change Character width can now be scaled using |wscale|.
-%   \change Character width can now be calculated by placing code inside `|$ $|'.
+%   \change Character width can now be calculated by placing code inside "$ $".
 %   \change Fixed issue with \cs{horlines} macro.
 %   \change The \env{tikztimingtable} environment and associated macros got enhanced:
 %     \begin{itemize}
@@ -1210,7 +1226,7 @@
 % expanded, therefore this macros can access the width of the diagram.
 %
 % These macros should not be used directly in newer code but instead the new 
-% TikZ styles `|timing/before text|' and `|timing/after text|'. For backward 
+% TikZ styles "timing/before text" and "timing/after text". For backward 
 % compatibility these styles default to the two macros.
 %
 % (Deprecated) Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
@@ -1222,7 +1238,7 @@
 % This macro should only be used inside \cs{texttimingbefore} or 
 % \cs{texttimingafter} and draws a grid of the full size of the
 % \cs{texttiming} diagram.
-% For newer code the TikZ styles `|timing/draw grid|' and `|timing/no grid|' 
+% For newer code the TikZ styles "timing/draw grid" and "timing/no grid" 
 % should be used instead, \eg
 % |\tikzset{timing/intext/.append style={timing/draw grid}}| or simply enable the grid globally
 % for all in-text and other timing diagrams with |\tikzset{timing/draw grid}|.
@@ -1298,10 +1314,10 @@
 %
 % \iffalse
 % \subsubsection{In-Line Nodes Shape Anchors}
-% A default shape for In-Line Nodes/Coordinates (`|N|' character) is provided 
+% A default shape for In-Line Nodes/Coordinates ("N" character) is provided 
 % which is named `\texttt{tikztiming coordinate}'. Like the PGF standard shape 
 % `\texttt{coordinate}' this shape does not draw anything. However, it provides 
-% anchors for the logical high, low and middle (`|mid|') levels, as well as for 
+% anchors for the logical high, low and middle ("mid") levels, as well as for 
 % the three slopes |lslope|, |dslope| and |zslope| (full and half values). This 
 % anchors can be used to access all possible connection points of default 
 % transitions as shown in Figure~\ref{fig:coordnodeanchors}. This is useful for 
@@ -1532,16 +1548,16 @@
 % line of the rows given by \meta{list}. The PGF macro 
 % \css{foreach}\footnote{See the \texttt{pgf} manual for more details.} is 
 % internally used so the list can include not only row numbers as integer but 
-% also fractional numbers and the `|...|' operator to auto-increment the 
+% also fractional numbers and the "..." operator to auto-increment the 
 % numbers. Please note that all numbers in the list are multiplied by 
 % \cs{rowdist}.
-% If the list is empty the default `|1,2,...,\nrows|' is used which draws lines 
+% If the list is empty the default "1,2,...,\nrows" is used which draws lines 
 % for all rows.
 %
 % \DescribeMacro{vertlines}{\oarg{TikZ Settings}\marg{list}}
 % Like \cs{horlines} but draws vertical lines and the listed numbers a relative 
 % to the basic width.
-% If the list is empty the default `|0,1,...,\twidth|' is used which draws lines 
+% If the list is empty the default "0,1,...,\twidth" is used which draws lines 
 % after every period width.
 %
 % \DescribeMacro{tableheader}{\oarg{TikZ Settings}\marg{Description 
@@ -1572,7 +1588,7 @@
 % \DescribeMacro{twidth}{}
 % Returns the width (as multiple of the `period width') of the longest timing 
 % diagram line in the table. Example: If the longest line would be
-% `|H 2.3L z|' than \cs{twidth} would be $1+2.3+0.5=3.8$.
+% "H 2.3L z" than \cs{twidth} would be $1+2.3+0.5=3.8$.
 %
 % \subsubsection*{Positions \& Scalings inside the Table}
 % \textbf{Note:} The anchors provided by the timing shape 
@@ -1599,12 +1615,12 @@
 %
 % \clearpage
 % \subsection{Macros for use inside the Character String}
-% The modifiers `|@|' and `\texttt{\$}' allow the user to include macros.  These 
+% The modifiers "@" and `\texttt{\$}' allow the user to include macros.  These 
 % macros are evaluated when the |tikz-timing| parser encounters them in the 
 % input character string, \ie before any diagram element is drawn or any single 
-% bracket `|[ ]|' options are processed. Therefore their values should be set 
-% either outside the |tikz-timing| diagram or with the `|[! .. !]|' or
-% `|[[ .. ]]|' option blocks.
+% bracket "[ ]" options are processed. Therefore their values should be set 
+% either outside the |tikz-timing| diagram or with the "[! .. !]" or
+% "[[ .. ]]" option blocks.
 %
 % The following macros are provided for the user.
 %
@@ -1618,7 +1634,7 @@
 % The current value can be accessed using \cs{wscale}.
 %
 % \DescribeMacro{wscale}{}
-% Returns the current width scaling `|wscale|' value. 
+% Returns the current width scaling "wscale" value. 
 %
 % \DescribeMacro{slope}{}
 % \DescribeMacro*{lslope}{\hspace{1em}\small(alias)}
@@ -1689,20 +1705,20 @@
 % is now archived by defining them internally as `|#1|\marg{Character Group}',
 % which creates a repetition group. Users which want to include an own argument 
 % but still want to repeat the group need to define a meta-character with at 
-% least two arguments and define it as `|#1{ .. #2 .. }|'. If the repetition is 
+% least two arguments and define it as "#1{ .. #2 .. }". If the repetition is 
 % not wanted the |#1| argument can be used as a real width for one or more group 
-% internal characters: `|{Y}[1]{Z #1D Z}|', so `|4Y|' will give `|Z 4D Z|' 
-% instead of `|4{Z D Z}|'.
+% internal characters: "{Y}[1]{Z #1D Z}", so "4Y" will give "Z 4D Z" 
+% instead of "4{Z D Z}".
 % 
-% Also the modifier `|@|' (see Table~\ref{tab:modifiers}) together with the 
+% Also the modifier "@" (see Table~\ref{tab:modifiers}) together with the 
 % \cs{setwscale} macro can be used to scale the whole group dependent on the 
 % first argument:\\
-% `|{Y}[1]}{ @{\setwscale{#1*\wscale}} Z 2D Z @{\setwscale{\wscale/#1}} }|', so
-% `|4Y|' is equivalent to `|4Z 8D 4Z|'.
+% "{Y}[1]}{ @{\setwscale{#1*\wscale}} Z 2D Z @{\setwscale{\wscale/#1}} }", so
+% "4Y" is equivalent to "4Z 8D 4Z".
 %
 % The new `\texttt{\$}' modifier can be used to calculate the width of the group 
-% characters: |{Y}[1]{$#1/3$D{A} $#1/3D${B} $#1/3$D{C}}|, so `|4Y|' results in 
-% `|1.333D{A} 1.333D{B} 1.333D{C}|'.
+% characters: |{Y}[1]{$#1/3$D{A} $#1/3D${B} $#1/3$D{C}}|, so "4Y" results in 
+% "1.333D{A} 1.333D{B} 1.333D{C}".
 %
 %
 % \bigskip
@@ -1732,7 +1748,7 @@
 % \DeleteShortVerb{\`}
 % \MakeShortVerb{\|}
 % \\[\bigskipamount]
-% Redefining the glitch `|G|' character:\\
+% Redefining the glitch "G" character:\\
 % |\tikztimingmetachar{G}{.1T.1T .2B} \tikztimingmetachar{g}{.1T.1T}|\\
 % |\texttiming{ 10{H G L G} H } % With correction of width `.2B'|\\
 % |\texttiming{ 10{H g L g} H } % Without correction|\\
@@ -1786,12 +1802,12 @@
 % paths.
 %
 % The package follows the directory structures approach used by TikZ/PGF and 
-% places all styles and other settings under the ``subdirectory'' `|timing|' in 
+% places all styles and other settings under the ``subdirectory'' "timing" in 
 % the main ``directory'' `tikz', which is the default when \css{tikzset} is 
 % used.\\
 % ^^AExample: The slope of the transitions can be changed using the key 
-% ^^A`|timing/slope|', which can also written in the absolute form 
-% ^^A`|/tikz/timing/slope|'.
+% ^^A"timing/slope", which can also written in the absolute form 
+% ^^A"/tikz/timing/slope".
 %
 % ^^AThe Table~\ref{tab:styles} lists all styles defined by this package.
 % \begin{center}^^A{table}[b]
@@ -1908,19 +1924,19 @@
 % of the |tikztiming| package.
 %
 % \subsection{Arrows}
-% The library `|arrows|' enables two characters `|A|' and `|W|' which draw 
+% The library "arrows" enables two characters "A" and "W" which draw 
 % vertical up and down \textit{A}rro\!\textit{W}s. Such arrows are used in 
 % timing diagrams to mark special polarized events, like clock edges of another 
 % signal.
 %
 % The width provided with these character is added as whitespace after the 
-% ``zero-width'' arrow: `|A2AA|' results in `\,\texttiming{A2AA}'. This space 
-% can be avoided by specifying the width to zero: `|0A|'. Like the `|C|' and 
-% `|T|' characters the subsequent arrow characters are not combined into one.
+% ``zero-width'' arrow: "A2AA" results in `\,\texttiming{A2AA}'. This space 
+% can be avoided by specifying the width to zero: "0A". Like the "C" and 
+% "T" characters the subsequent arrow characters are not combined into one.
 %
 % The arrow tips can be changed using the TikZ styles for this characters. See 
-% section~\ref{sec:styles} for more information. The `|A|' character should not be used 
-% together with any other characters except with `|S|' (space).
+% section~\ref{sec:styles} for more information. The "A" character should not be used 
+% together with any other characters except with "S" (space).
 %
 % \begin{table}[H]
 % \centering
@@ -1943,13 +1959,13 @@
 %
 % \clearpage
 % \subsection{Either High or Low}
-% The library `|either|' enables the `|E|' character which stands for 
+% The library "either" enables the "E" character which stands for 
 % `\textit{either high or low}'. This character is designed to be used with the 
-% `|H|' and `|L|' characters to display a uncertainty of a transition.  
+% "H" and "L" characters to display a uncertainty of a transition.  
 % Sometimes a, e.g.\ low signal can go either to high or stay at low for a 
 % certain time before it definitely goes to high. In this case both (or more) 
 % possible transitions can be drawn using this character.
-% Like the `|C|' and `|T|' characters subsequent `|E|' characters are not 
+% Like the "C" and "T" characters subsequent "E" characters are not 
 % combined into one.
 %
 % The drawing style can be changed using the |timing/e| and 
@@ -1993,14 +2009,14 @@
 %
 % \clearpage
 % \subsection{Overlays}
-% The library `|overlays|' enables the `|O|' character which allows the 
+% The library "overlays" enables the "O" character which allows the 
 % overlaying of timing characters, i.e.~different groups of timing characters
 % are drawn on top of each other. This is not to be confused with `dynamic' overlay
 % provided by the presentation class |beamer|. The |tikz-timing| library |beamer| provides
 % some support for such overlays.
 %
-% The `|O|' character awaits a set of character 
-% enclosed by braces which are drawn as normal. The position before the `|O|' 
+% The "O" character awaits a set of character 
+% enclosed by braces which are drawn as normal. The position before the "O" 
 % character is then restored and the following characters are drawn over them.  
 % Older versions of this character awaited a second set of characters in braces 
 % but this braces are now optional. The exact syntax is:\\[\smallskipamount]
@@ -2012,7 +2028,7 @@
 %
 % It is the responsibility of the user to make sure that the lines drawn by the 
 % first set reconnect to the main lines or do something else useful.  The 
-% modifier `|;|' can be used to restart the drawn line, e.g.\ to change to a 
+% modifier ";" can be used to restart the drawn line, e.g.\ to change to a 
 % different color. This is not done automatically to give the user the freedom 
 % if and where this should happen. It is recommended to start and end the set 
 % with characters identical with the main line to avoid ugly connection points.
@@ -2048,15 +2064,15 @@
 %
 % \clearpage
 % \subsection{Clock Arrows}
-% The library `|clockarrows|' is changing the `|C|' clock character to contain 
+% The library "clockarrows" is changing the "C" clock character to contain 
 % arrows which mark the rising and/or falling clock edge. By default the rising 
 % edges are marked. To simplify the implementation only the transition from a 
-% `|C|' to another `|C|' character contains the arrows but not transitions from 
-% or to different characters, like `|HCH|' or `|LCL|'.
+% "C" to another "C" character contains the arrows but not transitions from 
+% or to different characters, like "HCH" or "LCL".
 %
 % The arrows can be controlled using the TikZ styles shown in 
 % Table~\ref{tab:clockarrowstyles} below. This styles can also be used as 
-% library options. The key ``directory'' `|timing/c|' must be dropped for 
+% library options. The key ``directory'' "timing/c" must be dropped for 
 % options, e.g.\\\hspace*{2em}
 % \cs{usetikztiminglibrary}|[rising arrows]{clockarrows}|.
 
@@ -2107,19 +2123,19 @@
 %
 % \clearpage
 % \subsection{Column Type}
-% The library `|columntype|' uses the \pkg{array} package to define a new 
+% The library "columntype" uses the \pkg{array} package to define a new 
 % |tabular| column type for timing characters. The tabular column can then hold 
 % timing characters like the \env{tikztimingtable}. An initial option block 
-% `|[...]|' is taken as initial character or diagram line wide settings. The 
+% "[...]" is taken as initial character or diagram line wide settings. The 
 % main difference between these two table types is that \env{tikztimingtable} 
 % creates a big common |tikzpicture| with one coordinate system with potential 
 % extra drawing code and the column type creates single pictures for each 
 % diagram line without common coordinate system.
 %
-% By default the letter `|T|' and left alignment are used for the timing column 
+% By default the letter "T" and left alignment are used for the timing column 
 % type. The TikZ style |timing/columntype=|\marg{letter}\marg{alignment} can be 
 % used to select different column letters and alignments. The \meta{alignment} 
-% represents here the \emph{real} column letter like `|l|', `|c|' or `|r|'.  
+% represents here the \emph{real} column letter like "l", "c" or "r".  
 % Additional column code can be added using the `|>|\marg{code}' and 
 % `|<|\marg{code}' argument of the \pkg{array} package.
 % \iffalse
@@ -2127,7 +2143,7 @@
 % \hspace*{1em}|\tikzset{timing/columntype={T}{r}}| \hspace{2em} Change to right 
 % alignment.\\
 % \hspace*{1em}|\tikzset{timing/columntype={I}{>{code}c<{code}}| \hspace{2em} 
-% Defines letter `|I|' to create centered timing diagrams with some code before   
+% Defines letter "I" to create centered timing diagrams with some code before   
 % and after it.
 % \fi
 %
@@ -2138,7 +2154,7 @@
 % \hspace*{2em}|\newcolumntype{T}{>{\celltiming}l<{\endcelltiming}}|.
 %
 % \smallskip
-% The default `|T|' definition can be suppressed by using either the library 
+% The default "T" definition can be suppressed by using either the library 
 % option |notype| or a different |type| (equal to |timing/columntype|):
 % \\[\smallskipamount]
 % \hspace*{2em}|\usetikzlibrary[type={U}{l}]{columntype}|\\[\smallskipamount]
@@ -2162,7 +2178,7 @@
 %
 % \clearpage
 % \subsection{Nice Timing Tables}
-% The library `|nicetabs|' uses the settings of the \pkg{array} and 
+% The library "nicetabs" uses the settings of the \pkg{array} and 
 % \pkg{booktabs} packages to improve the layout of \env{tikztimingtables}. The 
 % resulting table matches a \env{tabular}|{rT}| table which uses the above 
 % packages and the |columntype| library.  The table macros \cs{tabcolsep}, 
@@ -2174,9 +2190,9 @@
 % \cs{rowdist} and \cs{coldist} macros can be used to draw extra material 
 % relatively to the rows.
 % 
-% The TikZ styles `|timing/nice tabs|' (default) and `|timing/no nice tabs|' can 
+% The TikZ styles "timing/nice tabs" (default) and "timing/no nice tabs" can 
 % be used to activate and deactivate the layout, \eg for each table. Both 
-% settings can be given as a library option, but without the `|timing/|' path.
+% settings can be given as a library option, but without the "timing/" path.
 % 
 % \bigskip
 % \begin{table}[H]
@@ -2221,9 +2237,9 @@
 %
 % \clearpage
 % \subsection{Counter Character}
-% The library `|counters|' allows the easy definition of meta-characters which 
+% The library "counters" allows the easy definition of meta-characters which 
 % implement up-counters. These characters show the counter value using the 
-% `|D{}|' character and increment it by one every time they are used. A second 
+% "D{}" character and increment it by one every time they are used. A second 
 % character can be defined to (re-)set the counter to a specific value. The 
 % counter values can be decimal (base-10, default), hexadecimal (base-16) or any 
 % other base from 2 till 36. By default the lower case version of the counter 
@@ -2234,9 +2250,9 @@
 % Counter characters are defined using the TikZ key
 % `\texttt{timing/counter/new=}\linebreak[3]\ignorespaces
 % \texttt{\{char=\meta{char},\meta{settings}\}}' which can also be written as 
-% `|timing/new counter|'. The \meta{settings} are TikZ keys themselves and are 
-% shown by Table~\ref{tab:countersettings}.  One or more `|new|' keys (path 
-% `|timing/counter|' removed) can be given as library options.
+% "timing/new counter". The \meta{settings} are TikZ keys themselves and are 
+% shown by Table~\ref{tab:countersettings}.  One or more "new" keys (path 
+% "timing/counter" removed) can be given as library options.
 %
 % \begin{table}
 %   \caption{Settings for Counter Meta-Characters}
@@ -2265,7 +2281,7 @@
 %
 % \subsubsection*{Example:}
 % \noindent
-% Counter character `|Q|' with base 16 (hexadecimal). `|R|' resets the 
+% Counter character "Q" with base 16 (hexadecimal). "R" resets the 
 % counter:\\*\noindent
 % |\tikzset{timing/new counter={char=Q,base=16,reset char=R}}|\\*\noindent
 % The counter value should be in blue text typer font.\\*\noindent
@@ -2279,25 +2295,25 @@
 %
 % \clearpage
 % \subsection{Advanced Nodes}
-% The |advnodes| library changes the in-line nodes, \ie the `|N|' character, to provide multiple 
+% The |advnodes| library changes the in-line nodes, \ie the "N" character, to provide multiple 
 % transition dependent and independent node anchors shown in Table~\ref{tab:advanchor}.
 %
-% Most transitions provide the three logic level anchors `|low|', `|mid|' and `|high|' which lie
-% on the drawn timing line. Transitions of `double line' characters like `|D|' can have
-% two low and/or high level anchors which are called `|low2|' and `|high2|'.
+% Most transitions provide the three logic level anchors "low", "mid" and "high" which lie
+% on the drawn timing line. Transitions of `double line' characters like "D" can have
+% two low and/or high level anchors which are called "low2" and "high2".
 %
 % To align marker lines over multiple rows inside a \env{tikztimingtable} a set of transition
-% independent node anchors are provided: `|LOW|', `|MID|', `|HIGH|'.
+% independent node anchors are provided: "LOW", "MID", "HIGH".
 % With the normal coordinate-like in-line nodes the vertical node (center) position has to be taken into 
 % account, while the advanced anchors do this automatically.
 %
 % \textbf{Please note} that the node \emph{center} of advanced nodes will be different for some transitions.
-% The `|center|' anchor (used by default if no node anchor is provided) will be placed at the logical center of the 
+% The "center" anchor (used by default if no node anchor is provided) will be placed at the logical center of the 
 % transition, \ie mostly in the middle of it. In order not to break existing diagrams which use nodes as references 
 % to draw additional material an TikZ styles is provided to select between the old and new node centers. This styles
-% can be used globally or locally as required. The two explicit anchors `|new center|' and `|old center|' are also 
+% can be used globally or locally as required. The two explicit anchors "new center" and "old center" are also 
 % provided. For existing documents with diagrams using normal nodes it is recommended
-% to switch to the old node centers globally or select the `|old center|' style for each diagram.
+% to switch to the old node centers globally or select the "old center" style for each diagram.
 %
 %
 % \begin{table}
@@ -2433,16 +2449,16 @@
 % \subsection{Intervals (experimental)}
 % \textbf{This library is under development and might change in the future.}
 %
-% The |interval| library allows the drawing of intervals using the `|H|', `|L|', `|Z|' and `|X|' logic levels.
-% It provides modified definitions of X and Z transitions (e.g.~`|LX|', '|XH|') where the transition edges can 
+% The |interval| library allows the drawing of intervals using the "H", "L", "Z" and "X" logic levels.
+% It provides modified definitions of X and Z transitions (e.g.~"LX", "XH") where the transition edges can 
 % be coloured either way to indicate interval borders.
 %
 % The interval borders can be set using the `|timing/interval=|\marg{settings}' TikZ style. The 
-% \meta{settings} are `|lo|' (left-open), `|lc|' (left-closed) and `|ro|' (right-open), `|rc|' (right-closed), which build the
-% following combinations: `|{lo,ro}|', `|{lc,ro}|', `|{lo,rc}|' and `|{lc,rc}|'. However, every of them can also be set on its own, 
-% e.g.\ `|timing/interval={lc}|' simply sets the interval to `left-closed' without changing the right border.
+% \meta{settings} are "lo" (left-open), "lc" (left-closed) and "ro" (right-open), "rc" (right-closed), which build the
+% following combinations: "{lo,ro}", "{lc,ro}", "{lo,rc}" and "{lc,rc}". However, every of them can also be set on its own, 
+% e.g.\ "timing/interval={lc}" simply sets the interval to `left-closed' without changing the right border.
 %
-% The key `|timing/interval/normal|' (alternative: `|timing/interval={normal}|') sets the transitions back to their default.
+% The key "timing/interval/normal" (alternative: "timing/interval={normal}") sets the transitions back to their default.
 %
 % \par\medskip
 % \noindent
@@ -2478,7 +2494,7 @@
 % \par\bigskip
 % \noindent
 % A further alternative is to use a meta-character with an argument.
-% Note that `|#2|' must be used, because `|#1|' holds the width, which is irrelevant here.
+% Note that "#2" must be used, because "#1" holds the width, which is irrelevant here.
 % This definition is also provided by the `|timing/interval/metachar|=\meta{Character}' key.
 % \\[\smallskipamount]
 % \begingroup
@@ -2577,7 +2593,7 @@
 % All examples except Example~\ref{exa:adv} are attached in compilable form
 % to this PDF.
 % ^^A\\[\smallskipamount]
-% ^^A\emph{Example notation example:} `|[c]cccc|' means either 
+% ^^A\emph{Example notation example:} "[c]cccc" means either 
 % ^^A|\timing{[c]cccc};| or |\texttiming[c]{cccc}|.
 %
 %
@@ -3306,7 +3322,7 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@initcode@}
-% If empty init char was given, exchange it with `|@|'.
+% If empty init char was given, exchange it with "@".
 %    \begin{macrocode}
 \def\tikztiming@initcode@{%
   \gdef\tikztiming@lastchar{@}%
@@ -3933,7 +3949,7 @@
 %
 % \begin{macro}{\tikztiming@defcode []}[1]{Options}
 % Single brackets are in-picture options.
-% Brackets and a `|!|' sign `|[! !]|' are parser options.
+% Brackets and a "!" sign "[! !]" are parser options.
 % Double brackets are both.
 %
 % Brackets and `\verb+| |+' signs `\verb+[| |]+' are only-once in-picture options.
@@ -4163,7 +4179,7 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@testfornum@}
-% The \cs{@let@token} set in \cs{tikztiming@parser} is used to handle `|0|' 
+% The \cs{@let@token} set in \cs{tikztiming@parser} is used to handle "0" 
 % which can not be detected using the \cs{tikztiming@numint} value.
 %    \begin{macrocode}
 \def\tikztiming@testfornum@{%
@@ -6709,7 +6725,7 @@
 %<*lib-overlays>
 % \fi
 % \begin{macro}{\tikztiming@defcode{O}}
-% The last character before the `|O|' is saved and restored. Also the drawing 
+% The last character before the "O" is saved and restored. Also the drawing 
 % state is saved and restored by the \cs{tikztiming@overlay@begin} and 
 % \cs{tikztiming@overlay@end} macros. The parser end macro 
 % \cs{tikztiming@parser@end} which is triggered at the end of the overlay string 
@@ -6750,8 +6766,8 @@
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@overlay@begin}
-% The drawing transition state (for `|T|', etc.) is saved and restored.
-% In order to be able to include an `|O|' inside the argument of another one the 
+% The drawing transition state (for "T", etc.) is saved and restored.
+% In order to be able to include an "O" inside the argument of another one the 
 % overlay save node coordinates (\cs{pfg@sh@nt@tikztiming@overlay@node}) is also 
 % saved and restored. The \cs{tikztiming@overlay@save} macro also includes an 
 % self-assignment to its old version, which implements a stack. The macros must 
