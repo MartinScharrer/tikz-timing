@@ -6967,24 +6967,30 @@
 %    \begin{macrocode}
 
 \let\tikztiming@orig@oldnodecenter\tikztiming@oldnodecenter
+\let\tikztiming@oldnodecenter\@gobble
 
-\tikzset{timing/nodes/.cd,
-  old center/.code={%
+\tikzset{timing/node/.cd,
+  simple/.code={%
     \let\tikztiming@oldnodecenter\tikztiming@orig@oldnodecenter
     \tikzset{%
-      timing/inline node/.style={coordinate},
-      every tikztiming coordinate node/.style={},
+      timing/inline node/.style={shape=coordinate},
     }%
   },
-  new center/.code={%
+  advanced/.code={%
     \let\tikztiming@oldnodecenter\@gobble
     \tikzset{%
       timing/inline node/.style={shape=tikztiming coordinate},
-      every tikztiming coordinate node/.style={anchor=origin},
+      timing/node/new center,
     }%
-  }%
+  },
+  old center/.code={%
+    \let\tikztiming@nodecenteranchor\tikztiming@old@nodecenteranchor
+  },%
+  new center/.code={%
+    \let\tikztiming@nodecenteranchor\empty
+  },%
 }
-\tikzset{timing/nodes/new center}
+\tikzset{timing/node/.cd,advanced,new center}
 
 \def\anchoralias#1#2{%
   \expandafter\def
@@ -7092,9 +7098,17 @@
     \pgf@x=-\pgf@x
     \pgf@y=-\pgf@y
   }%
-  \anchor{center}{\pgfpointorigin}%
-  \anchor{MID}{\tikztiming@useanchor{HIGH} \advance\pgf@y by -.5\height\relax }%
-  \anchor{LOW}{\tikztiming@useanchor{HIGH} \advance\pgf@y by -\height\relax   }%
+  \anchor{old center}{%
+    \pgfpointorigin
+    \tikztiming@old@nodecenteranchor
+  }%
+  \anchor{new center}{\pgfpointorigin}%
+  \anchor{center}{%
+    \pgfpointorigin
+    \tikztiming@nodecenteranchor
+  }%
+  \anchor{MID}{\tikztiming@useanchor{HIGH}\advance\pgf@y by -.5\height\relax }%
+  \anchor{LOW}{\tikztiming@useanchor{HIGH}\advance\pgf@y by -\height\relax   }%
   \anchor{HIGH}{\tikztiming@useanchor{HIGH}}%
   \anchor{mid}{\tikztiming@useanchor{mid}}%
   \anchor{low}{\tikztiming@useanchor{low}}%
@@ -7105,6 +7119,18 @@
   \anchorborder{\pgfpointorigin}%
   %
   \nodeparts{}% no text
+}
+
+\def\tikztiming@nodecenteranchor{}
+
+\def\tikztiming@old@nodecenteranchor{%
+    \anchorpoints
+    \@ifundefined{oldcenter}%
+      {\@nameuse{originoffset}%
+       \pgf@x=-\pgf@x\relax
+       \pgf@y=-\pgf@y\relax
+      }%
+      {\@nameuse{oldcenter}}%
 }
 
 \def\tikztiming@useanchor#1{%
@@ -7118,7 +7144,6 @@
 }
 
 \tikzset{%
-  timing/inline node/.style={shape=tikztiming coordinate},
   every tikztiming coordinate node/.style={anchor=origin},
 }
 %    \end{macrocode}
@@ -7182,6 +7207,7 @@
 
 \tikztiming@anchors{E}{H}{%
   \anchorpoint{originoffset}{-.5\slope}{-.5\height}%
+  \anchorpoint{oldcenter}{-.5\slope}{-.5\height}%
   \anchorpoint{mid}{0pt}{0pt}%
   \anchorpoint{high}{.5\slope}{.5\height}%
   \anchorpoint{low}{-.5\slope}{-.5\height}%
@@ -7240,6 +7266,7 @@
     \anchorpoint{low}{-.5\slope}{-.5\height}%
   \else
     \anchorpoint{originoffset}{-.5\slope}{.5\height}%
+    \anchorpoint{oldcenter}{-.5\slope}{-.5\height}%
     \anchorpoint{HIGH}{.5\slope}{.5\height}%
     \anchorpoint{high}{-.5\slope}{.5\height}%
     \anchorpoint{low}{.5\slope}{-.5\height}%
@@ -7257,6 +7284,7 @@
 
 \tikztiming@anchors{E}{L}{%
   \anchorpoint{originoffset}{-.5\slope}{.5\height}%
+  \anchorpoint{oldcenter}{-.5\slope}{-.5\height}%
   \anchorpoint{mid}{0pt}{0pt}%
   \anchorpoint{high}{-.5\slope}{.5\height}%
   \anchorpoint{HIGH}{-.5\slope}{.5\height}%
@@ -7268,10 +7296,12 @@
   \anchorpoint{HIGH}{-.5\slope}{.5\height}%
   \ifnum 1=\c@tikztimingtrans
     \anchorpoint{originoffset}{-.5\slope}{-.5\height}%
+    \anchorpoint{oldcenter}{-.5\slope}{-.5\height}%
     \anchorpoint{high}{.5\slope}{.5\height}%
     \anchorpoint{low}{-.5\slope}{-.5\height}%
   \else
     \anchorpoint{originoffset}{-.5\slope}{.5\height}%
+    \anchorpoint{oldcenter}{-.5\slope}{-.5\height}%
     \anchorpoint{high}{-.5\slope}{.5\height}%
     \anchorpoint{low}{.5\slope}{-.5\height}%
   \fi
@@ -7279,6 +7309,7 @@
 
 \tikztiming@anchors{E}{Z}{%
   \anchorpoint{mid}{0pt}{0pt}%
+  \anchorpoint{oldcenter}{-\zslope}{-.5\height}%
   \anchorpoint{HIGH}{-\zslope}{.5\height}%
   \anchorpoint{high}{-\zslope}{.5\height}%
   \anchorpoint{low}{-\zslope}{-.5\height}%
@@ -7294,6 +7325,7 @@
 
 \tikztiming@anchors{D}{Z}{%
   \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{oldcenter}{-.5\dslope}{-.5\height}%
   \anchorpoint{mid}{0pt}{0pt}%
   \anchorpoint{HIGH}{-.5\dslope}{.5\height}%
   \anchorpoint{high}{-.5\dslope}{.5\height}%
@@ -7302,6 +7334,7 @@
 
 \tikztiming@anchors{D}{H}{%
   \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{oldcenter}{-.5\dslope}{-.5\height}%
   \anchorpoint{mid}{0pt}{0pt}%
   \anchorpoint{HIGH}{-.5\dslope}{.5\height}%
   \anchorpoint{high}{-.5\dslope}{.5\height}%
@@ -7311,16 +7344,18 @@
 
 \tikztiming@anchors{D}{L}{%
   \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{oldcenter}{-.5\dslope}{-.5\height}%
   \anchorpoint{mid}{0pt}{0pt}%
   \anchorpoint{HIGH}{-.5\dslope}{.5\height}%
   \anchorpoint{high}{-.5\dslope}{.5\height}%
-  \anchorpoint{low}{-.5\dslope}{-.5\height}%
-  \anchorpoint{low2}{.5\dslope}{-.5\height}%
+  \anchorpoint{low2}{-.5\dslope}{-.5\height}%
+  \anchorpoint{low}{.5\dslope}{-.5\height}%
 }
 \tikztiming@anchorslet{D}{T}{D}{L}%
 
 \tikztiming@anchors{D@edge@}{D}{%
   \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{oldcenter}{-.5\dslope}{-.5\height}%
   \anchorpoint{mid}{0pt}{0pt}%
   \anchorpoint{HIGH}{-.5\dslope}{.5\height}%
   \anchorpoint{high}{-.5\dslope}{.5\height}%
@@ -7342,6 +7377,7 @@
 
 \tikztiming@anchors{D}{D}{%
   \anchorpoint{originoffset}{0pt}{0pt}%
+  \anchorpoint{oldcenter}{0pt}{-.5\height}%
   \anchorpoint{mid}{0pt}{0pt}%
   \anchorpoint{high}{0pt}{.5\height}%
   \anchorpoint{low}{0pt}{-.5\height}%
@@ -7351,13 +7387,6 @@
 \tikztiming@anchorslet{E}{@}{D}{D}
 \tikztiming@anchorslet{U}{U}{D}{D}
 
-\tikztiming@anchors{@}{D}{%
-  \anchorpoint{originoffset}{0pt}{.5\height}%
-  \anchorpoint{mid}{0pt}{0pt}%
-  \anchorpoint{high}{0pt}{.5\height}%
-  \anchorpoint{low}{0pt}{-.5\height}%
-  \anchorpoint{HIGH}{0pt}{.5\height}%
-}
 \tikztiming@anchorslet{@}{E}{@}{D}
 
 \tikztiming@anchors{L}{D}{%
