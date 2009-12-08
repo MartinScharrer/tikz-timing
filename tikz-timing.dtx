@@ -4419,6 +4419,8 @@
   \let\horlines\tikztiming@horlines
   \let\vertlines\tikztiming@vertlines
   \let\marknodes\tikztiming@mark@nodes
+  \def\background{\pgfonlayer{background}\scope}%
+  \def\endbackground{\endscope\endpgfonlayer}%
   \def\tablerules{\tikztiming@tablerules}%
   \def\tableheader{\tikztiming@tableheader}%
   \def\rowdist{\tikztiming@rowdist}%
