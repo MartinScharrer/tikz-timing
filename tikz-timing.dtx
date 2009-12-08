@@ -2307,9 +2307,14 @@
 % two low and/or high level anchors which are called "low2" and "high2".
 %
 % To align marker lines over multiple rows inside a \env{tikztimingtable} a set of transition
-% independent node anchors are provided: "LOW", "MID", "HIGH".
+% independent node anchors are provided: "LOW", "MID", "HIGH". This anchors lie all at the begin of the 
+% transition at the appropriate logic levels.
 % With the normal coordinate-like in-line nodes the vertical node (center) position has to be taken into 
-% account, while the advanced anchors do this automatically.
+% account, while this advanced anchors do this automatically.
+%
+% Often marker lines should start and end with a little vertical offset from the timing diagram to be more distinguishable.
+% For this the two anchors "TOP" and "BOTTOM" exist. They lie above and below of "HIGH" and "LOW", respectively.
+% The vertical distance can be set using `|timing/nodes/offset=|\meta{dim.~or number}'.
 %
 % \textbf{Please note} that the node \emph{center} of advanced nodes will be different for some transitions.
 % The "center" anchor (used by default if no node anchor is provided) will be placed at the logical center of the 
@@ -2323,15 +2328,19 @@
 % The center settings affect all following \emph{references} (\eg "(NodeName)" or "(NodeName.center)") of advanced nodes.
 % The settings can be used as library options with the "timing/nodes/" part removed.
 %
-% \bigskip\noindent
+% \vfill\noindent
 % \begin{tabularx}{\textwidth}{lX}
 %  \toprule
-%   TikZ Setting             &  Description \\
+%   TikZ Setting              &  Description \\
 %  \midrule
 %   |timing/nodes/advanced|   &  Selects advanced in-line nodes. (library default) \\
 %   |timing/nodes/simple|     &  Selects simple coordinate-style in-line nodes. (package default) \\
+%  \midrule
 %   |timing/nodes/new center| &  Center of in-line nodes is in the new position. (default for |advanced|) \\
 %   |timing/nodes/old center| &  Center of in-line nodes is in the old position. (always on for |simple|) \\
+%  \midrule
+%   |timing/nodes/offset|     &  Sets offset for |TOP| and |BOTTOM| anchors.
+%                                Can be a dimension with unit or a factor to the current |y| unit. (default: 0.25) \\
 %  \bottomrule
 % \end{tabularx}
 %
