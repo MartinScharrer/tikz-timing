@@ -7888,10 +7888,38 @@
 %<*lib-ifsym>
 % \fi
 %
+% Set up styles to match behaviour of \pkg{ifsym}. Slope and size is is adjusted.
+% The macros only have 60\% of the height.
+%   \begin{macrocode}
+\tikzset{%
+  timing/ifsym/macro/.style={/tikz/timing/ifsym,/utils/exec={\pgfmathparse{.6*\f@size}\let\ysize\pgfmathresult},/tikz/y=\ysize},
+  timing/ifsym/.style={%
+    /tikz,timing/slope=0,x=\f@size,y=\f@size,line width=0.1ex,
+%   \end{macrocode}
+% Define "|" to create a glitch. While it can be ignored in "H|L" or "L|H" it can
+% also be used like "L|L" and "H|H".
+%   \begin{macrocode}
+    timing/metachar={|}{G},
+%   \end{macrocode}
+% The "X" is used for "M" and is set to black. 
+%   \begin{macrocode}
+    timing/x/.style={},
+%   \end{macrocode}
+% Define "M"/"m" to be equal to "X"/"x":
+%   \begin{macrocode}
+    timing/metachar={M}[1]{#1X},
+    timing/metachar={m}[1]{#1x},
+%   \end{macrocode}
+%
+% Code changes:
+%   \begin{macrocode}
+    /utils/exec={%
+%   \end{macrocode}
+%
 % The |setdslope| macro is redefined to allow value higher than 1.
 %   \begin{macrocode}
-\def\tikztimingsetdslope#1{%
-  \pgfmathparse{max(0.0,#1)}%
+\def\tikztimingsetdslope##1{%
+  \pgfmathparse{max(0.0,##1)}%
   \let\tikztiming@dslope\pgfmathresult
   \edef\timingdslope{\tikztiming@dslope*\noexpand\timingwidth}%
 }
@@ -7905,38 +7933,18 @@
   \@ifnextchar{<}%
     {\tikztiming@ifsym@longslope{X}{D}}%
     {\tikztiming@parser [timing/dslope=1] 0Xd;}%
-}
-
+}%
 \tikztiming@defcode{>}{%
   \@ifnextchar{>}%
     {\tikztiming@ifsym@longslope{D}{X}}%
     {\tikztiming@parser [timing/dslope=1] 0Dx;}%
-}
-
-\def\tikztiming@ifsym@longslope#1#2#3{
-    \tikztiming@parser [timing/dslope=2.] 0#1 #2;%
-}
+}%
+\def\tikztiming@ifsym@longslope##1##2##3{
+    \tikztiming@parser [timing/dslope=2.] 0##1 ##2;%
+}%
 %   \end{macrocode}
 %
-% Define "M"/"m" to be equal to "X"/"x":
-%   \begin{macrocode}
-\tikztimingmetachar{M}[1]{#1X}
-\tikztimingmetachar{m}[1]{#1x}
-%   \end{macrocode}
-%
-% Define "|" to create a glitch. While it can be ignored in "H|L" or "L|H" it can
-% also be used like "L|L" and "H|H".
-%   \begin{macrocode}
-\tikztimingmetachar{|}{G}
-%   \end{macrocode}
-%
-% Set up styles to match behaviour of \pkg{ifsym}. Slope and size is is adjusted.
-% The "X" is used for "M" and is set to black. The macros only have 60\% of the height.
-%   \begin{macrocode}
-\tikzset{%
-  timing/x/.style={},
-  timing/ifsym/.style={/tikz,timing/slope=0,x=\f@size,y=\f@size,line width=0.1ex},
-  timing/ifsym/macro/.style={/tikz/timing/ifsym,/utils/exec={\pgfmathparse{.6*\f@size}\let\ysize\pgfmathresult},/tikz/y=\ysize},
+  }},
 }
 %   \end{macrocode}
 %
