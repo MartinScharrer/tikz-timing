@@ -2321,17 +2321,17 @@
 %
 % The following TikZ settings can be used with the library. The node style settings affect all new nodes after them.
 % The center settings affect all following \emph{references} (\eg "(NodeName)" or "(NodeName.center)") of advanced nodes.
-% The settings can be used as library options with the "timing/node/" part removed.
+% The settings can be used as library options with the "timing/nodes/" part removed.
 %
 % \bigskip\noindent
 % \begin{tabularx}{\textwidth}{lX}
 %  \toprule
 %   TikZ Setting             &  Description \\
 %  \midrule
-%   |timing/node/advanced|   &  Selects advanced in-line nodes. (library default) \\
-%   |timing/node/simple|     &  Selects simple coordinate-style in-line nodes. (package default) \\
-%   |timing/node/new center| &  Center of in-line nodes is in the new position. (default for |advanced|) \\
-%   |timing/node/old center| &  Center of in-line nodes is in the old position. (always on for |simple|) \\
+%   |timing/nodes/advanced|   &  Selects advanced in-line nodes. (library default) \\
+%   |timing/nodes/simple|     &  Selects simple coordinate-style in-line nodes. (package default) \\
+%   |timing/nodes/new center| &  Center of in-line nodes is in the new position. (default for |advanced|) \\
+%   |timing/nodes/old center| &  Center of in-line nodes is in the old position. (always on for |simple|) \\
 %  \bottomrule
 % \end{tabularx}
 %
@@ -2339,8 +2339,8 @@
 % "\usetikztiminglibrary[simple]{advnodes}"\ \ loads the library with nodes default to the old "simple" style.\\\noindent
 % "\usetikztiminglibrary[old center]{advnodes}"\ \ \ loads the library with advanced nodes with have the center at the same
 % place as the normal simple nodes. This is a good ``compatibility mode'' for existing pre-v0.7 diagrams.\\\noindent
-% "\begin{tikztimingtable}[timing/node/simple]"\ \ starts a timing table which uses simple nodes. \\\noindent
-% "\begin{tikztimingtable}[timing/node/.cd,advanced,old center]"\\\noindent starts a timing table which uses advanced nodes with old node centers.
+% "\begin{tikztimingtable}[timing/nodes/simple]"\ \ starts a timing table which uses simple nodes. \\\noindent
+% "\begin{tikztimingtable}[timing/nodes/.cd,advanced,old center]"\\\noindent starts a timing table which uses advanced nodes with old node centers.
 %
 %
 % \begin{table}
@@ -7214,7 +7214,7 @@
 
 \let\tikztiming@orig@oldnodecenter\tikztiming@oldnodecenter
 
-\tikzset{timing/node/.cd,
+\tikzset{timing/nodes/.cd,
   simple/.code={%
     \let\tikztiming@oldnodecenter\tikztiming@orig@oldnodecenter
     \tikzset{%
@@ -7225,7 +7225,7 @@
     \let\tikztiming@oldnodecenter\@gobble
     \tikzset{%
       timing/inline node/.style={shape=tikztiming coordinate},
-      timing/node/new center,
+      timing/nodes/new center,
     }%
   },
   old center/.code={%
@@ -7235,7 +7235,7 @@
     \let\tikztiming@nodecenteranchor\empty
   },%
 }
-\tikzset{timing/node/.cd,advanced,new center}
+\tikzset{timing/nodes/.cd,advanced,new center}
 
 \def\anchoralias#1#2{%
   \expandafter\def
