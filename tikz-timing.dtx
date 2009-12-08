@@ -41,6 +41,7 @@
 %<lib-advnodes>\ProvidesPackageSVN[tikz-timing-advnodes]
 %<lib-interval>\ProvidesPackageSVN[tikz-timing-interval]
 %<lib-beamer>\ProvidesPackageSVN[tikz-timing-beamer]
+%<lib-ifsym>\ProvidesPackageSVN[tikz-timing-ifsym]
 %<*driver>
 \ProvidesFileSVN
 %</driver>
@@ -58,8 +59,9 @@
 %<lib-nicetabs|    >   nice timing tables]
 %<lib-counters|    >   counter values]
 %<lib-advnodes|    >   advanced nodes]
-%<lib-interval|   >   alternative Z transitions]
+%<lib-interval|    >   alternative Z transitions]
 %<lib-beamer|      >   beamer overlay support]
+%<lib-ifsym|       >   ifsym compatible macros]
 %<*driver>
   DTX-File of 'tikz-timing' package.]
 %</driver>
@@ -75,14 +77,14 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{tikz-timing}[\tikztiming@date]
-\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype,nicetabs,counters,advnodes,interval}
+\usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype}
+\usetikztiminglibrary{nicetabs,counters,advnodes,interval,ifsym}
 \tikzset{timing/no nice tabs}
 \tikzset{timing/interval/normal}
 \makeatother
 %%%^^A\usepackage[electronic]{ifsym}
 \usepackage{calc}
 \usepackage{graphicx}
-\usepackage{ifpdf}
 \usepackage{xcolor}
 \usepackage{tabularx}
 \usepackage{array}
@@ -7819,5 +7821,109 @@
 % \iffalse
 %</lib-beamer>
 % \fi
+%
+% \section{Compatibility with \protect\pkg{ifsym} Macros}
+%
+% \iffalse
+%<*lib-ifsym>
+% \fi
+%
+% The |setdslope| macro is redefined to allow value higher than 1.
+%   \begin{macrocode}
+\def\tikztimingsetdslope#1{%
+  \pgfmathparse{max(0.0,#1)}%
+  \let\tikztiming@dslope\pgfmathresult
+  \edef\timingdslope{\tikztiming@dslope*\noexpand\timingwidth}%
+}
+%   \end{macrocode}
+%
+% The "<" and ">" characters are defined as code characters. They
+% check if there appear twice which doubles their width.
+% A macro is used to remove the second appearance from the input.
+%   \begin{macrocode}
+\tikztiming@defcode{<}{%
+  \@ifnextchar{<}%
+    {\tikztiming@ifsym@longslope{X}{D}}%
+    {\tikztiming@parser [timing/dslope=1] 0Xd;}%
+}
+
+\tikztiming@defcode{>}{%
+  \@ifnextchar{>}%
+    {\tikztiming@ifsym@longslope{D}{X}}%
+    {\tikztiming@parser [timing/dslope=1] 0Dx;}%
+}
+
+\def\tikztiming@ifsym@longslope#1#2#3{
+    \tikztiming@parser [timing/dslope=2.] 0#1 #2;%
+}
+%   \end{macrocode}
+%
+% Define "M"/"m" to be equal to "X"/"x":
+%   \begin{macrocode}
+\tikztimingmetachar{M}[1]{#1X}
+\tikztimingmetachar{m}[1]{#1x}
+%   \end{macrocode}
+%
+% Define "|" to create a glitch. While it can be ignored in "H|L" or "L|H" it can
+% also be used like "L|L" and "H|H".
+%   \begin{macrocode}
+\tikztimingmetachar{|}{G}
+%   \end{macrocode}
+%
+% Set up styles to match behaviour of \pkg{ifsym}. Slope and size is is adjusted.
+% The "X" is used for "M" and is set to black. The macros only have 60\% of the height.
+%   \begin{macrocode}
+\tikzset{%
+  timing/x/.style={},
+  timing/ifsym/.style={/tikz,timing/slope=0,x=\f@size,y=\f@size,line width=0.1ex},
+  timing/ifsym/macro/.style={/tikz/timing/ifsym,/utils/exec={\pgfmathparse{.6*\f@size}\let\ysize\pgfmathresult},/tikz/y=\ysize},
+}
+%   \end{macrocode}
+%
+% Define library options.
+%   \begin{macrocode}
+\tikzset{%
+  timing/ifsym/.cd,
+  provide/.code={\let\tikztiming@ifsym@def\providecommand},
+  renew/.code={\let\tikztiming@ifsym@def\renewcommand},
+  new/.code={\let\tikztiming@ifsym@def\newcommand},
+  off/.code={\let\tikztiming@ifsym@def\@gobbletwo},
+}
+%   \end{macrocode}
+%
+% Execute library options.
+%   \begin{macrocode}
+\tikzset{timing/ifsym/provide}%
+\RequirePackage{pgfopts}
+\ProcessPgfOptions{/tikz/timing/ifsym}
+%   \end{macrocode}
+%
+% Provide all timing symbol macros from |[electronic]{ifsym}|:
+%   \begin{macrocode}
+\tikztiming@ifsym@def{\RaisingEdge}{\hbox{\texttiming[timing/ifsym/macro]{.4L .4H}}}
+\tikztiming@ifsym@def{\FallingEdge}{\hbox{\texttiming[timing/ifsym/macro]{.4H .4L}}}
+\tikztiming@ifsym@def{\ShortPulseHigh}{\hbox{\texttiming[timing/ifsym/macro]{.4L .2H .4L}}}
+\tikztiming@ifsym@def{\ShortPulseLow}{\hbox{\texttiming[timing/ifsym/macro]{.4H .2L .4H}}}
+\tikztiming@ifsym@def{\PulseHigh}{\hbox{\texttiming[timing/ifsym/macro]{.4L .6H .4L}}}
+\tikztiming@ifsym@def{\PulseLow}{\hbox{\texttiming[timing/ifsym/macro]{.4H .6L .4H}}}
+\tikztiming@ifsym@def{\LongPulseHigh}{\hbox{\texttiming[timing/ifsym/macro]{.4L H .4L}}}
+\tikztiming@ifsym@def{\LongPulseLow}{\hbox{\texttiming[timing/ifsym/macro]{.4H L .4H}}}
+%   \end{macrocode}
+%
+% Provide \cs{textifsym} macro:
+% \begin{macro}{\textifsym}
+%   \begin{macrocode}
+\tikztiming@ifsym@def{\textifsym}{\texttiming[timing/ifsym]}
+%   \end{macrocode}
+% \end{macro}
+%
+% Clean-up:
+%   \begin{macrocode}
+\let\tikztiming@ifsym@def\@undefined
+%   \end{macrocode}
+% \iffalse
+%</lib-ifsym>
+% \fi
+%
 % \Finale
 \endinput
