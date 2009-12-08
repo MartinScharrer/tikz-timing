@@ -7401,6 +7401,17 @@
   \anchor{MID}{\tikztiming@useanchor{HIGH}\advance\pgf@y by -.5\height\relax }%
   \anchor{LOW}{\tikztiming@useanchor{HIGH}\advance\pgf@y by -\height\relax   }%
   \anchor{HIGH}{\tikztiming@useanchor{HIGH}}%
+  \anchor{TOP}{%
+    \tikztiming@nodes@getoffset
+    \tikztiming@useanchor{HIGH}
+    \advance\pgf@y by  \pgf@ya\relax
+  }%
+  \anchor{BOTTOM}{%
+    \tikztiming@nodes@getoffset
+    \tikztiming@useanchor{HIGH}
+    \advance\pgf@y by -\pgf@ya\relax
+    \advance\pgf@y by -\height\relax
+  }%
   \anchor{mid}{\tikztiming@useanchor{mid}}%
   \anchor{low}{\tikztiming@useanchor{low}}%
   \anchor{high}{\tikztiming@useanchor{high}}%
@@ -7410,6 +7421,21 @@
   \anchorborder{\pgfpointorigin}%
   %
   \nodeparts{}% no text
+}
+
+\def\tikztiming@nodes@getoffset{%
+  \begingroup
+    \pgfpointxy{0}{1}%
+    \pgfmathsetresultunitscale{\pgf@y}%
+    \pgfpoint{0}{\tikztiming@nodes@offset}%
+    \global\pgf@ya=\pgf@y
+  \endgroup
+}
+
+\tikzset{%
+  timing/nodes/.cd,
+  offset/.store in=\tikztiming@nodes@offset,
+  offset=0.25,
 }
 
 \def\tikztiming@nodecenteranchor{}
