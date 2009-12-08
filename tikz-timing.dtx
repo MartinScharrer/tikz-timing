@@ -2831,6 +2831,50 @@
 %
 % \begin{example}
 % \centering
+% \lstset{basicstyle=\footnotesize\ttfamily}
+% \def\exampleextraheader{\noexpand\usetikztiminglibrary{advnodes}}
+% \begin{examplecode}
+%   \def\degr#1{\makebox[2em][r]{#1}\ensuremath{{}^{\circ}}}%
+%   
+%   \begin{tikztimingtable}[%
+%       timing/dslope=0.1, timing/.style={x=2ex,y=2ex}, x=2ex,
+%       timing/rowdist=3ex,
+%       timing/name/.style={font=\sffamily\scriptsize},
+%       timing/nodes/advanced,
+%     ]
+%     Clock \degr{90} &  l  2{C} N(A1) 5{C}  \\
+%     Clock \degr{180}&  C  2{C} N(A2) 4{C} c\\
+%     Clock \degr{270}&  h  3{C} N(A3) 4{C}  \\
+%     Clock \degr{0}  & [C] 2{C} N(A0) 2{C} N(A4) 3{C}c ;[dotted] 
+%                       2L; 2{C} N(A5) 3{C} \\
+%     Start of T$_{\text{sw}}$ & 4S G N(start) \\
+%     Input Pulse & 2.0L 2H 3.5L ;[dotted] 2L; 5L \\
+%     Set 3       & 2.5L 2H 3.0L ;[dotted] 2L; 5L \\
+%     Set 2       & 3.0L 2H 2.5L ;[dotted] 2L; 5L \\
+%     Set 1       & 3.5L 2H 2.0L ;[dotted] 2L; 5L \\
+%     Set 0       & 4.0L 2H 1.5L ;[dotted] 2L; 5L \\
+%     Reset       & 7.5L ;[dotted] 2L; 2L N(reset) 2H 1L \\
+%     Final Pulse & 2.5L N(B1) e N(B2) e N(B3) e 3.5H; [dotted]
+%                   2H; 2H 3L \\
+%     Counter     & N(x) 2D{Full} N(B0) 2D{0} N(B4) 2D{1} 1.5D;[dotted]
+%                   .25D{2} 1.75D{};
+%     2D{~D$_\text{M}$} N(B5) 2D{D$_\text{M}$+1} D N(y)\\
+%   \extracode
+%    %\tablegrid
+%    \node[anchor=north] at ($ (x) ! .5 ! (y) - (0,.75) $)
+%       {\scriptsize D$_\text{M}$ =  MSBs of Duty Cycle};
+%    \begin{background}[timing/picture,line width=.06ex,color=black!60]
+%      \foreach \n in {0,...,5}
+%       \draw ([shift={(0,0.25)}]A\n.HIGH)
+%          -- ([shift={(0,-0.25)}]B\n.LOW);
+%    \end{background}
+%   \end{tikztimingtable}%
+% \end{examplecode}
+% \caption{Adjusting Diagram Parameters and using Advanced In-Line Nodes to draw Marker Lines.}
+% \end{example}
+%
+% \begin{example}
+% \centering
 % \lstset{basicstyle=\ttfamily\small}
 % \def\texta{}\def\textb{}^^A
 % \let\insertoriginalimageforcomparisionifpresent\relax
