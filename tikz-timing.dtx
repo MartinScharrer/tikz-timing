@@ -2476,13 +2476,14 @@
 % \subsection{Compatibility Macros for \texttt{ifsym} package}
 % The |ifsym| library provides macros and timing styles to emulate the behaviour of the \pkg{ifsym} package
 % when loaded with the |electronic| option. The \pkg{ifsym} package was an early inspiration to this package
-% and this library allows the usage of |ifsym| style timing symbol macros and characters (`|\textifsym|\marg{characters}')
+% and this library allows the usage of |ifsym| style timing symbol macros and characters 
+% (`|\textifsym|\marg{characters}' which uses `|\texttiming[timing/ifsym]|\marg{characters}')
 % which are described in Table~\ref{tab:ifsymmacros} and Table~\ref{tab:ifsym}, respectively.
 % This is useful if old |ifsym| timing diagrams should be reused. The |tikz-timing| replacements are a very close match
 % and do not need a special font to be installed. The graphic quality should be equal or better than the original.
 % The intermixing of |ifsym| and |tikz-timing| style characters in a \cs{textifsym} macro
 % (the one provided by this library, not the one from the \pkg{ifsym} package) is supported but it is not guaranteed to work
-% 100\% properly. Please note that the "M" character is defined to use the "X" character in a black font.
+% 100\% properly. Please note that the "M" character is defined to use "X" in black.
 %
 % The library can be loaded with one of the options "provide" (default), "new", "renew" or "off", respectively. 
 % These select if the macros should be defined using \cs{providecommand}, \cs{newcommand}, \cs{renewcommand} 
