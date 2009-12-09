@@ -2804,9 +2804,11 @@
 % \def\exampleextraheader{\noexpand\usetikztiminglibrary{advnodes}}
 % \begin{examplecode}
 %   \Huge
-%   \begin{tikzpicture}[timing/picture,thick,timing/nodes/advanced]
+%   \begin{tikzpicture}[timing/picture,thick,
+%       timing/nodes/advanced]
 %     \timing at (0,2) {hH N(A) LHLHL};
-%     \timing[timing/slope=.25] at (0,0) {HLL N(B) HHLl};
+%     \timing[timing/slope=.25] at (0,0)
+%       {HLL N(B) HHLl};
 %     \draw [orange,semithick]
 %       (A.mid) ellipse (.2 and .6)
 %       (B.mid) ellipse (.2 and .6);
