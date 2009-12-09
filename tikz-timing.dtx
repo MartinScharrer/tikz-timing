@@ -81,6 +81,7 @@
 \usetikztiminglibrary{nicetabs,counters,advnodes,interval,ifsym}
 \tikzset{timing/no nice tabs}
 \tikzset{timing/interval/normal}
+\tikzset{timing/nodes/old center}
 \usetikzlibrary{plotmarks}
 \makeatother
 %%%^^A\usepackage[electronic]{ifsym}
@@ -7422,9 +7423,9 @@
   \anchor{low2}{\tikztiming@useanchor{low2}}%
   \anchor{high2}{\tikztiming@useanchor{high2}}%
   %
-  \anchorborder{\pgfpointorigin}%
+  \expandafter\anchorborder\expandafter{\csname pgf@anchor@\shape@name @center\endcsname}%
   %
-  \nodeparts{}% no text
+  \nodeparts{}%
 }
 
 \def\tikztiming@nodes@getoffset{%
