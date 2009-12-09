@@ -111,6 +111,7 @@
 \oddsidemargin 62.0pt
 \evensidemargin 62.0pt\relax
 
+\RequirePackage{float}
 % use hypdoc if you have it, hyperref else
 \IfFileExists{hypdoc.sty}
   {\RequirePackage{hypdoc}}
@@ -525,8 +526,12 @@
 \floatstyle{plain}
 \restylefloat{figure}
 
-\newfloat{example}{tbph}{fle}
+\newfloat{example}{tbph}{toc}
 \floatname{example}{Example}
+\let\l@example\l@subsection
+%\def\theexample{\thesection.\arabic{example}}%
+\let\toclevel@example\toclevel@subsection
+
 \newwrite\ydoc@exawrite
 \newread\ydoc@exaread
 
@@ -2158,7 +2163,7 @@
 % \hspace*{2em}|\usetikzlibrary[type={U}{l}]{columntype}|\\[\smallskipamount]
 %
 % \bigskip
-% \begin{example}
+% \begin{figure}
 % \centering
 % \begin{examplecode}
 %   \begin{tabular}{lcT}
@@ -2172,7 +2177,7 @@
 %   \end{tabular}
 % \end{examplecode}
 % \caption{Example for use of Timing Column Type.}\label{exa:columntype}
-% \end{example}
+% \end{figure}
 %
 % \clearpage
 % \subsection{Nice Timing Tables}
@@ -2684,7 +2689,6 @@
 % ^^A\emph{Example notation example:} "[c]cccc" means either 
 % ^^A|\timing{[c]cccc};| or |\texttiming[c]{cccc}|.
 %
-%
 % \DeleteShortVerb{\|}
 % \begin{exampletable}
 % \centering
@@ -2747,7 +2751,7 @@
 %     Signal   & z4D{Text}z \\
 %   \end{tikztimingtable}
 % \end{examplecode}
-% \caption{\env{tikztimingtable} without \cs{extracode}.}
+% \caption[tikztimingtable without extracode]{\env{tikztimingtable} without \cs{extracode}.}
 % \end{example}
 %
 % \begin{example}
@@ -2764,7 +2768,7 @@
 %     \end{pgfonlayer}
 %   \end{tikztimingtable}
 % \end{examplecode}
-% \caption{\env{tikztimingtable} with \cs{extracode}.}
+% \caption[tikztimingtable with extracode]{\env{tikztimingtable} with \cs{extracode}.}
 % \end{example}
 %
 % \begin{example}
@@ -2781,7 +2785,7 @@
 %         at (0.4,0.7) {HLZHHLHHL};
 %   \end{tikzpicture}
 % \end{examplecode}
-% \caption{\cs{timing} inside general \envv{tikzpicture}.}
+% \caption[timing inside general tikzpicture]{\cs{timing} inside general \envv{tikzpicture}.}
 % \end{example}
 %
 % \begin{example}
@@ -7963,7 +7967,7 @@
 %</lib-beamer>
 % \fi
 %
-% \section{Compatibility with \protect\pkg{ifsym} Macros}
+% \subsection{Compatibility with \protect\pkg{ifsym} Macros}
 %
 % \iffalse
 %<*lib-ifsym>
