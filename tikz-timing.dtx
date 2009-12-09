@@ -205,36 +205,11 @@
     {\def\macrolink{\hyperlink{impl@#1.3}}}%
   \hypersetup{linkcolor=macrodesccolor}%
   \hspace*{\macrosep}%
-  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
-  %#1}{desc@#1}}%
+  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
+  #1}{desc@#1}}%
   \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
   \noindent\mbox{}\macroargformat{#2}\nopagebreak
-  \macroline*[0.2\baselineskip]%
-  \endgroup
-  \nopagebreak
-  \ignorespaces
-}
-
-\def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
-\def\DescribeMacroN{%
-  \bigskip\pagebreak[3]\par\noindent\DescribeMacroS*%
-}
-\def\DescribeMacroS*#1#2{%
-  \begingroup
-  \g@namedef{href@desc@#1}{}%
-  \immediate\write\@mainaux{%
-    \noexpand\g@namedef{href@desc@#1}{}%
-  }%
-  \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{impl@#1.3}}}%
-  \hypersetup{linkcolor=macrodesccolor}%
-  \hspace*{\macrosep}%
-  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
-  %#1}{desc@#1}}%
-  \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
-  \noindent\mbox{}\macroargformat{#2}\nopagebreak
-  \macroline*[0.2\baselineskip]%
+  \macroline*[0.15\baselineskip]%
   \endgroup
   \nopagebreak
   \ignorespaces
@@ -774,6 +749,7 @@
   \marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
 }
 
+\iffalse
 \def\thesection{\texorpdfstring{\LARGE\texttiming[X]{D{\arabic{section}}.1X[black]}}{\arabic{section}}}
 \def\thesubsection{\texorpdfstring{\Large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}.1X[black]}}{\arabic{section}.\arabic{subsection}}}
 \def\thesubsubsection{\texorpdfstring{\large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}D{\arabic{subsubsection}}.1X[black]}}
@@ -797,7 +773,7 @@
                                      {-3.25ex\@plus -1ex \@minus -.2ex}%
                                      {1.5ex \@plus .2ex}%
                                      {\normalfont\normalsize\bfseries\sffamily}}
-
+\fi
 
 \makeatother
 \EnableCrossrefs
@@ -851,8 +827,7 @@
 % \ifpdf
 % \hypersetup{%
 %   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
-%   pdftitle    = {The svn-multi package, \fileversion\ from \filedate},
-%   pdftitle    = {The tikz-timing package},
+%   pdftitle    = {The tikz-timing package, \fileversion\ from \filedate},
 %   pdfsubject  = {Documentation of LaTeX package tikz-timing which allows the 
 %   easy creation of timing diagrams inside tikz pictures or text.},
 %   pdfkeywords = {tikz-timing, timing diagram, LaTeX}
@@ -862,14 +837,16 @@
 % \null
 % \vspace*{-2em}
 % \begin{center}
+%   \sffamily
 %   \tikzset{timing/z/.style={black},
 %   timing/intext/.style={timing,line width=0.1ex}}
 %   {\LARGE\sffamily The \raisebox{-0.66ex}{\Huge\textsf
 %   {\texttiming[z]{3d{\strut tikz}z5d{\strut timing}0.2z}}} package}\\[3ex]
+%   {\large Version \fileversion\ -- \filedate}\\[2ex]
 %   {\large Martin Scharrer \\\normalsize 
 %   \url{martin@scharrer-online.de}\\[.8ex]
-%   \url{http://www.ctan.org/pkg/tikz-timing}\\[1.2ex]}
-%   {\large Version \fileversion\ -- \filedate}\\
+%   WWW: \url{http://latex.scharrer-online.de/tikz-timing}\\[.5ex]
+%   CTAN: \url{http://www.ctan.org/pkg/tikz-timing}\\[1.2ex]}
 % \end{center}
 % \vspace{1.2em}%
 %
@@ -877,6 +854,8 @@
 % \noindent
 % ^^A\textbf{Note to Advanced Users:} This is a new package which internal
 % ^^Amacros might still change.  Please only rely on the user macros for now.
+%
+% {\let\csd\texttt\tableofcontents}
 %
 % \section{Introduction}
 % This package uses the \pkg[pgf]{tikz} package to produce timing diagrams 
@@ -923,7 +902,15 @@
 % ("H $ 1+\mymacro-\slope $ L "~$\rightarrow$~`\texttiming{H2.5L}')
 % and much more.
 %
-% \centerline{\texttiming[D]{50{D{}}$\dslope$ D{}}}
+% \medskip
+% \DeleteShortVerb{\|}
+% \centerline{\texttiming[D]{
+%   2{12{[yscale=.9,shift={(0,.05)}]D{}}
+%   13{[yscale=1.1,shift={(0,-.05)}]D{}};}
+%   $\dslope$ D{}
+% }}
+% \MakeShortVerb{\|}
+% \medskip
 %
 % \iffalse
 % The package is build to make it possible to define new characters from scratch 
@@ -966,7 +953,6 @@
 % \end{description}
 % \fi
 %
-% \clearpage
 % \subsection{Changelog}
 % \begingroup
 % \renewcommand{\changes}[3]{\paragraph{#1 from #2}\begin{itemize}\item #3\end{itemize}}
@@ -1023,7 +1009,7 @@
 %       \item The second braces around the second part are now optional.
 %       \item Fixed issues with "T" and "C" characters inside overlays.
 %     \end{itemize}
-%   \change Macro-characters can now have arguments.
+%   \change Meta-characters can now have arguments.
 %   \change Added more variety for in-line options: "[[ ]]", "[+ +]" and "[| |]".
 %   \change Handling of in-line options and nodes got modified. Options are now placed directly 
 %     where placed and are valid until the next ";". Please note that |[/utils/exec={..}]| now 
@@ -1527,15 +1513,6 @@
 % The following macros are only defined inside a \env{tikztimingtable} after the 
 % macro \cs{extracode}. They are useful for drawing additional material.
 %
-% \DescribeEnv{background}{\oarg{TikZ Settings}\\\meta{drawing commands}}
-% This environment can be used to draw material on the |background| layer and is 
-% an abbreviation for:\\[\medskipamount]
-% |\begin{pgfonlayer}{background}|\\
-% |  \begin{scope}|\oarg{TikZ Settings}\\
-% |    |\meta{drawing commands}\\
-% |  \end{scope}|\\
-% |\end{pgfonlayer}|\\
-%
 % \DescribeMacro{tablegrid}{\meta{*}\oarg{TikZ Settings}}
 % After \css{extracode} this macro draws a grid in the background of the table.
 % A separate grid is drawn for each row. The normal version draws all grids with 
@@ -1546,6 +1523,23 @@
 % \DescribeMacro{fulltablegrid}{\oarg{TikZ Settings}}
 % After \css{extracode} this macro draws a big grid over all rows in the 
 % background of the table.
+%
+% \DescribeMacro{nrows}{}
+% Returns the number of rows in the current table. Useful for use in 
+% \cs{horlines}.
+%
+% \DescribeMacro{rowdist}{}
+% \DescribeMacro*{coldist}{}
+% This macros return the row and column distance.  There are useful for drawing 
+% additional material relative to the rows and columns.  This values can be set 
+% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
+% and \texttt{timing/coldist} settings which are explained in 
+% Section~\ref{sec:styles}.
+%
+% \DescribeMacro{twidth}{}
+% Returns the width (as multiple of the `period width') of the longest timing 
+% diagram line in the table. Example: If the longest line would be
+% "H 2.3L z" than \cs{twidth} would be $1+2.3+0.5=3.8$.
 %
 % \DescribeMacro{horlines}{\oarg{TikZ Settings}\marg{list}}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
@@ -1577,22 +1571,14 @@
 % changes the bounding box. If the \cs{tableheader} macro was used beforehand it 
 % also draws a thinner horizontal line (like \texttt{booktabs} \cs{midrule}) between the table head and body.
 %
-% \DescribeMacro{nrows}{}
-% Returns the number of rows in the current table. Useful for use in 
-% \cs{horlines}.
-%
-% \DescribeMacro{rowdist}{}
-% \DescribeMacro*{coldist}{}
-% This macros return the row and column distance.  There are useful for drawing 
-% additional material relative to the rows and columns.  This values can be set 
-% (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
-% and \texttt{timing/coldist} settings which are explained in 
-% Section~\ref{sec:styles}.
-%
-% \DescribeMacro{twidth}{}
-% Returns the width (as multiple of the `period width') of the longest timing 
-% diagram line in the table. Example: If the longest line would be
-% "H 2.3L z" than \cs{twidth} would be $1+2.3+0.5=3.8$.
+% \DescribeEnv{background}{\oarg{TikZ Settings}\\\meta{drawing commands}}
+% This environment can be used to draw material on the |background| layer and is 
+% an abbreviation for:\\[\medskipamount]
+% |    \begin{pgfonlayer}{background}|\\
+% |      \begin{scope}|\oarg{TikZ Settings}\\
+% |        |\meta{drawing commands}\\
+% |      \end{scope}|\\
+% |    \end{pgfonlayer}|
 %
 % \subsubsection*{Positions \& Scalings inside the Table}
 % \textbf{Note:} The anchors provided by the timing shape 
@@ -1613,7 +1599,6 @@
 %
 % The timing column starts at $x=0$ and goes into the positive range while 
 % scaled using the period width. Example: |HHHh| has a width of 3.5.
-%
 % The label column starts at $x=-$|\coldist| and the text is right align with 
 % the right border at this position.
 %
@@ -1630,7 +1615,7 @@
 %
 % \DescribeMacro{tikztimingsetwscale}{\marg{math expression}}
 % \DescribeMacro*{setwscale}{\marg{math expression}}
-% This macro, which can be called |\setwscale| for short inside modifier code, 
+% This macro\NewIn{v0.7}, which can be called |\setwscale| for short inside modifier code, 
 % sets the |wscale| value. This value is used during the parsing process to 
 % scale the width of the characters, \eg |wscale=3.2| makes |1H| as long as 
 % |3.2H| normally would be. Slopes are not affected, but the `width' values of 
@@ -1640,12 +1625,20 @@
 % \DescribeMacro{wscale}{}
 % Returns the current width scaling "wscale" value. 
 %
+% \begingroup
+% \def\macroline*[#1]{\hspace{5em}}
+% \DescribeMacro{xunit}{}
+% \DescribeMacro*{yunit}{}\\
+% This dimension registers can be used to access the x- and y-unitlength of the timing diagram.
+% Assignments to these registers do not change the scaling!
+%
 % \DescribeMacro{slope}{}
-% \DescribeMacro*{lslope}{\hspace{1em}\small(alias)}
+% \DescribeMacro*{lslope}{\hspace{.6em}\small(alias)}\\
 % Returns the current logic slope, \ie the slope between |L| and |H| 
 % levels.
 % Set by the |timing/lslope| or indirectly by the |timing/slope| TikZ setting.  
 % See Table~\ref{tab:styles} for more information.
+% \endgroup
 %
 % \DescribeMacro{zslope}{}
 % Returns the current Z slope. Set by the |timing/zslope| or indirectly by the 
@@ -1661,13 +1654,12 @@
 % |\texttiming{ HLHLHL [[timing/slope=.5]] H $\slope$L }|\\
 % gives:
 % {\texttiming{ HLHLHL [[timing/slope=.5]] H $\slope$L }}
-% \\[\bigskipamount]
-% Changing the width scaling for a curtain group of characters:\\
+% \\*[\smallskipamount]
+% Changing the width scaling for a curtain group of characters:\\*
 % |\texttiming|\ignorespaces
-% |{ HL [!wscale=\wscale/3!] 3D{a} Z D Z [!wscale=3*\wscale!] HL  }|\\
+% |{ HL [!wscale=\wscale/3!] 3D{a} Z D Z [!wscale=3*\wscale!] HL  }|\\*
 % gives:
 % {\texttiming{ HL [!wscale=\wscale/3!] 3D{a} Z D Z [!wscale=3*\wscale!] HL }}
-% \\[\bigskipamount]
 %
 % \clearpage
 % \subsection{Meta-Characters}
@@ -2028,7 +2020,7 @@
 % chars} \meta{chars after}\\[\smallskipamount]
 % or, without second set of braces, but equal:\\[\smallskipamount]
 % \hspace*{2em} \meta{chars before} |O|\marg{background chars} \meta{foreground 
-% chars, \dots}\\
+% chars, \dots}\\[\smallskipamount]
 %
 % It is the responsibility of the user to make sure that the lines drawn by the 
 % first set reconnect to the main lines or do something else useful.  The 
@@ -2042,7 +2034,7 @@
 % be as wide or wider as the one of the overlay, otherwise the bounding box and background grid
 % will be incorrect. 
 %
-% Overlays can be cascaded, \ie an overlay can be included in the first argument 
+% Overlays can be cascaded\NewIn{v0.7}, \ie an overlay can be included in the first argument 
 % of another overlay. 
 %
 % \begin{table}[H]
@@ -2068,7 +2060,7 @@
 %
 % \clearpage
 % \subsection{Clock Arrows}
-% The library "clockarrows" is changing the "C" clock character to contain 
+% The library "clockarrows"\NewIn{v0.7} is changing the "C" clock character to contain 
 % arrows which mark the rising and/or falling clock edge. By default the rising 
 % edges are marked. To simplify the implementation only the transition from a 
 % "C" to another "C" character contains the arrows but not transitions from 
@@ -2127,7 +2119,7 @@
 %
 % \clearpage
 % \subsection{Column Type}
-% The library "columntype" uses the \pkg{array} package to define a new 
+% The library "columntype"\NewIn{v0.7} uses the \pkg{array} package to define a new 
 % |tabular| column type for timing characters. The tabular column can then hold 
 % timing characters like the \env{tikztimingtable}. An initial option block 
 % "[...]" is taken as initial character or diagram line wide settings. The 
@@ -2182,7 +2174,7 @@
 %
 % \clearpage
 % \subsection{Nice Timing Tables}
-% The library "nicetabs" uses the settings of the \pkg{array} and 
+% The library "nicetabs"\NewIn{v0.7} uses the settings of the \pkg{array} and 
 % \pkg{booktabs} packages to improve the layout of \env{tikztimingtables}. The 
 % resulting table matches a \env{tabular}|{rT}| table which uses the above 
 % packages and the |columntype| library.  The table macros \cs{tabcolsep}, 
@@ -2241,7 +2233,7 @@
 %
 % \clearpage
 % \subsection{Counter Character}
-% The library "counters" allows the easy definition of meta-characters which 
+% The library "counters"\NewIn{v0.7} allows the easy definition of meta-characters which 
 % implement up-counters. These characters show the counter value using the 
 % "D{}" character and increment it by one every time they are used. A second 
 % character can be defined to (re-)set the counter to a specific value. The 
@@ -2299,7 +2291,7 @@
 %
 % \clearpage
 % \subsection{Advanced Nodes}
-% The |advnodes| library changes the in-line nodes, \ie the "N" character, to provide multiple 
+% The library "advnodes"\NewIn{v0.7} changes the in-line nodes, \ie the "N" character, to provide multiple 
 % transition dependent and independent node anchors shown in Table~\ref{tab:advanchor}.
 %
 % Most transitions provide the three logic level anchors "low", "mid" and "high" which lie
@@ -2483,7 +2475,7 @@
 %
 % \clearpage
 % \subsection{Compatibility Macros for \texttt{ifsym} package}
-% The |ifsym| library provides macros and timing styles to emulate the behaviour of the \pkg{ifsym} package
+% The library "ifsym"\NewIn{v0.7} provides macros and timing styles to emulate the behaviour of the \pkg{ifsym} package
 % when loaded with the |electronic| option. The \pkg{ifsym} package was an early inspiration to this package
 % and this library allows the usage of |ifsym| style timing symbol macros and characters 
 % (`|\textifsym|\marg{characters}' which uses `|\texttiming[timing/ifsym]|\marg{characters}')
@@ -2543,7 +2535,7 @@
 % \subsection{Intervals (experimental)}
 % \textbf{This library is under development and might change in the future.}
 %
-% The |interval| library allows the drawing of intervals using the "H", "L", "Z" and "X" logic levels.
+% The library "interval"\NewIn{v0.7} allows the drawing of intervals using the "H", "L", "Z" and "X" logic levels.
 % It provides modified definitions of X and Z transitions (e.g.~"LX", "XH") where the transition edges can 
 % be coloured either way to indicate interval borders.
 %
@@ -2605,7 +2597,7 @@
 % \subsection{Beamer Overlay Support (experimental)}
 % \textbf{This library is under development and might change in the future.}
 %
-% The library `beamer' provides (at the moment) marginal support for overlays of the \pkg{beamer} class.
+% The library "beamer"\NewIn{v0.7} provides (at the moment) marginal support for overlays of the \pkg{beamer} class.
 % It allows the usage of beamer \emph{overlay specifications} (|<|\meta{spec}|>|) inside the timing string.
 % However, the current simple implementation might not work properly and cause strange results.
 % The support is designed for use inside \env{tikztimingtable}.
@@ -3266,6 +3258,8 @@
     \let\tikztiming@tochar\empty
     \let\setwscale\tikztimingsetwscale
     \def\wscale{\tikztiming@wscale}%
+    \let\xunit\tikztiming@xunit
+    \let\yunit\tikztiming@yunit
     \def\slope{\timingslope}%
     \def\lslope{\timingslope}%
     \def\zslope{\timingzslope}%
@@ -4406,9 +4400,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Macro Characters}
+% \subsection{Meta-Characters}
 %
-% \begin{macro}{\tikztimingmetachar}[1]{Macro character}
+% \begin{macro}{\tikztimingmetachar}[1]{Meta-character}
 % Checks if there is an optional argument and calls \cs{tikztiming@metachar} 
 % appropriately.
 %    \begin{macrocode}
