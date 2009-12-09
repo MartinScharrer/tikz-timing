@@ -1510,7 +1510,7 @@
 % anywhere inside the table, including at the very start before any rows are processed. Early
 % insertion of extra code is necessary for \eg limiting the bounding box or setting up a clipping path.
 %
-% \DescribeEnv{extracode}{\oarg{TikZ Settings}}
+% \DescribeEnv{extracode}{\oarg{TikZ Settings}\\\meta{extra drawing code}}
 % Instead\NewIn{v0.7} of using \cs{extracode} \dots \cs{endextracode}, which is actual plain\TeX\ syntax, this 
 % \LaTeX\ style environment can be used. Like any environment it creates a \TeX\ group around its 
 % content, but no TikZ |scope| is created to allow drawing code (\eg clipping paths) to affect the
@@ -4495,8 +4495,7 @@
   \def\nrows{\the\c@tikztiming@nrows}%
   \def\twidth{\tikztiming@maxwidth}%
   \tikzpicture[timing/table,#1]%
-    \coordinate (last row)  at (0,\rowdist);
-    \coordinate (label pos) at (-1*{(\coldist)},0);
+    \coordinate (@last row)  at (0,\rowdist);
     \coordinate (timing/table/top left) at (0,1);
     \coordinate (timing/table/bottom right) at (0,0);
     \tikztiming@picinit
@@ -4640,9 +4639,9 @@
 %    \begin{macrocode}
 \long\def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
-  \coordinate (last row) at ($ (last row) - (0,\tikztiming@rowdist) $);
-  \node [anchor=base east,timing/name] (last row text)
-    at ($ (last row) - (\tikztiming@coldist,0) $) {\ignorespaces #1\unskip};
+  \coordinate (@last row) at ($ (@last row) - (0,\tikztiming@rowdist) $);
+  \node [anchor=base east,timing/name] (@last row text)
+    at ($ (@last row) - (\tikztiming@coldist,0) $) {\ignorespaces #1\unskip};
   \@ifnextchar{[}%
     {\tikztiming@tabletiming}%
     {\tikztiming@tabletiming[]}%
@@ -4668,8 +4667,9 @@
   \ifx\tikztiming@lastchar\empty
     \def\tikztiming@lastchar{@}%
   \fi
-  \edef\@tempa{\noexpand\timing[name=row\the\c@tikztiming@nrows,\tikztiming@settings]
-    at (last row)}%
+  \edef\@tempa{\noexpand\timing
+    [name=row\the\c@tikztiming@nrows,alias=last row,\tikztiming@settings]
+     at (@last row)}%
   \expandafter\@tempa\expandafter{\expandafter[\tikztiming@lastchar]#2};
 }
 %    \end{macrocode}
@@ -4751,7 +4751,7 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (last row)
+      \p3 = (@last row)
     in
       ($ (\x1-\tabcolsep,\y3) - (0,.5*{(\rowdist)}) $) --
       ($ (\x2+\tabcolsep,\y3) - (0,.5*{(\rowdist)}) $)
@@ -7108,7 +7108,7 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (last row text.base),
+      \p3 = (@last row text.base),
       \p4 = ($ (0,\y3) - (0,\arraystretch\dp\strutbox + \aboverulesep +
         .5\pgflinewidth) $)
     in
