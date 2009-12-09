@@ -1865,6 +1865,8 @@
 %     timing/table/midrules & Used for \cs{tablerules} between table head and 
 %     body.  \\
 %     timing/table/header & Used for \cs{tableheader}. \\
+%     timing/table/title header & Used for label title in \cs{tableheader}. \\
+%     timing/table/diagram header & Used for diagram title in \cs{tableheader}. \\
 %     timing/inline node & Used for nodes created by the \texttt{N} character.  
 %     Defaults to \texttt{coordinate}.\\
 %     \midrule
@@ -3162,6 +3164,8 @@
   table/rules/.style={line width=0.08em,line cap=butt},
   table/midrules/.style={line width=0.05em,line cap=butt},
   table/header/.style={timing/name},
+  table/label header/.style={},
+  table/diagram header/.style={},
   slope/.code={%
     \tikztimingsetslope{#1}%
     \tikztimingsetdslope{2*#1}%
@@ -4724,16 +4728,39 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@tableheader}[3]{Optional Settings}{Text 
-% title}{Diagram title}
+% \begin{macro}{\tikztiming@tableheader}
+% [3]{Optional Settings}{Text title}{Diagram title}
 %    \begin{macrocode}
-\newcommand*\tikztiming@tableheader[3][]{%
-  \path [timing/table/header,#1]
-    (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)}) node
-      [anchor=base east] {\ignorespaces #2\unskip\strut}
-    (0,1.5*{(\tikztiming@rowdist)}) node
-      [anchor=base west] {\ignorespaces #3\unskip\strut}
-  ;
+\def\tikztiming@tableheader{%
+  \@ifnextchar[%]
+    {\tikztiming@tableheader@}
+    {\tikztiming@tableheader@@[][]}
+}
+\def\tikztiming@tableheader@[#1]{%
+  \@ifnextchar[%]
+    {\tikztiming@tableheader@@{#1}}
+    {\tikztiming@tableheader@@{#1}[]}
+}
+\def\tikztiming@tableheader@@#1[#2]#3{%
+  \@ifnextchar[%]
+    {\tikztiming@tableheader@@@{#1}{#2}{#3}}
+    {\tikztiming@tableheader@@@{#1}{#2}{#3}[]}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@tableheader}
+% [5]{Optional settings}{Optional label title Settings}{Label title}{Optional Diagram title settings}{Diagram title}
+%    \begin{macrocode}
+\def\tikztiming@tableheader@@@#1#2#3[#4]#5{%
+  \path [pos=0,timing/table/header]
+    let \p1 = (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)}),
+        \p2 = (current bounding box.east),
+        \p3 = (current bounding box.west)
+     in
+        (\x1,\y1) -- node [anchor=base east,timing/table/label header,#1,#2]   {\ignorespaces #3\unskip\strut} (\x3,\y1)
+        (  0,\y1) -- node [anchor=base west,timing/table/diagram header,#1,#4] {\ignorespaces #5\unskip\strut} (\x2,\y1)
+     ;
   \tikztiming@tableheadtrue
 }
 \newif\iftikztiming@tablehead
