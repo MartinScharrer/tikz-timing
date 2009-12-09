@@ -541,13 +541,16 @@
   Example \the\c@example:^^J^^J%
   \string\documentclass{article}^^J%
   \string\usepackage{tikz-timing}[\tikztiming@date]^^J%
+  \string\usepackage[active,tightpage]{preview}^^J%
+  \string\PreviewEnvironment{tikzpicture}^^J%
   \string\pagestyle{empty}^^J%
   \exampleextraheader^^J%
   \string\begin{document}^^J\@percentchar
 }
 \def\ydoc@exafoot{%
   \@percentchar^^J%
-  \string\end{document}%
+  \string\end{document}^^J%
+  \@percentchar\space vim: ft=tex^^J%
 }
 \let\exampleextraheader\empty
 
@@ -2164,6 +2167,10 @@
 %
 % \bigskip
 % \begin{figure}
+% \makeatletter
+% \let\tikztiming@embedexample\empty
+% \let\writeexample\empty
+% \makeatother
 % \centering
 % \begin{examplecode}
 %   \begin{tabular}{lcT}
@@ -2692,6 +2699,10 @@
 % \DeleteShortVerb{\|}
 % \begin{exampletable}
 % \centering
+% \makeatletter
+% \let\tikztiming@embedexample\empty
+% \let\writeexample\empty
+% \makeatother
 % \pgfmathsetbasenumberlength{2}
 % \newcounter{hexcount}
 % \addtocounter{hexcount}{+8}%
@@ -2790,9 +2801,10 @@
 %
 % \begin{example}
 % \centering
+% \def\exampleextraheader{\noexpand\usetikztiminglibrary{advnodes}}
 % \begin{examplecode}
 %   \Huge
-%   \begin{tikzpicture}[timing/picture,thick]
+%   \begin{tikzpicture}[timing/picture,thick,timing/nodes/advanced]
 %     \timing at (0,2) {hH N(A) LHLHL};
 %     \timing[timing/slope=.25] at (0,0) {HLL N(B) HHLl};
 %     \draw [orange,semithick]
@@ -2839,7 +2851,8 @@
 % \begin{example}
 % \centering
 % \lstset{basicstyle=\footnotesize\ttfamily}
-% \def\exampleextraheader{\noexpand\usetikztiminglibrary{advnodes}}
+% \def\exampleextraheader{\noexpand\usetikztiminglibrary{advnodes,either}^^J
+% \noexpand\usepackage{amsmath}}
 % \begin{examplecode}
 %   \def\degr#1{\makebox[2em][r]{#1}\ensuremath{{}^{\circ}}}%
 %   
@@ -2872,8 +2885,7 @@
 %       {\scriptsize D$_\text{M}$ =  MSBs of Duty Cycle};
 %    \begin{background}[timing/picture,line width=.06ex,color=black!60]
 %      \foreach \n in {0,...,5}
-%       \draw ([shift={(0,0.25)}]A\n.HIGH)
-%          -- ([shift={(0,-0.25)}]B\n.LOW);
+%        \draw (A\n.TOP) -- (B\n.BOTTOM);
 %    \end{background}
 %   \end{tikztimingtable}%
 % \end{examplecode}
