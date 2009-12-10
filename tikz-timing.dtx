@@ -4514,17 +4514,21 @@
 % \end{environment}
 %
 % \begin{macro}{\tikztiming@extracode}
+% Set "all rows" rectangle node using the auxiliary coordinates.
 %    \begin{macrocode}
 \def\tikztiming@extracode{%
-  \path let
-     \p1 = (timing/table/top left),
-     \p2 = (timing/table/bottom right)
-   in
-     coordinate (timing/table/bottom left) at (\x1,\y2)
-     coordinate (timing/table/top right) at (\x2,\y1)
-     coordinate (timing/table/size) at (\x2-\x1,\y1-\y2)
-   ;
-   \@ifnextchar[{\tikztiming@oset}{}
+  \path
+    let
+      \p1 = (timing/table/top left),
+      \p2 = (timing/table/bottom right),
+      \p3 = (\x2-\x1,\y1-\y2)
+    in
+      node [shape=rectangle,anchor=north west,
+            minimum width=\x3,minimum height=\y3,
+            inner sep=0pt,outer sep=0pt]
+        at (\x1,\y1) (all rows) {}
+    ;
+   \@ifnextchar[{\tikztiming@oset}{}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4684,9 +4688,8 @@
 \newcommand*\tikztiming@fulltablegrid[1][]{%
   \begin{pgfonlayer}{background}
     \scope[xstep={\timingwidth/2.},ystep={\timingheight/2.},
-    shift={(timing/table/bottom left)},timing/table/grid,#1]
-      \draw (0,0) grid
-        ($ (timing/table/top right) - (timing/table/bottom left) $);
+      shift={(all rows.south west)},timing/table/grid,#1]
+      \draw (0,0) grid ($ (all rows.north east) - (all rows.south west) $);
    \endscope
   \end{pgfonlayer}
 }
@@ -4698,7 +4701,7 @@
 \def\tikztiming@tablegrid{%
   \@ifnextchar{*}%
     {\tikztiming@tablegrid@{row\row.high end}}%
-    {\tikztiming@tablegrid@{timing/table/top right}}%
+    {\tikztiming@tablegrid@{all rows.north east}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4809,7 +4812,7 @@
     \fi
     \foreach \row in \list {%
       \draw [timing/table/lines,#1] let
-        \p1 = (timing/table/bottom right)
+        \p1 = (all rows.south east)
       in
         ($ (0,\rowdist) -  (0,\row * {(\rowdist)}) $) -- +(\x1,0);
     }%
@@ -4827,7 +4830,7 @@
       \def\list{0,1,...,\twidth}%
     \fi
     \draw [timing/table/lines,#1] let
-        \p1 = ($ (timing/table/bottom right) - (0,2) $)
+        \p1 = ($ (all rows.south east) - (0,2) $)
       in
         \foreach \clk in \list {
           (\clk,+1.5) -- +(0,\y1)
