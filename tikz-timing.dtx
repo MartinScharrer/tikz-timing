@@ -4500,6 +4500,8 @@
   \def\twidth{\tikztiming@maxwidth}%
   \tikzpicture[timing/table,#1]%
     \coordinate (@last row)  at (0,\rowdist);
+    \coordinate (label title)   at (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)});
+    \coordinate (diagram title) at (0,1.5*{(\tikztiming@rowdist)});
     \coordinate (timing/table/top left) at (0,1);
     \coordinate (timing/table/bottom right) at (0,0);
     \tikztiming@picinit
@@ -4737,7 +4739,7 @@
 \def\tikztiming@tableheader{%
   \@ifnextchar[%]
     {\tikztiming@tableheader@}
-    {\tikztiming@tableheader@@[][]}
+    {\tikztiming@tableheader@@{}[]}
 }
 \def\tikztiming@tableheader@[#1]{%
   \@ifnextchar[%]
@@ -4757,12 +4759,13 @@
 %    \begin{macrocode}
 \def\tikztiming@tableheader@@@#1#2#3[#4]#5{%
   \path [pos=0,timing/table/header]
-    let \p1 = (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)}),
-        \p2 = (current bounding box.east),
-        \p3 = (current bounding box.west)
+    let \p1 = (label title),
+        \p2 = (diagram title),
+        \p3 = (current bounding box.east),
+        \p4 = (current bounding box.west)
      in
-        (\x1,\y1) -- node [anchor=base east,timing/table/label header,#1,#2]   {\ignorespaces #3\unskip\strut} (\x3,\y1)
-        (  0,\y1) -- node [anchor=base west,timing/table/diagram header,#1,#4] {\ignorespaces #5\unskip\strut} (\x2,\y1)
+        (\x1,\y1) -- node [anchor=base east,timing/table/label header,#1,#2]   {\ignorespaces #3\unskip\strut} (\x4,\y1)
+        (\x2,\y2) -- node [anchor=base west,timing/table/diagram header,#1,#4] {\ignorespaces #5\unskip\strut} (\x3,\y2)
      ;
   \tikztiming@tableheadtrue
 }
@@ -7109,20 +7112,18 @@
 %    \end{macrocode}
 
 %
-% \begin{macro}{\tikztiming@nicetabs@tableheader}[3]{Optional Settings}{Text 
-% title}{Diagram title}
+% \begin{macro}{\tikztiming@nicetabs@tableheader}[1]{Optional Settings}
 %    \begin{macrocode}
-\newcommand*\tikztiming@nicetabs@tableheader[3][]{%
+\newcommand*\tikztiming@nicetabs@tableheader[1][]{%
   \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
   \path [timing/table/header,#1]
     let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa + \arraystretch * 
-    {(\ht\strutbox + \extrarowheight)} + \arraystretch\dp\strutbox) in
-    node [anchor=base west] (tikztiming@header) at (0,\y1) {\ignorespaces 
-    #3\unskip\strut}
-    node [anchor=base east] at (-1*{(\tikztiming@coldist)},\y1) {\ignorespaces 
-    #2\unskip\strut}
-  ;
-  \tikztiming@tableheadtrue
+            {(\ht\strutbox + \extrarowheight)} + \arraystretch\dp\strutbox)
+    in
+      coordinate (diagram title) at (0,\y1)
+      coordinate (label title)   at (-1*{(\tikztiming@coldist)},\y1)
+    ;
+  \tikztiming@normal@tableheader[#1]%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -7145,7 +7146,7 @@
       (\x1-\tabcolsep,\y4) -- (\x2+\tabcolsep,\y4)
      \iftikztiming@tablehead
       let
-        \p5 = (tikztiming@header.base),
+        \p5 = (diagram title.base),
         \p6 = ($ (0,\y5) + (0,\arraystretch * {(\ht\strutbox + \extrarowheight 
         )} + \belowrulesep + .5\pgflinewidth) $)
       in
