@@ -1612,6 +1612,35 @@
 % The label column starts at $x=-$|\coldist| and the text is right align with 
 % the right border at this position.
 %
+% \begin{figure}
+%   \centering\LARGE
+%   \begin{tikztimingtable}[gray]
+%     First Row   &  H L H L H L \\
+%     Second Row  &  H L H L H L \\
+%     $\vdots$\hspace*{2em} &  3S N[rectangle,above,inner sep=0pt]{$\vdots$} 3S \\
+%     Last Row    &  H L H L H L \\
+%    \begin{extracode}
+%     \tableheader{Label}{Timing}
+%     \tablerules
+%     \useasboundingbox (current bounding box.south west) rectangle (current bounding box.north east);
+%     \begin{background}[black,densely dashed,thin]
+%       \normalsize
+%       \draw (row1.north west) rectangle (row1.south east);
+%       \draw (row2.north west) rectangle (row2.south east);
+%       \draw (last row.north west) rectangle (last row.south east);
+%       \node [right] at (row1.east) {row1};
+%       \node [right] at (row2.east) {row2};
+%       \node [right] at (last row.east) {row\cs{nrows}};
+%       \node [below] at (last row.south) {last row};
+%  
+%       \draw [dotted,color=green] (all rows.south west) rectangle (all rows.north east);
+%       \node [below right,green] at (all rows.east) {all rows};
+%     \end{background}
+%    \end{extracode}
+%   \end{tikztimingtable}
+%   \caption{Nodes inside a \env{tikztimingtable}}
+% \end{figure}
+%
 % \clearpage
 % \subsection{Macros for use inside the Character String}
 % The modifiers "@" and `\texttt{\$}' allow the user to include macros.  These 
