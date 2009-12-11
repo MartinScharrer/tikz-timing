@@ -1293,15 +1293,15 @@
 %   \timing [y=1.5cm,x=1.5cm,gray,thick] at (0,0) {HLHLHL};
 %   \node[name=s,shape=tikztiming@shape,anchor=origin] at (0,0) {};
 %   \foreach \anchor/\placement in
-%     {north west/above left , north/above           , north east/above right , 
-%     west/left              , center/right          , east/right             , 
-%     mid west/right         , mid/left              , mid east/left          , 
-%     base west/left         , base/left             , base east/above right  , 
-%     south west/below left  , south/below           , south east/below right , 
-%     low start/below right  , mid start/below right , high start/above right , 
-%     low mid/above right    , high mid/right        , 
-%     low end/below left     , mid end/below left    , high end/above left    , 
-%     start/left             , end/right             , origin/right}
+%     {north west/above left, north/above,           north east/above right,
+%     west/left,              center/right,          east/right,
+%     mid west/right,         mid/left,              mid east/left,
+%     base west/left,         base/left,             base east/above right,
+%     south west/below left,  south/below,           south east/below right,
+%     low start/below right,  mid start/below right, high start/above right,
+%     low mid/above right,    high mid/right,
+%     low end/below left,     mid end/below left,    high end/above left,
+%     start/left,             end/right,             origin/right}
 %   \draw[shift=(s.\anchor)] plot[mark=x] coordinates{(0,0)}
 %     node[\placement] {\tiny\texttt{(s.\anchor)}};
 % \end{tikzpicture}
@@ -1453,7 +1453,7 @@
 %
 % \begin{figure}
 %   \centering\LARGE
-%   \begin{tikztimingtable}[gray]
+%   \begin{tikztimingtable}[semitransparent]
 %     First Row   &  H L H L H L \\
 %     Second Row  &  H L H L H L \\
 %     $\vdots$\hspace*{2em} &  3S N[rectangle,above,inner sep=0pt]{$\vdots$} 3S \\
@@ -1462,7 +1462,7 @@
 %     \tableheader{Label}{Timing}
 %     \tablerules
 %     \useasboundingbox (current bounding box.south west) rectangle (current bounding box.north east);
-%     \begin{background}[black,densely dashed,thin]
+%     \begin{background}[black,densely dashed,thin,opacity=1]
 %       \normalsize
 %       \draw (row1.north west) rectangle (row1.south east);
 %       \draw (row2.north west) rectangle (row2.south east);
