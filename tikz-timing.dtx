@@ -1066,12 +1066,12 @@
 % \section{Usage}
 %
 % \subsection{Timing Characters}
-% As mentioned in the introduction section the logic levels are described by so called 
-% \emph{timing characters}. Actually all of them are letters, but the general term \emph{character} is used here.
-% Table~\ref{tab:chars} shows all by default defined logic characters and 
-% Table~\ref{tab:full} all possible two-character transitions.
-% Additional functionality is provided by the \emph{modifiers} shown in 
-% Table~\ref{tab:modifiers}.
+% As mentioned in the introduction section the logic levels are described by so
+% called \emph{timing characters}. Actually all of them are letters, but the
+% general term \emph{character} is used here. Table~\ref{tab:chars} shows all
+% by default defined logic characters and Table~\ref{tab:full} all possible
+% two-character transitions. Additional functionality is provided by the
+% \emph{modifiers} shown in Table~\ref{tab:modifiers}.
 %
 % \begin{table}
 % \tikzset{timing/draw grid}
@@ -1079,23 +1079,21 @@
 % \caption{Timing Characters}\label{tab:chars}
 % \begin{tabular}{clccc}
 %   \toprule
-%   Character & Description & Full Width & Half Width & Transition \\
-%             &             & \small (Uppercase) & \small (Lowercase) & Example 
-%             \\\midrule
-% \texttt{H} & High & \texttiming{H} & \texttiming{h} & \texttiming[L]{H} \\
-% \texttt{L} & Low & \texttiming{L} & \texttiming{l} & \texttiming[H]{L} \\
-% \texttt{Z} & High Impedance & \texttiming{Z} & \texttiming{z} & \texttiming[L]{Z} \\
-% \texttt{X} & Undefined / Don't Care & \texttiming{X} & \texttiming{x} & \texttiming[L]{X} \\
-% \texttt{D} & Data / Double & \texttiming{D} & \texttiming{d} & \texttiming[L]{D{A}D} \\
-% \texttt{U} & Unknown Data & \texttiming{U} & \texttiming{u} & \texttiming[D]{U} \\
-% \texttt{T} & Toggle & \texttiming{L} or \texttiming{H} & \texttiming{l} or 
-% \texttiming{h} & \texttiming{TTTT} \\
-% \texttt{C} & Clock (no slope) & \texttiming{L} or \texttiming{H} & 
-% \texttiming{l} or \texttiming{h} & \texttiming{CCCC} \\
-% \texttt{M} & Metastable Condition & \texttiming{M} & \texttiming{m} & \texttiming[H]{Ml} \\
+%   Character &  Description            & Full Width                       & Half Width                         & Transition            \\ 
+%             &                         & \small (Uppercase)               & \small (Lowercase)                 & Example
+%             \\ \midrule
+% \texttt{H}  &  High                   & \texttiming{H}                   & \texttiming{h}                     & \texttiming[L]{H}     \\ 
+% \texttt{L}  &  Low                    & \texttiming{L}                   & \texttiming{l}                     & \texttiming[H]{L}     \\ 
+% \texttt{Z}  &  High Impedance         & \texttiming{Z}                   & \texttiming{z}                     & \texttiming[L]{Z}     \\ 
+% \texttt{X}  &  Undefined / Don't Care & \texttiming{X}                   & \texttiming{x}                     & \texttiming[L]{X}     \\ 
+% \texttt{D}  &  Data / Double          & \texttiming{D}                   & \texttiming{d}                     & \texttiming[L]{D{A}D} \\ 
+% \texttt{U}  &  Unknown Data           & \texttiming{U}                   & \texttiming{u}                     & \texttiming[D]{U}     \\ 
+% \texttt{T}  &  Toggle                 & \texttiming{L} or \texttiming{H} & \texttiming{l} or \texttiming{h}   & \texttiming{TTTT}     \\ 
+% \texttt{C}  &  Clock (no slope)       & \texttiming{L} or \texttiming{H} & % \texttiming{l} or \texttiming{h} & \texttiming{CCCC}     \\ 
+% \texttt{M}  &  Metastable Condition   & \texttiming{M}                   & \texttiming{m}                     & \texttiming[H]{Ml}    \\ 
 %   \midrule
-% \texttt{G} & Glitch (zero width) & \texttiming{G} & \texttiming{g} & \texttiming{HGH} \\
-% \texttt{S} & Space (nothing) & \texttiming{S} & \texttiming{s} & \texttiming{HSL} \\
+% \texttt{G}  &  Glitch (zero width)    & \texttiming{G}                   & \texttiming{g}                     & \texttiming{HGH}      \\ 
+% \texttt{S}  &  Space (nothing)        & \texttiming{S}                   & \texttiming{s}                     & \texttiming{HSL}      \\ 
 % \bottomrule
 % \end{tabular}
 %  ^^A\par\bigskip
@@ -1295,15 +1293,15 @@
 %   \timing [y=1.5cm,x=1.5cm,gray,thick] at (0,0) {HLHLHL};
 %   \node[name=s,shape=tikztiming@shape,anchor=origin] at (0,0) {};
 %   \foreach \anchor/\placement in
-%     {north west/above left, north/above, north east/above right,
-%     west/left, center/right, east/right,
-%     mid west/right, mid/left, mid east/left,
-%     base west/left, base/left, base east/above right,
-%     south west/below left, south/below, south east/below right,
-%     low start/below right, mid start/below right, high start/above right,
-%     low mid/above right, high mid/right,
-%     low end/below left, mid end/below left, high end/above left,
-%     start/left, end/right, origin/right}
+%     {north west/above left , north/above           , north east/above right , 
+%     west/left              , center/right          , east/right             , 
+%     mid west/right         , mid/left              , mid east/left          , 
+%     base west/left         , base/left             , base east/above right  , 
+%     south west/below left  , south/below           , south east/below right , 
+%     low start/below right  , mid start/below right , high start/above right , 
+%     low mid/above right    , high mid/right        , 
+%     low end/below left     , mid end/below left    , high end/above left    , 
+%     start/left             , end/right             , origin/right}
 %   \draw[shift=(s.\anchor)] plot[mark=x] coordinates{(0,0)}
 %     node[\placement] {\tiny\texttt{(s.\anchor)}};
 % \end{tikzpicture}
@@ -1312,165 +1310,6 @@
 % signal.}\label{fig:shape}
 % \end{figure}
 %
-% \iffalse
-% \subsubsection{In-Line Nodes Shape Anchors}
-% A default shape for In-Line Nodes/Coordinates ("N" character) is provided 
-% which is named `\texttt{tikztiming coordinate}'. Like the PGF standard shape 
-% `\texttt{coordinate}' this shape does not draw anything. However, it provides 
-% anchors for the logical high, low and middle ("mid") levels, as well as for 
-% the three slopes |lslope|, |dslope| and |zslope| (full and half values). This 
-% anchors can be used to access all possible connection points of default 
-% transitions as shown in Figure~\ref{fig:coordnodeanchors}. This is useful for 
-% drawing relationship arrows or similar graphics between signals.
-%
-% Because the node modifier can not look-ahead to the next character it does not 
-% know which transition will occur. Therefore all anchors are provided for all 
-% nodes. The user can/must select the suitable anchor(s) for every nodes.
-%
-% See Example~\ref{exa:inlinenodes} for an demonstration.
-%
-% \begin{figure}
-% \tikzset{%
-%   timing/slope=.25,
-% }
-% \def\nx{4}
-% \def\ny{-3}
-% \begin{tikzpicture}[
-%     timing/.append style={x=1cm,y=1cm},
-%     timing/picture,
-%     timing/font=\sffamily\scriptsize,
-%     ultra thick,
-%     step=.5,
-%     help lines/.style={thin,gray,semitransparent}
-%   ]
-% 
-%   \draw [help lines,shift={(\nx,-1*\ny)}] (0,0)  grid +(2,1);
-%   \timing at (\nx,-1*\ny) {S N(x)};
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [yellow]   (x.mid)          circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \node [left] at (x.high)         {(x.high)};
-%   \node [left] at (x.mid)          {(x.mid)};
-%   \node [left] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\meta{any} \texttt{N(x)} \meta{any}};
-% 
-%   \draw [help lines,shift={(0,0)}] (0,0)  grid +(2,1);
-%   \timing at (0,0) {H N(x) L};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [red]      (x.low lslope)   circle(1pt);
-%   \draw [yellow]   (x.mid lslope/2) circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \node [above] at (x)              {(x)};
-%   \node [right] at (x.high)         {(x.high)};
-%   \node [left]  at (x.mid lslope/2) {(x.mid lslope/2)};
-%   \node [left]  at (x.low lslope)   {(x.low lslope)};
-%   \node [below=3ex] at (x.low)      {\texttt{H N(x) L}};
-% 
-%   \draw [help lines,shift={(\nx,0)}] (0,0) grid (2,1);
-%   \timing at (\nx,0) {H N(x) D};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \draw [teal]     (x.high dslope)  circle(1pt);
-%   \draw [red]      (x.low dslope)   circle(1pt);
-%   \node [above left] at (x)         {(x)~~~~};
-%   \node [above] at (x.high)         {(x.high)};
-%   \node [left]  at (x.mid dslope/2) {(x.mid zslope/2)};
-%   \node [below right] at (x.high dslope)  {(x.high dslope)};
-%   \node [above right] at (x.low dslope)   {(x.low dslope)};
-%   \node [below=3ex] at (x.low)      {\texttt{H N(x) D}};
-% 
-%   \draw [help lines,shift={(2*\nx,0)}] (0,0)  grid +(2,1);
-%   \timing at (2*\nx,0) {H N(x) Z};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid zslope)   circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \node [above] at (x)              {(x)};
-%   \node [right] at (x.high)         {(x.high)};
-%   \node [left]  at (x.mid zslope)   {(x.mid zslope)};
-%   \node [below=3ex] at (x.low)      {\texttt{H N(x) Z}};
-% 
-%   \draw [help lines,shift={(0,\ny)}] (0,0)  grid +(2,1);
-%   \timing at (0,\ny) {L N(x) H};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [green]    (x.high lslope)  circle(1pt);
-%   \draw [yellow]   (x.mid lslope/2) circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \node [below] at (x)              {(x)};
-%   \node [left]  at (x.high lslope)  {(x.high lslope)};
-%   \node [left]  at (x.mid lslope/2) {(x.mid lslope/2)};
-%   \node [right] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\texttt{L N(x) H}};
-% 
-%   \draw [help lines,shift={(\nx,\ny)}] (0,0)  grid +(2,1);
-%   \timing at (\nx,\ny) {L N(x) D};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [orange]   (x.low dslope)   circle(1pt);
-%   \draw [green]    (x.high dslope)  circle(1pt);
-%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
-%   \node [below left] at (x)         {(x)~~~~};
-%   \node [below] at (x.low)          {(x.low)};
-%   \node [above right] at (x.low dslope)   {(x.low dslope)};
-%   \node [above] at (x.high dslope)  {(x.high dslope)};
-%   \node [below=3ex] at (x.low)      {\texttt{L N(x) D}};
-% 
-%   \draw [help lines,shift={(2*\nx,\ny)}] (0,0)  grid +(2,1);
-%   \timing at (2*\nx,\ny) {L N(x) Z};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid zslope)   circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \node [below] at (x)              {(x)};
-%   \node [left]  at (x.mid zslope)   {(x.mid zslope)};
-%   \node [right] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\texttt{L N(x) Z}};
-% 
-%   \draw [help lines,shift={(0,2*\ny)}] (0,0)  grid +(2,1);
-%   \timing at (0,2*\ny) {D N(x) H};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \draw [teal]     (x.high dslope)  circle(1pt);
-%   \node [below] at (x)              {(x)};
-%   \node [above left,inner xsep=0pt]  at (x.high)        {(x.high)};
-%   \node [above] at (x.high dslope) {~~~~~~~~~(x.high dslope)};
-%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
-%   \node [right] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\texttt{D N(x) H}};
-% 
-%   \draw [help lines,shift={(\nx,2*\ny)}] (0,0)  grid +(2,1);
-%   \timing at (\nx,2*\ny) {D N(x) L};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \draw [orange]   (x.low dslope)   circle(1pt);
-%   \node [below left] at (x)         {(x)~~~~};
-%   \node [below] at (x.low)          {(x.low)};
-%   \node [left]  at (x.mid dslope/2)   {(x.mid dslope/2)};
-%   \node [above right] at (x.low dslope)   {(x.low dslope)};
-%   \node [above] at (x.high)         {(x.high)};
-%   \node [below=3ex] at (x.low)      {\texttt{D N(x) L}};
-% 
-%   \draw [help lines,shift={(2*\nx,2*\ny)}] (0,0)  grid +(2,1);
-%   \timing at (2*\nx,2*\ny) {D N(x) Z};
-%   \draw [blue]     (x)              circle(3pt);
-%   \draw [yellow]   (x.mid dslope/2) circle(1pt);
-%   \draw [red]      (x.low)          circle(1pt);
-%   \draw [green]    (x.high)         circle(1pt);
-%   \node [below] at (x)              {(x)};
-%   \node [left]  at (x.mid dslope/2) {(x.mid dslope/2)};
-%   \node [right] at (x.high)         {(x.high)};
-%   \node [right] at (x.low)          {(x.low)};
-%   \node [below=3ex] at (x.low)      {\texttt{D N(x) Z}};
-% 
-% \end{tikzpicture}
-% \caption{Anchors of In-Line Nodes.  
-% (\texttt{timing/slope=.25})}\label{fig:coordnodeanchors}
-% \end{figure}
-% \fi
 %
 % \clearpage
 % \subsection{Table for Timing Diagrams}
@@ -1877,70 +1716,48 @@
 %     \bottomrule
 %   }
 %   \begin{supertabular}{>{\ttfamily}l>{\raggedright\arraybackslash}p{.675\textwidth}}
-%     timing      & Base settings like signal height \& period width.\\
-%     timing/font & Sets the normal \texttt{font} key and sets
-%     \texttt{x}/\texttt{y} keys to 1.6ex.\\
-%     timing/intext & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
-%     timing/picture & Usable for own \texttt{tikzpictures} to set timing 
-%     settings.\\
-%     timing/grid   & Used for grids. Depends on \texttt{help lines} and \texttt{timing}.  \\
-%     timing/draw grid & Enables background grids for \cs{timing} macros. \\
-%     timing/no grid & Disabled background grids for \cs{timing} macros. \\
-%     timing/table & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
-%     timing/table/grid & Used for table grid. Depends on \texttt{timing/grid}.\\
-%     timing/table/lines & Used for \cs{horlines} and \cs{vertlines}. \\
-%     timing/table/rules & Used for \cs{tablerules} for top and bottom lines.  
-%     \\
-%     timing/table/midrules & Used for \cs{tablerules} between table head and 
-%     body.  \\
-%     timing/table/header & Used for \cs{tableheader}. \\
-%     timing/table/title header & Used for label title in \cs{tableheader}. \\
-%     timing/table/diagram header & Used for diagram title in \cs{tableheader}. \\
-%     timing/inline node & Used for nodes created by the \texttt{N} character.  
-%     Defaults to \texttt{coordinate}.\\
+%     timing                                       & Base settings like signal height and period width.\\
+%     timing/font                                  & Sets the normal \texttt{font} key and sets \texttt{x}/\texttt{y} keys to 1.6ex.\\
+%     timing/intext                                & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
+%     timing/picture                               & Usable for own \texttt{tikzpictures} to set timing settings.\\
+%     timing/grid                                  & Used for grids. Depends on \texttt{help lines} and \texttt{timing}.  \\
+%     timing/draw grid                             & Enables background grids for \cs{timing} macros. \\
+%     timing/no grid                               & Disabled background grids for \cs{timing} macros. \\
+%     timing/table                                 & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
+%     timing/table/grid                            & Used for table grid. Depends on \texttt{timing/grid}.\\
+%     timing/table/lines                           & Used for \cs{horlines} and \cs{vertlines}. \\
+%     timing/table/rules                           & Used for \cs{tablerules} for top and bottom lines. \\
+%     timing/table/midrules                        & Used for \cs{tablerules} between table head and body.  \\
+%     timing/table/header                          & Used for \cs{tableheader}. \\
+%     timing/table/title header                    & Used for label title in \cs{tableheader}. \\
+%     timing/table/diagram header                  & Used for diagram title in \cs{tableheader}. \\
+%     timing/inline node                           & Used for nodes created by the \texttt{N} character. Defaults to \texttt{coordinate}.\\
 %     \midrule
-%     timing/outer sep=\meta{dim} & Sets outer separation around \cs{texttiming} 
-%     macros. \\
-%     timing/outer xsep=\meta{dim} & See above. Only X-Coordinate. 
-%     (Default:~0pt) \\
-%     timing/outer ysep=\meta{dim} & See above. Only Y-Coordinate. 
-%     (Default:~0pt) \\
+%     timing/outer sep=\meta{dim}                  & Sets outer separation around \cs{texttiming} macros. \\
+%     timing/outer xsep=\meta{dim}                 & See above. Only X-Coordinate. (Default:~0pt) \\
+%     timing/outer ysep=\meta{dim}                 & See above. Only Y-Coordinate. (Default:~0pt) \\
 %     \midrule
-%     timing/\meta{lowercase char} & Style for character \meta{char}. Not used 
-%     for `\texttt{H}' and `\texttt{L}'. \\
-%     timing/\meta{lc char}/background & Background style for characters `\texttt{D}' 
-%     and `\texttt{U}'. \\
-%     timing/\meta{lc char}/text & Text style for character \meta{char}.  Only 
-%     defined for `\texttt{D}'. \\
+%     timing/\meta{lowercase char}                 & Style for character \meta{char}. Not used for `\texttt{H}' and `\texttt{L}'. \\
+%     timing/\meta{lc char}/background             & Background style for characters `\texttt{D}' and `\texttt{U}'. \\
+%     timing/\meta{lc char}/text                   & Text style for character \meta{char}.  Only defined for `\texttt{D}'. \\
 %     \midrule
-%     timing/text format=\meta{macros} & Define macros which are placed before 
-%     the text of `\texttt{D\{text\}}'. The text is enclosed in braces to allow 
-%     the last macro to take it as an argument. A \cs{strut} is a good choice to 
-%     ensure a common baseline.\\
-%     timing/initchar=\meta{char} & Sets initial character.  Only valid as first  
-%     optional argument in table rows or \cs{texttiming}.\\
-%     timing/metachar=\marg{C}\oarg{\#arg}\marg{G} & Sets meta-character 
-%     \meta{C} to character group \meta{G}.\\
-%     timing/slope=\meta{0.0\en1.0} & Sets slope for logic transitions.  
-%     \newline This also sets \texttt{dslope=2*slope}, 
-%     \texttt{zslope=slope/2}.\\
-%     timing/lslope=\meta{0.0\en1.0} & Sets slope for logic transitions only.  
-%     Default: 0.1\\
-%     timing/dslope=\meta{0.0\en1.0} & Sets slope for data transitions.  
-%     Default: 0.2\\
-%     timing/zslope=\meta{0.0\en1.0} & Sets slope for Z transitions. Default: 
-%     0.05\\
+%     timing/text format=\meta{macros}             & Define macros which are placed before the text of `\texttt{D\{text\}}'. The text is enclosed in braces to 
+%                                                    allow the last macro to take it as an argument. A \cs{strut} is a good choice to ensure a common baseline.\\
+%     timing/initchar=\meta{char}                  & Sets initial character.  Only valid as first optional argument in table rows or \cs{texttiming}.\\
+%     timing/metachar=\marg{C}\oarg{\#arg}\marg{G} & Sets meta-character \meta{C} to character group \meta{G}.\\
+%     timing/slope=\meta{0.0\en1.0}                & Sets slope for logic transitions. \newline This also sets \texttt{dslope=2*slope}, \texttt{zslope=slope/2}.\\
+%     timing/lslope=\meta{0.0\en1.0}               & Sets slope for logic transitions only. Default: 0.1\\
+%     timing/dslope=\meta{0.0\en1.0}               & Sets slope for data transitions. Default: 0.2\\
+%     timing/zslope=\meta{0.0\en1.0}               & Sets slope for Z transitions. Default: 0.05\\
 %     \midrule
-%     timing/rowdist=\meta{distance} & Sets (baseline) distance between rows in 
-%     a tikztimingtable. Default: 2 (=$2\times$signal height)\\
-%     timing/coldist=\meta{distance} & Sets distance between columns in a 
-%     tikztimingtable. Default: 1 (=$1\times$period width)\\
+%     timing/rowdist=\meta{distance}               & Sets (baseline) distance between rows in a tikztimingtable. Default: 2 (=$2\times$signal height)\\
+%     timing/coldist=\meta{distance}               & Sets distance between columns in a tikztimingtable. Default: 1 (=$1\times$period width)\\
 %     \midrule
-%     timing/debug/nodes & Enables marking of named inline nodes. \\
-%     timing/debug/node  & Format style for inline node marker label, which itself is a TikZ node. \\
-%     timing/debug/markcmd=\meta{code} & TikZ drawing code to draw marker (except label). The code can access the node name as \cs{N}. \\
-%     timing/debug/scope & Format for scope of node markers. \\
-%     timing/debug/level=\meta{integer} & Sets debug output level. This is only important for developers. \\
+%     timing/debug/nodes                           & Enables marking of named inline nodes. \\
+%     timing/debug/node                            & Format style for inline node marker label, which itself is a TikZ node. \\
+%     timing/debug/markcmd=\meta{code}             & TikZ drawing code to draw marker (except label). The code can access the node name as \cs{N}. \\
+%     timing/debug/scope                           & Format for scope of node markers. \\
+%     timing/debug/level=\meta{integer}            & Sets debug output level. This is only important for developers. \\
 %   \end{supertabular}
 %   ^^A\\[\smallskipamount]
 %   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
@@ -7142,6 +6959,8 @@
 
 %
 % \begin{macro}{\tikztiming@nicetabs@tableheader}[1]{Optional Settings}
+% Calculate separator heights and set nodes appropriately, then call
+% the normal table header macro.
 %    \begin{macrocode}
 \newcommand*\tikztiming@nicetabs@tableheader[1][]{%
   \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
