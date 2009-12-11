@@ -1078,26 +1078,24 @@
 % \sffamily\centering
 % \caption{Timing Characters}\label{tab:chars}
 % \begin{tabular}{clccc}
-%   \toprule
-%   Character &  Description            & Full Width                       & Half Width                         & Transition            \\ 
-%             &                         & \small (Uppercase)               & \small (Lowercase)                 & Example
-%             \\ \midrule
-% \texttt{H}  &  High                   & \texttiming{H}                   & \texttiming{h}                     & \texttiming[L]{H}     \\ 
-% \texttt{L}  &  Low                    & \texttiming{L}                   & \texttiming{l}                     & \texttiming[H]{L}     \\ 
-% \texttt{Z}  &  High Impedance         & \texttiming{Z}                   & \texttiming{z}                     & \texttiming[L]{Z}     \\ 
-% \texttt{X}  &  Undefined / Don't Care & \texttiming{X}                   & \texttiming{x}                     & \texttiming[L]{X}     \\ 
-% \texttt{D}  &  Data / Double          & \texttiming{D}                   & \texttiming{d}                     & \texttiming[L]{D{A}D} \\ 
-% \texttt{U}  &  Unknown Data           & \texttiming{U}                   & \texttiming{u}                     & \texttiming[D]{U}     \\ 
-% \texttt{T}  &  Toggle                 & \texttiming{L} or \texttiming{H} & \texttiming{l} or \texttiming{h}   & \texttiming{TTTT}     \\ 
-% \texttt{C}  &  Clock (no slope)       & \texttiming{L} or \texttiming{H} & % \texttiming{l} or \texttiming{h} & \texttiming{CCCC}     \\ 
-% \texttt{M}  &  Metastable Condition   & \texttiming{M}                   & \texttiming{m}                     & \texttiming[H]{Ml}    \\ 
+%  \toprule
+%   Character   & Description            & Full Width                       & Half Width                       & Transition            \\
+%               &                        & \small (Uppercase)               & \small (Lowercase)               & Example               \\
+%  \midrule
+%    \texttt{H} & High                   & \texttiming{H}                   & \texttiming{h}                   & \texttiming[L]{H}     \\
+%    \texttt{L} & Low                    & \texttiming{L}                   & \texttiming{l}                   & \texttiming[H]{L}     \\
+%    \texttt{Z} & High Impedance         & \texttiming{Z}                   & \texttiming{z}                   & \texttiming[L]{Z}     \\
+%    \texttt{X} & Undefined / Don't Care & \texttiming{X}                   & \texttiming{x}                   & \texttiming[L]{X}     \\
+%    \texttt{D} & Data / Double          & \texttiming{D}                   & \texttiming{d}                   & \texttiming[L]{D{A}D} \\
+%    \texttt{U} & Unknown Data           & \texttiming{U}                   & \texttiming{u}                   & \texttiming[D]{U}     \\
+%    \texttt{T} & Toggle                 & \texttiming{L} or \texttiming{H} & \texttiming{l} or \texttiming{h} & \texttiming{TTTT}     \\
+%    \texttt{C} & Clock (no slope)       & \texttiming{L} or \texttiming{H} & \texttiming{l} or \texttiming{h} & \texttiming{CCCC}     \\
+%    \texttt{M} & Metastable Condition   & \texttiming{M}                   & \texttiming{m}                   & \texttiming[H]{Ml}    \\
 %   \midrule
-% \texttt{G}  &  Glitch (zero width)    & \texttiming{G}                   & \texttiming{g}                     & \texttiming{HGH}      \\ 
-% \texttt{S}  &  Space (nothing)        & \texttiming{S}                   & \texttiming{s}                     & \texttiming{HSL}      \\ 
-% \bottomrule
+%    \texttt{G} & Glitch (zero width)    & \texttiming{G}                   & \texttiming{g}                   & \texttiming{HGH}      \\
+%    \texttt{S} & Space (nothing)        & \texttiming{S}                   & \texttiming{s}                   & \texttiming{HSL}      \\
+%   \bottomrule
 % \end{tabular}
-%  ^^A\par\bigskip
-%  ^^A\makebox[\textwidth][c]{\tikztimingfullexampletable}
 % \end{table}
 %
 % \iftrue
@@ -1796,15 +1794,15 @@
 % \centering
 % \caption{Examples for Arrow Characters.}\label{tab:arrows}
 % \begin{tikztimingexampletable}
-%   0A \\
-%   AAA \\
-%   3A  \\
-%   3{A} \\
-%   3A 3A \\
-%   3a 3a \\
-%   AW AW \\
-%   3{AW} \\
-%   3{aw} \\
+%   0A           \\
+%   AAA          \\
+%   3A           \\
+%   3{A}         \\
+%   3A 3A        \\
+%   3a 3a        \\
+%   AW AW        \\
+%   3{AW}        \\
+%   3{aw}        \\
 %   2S 2A 3W A W \\
 %   \extracode
 %   \tablegrid*
@@ -1829,33 +1827,30 @@
 % \centering
 % \caption{Examples for the `\texttt{E}' Character.}\label{tab:either}
 % \begin{tikztimingexampletable}[timing/e/background/.style={fill=black!20}]
-%   L E H \\
-%   L D H \\
-%   H E L \\
-%   H D L \\
-%   L E E H \\
-%   L 3{.25E} H \\
-%   H E E L \\
+%   L E H          \\
+%   L D H          \\
+%   H E L          \\
+%   H D L          \\
+%   L E E H        \\
+%   L 3{.25E} H    \\
+%   H E E L        \\
 %   L EEE HH EEE L \\
-%   l e e h \\
-%   h e e l \\
-%   H 2E  L \\
-%   H 2{E} L \\
-%   H 5{e} L \\
-%   H E E H \\
-%   L E E L \\
+%   l e e h        \\
+%   h e e l        \\
+%   H 2E  L        \\
+%   H 2{E} L       \\
+%   H 5{e} L       \\
+%   H E E H        \\
+%   L E E L        \\
 % \end{tikztimingexampletable}
 % \par\medskip
 % \makebox[\textwidth][c]{%
 %   \begin{tabular}{lc}
 %     \toprule
-%      Settings (\texttt{timing/e/.cd}) & Resulting Diagram (\texttt{LL EE HH})
-%      \\\midrule
-%     \texttt{.style=\{dotted,gray\}} & 
-%     \texttiming[timing/e/.style={dotted,gray}]{LL EE HH} \\
-%     \texttt{background/.style=\{fill=gray\}} & 
-%     \texttiming[timing/e/background/.style={fill=gray}]
-%     {LL EE HH} \\
+%       Settings (\texttt{timing/e/.cd})         & Resulting Diagram (\texttt{LL EE HH})                         \\
+%     \midrule
+%       \texttt{.style=\{dotted,gray\}}          & \texttiming[timing/e/.style={dotted,gray}]{LL EE HH}          \\
+%       \texttt{background/.style=\{fill=gray\}} & \texttiming[timing/e/background/.style={fill=gray}]{LL EE HH} \\
 %     \bottomrule
 %   \end{tabular}
 % }%
@@ -1899,20 +1894,20 @@
 % \centering
 % \caption{Examples for the `\texttt{O}' Overlay Character.}\label{tab:overlays}
 % \begin{tikztimingexampletable}[timing/draw grid]
-%   LLL O{HH}{LL} HHH \\
-%   LLL O{HHH}{LL} HHH \\
-%   LLL O{;[gray]HH.1H;}{LLH} HH \\
+%   LLL O{HH}{LL} HHH              \\
+%   LLL O{HHH}{LL} HHH             \\
+%   LLL O{;[gray]HH.1H;}{LLH} HH   \\
 %   LL  O{L;[gray]HH.1H;}{LLLH} HH \\
-%   DD{} O{zd}{D}d 2D \\
-%   ZZ O{Z D Z}{Z 1.1M .9Z} ZZ \\
-%   ZZ O{d Z}O{DZ}{dD} ZZ  \\
-%   ZZ O{dDZ}O{DZ}{dZ} ZZ  \\
-%   ZZ 3D O{dDZ}{DZ} ZZ  \\
-%   ZZ 3D O{dDZ}O{DZ}{dZ} ZZ  \\
-%   ZZ 3D O{3D} DZZ \\
-%   Z O{DD} ZDDD O{DDZZ} DZ 2S \\
-%   Z O{6D Z}{Z 4D Z} Z  \\
-%   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z  \\
+%   DD{} O{zd}{D}d 2D              \\
+%   ZZ O{Z D Z}{Z 1.1M .9Z} ZZ     \\
+%   ZZ O{d Z}O{DZ}{dD} ZZ          \\
+%   ZZ O{dDZ}O{DZ}{dZ} ZZ          \\
+%   ZZ 3D O{dDZ}{DZ} ZZ            \\
+%   ZZ 3D O{dDZ}O{DZ}{dZ} ZZ       \\
+%   ZZ 3D O{3D} DZZ                \\
+%   Z O{DD} ZDDD O{DDZZ} DZ 2S     \\
+%   Z O{6D Z}{Z 4D Z} Z            \\
+%   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z \\
 % \end{tikztimingexampletable}
 % \end{table}
 %
