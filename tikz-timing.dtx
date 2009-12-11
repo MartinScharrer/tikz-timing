@@ -1937,21 +1937,18 @@
 %   \makebox[\textwidth][c]{%
 %   \begin{tabularx}{1\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
 %     \toprule
-%     \normalfont Style/Setting & Description \\
-%       \midrule
-%       timing/c/rising arrows & Mark (only) rising edges with arrows.\\
-%       timing/c/falling arrows & Mark (only) falling edges with arrows.\\
-%       timing/c/dual arrows & Mark both rising and falling edges with arrows.\\
-%       timing/c/no arrows & Do not mark any edges with arrows. (Default)\\
-%       \midrule
-%       timing/c/arrow & Style for arrows. Can be modified to change arrow tip 
-%       etc.  (Default: \{\})\\
-%       timing/c/arrow pos=\meta{0.\!-\!\!-1.} & Position of arrows, i.e.\ its 
-%       tip, on the edge.  May needs adjustment if different arrow tip shapes 
-%       are selected.  (Default: 0.95)\\
-%       timing/c/arrow tip=\meta{name} & Tip shape of arrows. See the PGF manual 
-%       for the list of arrow tips. (Default: `\texttt{to}')\\
-%       \bottomrule
+%       \normalfont Style/Setting              & Description \\
+%     \midrule
+%       timing/c/rising arrows                 & Mark (only) rising edges with arrows.\\
+%       timing/c/falling arrows                & Mark (only) falling edges with arrows.\\
+%       timing/c/dual arrows                   & Mark both rising and falling edges with arrows.\\
+%       timing/c/no arrows                     & Do not mark any edges with arrows. (Default)\\
+%     \midrule
+%       timing/c/arrow                         & Style for arrows. Can be modified to change arrow tip etc.  (Default: \{\})\\
+%       timing/c/arrow pos=\meta{0.\!-\!\!-1.} & Position of arrows, i.e.\ its tip, on the edge.
+%                                                May needs adjustment if different arrow tip shapes are selected.  (Default: 0.95)\\
+%       timing/c/arrow tip=\meta{name}         & Tip shape of arrows. See the PGF manual for the list of arrow tips. (Default: `\texttt{to}')\\
+%     \bottomrule
 %   \end{tabularx}}
 % \end{table}
 %
@@ -1961,16 +1958,16 @@
 %   \centering
 %   \begin{tabular}{lc}
 %     \toprule
-%      Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{10\{C\}})
-%      \\\midrule
-%     \texttt{rising arrows} & \texttiming[timing/c/rising arrows]{10{C}} \\
-%     \texttt{falling arrows}& \texttiming[timing/c/falling arrows]{10{C}} \\
-%     \texttt{no arrows}     & \texttiming[timing/c/no arrows]{10{C}}\\
-%     \texttt{dual arrows}   & \texttiming[timing/c/dual arrows]{10{C}}\\
+%       Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{11\{C\}})           \\
 %     \midrule
-%     \texttt{arrow pos=.5}  & \texttiming[timing/c/arrow pos=.5]{10{C}}\\
-%  \texttt{arrow tip=latex}  & \texttiming[timing/c/arrow tip=latex]{10{C}}\\
-%  \texttt{arrow tip=stealth}& \texttiming[timing/c/arrow tip=stealth]{10{C}}\\
+%       \texttt{rising arrows}           & \texttiming[timing/c/rising arrows]{10{C}}     \\
+%       \texttt{falling arrows}          & \texttiming[timing/c/falling arrows]{10{C}}    \\
+%       \texttt{no arrows}               & \texttiming[timing/c/no arrows]{10{C}}         \\
+%       \texttt{dual arrows}             & \texttiming[timing/c/dual arrows]{10{C}}       \\
+%     \midrule
+%       \texttt{arrow pos=.5}            & \texttiming[timing/c/arrow pos=.5]{10{C}}      \\
+%       \texttt{arrow tip=latex}         & \texttiming[timing/c/arrow tip=latex]{10{C}}   \\
+%       \texttt{arrow tip=stealth}       & \texttiming[timing/c/arrow tip=stealth]{10{C}} \\
 %     \bottomrule
 %   \end{tabular}
 % \end{table}
@@ -2675,18 +2672,18 @@
 % \begin{examplecode}
 %   \def\degr{${}^\circ$}
 %   \begin{tikztimingtable}
-%     Clock 128\,MHz 0\degr    & H 2C N(A1) 8{2C} N(A5) 3{2C} G\\
-%     Clock 128\,MHz 90\degr   & [C] 2{2C} N(A2) 8{2C} N(A6) 2{2C} C\\
-%     Clock 128\,MHz 180\degr  & C 2{2C} N(A3) 8{2C} N(A7) 2{2C} G\\
-%     Clock 128\,MHz 270\degr  & 3{2C} N(A4) 8{2C} N(A8) 2C C\\
-%     Coarse Pulse             & 3L 16H 6L \\
-%     Coarse Pulse - Delayed 1 & 4L N(B2) 16H N(B6) 5L \\
-%     Coarse Pulse - Delayed 2 & 5L N(B3) 16H N(B7) 4L \\
-%     Coarse Pulse - Delayed 3 & 6L 16H 3L \\
-%     \\
-%     Final Pulse Set          & 3L 16H N(B5) 6L \\
-%     Final Pulse $\overline{\mbox{Reset}}$ & 6L N(B4) 16H 3L \\
-%     Final Pulse              & 3L N(B1) 19H N(B8) 3L \\
+%     Clock 128\,MHz 0\degr    &  H    2C  N(A1) 8{2C} N(A5) 3{2C} G \\
+%     Clock 128\,MHz 90\degr   & [C] 2{2C} N(A2) 8{2C} N(A6) 2{2C} C \\
+%     Clock 128\,MHz 180\degr  &  C  2{2C} N(A3) 8{2C} N(A7) 2{2C} G \\
+%     Clock 128\,MHz 270\degr  &     3{2C} N(A4) 8{2C} N(A8)   2C  C \\
+%     Coarse Pulse             & 3L 16H 6L                           \\
+%     Coarse Pulse - Delayed 1 & 4L N(B2) 16H N(B6) 5L               \\
+%     Coarse Pulse - Delayed 2 & 5L N(B3) 16H N(B7) 4L               \\
+%     Coarse Pulse - Delayed 3 & 6L 16H 3L                           \\
+%                                                                    \\
+%     Final Pulse Set          & 3L 16H N(B5) 6L                     \\
+%     Final Pulse $\overline{\mbox{Reset}}$ & 6L N(B4) 16H 3L        \\
+%     Final Pulse              & 3L N(B1) 19H N(B8) 3L               \\
 %   \extracode
 %     \tablerules
 %     \begin{pgfonlayer}{background}
