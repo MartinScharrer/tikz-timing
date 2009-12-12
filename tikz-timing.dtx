@@ -75,7 +75,22 @@
 %<examplecode>\RequirePackage{pgffor}%
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
-\documentclass{ltxdoc}
+\documentclass[landscape,12pt]{scrreprt}
+\newif\ifprintversion % \fi
+
+\usepackage{doc}
+
+\def\cmd#1{\cs{\expandafter\cmd@to@cs\string#1}}
+\def\cmd@to@cs#1#2{\char\number`#2\relax}
+\DeclareRobustCommand\cs[1]{\texttt{\char`\\#1}}
+\providecommand\marg[1]{%
+  {\ttfamily\char`\{}\meta{#1}{\ttfamily\char`\}}}
+\providecommand\oarg[1]{%
+  {\ttfamily[}\meta{#1}{\ttfamily]}}
+\providecommand\parg[1]{%
+  {\ttfamily(}\meta{#1}{\ttfamily)}}
+
+
 \usepackage{tikz-timing}[\tikztiming@date]
 \usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype}
 \usetikztiminglibrary{nicetabs,counters,advnodes,interval,ifsym}
@@ -105,11 +120,13 @@
 \makeatletter
 %</driver>
 %<*ydoc>
+\iffalse
 % Restore article settings:
 \textwidth 345.0pt
 \marginparwidth 65.0pt
 \oddsidemargin 62.0pt
 \evensidemargin 62.0pt\relax
+\fi
 
 \RequirePackage{float}
 % use hypdoc if you have it, hyperref else
@@ -749,6 +766,14 @@
 
 \makeatletter
 
+\def\scaleto#1#2{%
+  \begingroup
+    \sbox{\mysb}{#2}%
+    \pgfmathparse{(#1) / \wd\mysb}%
+    \scalebox{\pgfmathresult}{\usebox{\mysb}}%
+  \endgroup
+}
+
 \def\MakeShortVerbQuote{%
   \def\@shortvrbdef{\qverb}\@MakeShortVerb
 }
@@ -852,7 +877,41 @@
 %   pdfkeywords = {tikz-timing, timing diagram, LaTeX}
 % }%
 % \fi
+%
+% \unless\ifprintversion
+% \begingroup
+% \makeatletter
+% \title{{\tikz[baseline=(N.base),timing/picture,timing/z/.style={},%
+%   timing/unit=1.44*\f@size pt,timing/d/text/.style={},timing/d/background/.style={fill=black!10},timing/inline node/.append style={rectangle,inner sep=0pt,outer sep=0pt}]
+%   \timing at (0,0) {1L N[shift={(0,0.5)}]{\strut The} .9L 3d{[alias=N]\strut tikz} $.5em/\xunit$Z 5d{\strut timing} 1.75H N[shift={(0,-0.5)}]{Package} 1.75H } ;}}
+% \author{Martin Scharrer}
+% \date{Version \fileversion\ -- \filedate}
+% \thispagestyle{empty}
+% \begin{titlepage}
+%   \sffamily\bfseries
+%   \parindent=0pt
+%   \centering
+%   \vspace*{2cm}
+%   \scaleto{.75\textwidth}{\Huge\@title}
+%   \par\vspace*{.75cm}
+%   \Large A \LaTeX\ Package for Timing Diagrams
+%   \par\vspace*{1.5cm}
+%   {\LARGE\@date}
+%   \par\vspace*{2cm}
+%   {\LARGE\@author
+%   \par\smallskip}
+%   {\Large\href{mailto:martin@scharrer-online.de}{martin@scharrer-online.de}
+%   \par\vspace*{1.25cm}}
+%   {\Large
+%   WWW: \url{http://latex.scharrer-online.de/tikz-timing}\\[.5ex]
+%   CTAN: \url{http://www.ctan.org/pkg/tikz-timing}\\[1.2ex]
+%   \par\smallskip}
+% \end{titlepage}
 % \clearpage
+% \endgroup
+%
+% \else
+%
 % \null
 % \vspace*{-2em}
 % \begin{center}
@@ -868,9 +927,9 @@
 %   CTAN: \url{http://www.ctan.org/pkg/tikz-timing}\\[1.2ex]}
 % \end{center}
 % \vspace{1.2em}%
+% \fi
 %
-% ^^A\vfill
-% \noindent
+% ^^A\vfill \noindent
 % ^^A\textbf{Note to Advanced Users:} This is a new package which internal
 % ^^Amacros might still change.  Please only rely on the user macros for now.
 %
@@ -2882,8 +2941,9 @@
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
-\setlength{\tikztiming@xunit}{1.6ex}%
-\setlength{\tikztiming@yunit}{1.6ex}%
+\def\tikztiming@unit{1.6ex}%
+\setlength{\tikztiming@xunit}{\tikztiming@unit}%
+\setlength{\tikztiming@yunit}{\tikztiming@unit}%
 
 \def\tikztiming@setnum#1{%
   \pgfmathparse{#1}%
@@ -2922,10 +2982,23 @@
   adjust@xy/.style={%
     /utils/exec={%
       \tikz@textfont
-      \setlength{\tikztiming@xunit}{1.6ex}%
-      \setlength{\tikztiming@yunit}{1.6ex}%
+      \pgfmathsetlength{\tikztiming@xunit}{\tikztiming@unit}%
+      \pgfmathsetlength{\tikztiming@yunit}{\tikztiming@unit}%
     },%
-    /tikz/x=1.6ex, /tikz/y=1.6ex,
+    /tikz/x=\tikztiming@xunit, /tikz/y=\tikztiming@yunit,
+  },
+  unit/.store in={\tikztiming@unit},
+  xunit/.style={%
+    /utils/exec={%
+      \pgfmathsetlength{\tikztiming@xunit}{#1}%
+    },%
+    /tikz/x=\tikztiming@xunit,
+  },
+  yunit/.style={%
+    /utils/exec={%
+      \pgfmathsetlength{\tikztiming@yunit}{#1}%
+    },%
+    /tikz/y=\tikztiming@yunit,
   },
   font/.style={%
     /tikz/font={#1},
