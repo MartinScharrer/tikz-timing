@@ -163,6 +163,14 @@
   \item[\pkgnoctan{#2}{#3}#1]\footnotetext{Location: \url{#3}}%
 }
 
+\newcommand*{\deflib}[1]{%
+  \label{lib:#1}%
+  \hypertarget{lib:#1}{}%
+}
+\newcommand*{\lib}[1]{%
+  \hyperlink{lib:#1}{`\texttt{#1}'}%
+}
+
 % link \cs to macro definitions
 \let\ydoc@origmacro\macro
 \let\ydoc@origendmacro\endmacro
@@ -998,22 +1006,22 @@
 % \begin{Changes}{v0.7}{2009/12/05}
 %   \change New libraries:
 %     \begin{description}
-%       \item[|clockarrows|]  Library for clock arrows.
-%       \item[|columntype|]   Library providing a timing column type for |tabular|.
-%       \item[|nicetabs|]     Library to format \cs{tikztimingtable} like a |booktab| |tabular|.
-%       \item[|counters|]     Library to defined counter characters which display an incrementing 
+%       \item[\lib{clockarrows}]  Library for clock arrows.
+%       \item[\lib{columntype}]   Library providing a timing column type for |tabular|.
+%       \item[\lib{nicetabs}]     Library to format \cs{tikztimingtable} like a |booktab| |tabular|.
+%       \item[\lib{counters}]     Library to defined counter characters which display an incrementing 
 %                             counter value every time there are used.
-%       \item[|advnodes|]     Library for advanced nodes with multiple anchor points.
-%       \item[|ifsym|]        Library providing the same timing symbols and characters as the |ifsym| package
+%       \item[\lib{advnodes}]     Library for advanced nodes with multiple anchor points.
+%       \item[\lib{ifsym}]        Library providing the same timing symbols and characters as the |ifsym| package
 %                             when loaded with the |electronic| option.
 %     \end{description}
 %   \change Additional experimental libraries:
 %     \begin{description}
-%       \item[|interval|]     Library to change color of "ZL", "ZH" etc. transitions to 
+%       \item[\lib{interval}]     Library to change color of "ZL", "ZH" etc. transitions to 
 %                             indicate borders of an interval.
-%       \item[|beamer|]       Library providing some marginal beamer overlay support.
+%       \item[\lib{beamer}]       Library providing some marginal beamer overlay support.
 %     \end{description}
-%   \change "overlays" library:
+%   \change \lib{overlays} library:
 %     \begin{itemize}
 %       \item Overlays can now be cascaded, \ie an overlay can be inside another one.
 %       \item The second braces around the second part are now optional.
@@ -1026,7 +1034,7 @@
 %     needs to be written as \verb+[|/utils/exec={..}|]+. Otherwise it is re-executed every time
 %     the drawing path is renewed.
 %   \change Added star version of \cs{tablegrid}.
-%   \change Added background to "E" character ("either" library).
+%   \change Added background to "E" character (\lib{either} library).
 %   \change Some fixes for placing of "D{}" texts.
 %   \change Fixed wrong slopes (\eg |lslope| instead of |zslope|) for some transitions.
 %   \change Major changes on internal character definition macros, parser and output routine.
@@ -1776,6 +1784,7 @@
 % of the |tikztiming| package.
 %
 % \subsection{Arrows}
+% \deflib{arrows}
 % The library "arrows" enables two characters "A" and "W" which draw 
 % vertical up and down \textit{A}rro\!\textit{W}s. Such arrows are used in 
 % timing diagrams to mark special polarized events, like clock edges of another 
@@ -1812,6 +1821,7 @@
 %
 % \clearpage
 % \subsection{Either High or Low}
+% \deflib{either}
 % The library "either" enables the "E" character which stands for 
 % `\textit{either high or low}'. This character is designed to be used with the 
 % "H" and "L" characters to display a uncertainty of a transition.  
@@ -1859,10 +1869,11 @@
 %
 % \clearpage
 % \subsection{Overlays}
+% \deflib{overlays}
 % The library "overlays" enables the "O" character which allows the 
 % overlaying of timing characters, i.e.~different groups of timing characters
 % are drawn on top of each other. This is not to be confused with `dynamic' overlay
-% provided by the presentation class |beamer|. The |tikz-timing| library |beamer| provides
+% provided by the presentation class |beamer|. The |tikz-timing| library \lib{beamer} provides
 % some support for such overlays.
 %
 % The "O" character awaits a set of character 
@@ -1914,6 +1925,7 @@
 %
 % \clearpage
 % \subsection{Clock Arrows}
+% \deflib{clockarrows}
 % The library "clockarrows"\NewIn{v0.7} is changing the "C" clock character to contain 
 % arrows which mark the rising and/or falling clock edge. By default the rising 
 % edges are marked. To simplify the implementation only the transition from a 
@@ -1970,6 +1982,7 @@
 %
 % \clearpage
 % \subsection{Column Type}
+% \deflib{columntype}
 % The library "columntype"\NewIn{v0.7} uses the \pkg{array} package to define a new 
 % |tabular| column type for timing characters. The tabular column can then hold 
 % timing characters like the \env{tikztimingtable}. An initial option block 
@@ -2029,6 +2042,7 @@
 %
 % \clearpage
 % \subsection{Nice Timing Tables}
+% \deflib{nicetabs}
 % The library "nicetabs"\NewIn{v0.7} uses the settings of the \pkg{array} and 
 % \pkg{booktabs} packages to improve the layout of \env{tikztimingtables}. The 
 % resulting table matches a \env{tabular}|{rT}| table which uses the above 
@@ -2088,6 +2102,7 @@
 %
 % \clearpage
 % \subsection{Counter Character}
+% \deflib{counters}
 % The library "counters"\NewIn{v0.7} allows the easy definition of meta-characters which 
 % implement up-counters. These characters show the counter value using the 
 % "D{}" character and increment it by one every time they are used. A second 
@@ -2146,6 +2161,7 @@
 %
 % \clearpage
 % \subsection{Advanced Nodes}
+% \deflib{advnodes}
 % The library "advnodes"\NewIn{v0.7} changes the in-line nodes, \ie the "N" character, to provide multiple 
 % transition dependent and independent node anchors shown in Table~\ref{tab:advanchor}.
 %
@@ -2330,6 +2346,7 @@
 %
 % \clearpage
 % \subsection{Compatibility Macros for \texttt{ifsym} package}
+% \deflib{ifsym}
 % The library "ifsym"\NewIn{v0.7} provides macros and timing styles to emulate the behaviour of the \pkg{ifsym} package
 % when loaded with the |electronic| option. The \pkg{ifsym} package was an early inspiration to this package
 % and this library allows the usage of |ifsym| style timing symbol macros and characters 
@@ -2388,6 +2405,7 @@
 %
 % \clearpage
 % \subsection{Intervals (experimental)}
+% \deflib{interval}
 % \textbf{This library is under development and might change in the future.}
 %
 % The library "interval"\NewIn{v0.7} allows the drawing of intervals using the "H", "L", "Z" and "X" logic levels.
@@ -2450,6 +2468,7 @@
 %
 % \clearpage
 % \subsection{Beamer Overlay Support (experimental)}
+% \deflib{beamer}
 % \textbf{This library is under development and might change in the future.}
 %
 % The library "beamer"\NewIn{v0.7} provides (at the moment) marginal support for overlays of the \pkg{beamer} class.
