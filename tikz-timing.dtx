@@ -163,6 +163,10 @@
   \item[\pkgnoctan{#2}{#3}#1]\footnotetext{Location: \url{#3}}%
 }
 
+\newcommand*{\library}[2]{%
+  \hypertarget{lib:#1}{\subsection{#2}}%
+  \label{lib:#1}%
+}
 \newcommand*{\deflib}[1]{%
   \label{lib:#1}%
   \hypertarget{lib:#1}{}%
@@ -1783,8 +1787,7 @@
 % The date is used as a version number like for packages and is identical to the date 
 % of the |tikztiming| package.
 %
-% \subsection{Arrows}
-% \deflib{arrows}
+% \library{arrows}{Arrows}
 % The library "arrows" enables two characters "A" and "W" which draw 
 % vertical up and down \textit{A}rro\!\textit{W}s. Such arrows are used in 
 % timing diagrams to mark special polarized events, like clock edges of another 
@@ -1820,8 +1823,7 @@
 % \end{table}
 %
 % \clearpage
-% \subsection{Either High or Low}
-% \deflib{either}
+% \library{either}{Either High or Low}
 % The library "either" enables the "E" character which stands for 
 % `\textit{either high or low}'. This character is designed to be used with the 
 % "H" and "L" characters to display a uncertainty of a transition.  
@@ -1868,8 +1870,7 @@
 % \end{table}
 %
 % \clearpage
-% \subsection{Overlays}
-% \deflib{overlays}
+% \library{overlays}{Overlays}
 % The library "overlays" enables the "O" character which allows the 
 % overlaying of timing characters, i.e.~different groups of timing characters
 % are drawn on top of each other. This is not to be confused with `dynamic' overlay
@@ -1924,8 +1925,7 @@
 % \end{table}
 %
 % \clearpage
-% \subsection{Clock Arrows}
-% \deflib{clockarrows}
+% \library{clockarrows}{Clock Arrows}
 % The library "clockarrows"\NewIn{v0.7} is changing the "C" clock character to contain 
 % arrows which mark the rising and/or falling clock edge. By default the rising 
 % edges are marked. To simplify the implementation only the transition from a 
@@ -1981,8 +1981,7 @@
 % \end{table}
 %
 % \clearpage
-% \subsection{Column Type}
-% \deflib{columntype}
+% \library{columntype}{Column Type}
 % The library "columntype"\NewIn{v0.7} uses the \pkg{array} package to define a new 
 % |tabular| column type for timing characters. The tabular column can then hold 
 % timing characters like the \env{tikztimingtable}. An initial option block 
@@ -2041,8 +2040,7 @@
 % \end{figure}
 %
 % \clearpage
-% \subsection{Nice Timing Tables}
-% \deflib{nicetabs}
+% \library{nicetabs}{Nice Timing Tables}
 % The library "nicetabs"\NewIn{v0.7} uses the settings of the \pkg{array} and 
 % \pkg{booktabs} packages to improve the layout of \env{tikztimingtables}. The 
 % resulting table matches a \env{tabular}|{rT}| table which uses the above 
@@ -2101,8 +2099,7 @@
 % \end{table}
 %
 % \clearpage
-% \subsection{Counter Character}
-% \deflib{counters}
+% \library{counters}{Counter Character}
 % The library "counters"\NewIn{v0.7} allows the easy definition of meta-characters which 
 % implement up-counters. These characters show the counter value using the 
 % "D{}" character and increment it by one every time they are used. A second 
@@ -2160,8 +2157,7 @@
 % }%
 %
 % \clearpage
-% \subsection{Advanced Nodes}
-% \deflib{advnodes}
+% \library{advnodes}{Advanced Nodes}
 % The library "advnodes"\NewIn{v0.7} changes the in-line nodes, \ie the "N" character, to provide multiple 
 % transition dependent and independent node anchors shown in Table~\ref{tab:advanchor}.
 %
@@ -2345,8 +2341,7 @@
 % \end{table}
 %
 % \clearpage
-% \subsection{Compatibility Macros for \texttt{ifsym} package}
-% \deflib{ifsym}
+% \library{ifsym}{Compatibility Macros for \texttt{ifsym} package}
 % The library "ifsym"\NewIn{v0.7} provides macros and timing styles to emulate the behaviour of the \pkg{ifsym} package
 % when loaded with the |electronic| option. The \pkg{ifsym} package was an early inspiration to this package
 % and this library allows the usage of |ifsym| style timing symbol macros and characters 
@@ -2404,8 +2399,7 @@
 %
 %
 % \clearpage
-% \subsection{Intervals (experimental)}
-% \deflib{interval}
+% \library{interval}{Intervals (experimental)}
 % \textbf{This library is under development and might change in the future.}
 %
 % The library "interval"\NewIn{v0.7} allows the drawing of intervals using the "H", "L", "Z" and "X" logic levels.
@@ -2467,8 +2461,7 @@
 % \endgroup
 %
 % \clearpage
-% \subsection{Beamer Overlay Support (experimental)}
-% \deflib{beamer}
+% \library{beamer}{Beamer Overlay Support (experimental)}
 % \textbf{This library is under development and might change in the future.}
 %
 % The library "beamer"\NewIn{v0.7} provides (at the moment) marginal support for overlays of the \pkg{beamer} class.
