@@ -1,4 +1,4 @@
-% \iffalse meta-comment
+% \iffalse %<* Copyright Meta Comment
 %
 % Copyright (C) 2009 by Martin Scharrer <martin@scharrer-online.de>
 % -----------------------------------------------------------------
@@ -21,7 +21,7 @@
 % and the derived file tikz-timing.sty.
 %
 % $Id$
-% \fi
+% %</ \fi
 %
 % \iffalse
 %<*driver>
@@ -806,6 +806,7 @@
   %\newpage\PrintIndex
 \end{document}
 %</driver>
+%<*doc>
 % \fi
 %
 % \CheckSum{5223}
@@ -2845,6 +2846,9 @@
 % \clearpage
 % \StopEventually{}
 % \clearpage
+% \iffalse
+%</doc>
+% \fi
 % \section{Implementation}
 % \subsection{Package Header}
 % \iffalse
@@ -6655,7 +6659,6 @@
 % \fi
 %
 % \subsubsection{Clock Arrows}
-%
 %  \iffalse
 %<*lib-clockarrows>
 %  \fi
@@ -6728,7 +6731,10 @@
 % \fi
 %
 % \subsubsection{Arrows}
-%
+% This library is only defining the "A" and "W" basic transitions ("AA", "AW", "WA", "WW").
+% While "W" is simply a copy of "A" with a different style. Both simple draw a line from |low|
+% to |high| and than move the position to the right according to the |width| value and back to 
+% the |low| position. The different arrow directions are done by different styles.
 % \iffalse
 %<*lib-arrows>
 % \fi
@@ -6754,7 +6760,6 @@
 % \fi
 %
 % \subsubsection{Overlays}
-%
 % \iffalse
 %<*lib-overlays>
 % \fi
@@ -6843,9 +6848,12 @@
 %
 % \iffalse
 %</lib-overlays>
+% \fi
+%
+% \subsubsection{Column Type}
+% \iffalse
 %<*lib-columntype>
 % \fi
-% \subsubsection{Column Type}
 % The \pkg{array} package is needed to define the column type.
 %    \begin{macrocode}
 \RequirePackage{array}
@@ -6948,10 +6956,12 @@
 %
 % \iffalse
 %</lib-columntype>
+% \fi
+%
+% \subsubsection{Nice Timing Tables}
+% \iffalse
 %<*lib-nicetabs>
 % \fi
-% \subsubsection{Nice Timing Tables}
-%
 % The dimensions of the following packages are used.
 %    \begin{macrocode}
 \RequirePackage{array}
@@ -7061,10 +7071,12 @@
 %    \end{macrocode}
 % \iffalse
 %</lib-nicetabs>
-%<*lib-counters>
 % \fi
 %
 % \subsubsection{Counters}
+% \iffalse
+%<*lib-counters>
+% \fi
 %
 %    \begin{macrocode}
 \tikzset{%
@@ -7157,6 +7169,10 @@
 %    \end{macrocode}
 % \iffalse
 %</lib-counters>
+% \fi
+%
+% \subsection{Advanced Nodes}
+% \iffalse
 %<*lib-advnodes>
 % \fi
 %    \begin{macrocode}
@@ -7759,6 +7775,10 @@
 %    \end{macrocode}
 % \iffalse
 %</lib-advnodes>
+% \fi
+%
+% \subsection{Intervals}
+% \iffalse
 %<*lib-interval>
 % \fi
 %    \begin{macrocode}
@@ -7840,7 +7860,6 @@
 %
 % \subsection{Beamer Overlay Support}
 % Experimental library for marginal beamer overlay support. It will change in future versions. Use at own risk!
-%
 % \iffalse
 %<*lib-beamer>
 % \fi
@@ -7862,7 +7881,6 @@
 % \fi
 %
 % \subsection{Compatibility with \protect\pkg{ifsym} Macros}
-%
 % \iffalse
 %<*lib-ifsym>
 % \fi
@@ -7974,3 +7992,6 @@
 %
 % \Finale
 \endinput
+% \iffalse
+% vim: foldmarker=%<*,%</ foldmethod=marker foldenable
+% \fi
