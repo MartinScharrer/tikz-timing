@@ -167,10 +167,6 @@
   \hypertarget{lib:#1}{\subsection{#2}}%
   \label{lib:#1}%
 }
-\newcommand*{\deflib}[1]{%
-  \label{lib:#1}%
-  \hypertarget{lib:#1}{}%
-}
 \newcommand*{\lib}[1]{%
   \hyperlink{lib:#1}{`\texttt{#1}'}%
 }
@@ -181,7 +177,7 @@
 \let\ydoc@origStopEventually\StopEventually
 \let\ydoc@origPrintDescribeMacro\PrintDescribeMacro
 \RequirePackage{xcolor}
-\definecolor{darkred}{rgb}{0.333.0.0,0.0}
+\definecolor{darkred}{rgb}{0.333,0.0,0.0}
 \hypersetup{colorlinks=true,linkcolor=darkred,urlcolor=darkred}
 \definecolor{macrodesccolor}{rgb}{0.0,0.0,0.8}
 \definecolor{macroimplcolor}{rgb}{0.0,0.0,0.4}
