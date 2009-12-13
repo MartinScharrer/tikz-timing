@@ -1,4 +1,5 @@
-% \iffalse %<* Copyright Meta Comment
+% \iffalse
+%<*copyright>
 %
 % Copyright (C) 2009 by Martin Scharrer <martin@scharrer-online.de>
 % -----------------------------------------------------------------
@@ -21,7 +22,8 @@
 % and the derived file tikz-timing.sty.
 %
 % $Id$
-% %</ \fi
+%</copyright>
+%\fi
 %
 % \iffalse
 %<*driver>
@@ -947,7 +949,7 @@
 % \emph{Logical Low}. So e.g.\ "{HLZXD}" gives `\texttiming{HLZXD}'.
 % In order to fit (in)to normal text the diagram size (\ie its height, width and line width)
 % is defined relatively to the currently active font size. The diagram height is about the height of an
-% uppercase `X' (+$2\times\frac12$ line width). This way the diagrams
+% uppercase "X" (+$2\times\frac12$ line width). This way the diagrams
 % can also be scaled using font size commands like \cs{small}.
 % (Example: {\sffamily
 %  \large        X\texttiming{LH}X
@@ -1007,7 +1009,7 @@
 %   special font which contains graphical representation of the logical levels 
 %   high and low at the corresponding letter "H" and "L".  The lower case 
 %   versions have only half the width of the uppercase ones. Also a transition 
-%   can be added using the `\verb+|+' character which will (sometimes) be added 
+%   can be added using the "|" character which will (sometimes) be added 
 %   automatically between |HL| and |LH|.
 %   The diagrams are created using the command |\textifsym|\marg{characters}, 
 %   e.g.\ \verb+\textifsym{H|L|h|l|H|L}+ results in
@@ -3138,7 +3140,7 @@
 % \end{macro}
 %
 % \begin{macro}{\texttiminggrid}
-% Draws a background grid with the `timing/grid' setting. Should be used inside 
+% Draws a background grid with the "timing/grid" setting. Should be used inside 
 % \cs{texttimingbefore}.
 %    \begin{macrocode}
 \def\texttiminggrid{%
@@ -3912,7 +3914,7 @@
 %
 % \begin{macro}{\tikztiming@defcode{@}}
 % Simply executes given code. The |\relax| is added to have some protection 
-% against user code manipulating the parser macro. The `@' character can be both 
+% against user code manipulating the parser macro. The "@" character can be both 
 % a letter (in style files) and a character (in user documents), so it is
 % defined twice.
 %    \begin{macrocode}
@@ -4032,7 +4034,7 @@
 % Brackets and a "!" sign "[! !]" are parser options.
 % Double brackets are both.
 %
-% Brackets and `\verb+| |+' signs `\verb+[| |]+' are only-once in-picture options.
+% Brackets and "| |" signs "[| |]" are only-once in-picture options.
 %    \begin{macrocode}
 \tikztiming@defcode[{%}]{
   \@ifnextchar[%]
@@ -5939,7 +5941,7 @@
 %</package>
 % \fi
 % \subsubsection{Either High or Low}
-%  Provides character `E'.
+%  Provides character "E".
 %
 % \iffalse
 %<*lib-either>
@@ -8066,5 +8068,5 @@
 % \Finale
 \endinput
 % \iffalse
-% vim: foldmarker=%<*,%</ foldmethod=marker foldenable
+% vim: foldmarker=%<*,%</ foldmethod=marker foldenable foldtext=foldtext()
 % \fi
