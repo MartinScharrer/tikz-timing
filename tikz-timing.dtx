@@ -1423,7 +1423,10 @@
 % 
 % Example: |\tikz \timing [green] at (1,2) {[L]HLZDZLH};| gives `\tikz \timing 
 % [green] at (1,2) {[L]HLZDZLH};'.
-% 
+%
+% \ifprintversion\else
+%   \clearpage
+% \fi
 % \subsection*{Timing Shape Anchors}\label{sec:timingshape}
 % Every timing diagram line produced by \cs{timing}, which includes the rows in 
 % \env{tikztimingtable}, is also a PGF shape (node) with several anchors. These 
@@ -2141,6 +2144,7 @@
 %   \caption{Examples for the Clock Arrows.}\label{tab:clockarrows}
 %   \tikzset{timing/c/dual arrows}%
 %   \centering
+%   \ifprintversion
 %   \begin{tabular}{lc}
 %     \toprule
 %       Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{11\{C\}})           \\
@@ -2149,6 +2153,27 @@
 %       \texttt{falling arrows}          & \texttiming[timing/c/falling arrows]{10{C}}    \\
 %       \texttt{no arrows}               & \texttiming[timing/c/no arrows]{10{C}}         \\
 %       \texttt{dual arrows}             & \texttiming[timing/c/dual arrows]{10{C}}       \\
+%     \midrule
+%       \texttt{arrow pos=.5}            & \texttiming[timing/c/arrow pos=.5]{10{C}}      \\
+%       \texttt{arrow tip=latex}         & \texttiming[timing/c/arrow tip=latex]{10{C}}   \\
+%       \texttt{arrow tip=stealth}       & \texttiming[timing/c/arrow tip=stealth]{10{C}} \\
+%     \bottomrule
+%   \end{tabular}
+%   \else
+%   \begin{tabular}{lc}
+%     \toprule
+%       Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{11\{C\}})           \\
+%     \midrule
+%       \texttt{rising arrows}           & \texttiming[timing/c/rising arrows]{10{C}}     \\
+  %       \texttt{falling arrows}          & \texttiming[timing/c/falling arrows]{10{C}}    \\
+  %       \texttt{no arrows}               & \texttiming[timing/c/no arrows]{10{C}}         \\
+  %       \texttt{dual arrows}             & \texttiming[timing/c/dual arrows]{10{C}}       \\
+  %     \bottomrule
+  %   \end{tabular}
+%   \hspace{1em}
+%   \begin{tabular}{lc}
+%     \toprule
+%       Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{11\{C\}})           \\
 %     \midrule
 %       \texttt{arrow pos=.5}            & \texttiming[timing/c/arrow pos=.5]{10{C}}      \\
 %       \texttt{arrow tip=latex}         & \texttiming[timing/c/arrow tip=latex]{10{C}}   \\
