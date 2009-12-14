@@ -1632,16 +1632,29 @@
 %     \useasboundingbox (current bounding box.south west) rectangle (current bounding box.north east);
 %     \begin{background}[black,densely dashed,thin,opacity=1]
 %       \normalsize
-%       \draw (row1.north west) rectangle (row1.south east);
-%       \draw (row2.north west) rectangle (row2.south east);
+%       \draw (row1.north west)     rectangle (row1.south east);
+%       \draw (row2.north west)     rectangle (row2.south east);
 %       \draw (last row.north west) rectangle (last row.south east);
 %       \node [right] at (row1.east) {row1};
 %       \node [right] at (row2.east) {row2};
 %       \node [right] at (last row.east) {row\cs{nrows}};
 %       \node [below] at (last row.south) {last row};
-%  
+%
 %       \draw [dotted,color=green] (all rows.south west) rectangle (all rows.north east);
 %       \node [below right,green] at (all rows.east) {all rows};
+%
+%       \draw (label1.north west)   rectangle (label1.south east);
+%       \draw (label2.north west)   rectangle (label2.south east);
+%       \draw (last label.north west) rectangle (last label.south east);
+%       \path let \p1 = (label1.west), \p2 = (label2.west), \p3 = (last label.west) in
+%           node [left]  at (\x2,\y1)          {label1}
+%           node [left]  at (\x2,\y2)          {label2}
+%           node [left]  at (\x2,\y3)          {label\cs{nrows}}
+%           node [below] at (last label.south) {last label}
+%         ;
+%
+%       \draw [dotted,color=green] (all labels.south west) rectangle (all labels.north east);
+%       \node [below left,green] at (all labels.west) {all labels};
 %     \end{background}
 %    \end{extracode}
 %   \end{tikztimingtable}
@@ -4609,8 +4622,8 @@
     \coordinate (@last row)  at (0,\rowdist);
     \coordinate (label title)   at (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)});
     \coordinate (diagram title) at (0,1.5*{(\tikztiming@rowdist)});
-    \coordinate (timing/table/top left) at (0,1);
-    \coordinate (timing/table/bottom right) at (0,0);
+    \coordinate (timing@table@bottom right) at (0,0);
+    \coordinate (timing@table@bottom left)  at (-1*{(\tikztiming@coldist)},0);
     \tikztiming@picinit
     \tikzset{timing/before table}%
     \tikztimingtable@checkrow
@@ -4628,14 +4641,26 @@
 \def\tikztiming@extracode{%
   \path
     let
-      \p1 = (timing/table/top left),
-      \p2 = (timing/table/bottom right),
+      \p1 = (row1.north west),
+      \p2 = (timing@table@bottom right),
       \p3 = (\pgf@pt@aa * {(\x2-\x1)},\pgf@pt@bb * {(\y1-\y2)})
     in
       node [shape=rectangle,anchor=north west,
             minimum width=\x3,minimum height=\y3,
             inner sep=0pt,outer sep=0pt]
         at (\x1,\y1) (all rows) {}
+    ;
+  \path
+    let
+      \p0 = (-1*{(\tikztiming@coldist)},1),
+      \p1 = (label1.north east),
+      \p2 = (timing@table@bottom left),
+      \p3 = (\pgf@pt@aa * {(\x0-\x2)},\pgf@pt@bb * {(\y1-\y2)})
+    in
+      node [shape=rectangle,anchor=north east,
+            minimum width=\x3,minimum height=\y3,
+            inner sep=0pt,outer sep=0pt]
+        at (\x1,\y1) (all labels) {}
     ;
    \@ifnextchar[{\tikztiming@oset}{}%
 }
@@ -4757,14 +4782,17 @@
 \long\def\tikztimingtable@row@@#1#2{%
   \addtocounter{tikztiming@nrows}{1}%
   \coordinate (@last row) at ($ (@last row) - (0,\tikztiming@rowdist) $);
-  \node [anchor=base east,timing/name] (@last row text)
+  \node [anchor=base east,timing/name,alias=last label] (label\the\c@tikztiming@nrows)
     at ($ (@last row) - (\tikztiming@coldist,0) $) {\ignorespaces #1\unskip};
+  \path let \p1 = (timing@table@bottom left), \p2 = (last label.south west) in
+    coordinate (timing@table@bottom left) at ({min(\x1,\x2)},\y2);
+  %
   \@ifnextchar{[}%
     {\tikztiming@tabletiming}%
     {\tikztiming@tabletiming[]}%
   #2\relax
-  \path let \p1 = (timing/table/bottom right), \p2 = (timing/end base) in
-    coordinate (timing/table/bottom right) at ({max(\x1,\x2)},\y2);
+  \path let \p1 = (timing@table@bottom right), \p2 = (timing/end base) in
+    coordinate (timing@table@bottom right) at ({max(\x1,\x2)},\y2);
   %
   \pgfmathparse{max(\tikztiming@maxwidth,\tikztimingwidth)}%
   \let\tikztiming@maxwidth\pgfmathresult
@@ -7254,7 +7282,7 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (@last row text.base),
+      \p3 = (last label.base),
       \p4 = ($ (0,\y3) - (0,\arraystretch\dp\strutbox + \aboverulesep +
         .5\pgflinewidth) $)
     in
