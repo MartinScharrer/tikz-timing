@@ -261,7 +261,7 @@
 
 \def\DescribeEnv{\@ifnextchar*{\DescribeEnvS}{\DescribeEnvN}}
 \def\DescribeEnvN{%
-  \bigskip\pagebreak[3]\par\noindent\DescribeEnvS*%
+  \noindent\bigskip\pagebreak[3]\par\noindent\DescribeEnvS*%
 }
 \def\DescribeEnvS*#1#2{%
   \begingroup
@@ -279,6 +279,7 @@
   \{\macrolink{\macroformat{\textcolor{macrodesccolor}{#1}}}\}%
   \noindent\mbox{}\macroargformat{#2}\\*\relax
   \hspace*{\macrosep}%
+  \hspace*{-\parindent}%
   \css{end}%
   \{\macrolink{\macroformat{\textcolor{macrodesccolor}{#1}}}\}%
   \nopagebreak
@@ -733,7 +734,7 @@
 %
 % \begin{macro}{\tikztimingfullexampletable}
 %    \begin{macrocode}
-\def\tikztimingfullexampletable{
+\def\tikztimingfullexampletable{%^^A
   \begin{tikzpicture}[timing/picture,x=1em,y=1em,font=\sffamily]
     \tikzset{timing/d/background/.style={fill={gray!25},fill opacity=0.5}}%
     \let\chars\tikztiming@chars@default
@@ -759,23 +760,20 @@
     %
     \path (1.5,-2) node (charnodex) {\strut};
     \coordinate (charnodex) at (charnodex.base);
-    \coordinate (charnodey) at (charnodex.base);
+    \coordinate (charnodey) at ($ (charnodex.base) + (0,2) $);
     \def\@tempa{\timing at (charnodey)}
-    \expandafter\foreach
-    \expandafter\xchar
-    \expandafter i\expandafter n\expandafter{\chars} {
-    \expandafter\foreach
-    \expandafter\ychar
-    \expandafter i\expandafter n\expandafter{\chars} {
-      \draw [xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/grid,
-        shift={(charnodey)}]
-        (0,0) grid +(2,1);
-      \expandafter\@tempa\expandafter{\ychar\xchar};
-      \path (charnodey) +(0,-2) node (charnodey) {};
+    \foreach\xchar in \chars {
+      \foreach\ychar in \chars {
+        \path (charnodey) +(0,-2) node (charnodey) {};
+        \draw [xstep={\timingwidth/2.},ystep={\timingheight/2.},timing/grid,
+          shift={(charnodey)}]
+          (0,0) grid +(2,1);
+        \expandafter\@tempa\expandafter{\ychar\xchar};
+      }
+      \path (charnodex) ++(+2,0) node (charnodex) {};
+      \path (charnodex) ++(0,2)  node (charnodey) {};
     }
-    \path (charnodex) ++(+2,0) node (charnodex) {} node (charnodey) {};
-    }
-  \end{tikzpicture}
+  \end{tikzpicture}%^^A
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1175,10 +1173,9 @@
 % functionality is provided by the \emph{modifiers} shown in
 % Table~\ref{tab:modifiers}.
 %
-% \begin{table}
+% \sbox{\sba}{%^^A
+% \sffamily
 % \tikzset{timing/draw grid}
-% \sffamily\centering
-% \caption{Timing Characters}\label{tab:chars}
 % \begin{tabular}{clccc}
 %  \toprule
 %   Character   & Description            & Diagram                           & Transition            \\
@@ -1198,15 +1195,50 @@
 %    \texttt{S} & Space (nothing)        & \texttiming{S}                    & \texttiming{HSL}      \\
 %   \bottomrule
 % \end{tabular}
+% }%^^A
+%
+% \sbox{\sbb}{%^^A
+%   \tikzset{timing/draw grid}
+%   \sffamily\small
+%   \tikztimingfullexampletable
+% }%^^A
+%
+% \ifprintversion
+%
+% \begin{table}
+%   \centering
+%   \caption{Timing Characters}\label{tab:chars}
+%   \usebox{\sba}
 % \end{table}
 %
 % \begin{table}
-%  \tikzset{timing/draw grid}
-%  \sffamily\small
-%  \caption{Overview over all transitions.}
-%  \label{tab:full}
-%  \makebox[\textwidth][c]{\tikztimingfullexampletable}
+%   \caption{Overview over all transitions.}
+%   \label{tab:full}
+%   \usebox{\sbb}
 % \end{table}
+%
+% \else
+%
+% \begin{table}
+%   \sffamily
+%   \centering
+%   \pgfmathparse{max(\wd\sba+\wd\sbb+1em,\textwidth)}%^^A
+%   \makebox[\textwidth][c]{%^^A
+%   \begin{minipage}{\wd\sba}
+%     \caption{Timing Characters}
+%     \label{tab:chars}
+%     \usebox{\sba}
+%   \end{minipage}%^^A
+%   \hspace{1em}\hfill
+%   \begin{minipage}{\wd\sbb}
+%     \caption{Overview over all transitions.}
+%     \label{tab:full}
+%     \usebox{\sbb}
+%   \end{minipage}%^^A
+%   }%^^A
+% \end{table}
+%
+% \fi
 %
 % \clearpage
 % \DeleteShortVerb{\|}
@@ -1559,6 +1591,9 @@
 % |      \end{scope}|\\
 % |    \end{pgfonlayer}|
 %
+% \ifprintversion\else
+%   \clearpage
+% \fi
 % \subsection*{Positions \& Scalings inside the Table}
 % \textbf{Note:} The anchors provided by the timing shape 
 % (Section~\ref{sec:timingshape}) should now be used to position additional 
@@ -2027,6 +2062,7 @@
 % \begin{table}[H]
 % \centering
 % \caption{Examples for the `\texttt{O}' Overlay Character.}\label{tab:overlays}
+% \ifprintversion
 % \begin{tikztimingexampletable}[timing/draw grid]
 %   LLL O{HH}{LL} HHH              \\
 %   LLL O{HHH}{LL} HHH             \\
@@ -2043,6 +2079,26 @@
 %   Z O{6D Z}{Z 4D Z} Z            \\
 %   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z \\
 % \end{tikztimingexampletable}
+% \else
+% \begin{tikztimingexampletable}[timing/draw grid]
+%   LLL O{HH}{LL} HHH              \\
+%   LLL O{HHH}{LL} HHH             \\
+%   LLL O{;[gray]HH.1H;}{LLH} HH   \\
+%   LL  O{L;[gray]HH.1H;}{LLLH} HH \\
+%   DD{} O{zd}{D}d 2D              \\
+%   ZZ O{Z D Z}{Z 1.1M .9Z} ZZ     \\
+%   ZZ O{d Z}O{DZ}{dD} ZZ          \\
+% \end{tikztimingexampletable}
+% \begin{tikztimingexampletable}[timing/draw grid]
+%   ZZ O{dDZ}O{DZ}{dZ} ZZ          \\
+%   ZZ 3D O{dDZ}{DZ} ZZ            \\
+%   ZZ 3D O{dDZ}O{DZ}{dZ} ZZ       \\
+%   ZZ 3D O{3D} DZZ                \\
+%   Z O{DD} ZDDD O{DDZZ} DZ 2S     \\
+%   Z O{6D Z}{Z 4D Z} Z            \\
+%   Z O{8D Z}O{Z 6D Z}{2Z 4D 2Z} Z \\
+% \end{tikztimingexampletable}
+% \fi
 % \end{table}
 %
 % \clearpage
@@ -2263,12 +2319,11 @@
 % \end{tabularx}
 % \end{table}
 %
-% \subsection*{Example:}
+% \paragraph*{Example:}\mbox{}\\*
 % \noindent
 % Counter character "Q" with base 16 (hexadecimal). "R" resets the 
-% counter:\\*\noindent
+% counter. The counter value should be in blue text typer font.\\*\noindent
 % |\tikzset{timing/new counter={char=Q,base=16,reset char=R}}|\\*\noindent
-% The counter value should be in blue text typer font.\\*\noindent
 % |\tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}|\\*\noindent
 % |\texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }|\\*\noindent
 % gives: {%
