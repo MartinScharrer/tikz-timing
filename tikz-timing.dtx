@@ -78,7 +78,10 @@
 %<examplecode>\usetikzlibrary{calc}%
 %<*driver>
 \newif\ifprintversion % \fi
-\printversiontrue
+\ifx\printversion\@undefined
+\else
+  \printversiontrue
+\fi
 
 \ifprintversion
   \documentclass{ltxdoc}
@@ -88,8 +91,10 @@
 \else
   \documentclass[landscape,12pt]{scrreprt}
 
-  \def\chapterheadstartvskip{\vspace*{0\baselineskip}}
   \usepackage{doc}
+  \marginparwidth=2.5cm\relax
+
+  \def\chapterheadstartvskip{\vspace*{0\baselineskip}}
   \def\cmd#1{\cs{\expandafter\cmd@to@cs\string#1}}
   \def\cmd@to@cs#1#2{\char\number`#2\relax}
   \DeclareRobustCommand\cs[1]{\texttt{\char`\\#1}}
@@ -127,6 +132,8 @@
 \usepackage{microtype}[2005/10/28]
 \DisableLigatures{encoding = T1, family = tt* }%
 \newsavebox{\mysb}
+\newsavebox{\sba}
+\newsavebox{\sbb}
 \makeatletter
 %</driver>
 %<*ydoc>
@@ -138,7 +145,6 @@
 \evensidemargin 62.0pt\relax
 \fi
 
-\RequirePackage{float}
 % use hypdoc if you have it, hyperref else
 \IfFileExists{hypdoc.sty}
   {\RequirePackage{hypdoc}}
@@ -154,16 +160,16 @@
 \newcommand*{\pkgctanurl}[1]{%
   CTAN: \url{http://www.ctan.org/pkg/#1}%
 }
-\newcommand*{\pkg}[2][\@tempa]{%
+\newcommand*{\pkg}[2][\sndarg]{%
   \begingroup
-  \def\@tempa{#2}%
+  \def\sndarg{#2}%
   \let\@tempb\empty
-  \ifx\@tempa#1%
+  \ifx\sndarg#1%
     \def\@tempb{}%
   \else
     \def\@tempb{Part of the \texttt{#1} package,\ }%
   \fi
-  \href{http://www.ctan.org/pkg/#1}{\texttt{\@tempa}}%
+  \href{http://www.ctan.org/pkg/#1}{\texttt{\sndarg}}%
   % URL footnote (for print-out) on first appearance:
   \@ifundefined{seen@package@#2}{%
     \footnote{\@tempb\pkgctanurl{#1}}%
@@ -548,24 +554,26 @@
 }
 \fi
 
+\RequirePackage{nofloat}
 
 %%% Examples %%%
 \RequirePackage{fancyvrb}
 \RequirePackage{listings}
+
 \RequirePackage{float}
 
 \belowcaptionskip=\abovecaptionskip
-\floatstyle{plaintop}
-\restylefloat{table}
+%\floatstyle{plaintop}
+%\restylefloat{table}
 
-\floatstyle{plain}
+%\floatstyle{plain}
 \restylefloat{figure}
 
-\newfloat{example}{tbph}{toc}
+\newfloat{example}{tbph}{loe}%{toc}
 \floatname{example}{Example}
-\let\l@example\l@subsection
+\let\l@example\l@section
 %\def\theexample{\thesection.\arabic{example}}%
-\let\toclevel@example\toclevel@subsection
+\let\toclevel@example\toclevel@section
 
 \newwrite\ydoc@exawrite
 \newread\ydoc@exaread
@@ -622,7 +630,8 @@
 \newenvironment{examplecode}
   {\begingroup\VerbatimOut[gobble=4]{\jobname.exa}}
   {\endVerbatimOut\endgroup\writeexample
-  \formatexample}
+    {\setupexampleboxes\formatexample}
+  }
 
 \newsavebox{\examplecodebox}
 \newsavebox{\exampleresultbox}
@@ -638,11 +647,13 @@
   }%
 }
 
-\def\formatexample{%
-  \begingroup
+\def\setupexampleboxes{%
   \savebox{\examplecodebox}{\lstinputlisting{\jobname.exa}}
   \savebox{\exampleresultbox}{\catcode`\%=14\input{\jobname.exa}}%
-  %
+}
+
+\def\formatexample{%
+  \begingroup
   \par\noindent
   \setlength{\@tempdima}{\wd\examplecodebox + \wd\exampleresultbox}%
   \ifthenelse{\linewidth < \@tempdima}%
@@ -835,6 +846,10 @@
 \OnlyDescription
 \listfiles
 
+\DeleteShortVerb{\|}
+\def\pipe{|}
+\MakeShortVerb{\|}
+
 \begin{document}
   \DocInput{tikz-timing.dtx}
   \PrintChanges
@@ -943,7 +958,10 @@
 % ^^A\textbf{Note to Advanced Users:} This is a new package which internal
 % ^^Amacros might still change.  Please only rely on the user macros for now.
 %
-% {\let\csd\texttt\tableofcontents}
+% {\let\csd
+%   \texttt\tableofcontents
+%   ^^A\listof{example}{List of Examples}
+% }
 %
 % \chapter{Introduction}
 % This package uses the \pkg[pgf]{tikz} package to produce timing diagrams 
@@ -990,6 +1008,7 @@
 % ("H $ 1+\mymacro-\slope $ L "~$\rightarrow$~`\texttiming{H2.5L}')
 % and much more.
 %
+% \iffalse
 % \medskip
 % \DeleteShortVerb{\|}
 % \centerline{\texttiming[D]{
@@ -999,6 +1018,7 @@
 % }}
 % \MakeShortVerb{\|}
 % \medskip
+% \fi
 %
 % \iffalse
 % The package is build to make it possible to define new characters from scratch 
@@ -1041,6 +1061,7 @@
 % \end{description}
 % \fi
 %
+% \clearpage
 % \section{Changelog}
 % \begingroup
 % \renewcommand{\changes}[3]{\paragraph{#1 from #2}\begin{itemize}\item #3\end{itemize}}
@@ -1140,6 +1161,9 @@
 %
 % \endgroup
 %
+% \section{Dependencies}
+% \dots
+%
 % \clearpage
 % \chapter{Usage}
 %
@@ -1157,21 +1181,21 @@
 % \caption{Timing Characters}\label{tab:chars}
 % \begin{tabular}{clccc}
 %  \toprule
-%   Character   & Description            & Full Width                       & Half Width                       & Transition            \\
-%               &                        & \small (Uppercase)               & \small (Lowercase)               & Example               \\
+%   Character   & Description            & Diagram                           & Transition            \\
+%               &                        &                                   & Example               \\
 %  \midrule
-%    \texttt{H} & High                   & \texttiming{H}                   & \texttiming{h}                   & \texttiming[L]{H}     \\
-%    \texttt{L} & Low                    & \texttiming{L}                   & \texttiming{l}                   & \texttiming[H]{L}     \\
-%    \texttt{Z} & High Impedance         & \texttiming{Z}                   & \texttiming{z}                   & \texttiming[L]{Z}     \\
-%    \texttt{X} & Undefined / Don't Care & \texttiming{X}                   & \texttiming{x}                   & \texttiming[L]{X}     \\
-%    \texttt{D} & Data / Double          & \texttiming{D}                   & \texttiming{d}                   & \texttiming[L]{D{A}D} \\
-%    \texttt{U} & Unknown Data           & \texttiming{U}                   & \texttiming{u}                   & \texttiming[D]{U}     \\
-%    \texttt{T} & Toggle                 & \texttiming{L} or \texttiming{H} & \texttiming{l} or \texttiming{h} & \texttiming{TTTT}     \\
-%    \texttt{C} & Clock (no slope)       & \texttiming{L} or \texttiming{H} & \texttiming{l} or \texttiming{h} & \texttiming{CCCC}     \\
-%    \texttt{M} & Metastable Condition   & \texttiming{M}                   & \texttiming{m}                   & \texttiming[H]{Ml}    \\
+%    \texttt{H} & High                   & \texttiming{H}                    & \texttiming[L]{H}     \\
+%    \texttt{L} & Low                    & \texttiming{L}                    & \texttiming[H]{L}     \\
+%    \texttt{Z} & High Impedance         & \texttiming{Z}                    & \texttiming[L]{Z}     \\
+%    \texttt{X} & Undefined / Don't Care & \texttiming{X}                    & \texttiming[L]{X}     \\
+%    \texttt{D} & Data / Double          & \texttiming{D}                    & \texttiming[L]{D{A}D} \\
+%    \texttt{U} & Unknown Data           & \texttiming{U}                    & \texttiming[D]{U}     \\
+%    \texttt{T} & Toggle                 & \texttiming{L} or \texttiming{H}  & \texttiming{TTTT}     \\
+%    \texttt{C} & Clock (no slope)       & \texttiming{L} or \texttiming{H}  & \texttiming{CCCC}     \\
+%    \texttt{M} & Metastable Condition   & \texttiming{M}                    & \texttiming[H]{Ml}    \\
 %   \midrule
-%    \texttt{G} & Glitch (zero width)    & \texttiming{G}                   & \texttiming{g}                   & \texttiming{HGH}      \\
-%    \texttt{S} & Space (nothing)        & \texttiming{S}                   & \texttiming{s}                   & \texttiming{HSL}      \\
+%    \texttt{G} & Glitch (zero width)    & \texttiming{G}                    & \texttiming{HGH}      \\
+%    \texttt{S} & Space (nothing)        & \texttiming{S}                    & \texttiming{HSL}      \\
 %   \bottomrule
 % \end{tabular}
 % \end{table}
@@ -1368,7 +1392,7 @@
 % Example: |\tikz \timing [green] at (1,2) {[L]HLZDZLH};| gives `\tikz \timing 
 % [green] at (1,2) {[L]HLZDZLH};'.
 % 
-% \subsection{Timing Shape Anchors}\label{sec:timingshape}
+% \subsection*{Timing Shape Anchors}\label{sec:timingshape}
 % Every timing diagram line produced by \cs{timing}, which includes the rows in 
 % \env{tikztimingtable}, is also a PGF shape (node) with several anchors. These 
 % are shown in Figure~\ref{fig:shape}.
@@ -1463,7 +1487,7 @@
 % Please note that while \cs{endextracode} is optional if \cs{extracode} is used at the end of the table,
 % a \cs{begin}\env{extracode} must always be closed by \cs{end}\env{extracode}.
 %
-% \subsection{Macros for \cs{extracode} Section}
+% \subsection*{Macros for \cs{extracode} Section}
 % The following macros are only defined inside a \env{tikztimingtable} after the 
 % macro \cs{extracode}. They are useful for drawing additional material.
 %
@@ -2454,46 +2478,77 @@
 % These select if the macros should be defined using \cs{providecommand}, \cs{newcommand}, \cs{renewcommand} 
 % or not at all. This can be useful if the \pkg{ifsym} package is loaded beforehand.
 %
+%
+%   \sbox{\sba}{%^^A
+%    \begin{tabular}{lll}
+%      \toprule
+%        Macro               & Symbol          & Description (trivial) \\
+%      \midrule
+%        \cs{RaisingEdge}    & \RaisingEdge    & Raising Edge          \\
+%        \cs{FallingEdge}    & \FallingEdge    & Falling Edge          \\
+%        \cs{ShortPulseHigh} & \ShortPulseHigh & Short Pulse High      \\
+%        \cs{ShortPulseLow}  & \ShortPulseLow  & Short Pulse Low       \\
+%        \cs{PulseHigh}      & \PulseHigh      & Normal Pulse High     \\
+%        \cs{PulseLow}       & \PulseLow       & Normal Pulse Low      \\
+%        \cs{LongPulseHigh}  & \LongPulseHigh  & Long Pulse High       \\
+%        \cs{LongPulseLow}   & \LongPulseLow   & Long Pulse Low        \\
+%      \bottomrule
+%    \end{tabular}%^^A
+%   }%^^A
+%   ^^A
+%   \sbox{\sbb}{%^^A
+%     \begin{tabular}{>{\ttfamily}lll}
+%       \toprule
+%         \normalfont
+%         Character & Symbol                        & Description                                          \\
+%       \midrule
+%         l, h      & \textifsym{l}, \textifsym{h}  & Short low or high level signal.                      \\
+%         L, H      & \textifsym{L}, \textifsym{H}  & Long low or high level signal.                       \\
+%         \pipe     & \textifsym{|}                 & Transition/glitch between L/H or H/L levels.         \\
+%         m, d      & \textifsym{m}, \textifsym{d}  & Short middle or double level signal.                 \\
+%         M, D      & \textifsym{M}, \textifsym{D}  & Long middle or double level signal.                  \\
+%         <, <<     & \textifsym{<}, \textifsym{<<} & Short or long slope between middle and double level. \\
+%         >, >>     & \textifsym{>}, \textifsym{>>} & Short or long slope between double and middle level. \\
+%       \bottomrule
+%     \end{tabular}
+%   }%^^A
+% 
+% \ifprintversion
+%
 % \begin{table}
 %   \centering
-%   \caption[ifsym style Timing Symbol Macros]{\texttt{ifsym} style Timing Symbol Macros (from \pkg{ifsym} manual)}
+%   \caption[ifsym style Timing Symbol Macros]{\texttt{ifsym} style Timing Symbol Macros}
 %   \label{tab:ifsymmacros}
-%   \begin{tabular}{lll}
-%     \toprule
-%       Macro               & Symbol          & Description (trivial) \\
-%     \midrule
-%       \cs{RaisingEdge}    & \RaisingEdge    & Raising Edge          \\
-%       \cs{FallingEdge}    & \FallingEdge    & Falling Edge          \\
-%       \cs{ShortPulseHigh} & \ShortPulseHigh & Short Pulse High      \\
-%       \cs{ShortPulseLow}  & \ShortPulseLow  & Short Pulse Low       \\
-%       \cs{PulseHigh}      & \PulseHigh      & Normal Pulse High     \\
-%       \cs{PulseLow}       & \PulseLow       & Normal Pulse Low      \\
-%       \cs{LongPulseHigh}  & \LongPulseHigh  & Long Pulse High       \\
-%       \cs{LongPulseLow}   & \LongPulseLow   & Long Pulse Low        \\
-%     \bottomrule
-%   \end{tabular}
+%   \usebox{\sba}%^^A
 % \end{table}
 %
 % \begin{table}
 %   \centering
 %   \caption[ifsym style Timing Characters]{\texttt{ifsym} style Timing Characters (from \pkg{ifsym} manual)}
 %   \label{tab:ifsym}
-%   \begin{tabularx}{\textwidth}{llX}
-%     \toprule
-%       Character & Symbol                       & Description           \\
-%     \midrule
-%       |l, h|    & \textifsym{l}, \textifsym{h} & Short low or high level signal. \\
-%       |L, H|    & \textifsym{L}, \textifsym{H} & Long low or high level signal. \\
-%       \verb+|+  & \textifsym{|}                & Transition/glitch between L/H or H/L levels. \\
-%       |m, d|    & \textifsym{m}, \textifsym{d} & Short middle or double level signal. \\
-%       |M, D|    & \textifsym{M}, \textifsym{D} & Long middle or double level signal. \\
-%       |<, <<|   & \textifsym{<}, \textifsym{<<}& Short or long slope between middle and double level. \\
-%       |>, >>|   & \textifsym{>}, \textifsym{>>}& Short or long slope between double and middle level. \\
-%     \bottomrule
-%   \end{tabularx}
+%   \usebox{\sba}%^^A
 % \end{table}
 %
+% \else
 %
+% \begin{nofloat}{table}
+%   \makebox[\textwidth][c]{%^^A
+%     \let\tablecaption\caption
+%     \begin{minipage}{\wd\sba}
+%       \tablecaption[ifsym style Timing Symbol Macros]{\texttt{ifsym} style Timing Symbol Macros}%^^A
+%       \label{tab:ifsymmacros}%^^A
+%       \usebox{\sba}%^^A
+%     \end{minipage}
+%     \hspace{1em}\hfill
+%     \begin{minipage}{\wd\sbb}
+%       \tablecaption[ifsym style Timing Characters]{\texttt{ifsym} style Timing Characters (from \texttt{ifsym} manual)}%^^A
+%       \label{tab:ifsym}%^^A
+%       \usebox{\sbb}%^^A
+%     \end{minipage}
+%   }%^^A
+% \end{nofloat}
+%
+% \fi
 %
 % \clearpage
 % \library{interval}{Intervals (experimental)}
@@ -2574,8 +2629,8 @@
 % diagram lines should end with a specification which turns overlays off, i.e. |<*>| or |<0->|. Otherwise
 % strange results can occur (e.g.~wrong/missing background graphics).
 %
-% \subsection*{Example}
-% | Timing Table Row  & H L <2> Z L H <3> D{last} Z <*> \\ |
+% \paragraph*{Example}
+% | Timing Table Row  &  H L <2> Z L H <3> D{last} Z <*>  \\ |
 %
 % \subsection*{Display Rows Stepwise}
 % The rows of a \env{tikztimingtable} can be uncovered row-by-row using the way shown below. The signal names
@@ -2621,11 +2676,9 @@
 %       % ...
 %    \extracode
 %      % either
-%       \draw<2> (0,0) -- (2,0);
-%       \only<3> { ... }
+%       \draw<2> (0,0) -- (2,0);  \only<3> { ... }
 %      % or
 %       \onlayer<2>
-%         ...
 %      % and then at the very end:
 %       \onlayer   % or \onlayer<*>
 %   \end{tikztimingtable}
@@ -2773,7 +2826,7 @@
 %
 % \begin{example}
 % \centering
-% \lstset{basicstyle=\footnotesize\ttfamily}
+% \lstset{basicstyle=\scriptsize\ttfamily}
 % \begin{examplecode}
 %   \def\degr{${}^\circ$}
 %   \begin{tikztimingtable}
@@ -2802,7 +2855,7 @@
 %
 % \begin{example}
 % \centering
-% \lstset{basicstyle=\footnotesize\ttfamily}
+% \lstset{basicstyle=\scriptsize\ttfamily}
 % \def\exampleextraheader{\noexpand\usetikztiminglibrary{advnodes,either}^^J
 % \noexpand\usepackage{amsmath}}
 % \begin{examplecode}
@@ -2846,29 +2899,38 @@
 %
 % \begin{example}
 % \centering
-% \lstset{basicstyle=\ttfamily\small}
+% \lstset{basicstyle=\ttfamily\footnotesize}
 % \def\texta{}\def\textb{}^^A
-% \let\insertoriginalimageforcomparisionifpresent\relax
+% \makeatletter
 % \ifpdf
 %   \IfFileExists{SR_FF_timing_diagram.png}{^^A
-%   \def\insertoriginalimageforcomparisionifpresent{^^A
-%     \hspace{0.2\textwidth}\relax\includegraphics[width=28ex,trim=0 10pt 0 
-%     0,clip]{SR_FF_timing_diagram.png}^^A
-%   }^^A
-%   \def\texta{ (left)}\def\textb{ (right)}^^A
-%   }{}^^A
-%  \def\exampleextraheader{%
-%    \string\let
-%    \string\insertoriginalimageforcomparisionifpresent\string\relax
-%  }%
+%   \def\texta{ (right top)}\def\textb{ (right bottom)}^^A
+%   \def\formatexample{%
+%     \begingroup
+%     \par\noindent
+%       \centerline{%^^A
+%       \minipage[c]{\wd\examplecodebox}
+%         \hbox{\usebox{\examplecodebox}}
+%       \endminipage%
+%       \hfill
+%       \minipage[c]{\wd\exampleresultbox}%^^A
+%         \hbox to \textwidth{\hss\usebox{\exampleresultbox}}%^^A
+%         \vspace*{1cm}%^^A
+%         \hbox to \textwidth{\hss\includegraphics[width=27ex]{SR_FF_timing_diagram.png}}%^^A
+%       \endminipage%
+%       }
+%     \endgroup
+%     \par
+%   }%^^A
+%   }{}%^^A
 % \fi
 % \begin{examplecode}
-%   \definecolor{bgblue}{rgb}{0.41961,0.80784,0.80784}
-%   \definecolor{bgred}{rgb}{1,0.61569,0.61569}
-%   \definecolor{fgblue}{rgb}{0,0,0.6}
-%   \definecolor{fgred}{rgb}{0.6,0,0}
+%   \definecolor{bgblue}{rgb}{0.41961,0.80784,0.80784}%
+%   \definecolor{bgred}{rgb}{1,0.61569,0.61569}%
+%   \definecolor{fgblue}{rgb}{0,0,0.6}%
+%   \definecolor{fgred}{rgb}{0.6,0,0}%
 %   \begin{tikztimingtable}[timing/slope=0,
-%     timing/coldist=2pt,xscale=2,yscale=1.1,semithick]
+%     timing/coldist=2pt,xscale=2.05,yscale=1.1,semithick]
 %     \scriptsize clock & 7{C}\\
 %     S & .75L h 2.25L H LLl [fgblue]\\
 %     R & 1.8L .8H 2.2L 1.4H 0.8L [fgblue]\\
@@ -2877,6 +2939,7 @@
 %     Q & LHHHHLL[fgred]\\
 %     $\overline{\mbox{Q}}$ & HLLLLHH[fgred]\\
 %   \extracode
+%    \makeatletter
 %    \begin{pgfonlayer}{background}
 %     \shade [right color=bgblue,left color=white]
 %        (7,-8.45) rectangle (-2,-4.6);
@@ -2893,8 +2956,7 @@
 %     \node [anchor=south east,inner sep=0pt,fgred]
 %       at (7,-12.8) {\tiny positive edge triggered};
 %    \end{pgfonlayer}
-%   \end{tikztimingtable}
-%   \insertoriginalimageforcomparisionifpresent
+%   \end{tikztimingtable}%
 % \end{examplecode}
 % \caption[SR flip-flop timing diagram]{SR flip-flop timing diagram\texta.  
 % Redrawn from image\textb\\ {\small
@@ -2904,7 +2966,7 @@
 %
 % \begin{example}
 % \centering
-% \lstset{basicstyle=\ttfamily\footnotesize}
+% \lstset{basicstyle=\ttfamily\scriptsize}
 % \def\texta{}\def\textb{}^^A
 % \begin{examplecode}
 %   \newcounter{countup}
@@ -4488,7 +4550,7 @@
     let
       \p1 = (timing/table/top left),
       \p2 = (timing/table/bottom right),
-      \p3 = (\x2-\x1,\y1-\y2)
+      \p3 = (\pgf@pt@aa * {(\x2-\x1)},\pgf@pt@bb * {(\y1-\y2)})
     in
       node [shape=rectangle,anchor=north west,
             minimum width=\x3,minimum height=\y3,
