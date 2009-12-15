@@ -13,6 +13,13 @@
 
 \newif\ifcomment
 
+\ifcomment\else
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\setlength{\PreviewBorder}{5mm}
+\pagestyle{empty}
+\fi
+
 % Activate the following line to compile document with comments:
 %\commenttrue
 
