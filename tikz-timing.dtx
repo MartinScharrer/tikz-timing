@@ -2330,10 +2330,10 @@
 % "D{}" character and increment it by one every time they are used. A second 
 % character can be defined to (re-)set the counter to a specific value. The 
 % counter values can be decimal (base-10, default), hexadecimal (base-16) or any 
-% other base from 2 till 36. By default the lower case version of the counter 
+% other base from 2 to 36. By default the lower case version of the counter 
 % character is defined to produce the same output only with half the width.
 % The style `\texttt{timing/counter/\meta{char}}' (initially empty) is used to 
-% format the graphic style of this counter.\\
+% format the graphic style of this counter.
 %
 % Counter characters are defined using the TikZ key
 % `\texttt{timing/counter/new=}\linebreak[3]\ignorespaces
@@ -2341,6 +2341,9 @@
 % "timing/new counter". The \meta{settings} are TikZ keys themselves and are 
 % shown by Table~\ref{tab:countersettings}.  One or more "new" keys (path 
 % "timing/counter" removed) can be given as library options.
+%
+% Please note that these counter values are global like normal \LaTeX\ counters.
+% The should be reset in every timing diagram line before they are used.
 %
 % \begin{table}
 %   \caption{Settings for Counter Meta-Characters}
@@ -2356,13 +2359,24 @@
 %   reset char=\meta{char} & Defines the given \meta{char} to (re-)set the 
 %   counter value to the `width' of the character, \ie the number preceding it.  
 %   The lower case version of \meta{char} is not defined.\\
-%   base=\meta{Num 2-36} & Defines the numeric base of the counter. The default 
-%   is 10.\\
+%   base=\meta{Num 2-36} & Defines the numeric base of the counter. If not used the
+%   base 10 is used.\\
 %   half width char=\meta{char} & Defines the given \meta{char} to be the half 
 %   width version of the counter value. By default this is the lower case 
 %   version of the counter character given with \texttt{char}. An empty value 
 %   for \meta{char} deactivates the definition of a half width character, which 
 %   is the main application of this key.\\
+%  \midrule
+%   increment=\meta{integer} & Sets the increment which is added everytime the counter
+%                              character is used. The number can be negative which causes
+%                              the counter to count down.\\
+%   max value=\meta{integer} & Sets the maximum counter value.\\
+%   min value=\meta{integer} & Sets the minimum counter value.\\
+%   wraps=\meta{true\bar false} & If set to |true| the counter wraps around, \ie it counts to the
+%                                 minimum value when counting over the maximum value or the other
+%                                 way around if |increment| is negative.
+%                                 Initially this is set to |false|. The default value for this 
+%                                 key is |true|, \ie "wraps" is equal to "wraps=true".\\
 %  \bottomrule
 % \end{tabularx}
 % \end{table}
@@ -7393,6 +7407,19 @@
   reset char/.value required,
   base/.value required,
   half width char/.value required,
+  increment/.initial=1,
+  increment/.value required,
+  max value/.initial=,
+  max value/.value required,
+  min value/.initial=,
+  min value/.value required,
+  wraps/.is choice,
+  wraps/.default=true,
+  wraps/true/.code={},
+  wraps/false/.code={},
+  wraps/false,
+  digits/.initial=,
+  digits/.value required,
 }
 %    \end{macrocode}
 %
@@ -7408,9 +7435,27 @@
     \PackageError{tikz-timing-counters}{Counter character must be given using 
     the 'char' key!}%
   \else
+    \let\@tempb\@firstofone
+    \tikzset{timing/counter/opt/min value/.get=\@tempa}%
+    \ifx\@tempa\empty\else
+      \edef\@tempb##1{max({##1},{\@tempa})}%
+    \fi
+    \tikzset{timing/counter/opt/max value/.get=\@tempa}%
+    \ifx\@tempa\empty\else
+      \edef\@tempb##1{min({\@tempb{##1}},{\@tempa})}%
+    \fi
+    \edef\@tempb{%
+      \@tempb{%
+        \noexpand\noexpand
+        \expandafter\noexpand\csname tikztiming@counter@\tikztiming@counter@char\endcsname
+        + \pgfkeysvalueof{/tikz/timing/counter/opt/increment}%
+      }%
+    }%
     \edef\@tempa{%
       \noexpand\tikztiming@counter@new@{\tikztiming@counter@char}{\tikztiming@counter@base}%
         {\tikztiming@counter@hwchar}{\tikztiming@counter@resetchar}%
+        {\pgfkeysvalueof{/tikz/timing/counter/opt/digits}}%
+        {\@tempb}%
     }%
     \expandafter\@tempa
   \fi
@@ -7418,20 +7463,20 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@new@}[4]{Character}{Base}{Half Width 
-% Character}{Reset Character}
+% \begin{macro}{\tikztiming@counter@new@}[6]{Character}{Base}{Half Width 
+% Character}{Reset Character}{Number of Digits}{Increment Code}
 %    \begin{macrocode}
-\def\tikztiming@counter@new@#1#2#3#4{%
+\def\tikztiming@counter@new@#1#2#3#4#5#6{%
   \global\@namedef{tikztiming@counter@#1}{0}%
   \tikzset{timing/counter/#1/.append style={}}%
-  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}%
   \ifx\tikztiming@counter@hwchar\empty\else
     \ifx\tikztiming@counter@hwchar\relax
       \tikztiming@iflower{#1}{}%
         {\lowercase{\tikztimingmetachar{#1}}[1]%
-          {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}}%
+          {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}}%
     \else
-      \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
+      \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}%
     \fi
   \fi
   \ifx\tikztiming@counter@resetchar\empty\else
@@ -7454,13 +7499,22 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@vs}[2]{Character}{Base}
+% \begin{macro}{\tikztiming@counter@vs}[4]{Character}{Base}{Number of Digits}{Increment Code}
+% Note: \cs{pgfmathdectoBase} is only used for a base different to 10 to allow
+% negative number for decimal base.
 %    \begin{macrocode}
-\def\tikztiming@counter@vs#1#2{%
+\def\tikztiming@counter@vs#1#2#3#4{%
   \begingroup
-    \pgfmathdectoBase\pgfmathresult{\@nameuse{tikztiming@counter@#1}}{#2}%
-    \pgfmathresult
-    \pgfmathtruncatemacro\@tempa{\@nameuse{tikztiming@counter@#1} + 1}%
+    \ifx\empty#3\empty\else
+      \pgfmathsetbasenumberlength{#3}%
+    \fi
+    \ifnum#2=10
+      \@nameuse{tikztiming@counter@#1}%
+    \else
+      \pgfmathdectoBase\pgfmathresult{\@nameuse{tikztiming@counter@#1}}{#2}%
+      \pgfmathresult
+    \fi
+    \pgfmathtruncatemacro\@tempa{#4}%
     \expandafter\global\expandafter\let\csname tikztiming@counter@#1\endcsname\@tempa
   \endgroup
 }
