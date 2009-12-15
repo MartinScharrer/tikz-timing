@@ -2372,7 +2372,9 @@
 %                              the counter to count down.\\
 %   max value=\meta{integer} & Sets the maximum counter value.\\
 %   min value=\meta{integer} & Sets the minimum counter value.\\
-%   wraps=\meta{true\bar false} & If set to |true| the counter wraps around, \ie it counts to the
+%   \color{gray}
+%   wraps=\meta{true\bar false} & (Planned) \color{gray}
+%                                 If set to |true| the counter wraps around, \ie it counts to the
 %                                 minimum value when counting over the maximum value or the other
 %                                 way around if |increment| is negative.
 %                                 Initially this is set to |false|. The default value for this 
@@ -7393,6 +7395,8 @@
 % \fi
 %
 %    \begin{macrocode}
+\newif\if@tikztiming@counter@wraps
+
 \tikzset{%
   timing/new counter/.style={timing/counter/new={#1}},
   timing/counter/.cd,
@@ -7413,11 +7417,7 @@
   max value/.value required,
   min value/.initial=,
   min value/.value required,
-  wraps/.is choice,
-  wraps/.default=true,
-  wraps/true/.code={},
-  wraps/false/.code={},
-  wraps/false,
+  wraps/.is if=\if@tikztiming@counter@wraps,
   digits/.initial=,
   digits/.value required,
 }
