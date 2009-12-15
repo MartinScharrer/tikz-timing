@@ -956,10 +956,13 @@
 % ^^A\textbf{Note to Advanced Users:} This is a new package which internal
 % ^^Amacros might still change.  Please only rely on the user macros for now.
 %
+% \clearpage
+% \enlargethispage{\baselineskip}
 % {\let\csd
 %   \texttt\tableofcontents
-%   ^^A\listof{example}{List of Examples}
+%   \listof{example}{List of Examples}
 % }
+% \addtocontents{toc}{\vspace*{-1.5em}}
 %
 % \chapter{Introduction}
 % This package uses the \pkg[pgf]{tikz} package to produce timing diagrams 
