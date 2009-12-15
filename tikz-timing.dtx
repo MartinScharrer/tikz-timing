@@ -1627,7 +1627,7 @@
 %     $\vdots$\hspace*{2em} &  3S N[rectangle,above,inner sep=0pt]{$\vdots$} 3S \\
 %     Last Row    &  H L H L H L \\
 %    \begin{extracode}
-%     \tableheader{Label}{Timing}
+%     \tableheader[draw=black,densely dashed,thin]{Label}{Timing}
 %     \tablerules
 %     \useasboundingbox (current bounding box.south west) rectangle (current bounding box.north east);
 %     \begin{background}[black,densely dashed,thin,opacity=1]
@@ -1638,7 +1638,7 @@
 %       \node [right] at (row1.east) {row1};
 %       \node [right] at (row2.east) {row2};
 %       \node [right] at (last row.east) {row\cs{nrows}};
-%       \node [below] at (last row.south) {last row};
+%       \node [below right] at (last row.east) {last row\large\strut};
 %
 %       \draw [dotted,color=green] (all rows.south west) rectangle (all rows.north east);
 %       \node [below right,green] at (all rows.east) {all rows};
@@ -1647,14 +1647,21 @@
 %       \draw (label2.north west)   rectangle (label2.south east);
 %       \draw (last label.north west) rectangle (last label.south east);
 %       \path let \p1 = (label1.west), \p2 = (label2.west), \p3 = (last label.west) in
-%           node [left]  at (\x2,\y1)          {label1}
-%           node [left]  at (\x2,\y2)          {label2}
-%           node [left]  at (\x2,\y3)          {label\cs{nrows}}
-%           node [below] at (last label.south) {last label}
+%           node [left]  at (\x2,\y1)      {label1}
+%           node [left]  at (\x2,\y2)      {label2}
+%           node [left]  at (\x2,\y3)      {label\cs{nrows}}
+%           node [below left] at (\x2,\y3) {last label\large\strut}
 %         ;
 %
 %       \draw [dotted,color=green] (all labels.south west) rectangle (all labels.north east);
 %       \node [below left,green] at (all labels.west) {all labels};
+%
+%       \begin{scope}[help lines]
+%         \draw (all rows.north west)   -- +(0,3.25);
+%         \draw (all rows.north east)   -- +(0,3.25);
+%         \draw (all labels.north west) -- +(0,3);
+%         \draw (all labels.north east) -- +(0,3);
+%       \end{scope}
 %     \end{background}
 %    \end{extracode}
 %   \end{tikztimingtable}
@@ -1911,8 +1918,8 @@
 %     timing/table/rules                           & Used for \cs{tablerules} for top and bottom lines. \\
 %     timing/table/midrules                        & Used for \cs{tablerules} between table head and body.  \\
 %     timing/table/header                          & Used for \cs{tableheader}. \\
-%     timing/table/title header                    & Used for label title in \cs{tableheader}. \\
-%     timing/table/diagram header                  & Used for diagram title in \cs{tableheader}. \\
+%     timing/table/title header                    & Used for label@header in \cs{tableheader}. \\
+%     timing/table/diagram header                  & Used for diagram@header in \cs{tableheader}. \\
 %     timing/inline node                           & Used for nodes created by the \texttt{N} character. Defaults to \texttt{coordinate}.\\
 %     \midrule
 %     timing/outer sep=\meta{dim}                  & Sets outer separation around \cs{texttiming} macros. \\
@@ -4620,8 +4627,8 @@
   \def\twidth{\tikztiming@maxwidth}%
   \tikzpicture[timing/table,#1]%
     \coordinate (@last row)  at (0,\rowdist);
-    \coordinate (label title)   at (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)});
-    \coordinate (diagram title) at (0,1.5*{(\tikztiming@rowdist)});
+    \coordinate (label@header)   at (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)});
+    \coordinate (diagram@header) at (0,1.5*{(\tikztiming@rowdist)});
     \coordinate (timing@table@bottom right) at (0,0);
     \coordinate (timing@table@bottom left)  at (-1*{(\tikztiming@coldist)},0);
     \tikztiming@picinit
@@ -4783,7 +4790,7 @@
   \addtocounter{tikztiming@nrows}{1}%
   \coordinate (@last row) at ($ (@last row) - (0,\tikztiming@rowdist) $);
   \node [anchor=base east,timing/name,alias=last label] (label\the\c@tikztiming@nrows)
-    at ($ (@last row) - (\tikztiming@coldist,0) $) {\ignorespaces #1\unskip};
+    at ($ (@last row) - (\tikztiming@coldist,0) $) {\ignorespaces #1\unskip\strut};
   \path let \p1 = (timing@table@bottom left), \p2 = (last label.south west) in
     coordinate (timing@table@bottom left) at ({min(\x1,\x2)},\y2);
   %
@@ -4873,34 +4880,39 @@
 %    \begin{macrocode}
 \def\tikztiming@tableheader{%
   \@ifnextchar[%]
-    {\tikztiming@tableheader@}
-    {\tikztiming@tableheader@@{}[]}
+    {\tikztiming@tableheader@}%
+    {\tikztiming@tableheader@@{}[]}%
 }
 \def\tikztiming@tableheader@[#1]{%
   \@ifnextchar[%]
-    {\tikztiming@tableheader@@{#1}}
-    {\tikztiming@tableheader@@{#1}[]}
+    {\tikztiming@tableheader@@{#1}}%
+    {\tikztiming@tableheader@@{#1}[]}%
 }
 \def\tikztiming@tableheader@@#1[#2]#3{%
   \@ifnextchar[%]
-    {\tikztiming@tableheader@@@{#1}{#2}{#3}}
-    {\tikztiming@tableheader@@@{#1}{#2}{#3}[]}
+    {\tikztiming@tableheader@@@{#1}{#2}{#3}}%
+    {\tikztiming@tableheader@@@{#1}{#2}{#3}[]}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@tableheader}
-% [5]{Optional settings}{Optional label title Settings}{Label title}{Optional Diagram title settings}{Diagram title}
+% [5]{Optional settings}{Optional label@header Settings}{Label title}{Optional Diagram title settings}{Diagram title}
 %    \begin{macrocode}
 \def\tikztiming@tableheader@@@#1#2#3[#4]#5{%
   \path [pos=0,timing/table/header]
-    let \p1 = (label title),
-        \p2 = (diagram title),
-        \p3 = (current bounding box.east),
-        \p4 = (current bounding box.west)
+    let
+        \p1 = (label@header),
+        \p2 = (all labels.east),
+        \p3 = (all labels.west),
+        \p4 = (diagram@header),
+        \p5 = (all rows.west),
+        \p6 = (all rows.east)
      in
-        (\x1,\y1) -- node [anchor=base east,timing/table/label header,#1,#2]   {\ignorespaces #3\unskip\strut} (\x4,\y1)
-        (\x2,\y2) -- node [anchor=base west,timing/table/diagram header,#1,#4] {\ignorespaces #5\unskip\strut} (\x3,\y2)
+        (\x2,\y1) -- node [anchor=base east,timing/table/label header,#1,#2]
+          (label header)   {\ignorespaces #3\unskip\strut} (\x3,\y1)
+        (\x5,\y4) -- node [anchor=base west,timing/table/diagram header,#1,#4]
+          (diagram header) {\ignorespaces #5\unskip\strut} (\x6,\y4)
      ;
   \tikztiming@tableheadtrue
 }
@@ -7263,8 +7275,8 @@
     let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa + \arraystretch * 
             {(\ht\strutbox + \extrarowheight)} + \arraystretch\dp\strutbox)
     in
-      coordinate (diagram title) at (0,\y1)
-      coordinate (label title)   at (-1*{(\tikztiming@coldist)},\y1)
+      coordinate (diagram@header) at (0,\y1)
+      coordinate (label@header)   at (-1*{(\tikztiming@coldist)},\y1)
     ;
   \tikztiming@normal@tableheader[#1]%
 }
@@ -7289,7 +7301,7 @@
       (\x1-\tabcolsep,\y4) -- (\x2+\tabcolsep,\y4)
      \iftikztiming@tablehead
       let
-        \p5 = (diagram title.base),
+        \p5 = (diagram@header.base),
         \p6 = ($ (0,\y5) + (0,\arraystretch * {(\ht\strutbox + \extrarowheight 
         )} + \belowrulesep + .5\pgflinewidth) $)
       in
