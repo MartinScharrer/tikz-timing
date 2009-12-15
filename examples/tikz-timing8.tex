@@ -1,0 +1,58 @@
+% TikZ-Timing v0.7 2009/12/09 Example 8:
+%
+% This is an example for the 'tikz-timing' package.
+% It redraws the timing diagram taken from
+% http://commons.wikimedia.org/wiki/File:SR_FF_timing_diagram.png
+%
+\documentclass{article}
+\usepackage{tikz-timing}[2009/12/09]
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\setlength{\PreviewBorder}{5mm}
+\pagestyle{empty}
+
+\begin{document}
+%
+% Defining foreground (fg) and background (bg) colors
+\definecolor{bgblue}{rgb}{0.41961,0.80784,0.80784}%
+\definecolor{bgred}{rgb}{1,0.61569,0.61569}%
+\definecolor{fgblue}{rgb}{0,0,0.6}%
+\definecolor{fgred}{rgb}{0.6,0,0}%
+%
+\begin{tikztimingtable}[
+    timing/slope=0,         % no slope
+    timing/coldist=2pt,     % column distance
+    xscale=2.05,yscale=1.1, % scale diagrams
+    semithick               % set line width
+  ]
+  \scriptsize clock     & 7{C}                              \\
+  S                     & [fgblue] .75L h 2.25L H LLl       \\
+  R                     & [fgblue]  1.8L .8H 2.2L 1.4H 0.8L \\
+  Q                     &          L .8H 1.7L 1.5H LL       \\
+  $\overline{\mbox{Q}}$ &          H .8L 1.7H 1.5L HH       \\
+  Q                     & [fgred]  HLHHHLL                  \\
+  $\overline{\mbox{Q}}$ & [fgred]  LHLLLHH                  \\
+\extracode
+ \makeatletter
+ \begin{pgfonlayer}{background}
+  % Draw shaded backgrounds
+  \shade [right color=bgblue,left color=white]
+     (7,-8.45) rectangle (-2,-4.6);
+  \shade [right color=bgred,left color=white]
+     (7,-12.8) rectangle (-2,-8.6);
+  % Add background grid lines
+  \begin{scope}[gray,semitransparent,semithick]
+    \horlines{}
+    \foreach \x in {1,...,6}
+      \draw (\x,1) -- (\x,-12.8);
+    % similar: \vertlines{1,...,6}
+  \end{scope}
+  % Add labels
+  \node [anchor=south east,inner sep=0pt]
+    at (7,-8.45) {\tiny clocked};
+  \node [anchor=south east,inner sep=0pt,fgred]
+    at (7,-12.8) {\tiny positive edge triggered};
+ \end{pgfonlayer}
+\end{tikztimingtable}%
+%
+\end{document}
