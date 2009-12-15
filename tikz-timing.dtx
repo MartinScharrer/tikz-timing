@@ -7421,7 +7421,7 @@
 % Character}{Reset Character}
 %    \begin{macrocode}
 \def\tikztiming@counter@new@#1#2#3#4{%
-  \newcounter{tikztiming@counter@#1}%
+  \global\@namedef{tikztiming@counter@#1}{0}%
   \tikzset{timing/counter/#1/.append style={}}%
   \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}}}%
   \ifx\tikztiming@counter@hwchar\empty\else
@@ -7445,8 +7445,10 @@
 % with \cs{setcounter} to make it global.
 %    \begin{macrocode}
 \def\tikztiming@counter@reset#1#2{%
-  \pgfmathsetcounter{tikztiming@counter@#1}{round((#2)/\tikztiming@wscale)}%
-  \setcounter{tikztiming@counter@#1}{\value{tikztiming@counter@#1}}%
+  \begingroup
+    \pgfmathtruncatemacro\@tempa{round((#2)/\tikztiming@wscale)}%
+    \expandafter\global\expandafter\let\csname tikztiming@counter@#1\endcsname\@tempa
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -7454,9 +7456,20 @@
 % \begin{macro}{\tikztiming@counter@vs}[2]{Character}{Base}
 %    \begin{macrocode}
 \def\tikztiming@counter@vs#1#2{%
-  \pgfmathdectoBase\pgfmathresult{\value{tikztiming@counter@#1}}{#2}%
-  \pgfmathresult
-  \stepcounter{tikztiming@counter@#1}%
+  \begingroup
+    \pgfmathdectoBase\pgfmathresult{\@nameuse{tikztiming@counter@#1}}{#2}%
+    \pgfmathresult
+    \pgfmathtruncatemacro\@tempa{\@nameuse{tikztiming@counter@#1} + 1}%
+    \expandafter\global\expandafter\let\csname tikztiming@counter@#1\endcsname\@tempa
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@counter@int}[2]{Integer Part}{Fractional Part}
+%    \begin{macrocode}
+\def\tikztiming@counter@int#1.#2\relax{%
+  #1%
 }
 %    \end{macrocode}
 % \end{macro}
