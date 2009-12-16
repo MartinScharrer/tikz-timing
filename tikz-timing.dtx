@@ -659,7 +659,7 @@
   \setlength{\@tempdima}{\wd\examplecodebox + \wd\exampleresultbox}%
   \ifthenelse{\linewidth < \@tempdima}%
     {%
-      \centerline{\usebox{\examplecodebox}} \\[\bigskipamount]%
+      \centerline{\usebox{\examplecodebox}} \\*[\bigskipamount]%
       \centerline{\usebox{\exampleresultbox}}%
     }%
     {%
@@ -2348,7 +2348,8 @@
 % \begin{table}
 %   \caption{Settings for Counter Meta-Characters}
 %   \label{tab:countersettings}
-% \begin{tabularx}{\textwidth}{>{\ttfamily}lX}
+%   \makebox[\textwidth][c]{%
+% \begin{tabularx}{1.2\textwidth}{>{\ttfamily}lX}
 %  \toprule
 %   \multicolumn{1}{l}{Key name} & Description \\
 %  \midrule
@@ -2364,26 +2365,23 @@
 %   half width char=\meta{char} & Defines the given \meta{char} to be the half 
 %   width version of the counter value. By default this is the lower case 
 %   version of the counter character given with \texttt{char}. An empty value 
-%   for \meta{char} deactivates the definition of a half width character, which 
-%   is the main application of this key.\\
+%   for \meta{char} deactivates the definition of a half width character.\\
 %  \midrule
 %   increment=\meta{integer} & Sets the increment which is added everytime the counter
 %                              character is used. The number can be negative which causes
 %                              the counter to count down. Default: 1\\
 %   max value=\meta{integer} & Sets the maximum counter value. Default: \emph{not set}\\
 %   min value=\meta{integer} & Sets the minimum counter value. Default: \emph{not set}\\
-%   \color{gray}
-%   wraps=\meta{true\bar false} & (Planned) \color{gray}
-%                                 If set to |true| the counter wraps around, \ie it counts to the
-%                                 minimum value when counting over the maximum value or the other
-%                                 way around if |increment| is negative.
-%                                 Initially this is set to |false|. The default value for this 
-%                                 key is |true|, \ie "wraps" is equal to "wraps=true".\\
+%   wraps=\meta{true\pipe false} & If set to \texttt{true} the counter wraps around, \ie it counts to the
+%                                  minimum value when counting over the maximum value or the other
+%                                  way around if \texttt{increment} is negative.
+%                                  Initial value: \texttt{false}. Default value: \texttt{true}\\
 %  \bottomrule
 % \end{tabularx}
+% }%
 % \end{table}
 %
-% \paragraph*{Example:}\mbox{}\\*
+% \subsubsection*{Examples:}
 % \noindent
 % Counter character "Q" with base 16 (hexadecimal). "R" resets the 
 % counter. The counter value should be in blue text typer font.\\*\noindent
@@ -2395,6 +2393,26 @@
 % \tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}%
 % \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
 % }%
+%
+% \par\bigskip
+% \noindent
+% \begingroup
+% \lstset{basicstyle=\ttfamily\scriptsize}
+% \begin{examplecode}
+%    \scalebox{2}{%
+%    \begin{tikztimingtable}
+%      Dec&[timing/counter/new={char=Q,max value=15,wraps},timing/counter/Q/.style={font=\scriptsize}]                  33{Q}\\
+%      Bin&[timing/counter/new={char=Q,max value=15,base=2, digits=4,wraps},timing/counter/Q/.style={font=\tiny}]       33{Q}\\
+%      Oct&[timing/counter/new={char=Q,max value=15,base=8, digits=3,wraps},timing/counter/Q/.style={font=\tiny}]       33{Q}\\
+%      Hex&[timing/counter/new={char=Q,max value=15,base=16,digits=2,wraps},timing/counter/Q/.style={font=\scriptsize}] 33{Q}\\
+%     \extracode
+%      \begin{background}[shift={(0.1,0)},help lines]
+%        \vertlines{}
+%      \end{background}
+%    \end{tikztimingtable}
+%    }%
+% \end{examplecode}
+% \endgroup
 %
 % \clearpage
 % \library{advnodes}{Advanced Nodes}
@@ -4840,8 +4858,8 @@
     \def\tikztiming@lastchar{@}%
   \fi
   \edef\@tempa{\noexpand\timing
-    [name=row\the\c@tikztiming@nrows,alias=last row,\tikztiming@settings]
-     at (@last row)}%
+    [name=row\the\c@tikztiming@nrows,alias=last row,%
+     \expandafter\unexpanded\expandafter{\tikztiming@settings}] at (@last row)}%
   \expandafter\@tempa\expandafter{\expandafter[\tikztiming@lastchar]#2};
 }
 %    \end{macrocode}
@@ -7417,7 +7435,7 @@
   max value/.value required,
   min value/.initial=,
   min value/.value required,
-  wraps/.is if=\if@tikztiming@counter@wraps,
+  wraps/.is if=@tikztiming@counter@wraps,
   digits/.initial=,
   digits/.value required,
 }
@@ -7426,23 +7444,37 @@
 % \begin{macro}{\tikztiming@counter@new}[1]{Styles}
 %    \begin{macrocode}
 \def\tikztiming@counter@new#1{%
+ \begingroup
   \let\tikztiming@counter@char\empty
   \let\tikztiming@counter@resetchar\empty
   \def\tikztiming@counter@base{10}%
-  \let\tikztiming@counter@hwchar\relax
+  \let\tikztiming@counter@hwchar\empty
   \pgfqkeys{/tikz/timing/counter/opt}{#1}%
   \ifx\tikztiming@counter@char\empty
     \PackageError{tikz-timing-counters}{Counter character must be given using 
-    the 'char' key!}%
+    the 'char' key!}{}{}{}%
+    \endgroup
   \else
     \let\@tempb\@firstofone
-    \tikzset{timing/counter/opt/min value/.get=\@tempa}%
-    \ifx\@tempa\empty\else
-      \edef\@tempb##1{max({##1},{\@tempa})}%
-    \fi
-    \tikzset{timing/counter/opt/max value/.get=\@tempa}%
-    \ifx\@tempa\empty\else
-      \edef\@tempb##1{min({\@tempb{##1}},{\@tempa})}%
+    \if@tikztiming@counter@wraps
+      \tikzset{timing/counter/opt/min value/.get=\@tempa}%
+      \tikzset{timing/counter/opt/max value/.get=\@tempb}%
+      \ifx\@tempa\empty
+        \def\@tempa{0}%
+      \fi
+      \ifx\@tempb\empty
+        \PackageError{tikz-timing-counters}{The option 'wraps' needs the option 'max value' to be set!}{}{}{}%
+      \fi
+      \edef\@tempb##1{wrap({##1},{\@tempa},{\@tempb})}%
+    \else
+      \tikzset{timing/counter/opt/min value/.get=\@tempa}%
+      \ifx\@tempa\empty\else
+        \edef\@tempb##1{max({##1},{\@tempa})}%
+      \fi
+      \tikzset{timing/counter/opt/max value/.get=\@tempa}%
+      \ifx\@tempa\empty\else
+        \edef\@tempb##1{min({\@tempb{##1}},{\@tempa})}%
+      \fi
     \fi
     \edef\@tempb{%
       \@tempb{%
@@ -7457,6 +7489,7 @@
         {\pgfkeysvalueof{/tikz/timing/counter/opt/digits}}%
         {\@tempb}%
     }%
+    \expandafter\expandafter\expandafter\endgroup
     \expandafter\@tempa
   \fi
 }
@@ -7467,19 +7500,17 @@
 % Character}{Reset Character}{Number of Digits}{Increment Code}
 %    \begin{macrocode}
 \def\tikztiming@counter@new@#1#2#3#4#5#6{%
-  \global\@namedef{tikztiming@counter@#1}{0}%
+  \@namedef{tikztiming@counter@#1}{0}%
   \tikzset{timing/counter/#1/.append style={}}%
   \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}%
-  \ifx\tikztiming@counter@hwchar\empty\else
-    \ifx\tikztiming@counter@hwchar\relax
+  \ifx\empty#3\empty
       \tikztiming@iflower{#1}{}%
         {\lowercase{\tikztimingmetachar{#1}}[1]%
           {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}}%
-    \else
+  \else
       \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}%
-    \fi
   \fi
-  \ifx\tikztiming@counter@resetchar\empty\else
+  \ifx\empty#4\empty\else
     \tikztimingmetachar{#4}[1]{[|/utils/exec=\tikztiming@counter@reset{#1}{##1}|]}%
   \fi
 }
@@ -7514,6 +7545,7 @@
       \pgfmathdectoBase\pgfmathresult{\@nameuse{tikztiming@counter@#1}}{#2}%
       \pgfmathresult
     \fi
+    \let\pgfmath@parsefunction@wrap\tikztiming@wrap
     \pgfmathtruncatemacro\@tempa{#4}%
     \expandafter\global\expandafter\let\csname tikztiming@counter@#1\endcsname\@tempa
   \endgroup
@@ -7521,11 +7553,59 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@int}[2]{Integer Part}{Fractional Part}
+%
+% \subsubsection*{PGF Math Function `wrap'}
+% The following macros implement a function
+% `|wrap(|\meta{value}|,|\meta{min}|,|\meta{max}|)|' which wraps |value| 
+% from |min| to |max| and vice versa.
+%
+% To activate use |\let\pgfmath@parsefunction@wrap\tikztiming@wrap|.
+% \begin{macro}{\tikztiming@wrap}
 %    \begin{macrocode}
-\def\tikztiming@counter@int#1.#2\relax{%
-  #1%
+\def\tikztiming@wrap{%
+  \expandafter\tikztiming@wrap@
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@wrap@}
+%    \begin{macrocode}
+\def\tikztiming@wrap@(#1,#2,{%
+  \pgfmathparse@{#1}\edef\pgfmath@firstoperand{\pgfmathresult}%
+  \pgfmathparse@{#2}\edef\pgfmath@secondoperand{\pgfmathresult}%
+  \let\pgfmath@parsepostgroup\tikztiming@wrap@@
+  \pgfmath@startparsegroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@wrap@@}
+%    \begin{macrocode}
+\def\tikztiming@wrap@@{%
+  \edef\pgfmath@thirdoperand{\pgfmathresult}%
+  \tikztiming@wrap@@@{\pgfmath@firstoperand}%
+    {\pgfmath@secondoperand}{\pgfmath@thirdoperand}%
+  \pgfmath@postfunction
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@wrap@@@}
+%    \begin{macrocode}
+\def\tikztiming@wrap@@@#1#2#3{%
+  \begingroup
+    \pgfmath@x=#1pt\relax
+    \pgf@xa=#2pt\relax
+    \pgf@ya=#3pt\relax
+    \ifnum\pgfmath@x<\pgf@xa
+      \pgfmath@x=\pgf@ya
+    \fi
+    \ifnum\pgfmath@x>\pgf@ya
+      \pgfmath@x=\pgf@xa
+    \fi
+    \pgfmath@returnone\pgfmath@x
+  \endgroup
+}%
 %    \end{macrocode}
 % \end{macro}
 %
