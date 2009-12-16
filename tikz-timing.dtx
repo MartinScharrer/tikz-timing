@@ -2372,10 +2372,11 @@
 %                              the counter to count down. Default: 1\\
 %   max value=\meta{integer} & Sets the maximum counter value. Default: \emph{not set}\\
 %   min value=\meta{integer} & Sets the minimum counter value. Default: \emph{not set}\\
-%   wraps=\meta{true\pipe false} & If set to \texttt{true} the counter wraps around, \ie it counts to the
-%                                  minimum value when counting over the maximum value or the other
-%                                  way around if \texttt{increment} is negative.
-%                                  Initial value: \texttt{false}. Default value: \texttt{true}\\
+%   wraps=\meta{true{\normalfont\color{black}\pipe}false} &
+%                              If set to \texttt{true} the counter wraps around, \ie it counts to the
+%                              minimum value when counting over the maximum value or the other
+%                              way around if \texttt{increment} is negative.
+%                              Initial value: \texttt{false}. Default value: \texttt{true}\\
 %  \bottomrule
 % \end{tabularx}
 % }%
@@ -7421,14 +7422,14 @@
   new/.code={\tikztiming@counter@new{#1}},
   new/.value required,
   opt/.cd,
-  char/.estore in=\tikztiming@counter@char,
-  reset char/.estore in=\tikztiming@counter@resetchar,
-  base/.estore in=\tikztiming@counter@base,
-  half width char/.estore in=\tikztiming@counter@hwchar,
+  char/.initial=,
   char/.value required,
+  reset char/.initial=,
   reset char/.value required,
-  base/.value required,
+  half width char/.initial=,
   half width char/.value required,
+  base/.initial=10,
+  base/.value required,
   increment/.initial=1,
   increment/.value required,
   max value/.initial=,
@@ -7445,12 +7446,9 @@
 %    \begin{macrocode}
 \def\tikztiming@counter@new#1{%
  \begingroup
-  \let\tikztiming@counter@char\empty
-  \let\tikztiming@counter@resetchar\empty
-  \def\tikztiming@counter@base{10}%
-  \let\tikztiming@counter@hwchar\empty
   \pgfqkeys{/tikz/timing/counter/opt}{#1}%
-  \ifx\tikztiming@counter@char\empty
+  \tikzset{timing/counter/opt/char/.get=\@tempa}%
+  \ifx\@tempa\empty
     \PackageError{tikz-timing-counters}{Counter character must be given using 
     the 'char' key!}{}{}{}%
     \endgroup
@@ -7479,13 +7477,16 @@
     \edef\@tempb{%
       \@tempb{%
         \noexpand\noexpand
-        \expandafter\noexpand\csname tikztiming@counter@\tikztiming@counter@char\endcsname
+        \expandafter\noexpand\csname tikztiming@counter@\pgfkeysvalueof{/tikz/timing/counter/opt/char}\endcsname
         + \pgfkeysvalueof{/tikz/timing/counter/opt/increment}%
       }%
     }%
     \edef\@tempa{%
-      \noexpand\tikztiming@counter@new@{\tikztiming@counter@char}{\tikztiming@counter@base}%
-        {\tikztiming@counter@hwchar}{\tikztiming@counter@resetchar}%
+      \noexpand\tikztiming@counter@new@
+        {\pgfkeysvalueof{/tikz/timing/counter/opt/char}}%
+        {\pgfkeysvalueof{/tikz/timing/counter/opt/base}}%
+        {\pgfkeysvalueof{/tikz/timing/counter/opt/half width char}}%
+        {\pgfkeysvalueof{/tikz/timing/counter/opt/reset char}}%
         {\pgfkeysvalueof{/tikz/timing/counter/opt/digits}}%
         {\@tempb}%
     }%
