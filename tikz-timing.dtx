@@ -3151,6 +3151,7 @@
 % \iffalse
 %</doc>
 % \fi
+%
 % \chapter{Implementation}
 % \section{Package Header}
 % \iffalse
@@ -6201,12 +6202,14 @@
 % \iffalse
 %</package>
 % \fi
-% \subsection{Either High or Low}
-%  Provides character "E".
 %
+% \section{Libraries}
+%
+% \subsection{Either High or Low}
 % \iffalse
 %<*lib-either>
 % \fi
+% Provides character "E".
 %    \begin{macrocode}
 \tikztimingchar{E}{
   ++(0,0)
@@ -6995,7 +6998,7 @@
 % \fi
 %
 % \subsection{Clock Arrows}
-%  \iffalse
+% \iffalse
 %<*lib-clockarrows>
 %  \fi
 %    \begin{macrocode}
@@ -7067,13 +7070,13 @@
 % \fi
 %
 % \subsection{Arrows}
+% \iffalse
+%<*lib-arrows>
+% \fi
 % This library is only defining the "A" and "W" basic transitions ("AA", "AW", "WA", "WW").
 % While "W" is simply a copy of "A" with a different style. Both simple draw a line from |low|
 % to |high| and than move the position to the right according to the |width| value and back to 
 % the |low| position. The different arrow directions are done by different styles.
-% \iffalse
-%<*lib-arrows>
-% \fi
 %    \begin{macrocode}
 \tikzset{timing/.cd,
   A/.style={timing/a},
@@ -7636,7 +7639,7 @@
 %</lib-counters>
 % \fi
 %
-% \section{Advanced Nodes}
+% \subsection{Advanced Nodes}
 % \iffalse
 %<*lib-advnodes>
 % \fi
@@ -8242,7 +8245,7 @@
 %</lib-advnodes>
 % \fi
 %
-% \section{Intervals}
+% \subsection{Intervals}
 % \iffalse
 %<*lib-interval>
 % \fi
@@ -8323,11 +8326,11 @@
 %</lib-interval>
 % \fi
 %
-% \section{Beamer Overlay Support}
-% Experimental library for marginal beamer overlay support. It will change in future versions. Use at own risk!
+% \subsection{Beamer Overlay Support}
 % \iffalse
 %<*lib-beamer>
 % \fi
+% Experimental library for marginal beamer overlay support. It will change in future versions. Use at own risk!
 %    \begin{macrocode}
 
 \PackageWarning{\@currname}{This library is experimental and will change in future versions!}{}{}
@@ -8345,7 +8348,7 @@
 %</lib-beamer>
 % \fi
 %
-% \section{Compatibility with \protect\pkg{ifsym} Macros}
+% \subsection{Compatibility with \protect\pkg{ifsym} Macros}
 % \iffalse
 %<*lib-ifsym>
 % \fi
