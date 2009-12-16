@@ -7443,6 +7443,14 @@
 }
 %    \end{macrocode}
 %
+% \begin{macro}{\tikztimingcounter}[1]{Counter Character}
+%    \begin{macrocode}
+\def\tikztimingcounter#1{%
+  \csname tikztiming@counter@#1\endcsname
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@counter@new}[1]{Styles}
 %    \begin{macrocode}
 \def\tikztiming@counter@new#1{%
@@ -7567,7 +7575,7 @@
       \pgfmathresult
     \fi
     \edef\N{\@nameuse{tikztiming@counter@#1}}%
-    \pgfmathtruncatemacro\N{\N + {#4}}%
+    \pgfmathtruncatemacro\N{\N + #4}%
     #5%
     \expandafter\global\expandafter\let\csname tikztiming@counter@#1\endcsname\N
   \endgroup
