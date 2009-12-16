@@ -3275,6 +3275,8 @@
   restore/.style={/utils/exec={\expandafter\tikzset\expandafter{\tikztiming@saved@options}}},
   option/.style={/utils/exec={\g@addto@macro\tikztiming@saved@options{#1,}},#1},
   nooptions/.style={/utils/exec={\gdef\tikztiming@saved@options{}}},
+  popoptions/.style={/utils/exec={\tikztiming@popoptions}},
+  pushoptions/.style={/utils/exec={\tikztiming@pushoptions}},
   name/.style={inner sep=0pt,outer sep=0pt,minimum size=0pt},
   text format/.store in=\tikztiming@textformat,
   @/.style={},
@@ -4330,6 +4332,64 @@
 \def\tikztiming@onceoption|#1|]{%
   \tikztiming@output@addcode{ [#1] }%
   \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Local Scopes, Push/Pop Options}
+%
+% \begin{macro}{\tikztiming@defcode bgroup}
+%    \begin{macrocode}
+\tikztiming@defcode{\bgroup}{%
+  \tikztiming@output@addcode{ [timing/pushoptions] }%
+  \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@defcode egroup}
+%    \begin{macrocode}
+\tikztiming@defcode{\egroup}{%
+  \tikztiming@output@eaddcode{%
+    [timing/popoptions]
+    \newdraw
+  }%
+  \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@popoptions}
+%    \begin{macrocode}
+\def\tikztiming@popoptions{%
+  \expandafter\tikztiming@popoptions@\tikztiming@optionstack\relax
+}
+\def\tikztiming@optionstack{{}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@popoptions@}
+%    \begin{macrocode}
+\def\tikztiming@popoptions@#1#2\relax{%
+  \gdef\tikztiming@saved@options{#1}%
+  \gdef\tikztiming@optionstack{#2}%
+  \ifx\tikztiming@optionstack\empty
+    \gdef\tikztiming@optionstack{{}}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tikztiming@pushoptions}
+%    \begin{macrocode}
+\def\tikztiming@pushoptions{%
+  \message{^^J PUSH ^^J}
+  \expandafter\expandafter\expandafter\gdef
+  \expandafter\expandafter\expandafter\tikztiming@optionstack
+  \expandafter\expandafter\expandafter{%
+  \expandafter\expandafter\expandafter{\expandafter\tikztiming@saved@options\expandafter}\tikztiming@optionstack}%
 }
 %    \end{macrocode}
 % \end{macro}
