@@ -2367,11 +2367,12 @@
 %   version of the counter character given with \texttt{char}. An empty value 
 %   for \meta{char} deactivates the definition of a half width character.\\
 %  \midrule
-%   increment=\meta{integer} & Sets the increment which is added everytime the counter
-%                              character is used. The number can be negative which causes
+%   increment=\meta{pgfmath expression} &
+%                              Sets the increment which is added every time the counter
+%                              character is used. The increment can be negative which causes
 %                              the counter to count down. Default: 1\\
-%   max value=\meta{integer} & Sets the maximum counter value. Default: \emph{not set}\\
-%   min value=\meta{integer} & Sets the minimum counter value. Default: \emph{not set}\\
+%   max value=\meta{pgfmath expression} & Sets the maximum counter value. Default: \emph{not set}\\
+%   min value=\meta{pgfmath expression} & Sets the minimum counter value. Default: \emph{not set}\\
 %   wraps=\meta{true{\normalfont\color{black}\pipe}false} &
 %                              If set to \texttt{true} the counter wraps around, \ie it counts to the
 %                              minimum value when counting over the maximum value or the other
@@ -7566,7 +7567,7 @@
       \pgfmathresult
     \fi
     \edef\N{\@nameuse{tikztiming@counter@#1}}%
-    \pgfmathtruncatemacro\N{\N + ({#4})}%
+    \pgfmathtruncatemacro\N{\N + {#4}}%
     #5%
     \expandafter\global\expandafter\let\csname tikztiming@counter@#1\endcsname\N
   \endgroup
