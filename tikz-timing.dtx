@@ -7596,7 +7596,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@maxsat}[1]{Maximum Value}
+% \begin{macro}{\tikztiming@counter@minmaxsat}[2]{Minimum Value}{Maximum Value}
 %    \begin{macrocode}
 \def\tikztiming@counter@minmaxsat#1#2{%
   \tikztiming@counter@minsat{#1}%
@@ -7605,13 +7605,17 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@maxsat}[1]{Maximum Value}
+% \begin{macro}{\tikztiming@counter@wrap}[2]{Minimum Value}{Maximum Value}
 %    \begin{macrocode}
 \def\tikztiming@counter@wrap#1#2{%
   \pgfmathtruncatemacro\MIN{#1}%
   \pgfmathtruncatemacro\MAX{#2}%
-  \ifnum\N>\MAX \let\N\MIN \fi
-  \ifnum\N<\MIN \let\N\MAX \fi
+  \ifnum\N>\MAX
+    \pgfmathtruncatemacro\N{\MIN + (\N-\MAX-1)}%
+  \fi
+  \ifnum\N<\MIN
+    \pgfmathtruncatemacro\N{\MAX - (\MIN-\N+1)}%
+  \fi
 }
 %
 % Use the \pkg{pgfopts} to handle the package options.
