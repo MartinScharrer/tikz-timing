@@ -7447,40 +7447,52 @@
 \def\tikztiming@counter@new#1{%
  \begingroup
   \pgfqkeys{/tikz/timing/counter/opt}{#1}%
-  \tikzset{timing/counter/opt/char/.get=\@tempa}%
-  \ifx\@tempa\empty
+  \tikzset{timing/counter/opt/char/.get=\counterchar}%
+  \ifx\chounterchar\empty
     \PackageError{tikz-timing-counters}{Counter character must be given using 
     the 'char' key!}{}{}{}%
     \endgroup
   \else
-    \let\@tempb\@firstofone
+    \pgfkeys{/tikz/timing/counter/opt/min value/.get=\min}%
+    \pgfkeys{/tikz/timing/counter/opt/max value/.get=\max}%
     \if@tikztiming@counter@wraps
-      \tikzset{timing/counter/opt/min value/.get=\@tempa}%
-      \tikzset{timing/counter/opt/max value/.get=\@tempb}%
-      \ifx\@tempa\empty
-        \def\@tempa{0}%
+      \ifx\min\empty
+        \def\min{0}%
       \fi
-      \ifx\@tempb\empty
+      \ifx\max\empty
         \PackageError{tikz-timing-counters}{The option 'wraps' needs the option 'max value' to be set!}{}{}{}%
       \fi
-      \edef\@tempb##1{wrap({##1},{\@tempa},{\@tempb})}%
+      \def\@tempb{%
+        \noexpand\tikztiming@counter@wrap%
+          {\expandafter\unexpanded\expandafter{\min}}%
+          {\expandafter\unexpanded\expandafter{\max}}%
+      }%
     \else
-      \tikzset{timing/counter/opt/min value/.get=\@tempa}%
-      \ifx\@tempa\empty\else
-        \edef\@tempb##1{max({##1},{\@tempa})}%
-      \fi
-      \tikzset{timing/counter/opt/max value/.get=\@tempa}%
-      \ifx\@tempa\empty\else
-        \edef\@tempb##1{min({\@tempb{##1}},{\@tempa})}%
+      \ifx\min\empty
+        \ifx\max\empty
+          \let\@tempb\empty
+        \else
+          \def\@tempb{%
+            \noexpand\tikztiming@counter@maxsat%
+              {\expandafter\unexpanded\expandafter{\max}}%
+          }%
+        \fi
+      \else
+        \ifx\max\empty
+          \def\@tempb{%
+            \noexpand\tikztiming@counter@minsat%
+              {\expandafter\unexpanded\expandafter{\min}}%
+          }%
+        \else
+          \def\@tempb{%
+            \noexpand\tikztiming@counter@minmaxsat%
+              {\expandafter\unexpanded\expandafter{\min}}%
+              {\expandafter\unexpanded\expandafter{\max}}%
+          }%
+        \fi
       \fi
     \fi
-    \edef\@tempb{%
-      \@tempb{%
-        \noexpand\noexpand
-        \expandafter\noexpand\csname tikztiming@counter@\pgfkeysvalueof{/tikz/timing/counter/opt/char}\endcsname
-        + \pgfkeysvalueof{/tikz/timing/counter/opt/increment}%
-      }%
-    }%
+    \pgfkeys{/tikz/timing/counter/opt/increment/.get=\increment}%
     \edef\@tempa{%
       \noexpand\tikztiming@counter@new@
         {\pgfkeysvalueof{/tikz/timing/counter/opt/char}}%
@@ -7488,7 +7500,9 @@
         {\pgfkeysvalueof{/tikz/timing/counter/opt/half width char}}%
         {\pgfkeysvalueof{/tikz/timing/counter/opt/reset char}}%
         {\pgfkeysvalueof{/tikz/timing/counter/opt/digits}}%
+        {\expandafter\unexpanded\expandafter{\increment}}%
         {\@tempb}%
+        {\min}%
     }%
     \expandafter\expandafter\expandafter\endgroup
     \expandafter\@tempa
@@ -7497,19 +7511,24 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@new@}[6]{Character}{Base}{Half Width 
-% Character}{Reset Character}{Number of Digits}{Increment Code}
+% \begin{macro}{\tikztiming@counter@new@}[8]{Character}{Base}{Half Width 
+% Character}{Reset Character}{Number of Digits}{Increment}{Boundary Code}{Min Value}
 %    \begin{macrocode}
-\def\tikztiming@counter@new@#1#2#3#4#5#6{%
-  \@namedef{tikztiming@counter@#1}{0}%
+\def\tikztiming@counter@new@#1#2#3#4#5#6#7#8{%
+  \ifx\empty#8\empty
+    \@namedef{tikztiming@counter@#1}{0}%
+  \else
+    \expandafter
+    \pgfmathtruncatemacro\csname tikztiming@counter@#1\endcsname{#8}%
+  \fi
   \tikzset{timing/counter/#1/.append style={}}%
-  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}%
+  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}}}%
   \ifx\empty#3\empty
       \tikztiming@iflower{#1}{}%
         {\lowercase{\tikztimingmetachar{#1}}[1]%
-          {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}}%
+          {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}}}}%
   \else
-      \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}}}%
+    \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}}}%
   \fi
   \ifx\empty#4\empty\else
     \tikztimingmetachar{#4}[1]{[|/utils/exec=\tikztiming@counter@reset{#1}{##1}|]}%
@@ -7531,11 +7550,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@vs}[4]{Character}{Base}{Number of Digits}{Increment Code}
+% \begin{macro}{\tikztiming@counter@vs}[5]{Character}{Base}{Number of Digits}{Increment}{Boundary Code}
 % Note: \cs{pgfmathdectoBase} is only used for a base different to 10 to allow
 % negative number for decimal base.
 %    \begin{macrocode}
-\def\tikztiming@counter@vs#1#2#3#4{%
+\def\tikztiming@counter@vs#1#2#3#4#5{%
   \begingroup
     \ifx\empty#3\empty\else
       \pgfmathsetbasenumberlength{#3}%
@@ -7546,69 +7565,54 @@
       \pgfmathdectoBase\pgfmathresult{\@nameuse{tikztiming@counter@#1}}{#2}%
       \pgfmathresult
     \fi
-    \let\pgfmath@parsefunction@wrap\tikztiming@wrap
-    \pgfmathtruncatemacro\@tempa{#4}%
-    \expandafter\global\expandafter\let\csname tikztiming@counter@#1\endcsname\@tempa
+    \edef\N{\@nameuse{tikztiming@counter@#1}}%
+    \pgfmathtruncatemacro\N{\N + ({#4})}%
+    #5%
+    \expandafter\global\expandafter\let\csname tikztiming@counter@#1\endcsname\N
   \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
 %
+% The following macros checks the boundaries of the counter value. The value is stored in the
+% macro \cs{N}, the boundaries are provided as arguments. If necessary the value can be
+% adjusted by changing \cs{N}. All values are taken as \emph{integers}.
 %
-% \subsubsection*{PGF Math Function `wrap'}
-% The following macros implement a function
-% `|wrap(|\meta{value}|,|\meta{min}|,|\meta{max}|)|' which wraps |value| 
-% from |min| to |max| and vice versa.
-%
-% To activate use |\let\pgfmath@parsefunction@wrap\tikztiming@wrap|.
-% \begin{macro}{\tikztiming@wrap}
+% \begin{macro}{\tikztiming@counter@minsat}[1]{Minimum Value}
 %    \begin{macrocode}
-\def\tikztiming@wrap{%
-  \expandafter\tikztiming@wrap@
+\def\tikztiming@counter@minsat#1{%
+  \pgfmathtruncatemacro\MIN{#1}%
+  \ifnum\N<\MIN \let\N\MIN \fi
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@wrap@}
+% \begin{macro}{\tikztiming@counter@maxsat}[1]{Maximum Value}
 %    \begin{macrocode}
-\def\tikztiming@wrap@(#1,#2,{%
-  \pgfmathparse@{#1}\edef\pgfmath@firstoperand{\pgfmathresult}%
-  \pgfmathparse@{#2}\edef\pgfmath@secondoperand{\pgfmathresult}%
-  \let\pgfmath@parsepostgroup\tikztiming@wrap@@
-  \pgfmath@startparsegroup
+\def\tikztiming@counter@maxsat#1{%
+  \pgfmathtruncatemacro\MAX{#1}%
+  \ifnum\N>\MAX \let\N\MAX \fi
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@wrap@@}
+% \begin{macro}{\tikztiming@counter@maxsat}[1]{Maximum Value}
 %    \begin{macrocode}
-\def\tikztiming@wrap@@{%
-  \edef\pgfmath@thirdoperand{\pgfmathresult}%
-  \tikztiming@wrap@@@{\pgfmath@firstoperand}%
-    {\pgfmath@secondoperand}{\pgfmath@thirdoperand}%
-  \pgfmath@postfunction
+\def\tikztiming@counter@minmaxsat#1#2{%
+  \tikztiming@counter@minsat{#1}%
+  \tikztiming@counter@maxsat{#2}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@wrap@@@}
+% \begin{macro}{\tikztiming@counter@maxsat}[1]{Maximum Value}
 %    \begin{macrocode}
-\def\tikztiming@wrap@@@#1#2#3{%
-  \begingroup
-    \pgfmath@x=#1pt\relax
-    \pgf@xa=#2pt\relax
-    \pgf@ya=#3pt\relax
-    \ifnum\pgfmath@x<\pgf@xa
-      \pgfmath@x=\pgf@ya
-    \fi
-    \ifnum\pgfmath@x>\pgf@ya
-      \pgfmath@x=\pgf@xa
-    \fi
-    \pgfmath@returnone\pgfmath@x
-  \endgroup
-}%
-%    \end{macrocode}
-% \end{macro}
+\def\tikztiming@counter@wrap#1#2{%
+  \pgfmathtruncatemacro\MIN{#1}%
+  \pgfmathtruncatemacro\MAX{#2}%
+  \ifnum\N>\MAX \let\N\MIN \fi
+  \ifnum\N<\MIN \let\N\MAX \fi
+}
 %
 % Use the \pkg{pgfopts} to handle the package options.
 %    \begin{macrocode}
