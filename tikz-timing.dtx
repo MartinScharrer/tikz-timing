@@ -808,11 +808,11 @@
 
 
 \def\NewIn#1{
-  \marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
+  \marginpar{\strut\raggedleft\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
 }
 
-\def\UpdatedIn#1{
-  \marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{Updated in #1}}}}%
+\def\ExtIn#1{
+  \marginpar{\strut\raggedleft\textcolor{black}{\emph{Extended in #1}}}%
 }
 
 \iffalse
@@ -2329,7 +2329,7 @@
 %
 % \clearpage
 % \library{counters}{Counter Character}
-% The library "counters"\NewIn{v0.7}\UpdatedIn{v0.7a} allows the easy definition 
+% The library "counters"\NewIn{v0.7}\ExtIn{v0.7a} allows the easy definition 
 % of meta-characters which 
 % implement up-counters. These characters show the counter value using the 
 % "D{}" character and increment it by one every time they are used. A second 
@@ -2364,17 +2364,15 @@
 % \par\medskip
 %
 % \subsubsection*{Additional Macros}
-% \DescribeMacro{tikztimingcounter}{\marg{char}}
-% The current value of counter \meta{char} can be read using this macro.
-%
-% \DescribeMacro{tikztimingsetcounter}{\marg{char}\marg{pgfmath expression}}
-% The value of counter \meta{char} can be set using this macro.
+% \DescribeMacro*{tikztimingcounter}{\marg{char}}
+% \DescribeMacro*{tikztimingsetcounter}{\marg{char}\marg{pgfmath expression}}
+% The value of counter \meta{char} can be read or set using this macros.
 %
 % \begin{table}
 %   \caption{Settings for Counter Meta-Characters}
 %   \label{tab:countersettings}
 %   \makebox[\textwidth][c]{%
-% \begin{tabularx}{1.2\textwidth}{>{\ttfamily}lX}
+% \begin{tabularx}{1\textwidth}{>{\ttfamily}lX}
 %  \toprule
 %   \multicolumn{1}{l}{Key name} & Description \\
 %  \midrule
@@ -2434,10 +2432,10 @@
 % \begin{examplecode}
 %    \scalebox{2}{%
 %    \begin{tikztimingtable}
-%      Dec&[timing/counter/new={char=Q,max value=15,wraps},timing/counter/Q/.style={font=\scriptsize}]                  33{Q}\\
-%      Bin&[timing/counter/new={char=Q,max value=15,base=2, digits=4,wraps},timing/counter/Q/.style={font=\tiny}]       33{Q}\\
-%      Oct&[timing/counter/new={char=Q,max value=15,base=8, digits=3,wraps},timing/counter/Q/.style={font=\tiny}]       33{Q}\\
-%      Hex&[timing/counter/new={char=Q,max value=15,base=16,digits=2,wraps},timing/counter/Q/.style={font=\scriptsize}] 33{Q}\\
+%      Dec & [timing/counter/new={char=Q,max value=15,                 wraps,text style={font=\scriptsize}}]    33{Q}d\\
+%      Bin & [timing/counter/new={char=Q,max value=15,base=2, digits=4,wraps,text style={font=\tiny,scale=.8}}] 33{Q}d\\
+%      Oct & [timing/counter/new={char=Q,max value=15,base=8, digits=3,wraps,text style={font=\tiny}}]          33{Q}d\\
+%      Hex & [timing/counter/new={char=Q,max value=15,base=16,         wraps,text style={font=\scriptsize}}]    33{Q}d\\
 %     \extracode
 %      \begin{background}[shift={(0.1,0)},help lines]
 %        \vertlines{}
