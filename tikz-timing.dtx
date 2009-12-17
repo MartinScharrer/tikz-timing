@@ -654,8 +654,8 @@
 }
 
 \def\formatexample{%
-  \begingroup
   \par\noindent
+  \parbox{\textwidth}{\noindent
   \setlength{\@tempdima}{\wd\examplecodebox + \wd\exampleresultbox}%
   \ifthenelse{\linewidth < \@tempdima}%
     {%
@@ -668,8 +668,7 @@
       \minipage[c]{\wd\exampleresultbox}\hbox{\usebox{\exampleresultbox}}\endminipage%
       \\%
     }%
-  \endgroup
-  \par
+  }%
 }
 
 \def\tikztiming@embedexample{%
@@ -2389,7 +2388,7 @@
 %    & Defines the given \meta{char} to (re-)set the counter value to the `width'
 %      of the character, \ie the number preceding it. The lower case version of
 %      the reset \meta{char} is not defined.\\
-%   reset type=\meta{width\Pipe arg\Pipe both}
+%   reset type=\small\meta{width\Pipe arg\Pipe both\Pipe Both}
 %    & Defines the type of the reset character, \ie how the reset value is obtained.
 %       {\begin{tabular}{>{\ttfamily}ll}
 %         width & Width is reset value: `\meta{value}\meta{char}', \eg `\texttt{0R}'.
@@ -2404,14 +2403,14 @@
 %   base=\meta{Num 2-36} & Defines the numeric base of the counter. If not used the
 %     base 10 is used.\\
 %  \midrule
-%   increment=\meta{pgfmath expression} &
+%   increment=\small\meta{pgfmath expression} &
 %                              Sets the increment which is added every time the counter
 %                              character is used. This can be a formula which result is truncated 
 %                              to a integer. The current counter value can be referenced as \cs{N}.
 %                              The increment can be negative which causes
 %                              the counter to count down. Default: 1\\
-%   max value=\meta{pgfmath expression} & Sets the maximum counter value. Default: \emph{not set}\\
-%   min value=\meta{pgfmath expression} & Sets the minimum counter value. Default: \emph{not set}\\
+%   max value=\small\meta{pgfmath expression} & Sets the maximum counter value. Default: \emph{not set}\\
+%   min value=\small\meta{pgfmath expression} & Sets the minimum counter value. Default: \emph{not set}\\
 %   wraps=\meta{true\Pipe false} &
 %                              If set to \texttt{true} the counter wraps around, \ie it counts to the
 %                              minimum value when counting over the maximum value or the other
