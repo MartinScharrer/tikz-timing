@@ -2187,26 +2187,33 @@
 %     \bottomrule
 %   \end{tabular}
 %   \else
-%   \begin{tabular}{lc}
-%     \toprule
-%       Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{11\{C\}})           \\
-%     \midrule
-%       \texttt{rising arrows}           & \texttiming[timing/c/rising arrows]{10{C}}     \\
-  %       \texttt{falling arrows}          & \texttiming[timing/c/falling arrows]{10{C}}    \\
-  %       \texttt{no arrows}               & \texttiming[timing/c/no arrows]{10{C}}         \\
-  %       \texttt{dual arrows}             & \texttiming[timing/c/dual arrows]{10{C}}       \\
-  %     \bottomrule
-  %   \end{tabular}
-%   \hspace{1em}
-%   \begin{tabular}{lc}
-%     \toprule
-%       Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{11\{C\}})           \\
-%     \midrule
-%       \texttt{arrow pos=.5}            & \texttiming[timing/c/arrow pos=.5]{10{C}}      \\
-%       \texttt{arrow tip=latex}         & \texttiming[timing/c/arrow tip=latex]{10{C}}   \\
-%       \texttt{arrow tip=stealth}       & \texttiming[timing/c/arrow tip=stealth]{10{C}} \\
-%     \bottomrule
-%   \end{tabular}
+%   \begin{minipage}[t]{.49\textwidth}
+%    \vspace{0pt}\centering
+%    \begin{tabular}{lc}
+%      \toprule
+%        Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{11\{C\}})           \\
+%      \midrule
+%        \texttt{rising arrows}           & \texttiming[timing/c/rising arrows]{10{C}}     \\
+%        \texttt{falling arrows}          & \texttiming[timing/c/falling arrows]{10{C}}    \\
+%        \texttt{no arrows}               & \texttiming[timing/c/no arrows]{10{C}}         \\
+%        \texttt{dual arrows}             & \texttiming[timing/c/dual arrows]{10{C}}       \\
+%      \bottomrule
+%    \end{tabular}
+%   \end{minipage}
+%   \hfill
+%   \begin{minipage}[t]{.49\textwidth}
+%    \vspace{0pt}\centering
+%    \begin{tabular}{lc}
+%      \toprule
+%        Settings (\texttt{timing/c/.cd}) & Resulting Diagram (\texttt{11\{C\}})           \\
+%      \midrule
+%        \texttt{arrow pos=.7}            & \texttiming[timing/c/arrow pos=.7]{10{C}}      \\
+%        \texttt{arrow pos=.4}            & \texttiming[timing/c/arrow pos=.4]{10{C}}      \\
+%        \texttt{arrow tip=latex}         & \texttiming[timing/c/arrow tip=latex]{10{C}}   \\
+%        \texttt{arrow tip=stealth}       & \texttiming[timing/c/arrow tip=stealth]{10{C}} \\
+%      \bottomrule
+%    \end{tabular}
+%   \end{minipage}
 % \end{table}
 %
 % \clearpage
