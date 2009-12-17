@@ -2407,6 +2407,8 @@
 %   bg style=\meta{TikZ style(s)}   & Sets the background style of the counter.\\
 %   fg style=\meta{TikZ style(s)}   & Sets the foreground (line etc.) style of the counter.\\
 %   text style=\meta{TikZ style(s)} & Sets the text style of the counter.\\
+%   text format=\meta{\TeX code}    & Sets the format code of the counter value. This should be a macro which receives
+%                                     the counter value as first argument.\\
 %  \bottomrule
 % \end{tabularx}
 % }%
@@ -7534,10 +7536,13 @@
   fg style/.initial=,
   bg style/.initial=,
   text style/.initial=,
+  text format/.initial=,
   fg style/.value required,
   bg style/.value required,
   text style/.value required,
+  text format/.value required,
 }
+\def\tikztiming@counter@textformat{}%
 %    \end{macrocode}
 %
 % \begin{macro}{\tikztimingcounter}[1]{Counter Character}
@@ -7627,6 +7632,7 @@
     \pgfkeys{/tikz/timing/counter/opt/fg style/.get=\fgstyle}%
     \pgfkeys{/tikz/timing/counter/opt/bg style/.get=\bgstyle}%
     \pgfkeys{/tikz/timing/counter/opt/text style/.get=\textstyle}%
+    \pgfkeys{/tikz/timing/counter/opt/text format/.get=\textformat}%
 %    \end{macrocode}
 % Finally the \cs{tikztiming@counter@new@} macro is called with most of the 
 % settings as expanded arguments.
@@ -7645,6 +7651,7 @@
         {\expandafter\unexpanded\expandafter{\fgstyle}}%
         {\expandafter\unexpanded\expandafter{\bgstyle}}%
         {\expandafter\unexpanded\expandafter{\textstyle}}%
+        {\expandafter\unexpanded\expandafter{\textformat}}%
     }%
     \expandafter\expandafter\expandafter\endgroup
     \expandafter\@tempa
@@ -7682,10 +7689,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikztiming@counter@new@@}[4]{Character}{Foreground Style}{Background Style}{Text Style}
+% \begin{macro}{\tikztiming@counter@new@@}[5]{Character}{Foreground Style}{Background Style}{Text Style}
+% {Text format}
 % The counter styles are set up.
 %    \begin{macrocode}
-\def\tikztiming@counter@new@@#1#2#3#4{%
+\def\tikztiming@counter@new@@#1#2#3#4#5{%
   \tikzset{timing/counter/#1/.style={}}%
   \ifx\empty#2\empty\else
     \tikzset{timing/counter/#1/.append style={%
@@ -7698,6 +7706,11 @@
     }}%
   \fi
   \tikzset{timing/counter/#1/text/.style={#4}}%
+  \ifx\empty#5\empty\else
+    \tikzset{timing/counter/#1/.append style={%
+      /utils/exec={\def\tikztiming@counter@textformat{#5}}%
+    }}%
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -7725,10 +7738,11 @@
       \pgfmathsetbasenumberlength{#3}%
     \fi
     \ifnum#2=10
-      \@nameuse{tikztiming@counter@#1}%
+      \expandafter\expandafter\expandafter\tikztiming@counter@textformat
+      \expandafter\expandafter\expandafter{\csname tikztiming@counter@#1\endcsname}%
     \else
       \pgfmathdectoBase\pgfmathresult{\@nameuse{tikztiming@counter@#1}}{#2}%
-      \pgfmathresult
+      \expandafter\tikztiming@counter@textformat\expandafter{\pgfmathresult}%
     \fi
     \edef\N{\@nameuse{tikztiming@counter@#1}}%
     \pgfmathtruncatemacro\N{\N + #4}%
