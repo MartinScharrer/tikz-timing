@@ -2332,8 +2332,10 @@
 % counter values can be decimal (base-10, default), hexadecimal (base-16) or any 
 % other base from 2 to 36. By default the lower case version of the counter 
 % character is defined to produce the same output only with half the width.
-% The style `\texttt{timing/counter/\meta{char}}' (initially empty) is used to 
-% format the graphic style of this counter.
+% The styles `\texttt{timing/counter/\meta{char}}' and `\texttt{timing/counter/\meta{char}/text'
+% (both initially empty) are used to format the graphic and text style of this counter, respectively.
+% Because the "D{}" character is used internally the above styles need to change the corresponding
+% "D" styles. This changes are only local and do not affect further `real' "D" characters.
 %
 % Counter characters are defined using the TikZ key
 % `\texttt{timing/counter/new=}\linebreak[3]\ignorespaces
@@ -2344,6 +2346,9 @@
 %
 % Please note that these counter values are global like normal \LaTeX\ counters.
 % The should be reset in every timing diagram line before they are used.
+%
+% \DescribeMacro{\tikztimingcounter}{\marg{char}}
+% The current counter value of counter \meta{char} can be accessed using this macro.
 %
 % \begin{table}
 %   \caption{Settings for Counter Meta-Characters}
@@ -2369,7 +2374,9 @@
 %  \midrule
 %   increment=\meta{pgfmath expression} &
 %                              Sets the increment which is added every time the counter
-%                              character is used. The increment can be negative which causes
+%                              character is used. This can be a formula which result is truncated 
+%                              to a integer. The current counter value can be referenced as \cs{N}.
+%                              The increment can be negative which causes
 %                              the counter to count down. Default: 1\\
 %   max value=\meta{pgfmath expression} & Sets the maximum counter value. Default: \emph{not set}\\
 %   min value=\meta{pgfmath expression} & Sets the minimum counter value. Default: \emph{not set}\\
@@ -2388,11 +2395,11 @@
 % Counter character "Q" with base 16 (hexadecimal). "R" resets the 
 % counter. The counter value should be in blue text typer font.\\*\noindent
 % |\tikzset{timing/new counter={char=Q,base=16,reset char=R}}|\\*\noindent
-% |\tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}|\\*\noindent
+% |\tikzset{timing/counter/Q/text/.style={font=\ttfamily,blue}}|\\*\noindent
 % |\texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }|\\*\noindent
 % gives: {%
 % \tikzset{timing/counter/new={char=Q,base=16,reset char=R}}%
-% \tikzset{timing/counter/Q/.style={font=\ttfamily,blue}}%
+% \tikzset{timing/counter/Q/text/.style={font=\ttfamily,blue}}%
 % \texttiming{ 3Q 3{Q} R 12{Q} 2R Q qq 0R 3{Q} }%
 % }%
 %
@@ -4385,7 +4392,6 @@
 % \begin{macro}{\tikztiming@pushoptions}
 %    \begin{macrocode}
 \def\tikztiming@pushoptions{%
-  \message{^^J PUSH ^^J}
   \expandafter\expandafter\expandafter\gdef
   \expandafter\expandafter\expandafter\tikztiming@optionstack
   \expandafter\expandafter\expandafter{%
@@ -7594,13 +7600,17 @@
     \pgfmathtruncatemacro\csname tikztiming@counter@#1\endcsname{#8}%
   \fi
   \tikzset{timing/counter/#1/.append style={}}%
-  \tikztimingmetachar{#1}[1]{##1D{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}}}%
+  \tikzset{timing/counter/#1/text/.append style={}}%
+  \tikztimingmetachar{#1}[1]{ { [timing/counter/#1] ##1D{[timing/counter/#1/text]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}} } }%
   \ifx\empty#3\empty
       \tikztiming@iflower{#1}{}%
         {\lowercase{\tikztimingmetachar{#1}}[1]%
-          {##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}}}}%
+          { { [timing/counter/#1] ##1d{[timing/counter/#1/text]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}}} }%
+        }%
   \else
-    \tikztimingmetachar{#3}[1]{##1d{[timing/counter/#1]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}}}%
+    \tikztimingmetachar{#3}[1]{%
+      { [timing/counter/#1] ##1d{[timing/counter/#1/text]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}} }%
+    }%
   \fi
   \ifx\empty#4\empty\else
     \tikztimingmetachar{#4}[1]{[|/utils/exec=\tikztiming@counter@reset{#1}{##1}|]}%
