@@ -48,7 +48,7 @@
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.7
+  [v0.7a-dev
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
@@ -809,6 +809,10 @@
 
 \def\NewIn#1{
   \marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
+}
+
+\def\UpdatedIn#1{
+  \marginpar{\raisebox{.125ex}{\textcolor{black}{\emph{Updated in #1}}}}%
 }
 
 \iffalse
@@ -2325,17 +2329,14 @@
 %
 % \clearpage
 % \library{counters}{Counter Character}
-% The library "counters"\NewIn{v0.7} allows the easy definition of meta-characters which 
+% The library "counters"\NewIn{v0.7}\UpdatedIn{v0.7a} allows the easy definition 
+% of meta-characters which 
 % implement up-counters. These characters show the counter value using the 
 % "D{}" character and increment it by one every time they are used. A second 
 % character can be defined to (re-)set the counter to a specific value. The 
 % counter values can be decimal (base-10, default), hexadecimal (base-16) or any 
 % other base from 2 to 36. By default the lower case version of the counter 
 % character is defined to produce the same output only with half the width.
-% The styles `\texttt{timing/counter/\meta{char}}' and `\texttt{timing/counter/\meta{char}/text}'
-% (both initially empty) are used to format the graphic and text style of this counter, respectively.
-% Because the "D{}" character is used internally the above styles need to change the corresponding
-% "D" styles. This changes are only local and do not affect further `real' "D" characters.
 %
 % Counter characters are defined using the TikZ key
 % `\texttt{timing/counter/new=}\linebreak[3]\ignorespaces
@@ -2343,12 +2344,31 @@
 % "timing/new counter". The \meta{settings} are TikZ keys themselves and are 
 % shown by Table~\ref{tab:countersettings}.  One or more "new" keys (path 
 % "timing/counter" removed) can be given as library options.
+% The counter values are global like normal \LaTeX\ counters. They should be reset 
+% in every timing diagram line before they are used.
 %
-% Please note that these counter values are global like normal \LaTeX\ counters.
-% The should be reset in every timing diagram line before they are used.
+% \subsubsection*{Counter Style}
+% The styles `\texttt{timing/counter/\meta{char}}' and `\texttt{timing/counter/\meta{char}/text}'
+% (both initially empty) are used to format the graphic and text style of this counter, respectively.
+% Because the "D{}" character is used internally the above styles need to change the corresponding
+% "D" styles. This changes are only local and do not affect further `real' "D" characters.
 %
+% The settings "fg style", "bg style" and "text style" can be used to quickly define the
+% foreground (\ie line), background and text style of the counter. While the "text style" setting
+% simple sets the `\texttt{timing/counter/\meta{char}/text}' style, the other two are a shortcut for
+% \\*[\smallskipamount]
+% |   \tikzset{timing/counter/|\meta{char}|/.style={%|\\
+% |     timing/d/.style=|\marg{fg style}|,|\\
+% |     timing/d/background/.style=|\marg{bg style}|,|\\
+% |   }}|\\
+% \par\medskip
+%
+% \subsubsection*{Additional Macros}
 % \DescribeMacro{tikztimingcounter}{\marg{char}}
-% The current value of counter \meta{char} can be accessed using this macro.
+% The current value of counter \meta{char} can be read using this macro.
+%
+% \DescribeMacro{tikztimingsetcounter}{\marg{char}\marg{pgfmath expression}}
+% The value of counter \meta{char} can be set using this macro.
 %
 % \begin{table}
 %   \caption{Settings for Counter Meta-Characters}
@@ -2385,6 +2405,10 @@
 %                              minimum value when counting over the maximum value or the other
 %                              way around if \texttt{increment} is negative.
 %                              Initial value: \texttt{false}. Default value: \texttt{true}\\
+%  \midrule
+%   bg style=\meta{TikZ style(s)}   & Sets the background style of the counter.\\
+%   fg style=\meta{TikZ style(s)}   & Sets the foreground (line etc.) style of the counter.\\
+%   text style=\meta{TikZ style(s)} & Sets the text style of the counter.\\
 %  \bottomrule
 % \end{tabularx}
 % }%
@@ -7509,6 +7533,12 @@
   wraps/.is if=@tikztiming@counter@wraps,
   digits/.initial=,
   digits/.value required,
+  fg style/.initial=,
+  bg style/.initial=,
+  text style/.initial=,
+  fg style/.value required,
+  bg style/.value required,
+  text style/.value required,
 }
 %    \end{macrocode}
 %
@@ -7520,17 +7550,36 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztimingsetcounter}[1]{Counter Character}
+% The second argument (the value to set) is read by |\pgfmathtruncatemacro|.
+%    \begin{macrocode}
+\def\tikztimingsetcounter#1{%
+  \expandafter\pgfmathtruncatemacro\csname tikztiming@counter@#1\endcsname
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@counter@new}[1]{Styles}
+% Most parts of this macro is enclosed in a group to keep most changes locally.
 %    \begin{macrocode}
 \def\tikztiming@counter@new#1{%
  \begingroup
+%    \end{macrocode}
+% The argument is taken as pgf keys relative to the "/tikz/timing/counter/opt" path.
+% The counter character is mandatory and an error is raised if it is not defined.
+%    \begin{macrocode}
   \pgfqkeys{/tikz/timing/counter/opt}{#1}%
   \tikzset{timing/counter/opt/char/.get=\counterchar}%
-  \ifx\chounterchar\empty
+  \ifx\counterchar\empty
     \PackageError{tikz-timing-counters}{Counter character must be given using 
     the 'char' key!}{}{}{}%
     \endgroup
   \else
+%    \end{macrocode}
+% The counter boundary test code is now assembled in |\@tempb|.
+% If the "wraps" option was used the \cs{tikztiming@counter@wrap} macro is used with the
+% "min value" and "max value" as (expanded) arguments.
+%    \begin{macrocode}
     \pgfkeys{/tikz/timing/counter/opt/min value/.get=\min}%
     \pgfkeys{/tikz/timing/counter/opt/max value/.get=\max}%
     \if@tikztiming@counter@wraps
@@ -7546,6 +7595,10 @@
           {\expandafter\unexpanded\expandafter{\max}}%
       }%
     \else
+%    \end{macrocode}
+% Otherwise either the \cs{tikztiming@counter@maxsat}, \cs{tikztiming@counter@minsat} or \cs{tikztiming@counter@minmaxsat}
+% macro is used if "max value", "min value" or both are set, respectively.
+%    \begin{macrocode}
       \ifx\min\empty
         \ifx\max\empty
           \let\@tempb\empty
@@ -7570,6 +7623,16 @@
         \fi
       \fi
     \fi
+%    \end{macrocode}
+% The counter styles are set up.
+%    \begin{macrocode}
+    \pgfkeys{/tikz/timing/counter/opt/fg style/.get=\fgstyle}%
+    \pgfkeys{/tikz/timing/counter/opt/bg style/.get=\bgstyle}%
+    \pgfkeys{/tikz/timing/counter/opt/text style/.get=\textstyle}%
+%    \end{macrocode}
+% Finally the \cs{tikztiming@counter@new@} macro is called with most of the 
+% settings as expanded arguments.
+%    \begin{macrocode}
     \pgfkeys{/tikz/timing/counter/opt/increment/.get=\increment}%
     \edef\@tempa{%
       \noexpand\tikztiming@counter@new@
@@ -7581,6 +7644,9 @@
         {\expandafter\unexpanded\expandafter{\increment}}%
         {\@tempb}%
         {\min}%
+        {\expandafter\unexpanded\expandafter{\fgstyle}}%
+        {\expandafter\unexpanded\expandafter{\bgstyle}}%
+        {\expandafter\unexpanded\expandafter{\textstyle}}%
     }%
     \expandafter\expandafter\expandafter\endgroup
     \expandafter\@tempa
@@ -7599,8 +7665,6 @@
     \expandafter
     \pgfmathtruncatemacro\csname tikztiming@counter@#1\endcsname{#8}%
   \fi
-  \tikzset{timing/counter/#1/.append style={}}%
-  \tikzset{timing/counter/#1/text/.append style={}}%
   \tikztimingmetachar{#1}[1]{ { [timing/counter/#1] ##1D{[timing/counter/#1/text]\tikztiming@counter@vs{#1}{#2}{#5}{#6}{#7}} } }%
   \ifx\empty#3\empty
       \tikztiming@iflower{#1}{}%
@@ -7615,6 +7679,27 @@
   \ifx\empty#4\empty\else
     \tikztimingmetachar{#4}[1]{[|/utils/exec=\tikztiming@counter@reset{#1}{##1}|]}%
   \fi
+  \tikztiming@counter@new@@{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@counter@new@@}[4]{Character}{Foreground Style}{Background Style}{Text Style}
+% The counter styles are set up.
+%    \begin{macrocode}
+\def\tikztiming@counter@new@@#1#2#3#4{%
+  \tikzset{timing/counter/#1/.style={}}%
+  \ifx\empty#2\empty\else
+    \tikzset{timing/counter/#1/.append style={%
+      /tikz/timing/d/.style={#2}%
+    }}%
+  \fi
+  \ifx\empty#3\empty\else
+    \tikzset{timing/counter/#1/.append style={%
+      /tikz/timing/d/background/.style={#3}%
+    }}%
+  \fi
+  \tikzset{timing/counter/#1/text/.style={#4}}%
 }
 %    \end{macrocode}
 % \end{macro}
