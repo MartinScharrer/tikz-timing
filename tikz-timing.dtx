@@ -3341,18 +3341,18 @@
   adjust@xy/.style={%
     /utils/exec={%
       \tikz@textfont
+      \let\@tempa\fsize
+      \let\fsize\@tempdima
+      \fsize=\f@size pt\relax
       \pgfmathsetlength{\tikztiming@xunit}{\tikztiming@@xunit}%
       \pgfmathsetlength{\tikztiming@yunit}{\tikztiming@@yunit}%
+      \let\fsize\@tempa
     },%
     /tikz/x=\tikztiming@xunit, /tikz/y=\tikztiming@yunit,
   },
   unit/.style={%
     /utils/exec={%
       \def\tikztiming@@xunit{#1}%
-      \def\@gtempa{fsize}%
-      \ifx\tikztiming@@xunit\@gtempa
-        \def\tikztiming@@xunit{\f@size}%
-      \fi
       \let\tikztiming@@yunit\tikztiming@@xunit
     },%
     /tikz/timing/adjust@xy,%
@@ -3360,20 +3360,12 @@
   xunit/.style={%
     /utils/exec={%
       \def\tikztiming@@xunit{#1}%
-      \def\@gtempa{fsize}%
-      \ifx\tikztiming@@xunit\@gtempa
-        \def\tikztiming@@xunit{\f@size}%
-      \fi
     },%
     /tikz/timing/adjust@xy,%
   },
   yunit/.style={%
     /utils/exec={%
       \def\tikztiming@@yunit{#1}%
-      \def\@gtempa{fsize}%
-      \ifx\tikztiming@@yunit\@gtempa
-        \def\tikztiming@@yunit{\f@size}%
-      \fi
     },%
     /tikz/timing/adjust@xy,%
   },
