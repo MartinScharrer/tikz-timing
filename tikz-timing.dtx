@@ -23,7 +23,7 @@
 %
 % $Id$
 %</copyright>
-%\fi
+% \fi
 %
 % \iffalse
 %<*driver>
@@ -3551,8 +3551,8 @@
       \useasboundingbox (0,0) rectangle (\tikztimingwidth,\timingheight);
       \draw (0,0)
         coordinate (timing@refa)
-        coordinate [shift={(0,\timingheight)}]   (timing@refb)
-        coordinate [shift={(0,\timingheight/2)}] (timing@ref)
+        coordinate (timing@ref)  at (0,\timingheight/2)
+        coordinate (timing@refb) at (0,\timingheight)
         coordinate (timing/start)
         coordinate (timing/start base)
     }%
@@ -5094,18 +5094,22 @@
 % [5]{Optional settings}{Optional label@header Settings}{Label title}{Optional Diagram title settings}{Diagram title}
 %    \begin{macrocode}
 \def\tikztiming@tableheader@@@#1#2#3[#4]#5{%
-  \path [pos=0,timing/table/header]
+  \path
     let
         \p1 = (label@header),
         \p2 = (all labels.east),
-        \p3 = (all labels.west),
+        \p3 = (all labels.west)
+     in
+        (\x2,\y1) -- node [pos=0,anchor=base east,timing/table/header,timing/table/label header,#1,#2]
+          (label header)   {\ignorespaces #3\unskip\strut} (\x3,\y1)
+     ;
+  \path
+    let
         \p4 = (diagram@header),
         \p5 = (all rows.west),
         \p6 = (all rows.east)
      in
-        (\x2,\y1) -- node [anchor=base east,timing/table/label header,#1,#2]
-          (label header)   {\ignorespaces #3\unskip\strut} (\x3,\y1)
-        (\x5,\y4) -- node [anchor=base west,timing/table/diagram header,#1,#4]
+        (\x5,\y4) -- node [pos=0,anchor=base west,timing/table/header,timing/table/diagram header,#1,#4]
           (diagram header) {\ignorespaces #5\unskip\strut} (\x6,\y4)
      ;
   \tikztiming@tableheadtrue
@@ -5465,6 +5469,14 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\tikztiming@setref}[2]{Reference Name}{Shift Offset}
+%    \begin{macrocode}
+\def\tikztiming@setref#1#2{%
+  coordinate (#1) coordinate (#1) at ([shift={(#2)}]#1)
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \section{NewDraw Macros}
 %
 % \begin{macro}{\tikztiming@newdraw}
@@ -5705,7 +5717,7 @@
   --  (timing@save)
       ($ (timing@ref) + (#1,0) $)
      coordinate (timing@ref)
-     coordinate [shift={(\dslope/2,0)}] (timing@dend)
+     \tikztiming@setref{timing@dend}{\dslope/2,0}
   \tikztiming@oldnodecenter{%
     (0,-\height/2)
   }%
@@ -5753,14 +5765,14 @@
      +(0,0)
      coordinate (timing/start)
      coordinate (timing@ref)
-     coordinate [shift={(-\dslope/2,0)}] (timing@dstart)
+     \tikztiming@setref{timing@dstart}{-\dslope/2,0}
      +(0,\height/2)
   -- +(#1,\height/2)
      +(#1,-\height/2)
   --  ($ (timing@save) + (0,-\height/2) $)
     ++(#1,\height/2)
      coordinate (timing@ref)
-     coordinate [shift={(\dslope/2,0)}] (timing@dend)
+     \tikztiming@setref{timing@dend}{\dslope/2,0}
   \tikztiming@oldnodecenter{%
     (0,-\height/2)
   }%
@@ -5839,7 +5851,7 @@
   --  ($ (timing@save) + (0,-\height/2) $)
       ($ (timing@ref) + (#1,0) $)
     coordinate (timing@ref)
-    coordinate [shift={(\dslope/2,0)}] (timing@dend)
+    \tikztiming@setref{timing@dend}{\dslope/2,0}
   \tikztiming@oldnodecenter{%
     (0,-\height/2)
   }%
@@ -5961,34 +5973,34 @@
 }
 
 \tikztimingdef{HD@}{%
-  coordinate [shift={(0,-\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,-\height/2}
   -- ++(\dslope/2, -\height/2)
   \tikztiming@chard@{#1}%
 }
 
 \tikztimingdef{TD@}{%
-  coordinate [shift={(0,-\height/2 * \value{tikztimingtrans})}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,-\height/2 * \value{tikztimingtrans}}
   -- ++(\dslope/2, -\height/2 * \value{tikztimingtrans})
   \tikztiming@chard@{#1}%
 }
 
 \tikztimingdef{TD}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  coordinate [shift={(0,\height/2 * \value{tikztimingtrans})}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2 * \value{tikztimingtrans}}
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1}%
 }
 
 \tikztimingdef{TDD}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  coordinate [shift={(0,\height/2 * \value{tikztimingtrans})}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2 * \value{tikztimingtrans}}
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard@{#1}%
 }
 
 \tikztimingdef{TUD}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  coordinate [shift={(0,\height/2 * \value{tikztimingtrans})}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2 * \value{tikztimingtrans}}
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1}%
 }
@@ -5997,7 +6009,7 @@
 \tikztimingcpy{TUU}{TDD}
 
 \tikztimingdef{LD@}{%
-  coordinate [shift={(0,\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2}
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard@{#1}%
 }
@@ -6029,19 +6041,19 @@
 }
 
 \tikztimingdef{LD}{
-  coordinate [shift={(0,\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2}
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard{#1}%
 }
 
 \tikztimingdef{LDD}{
-  coordinate [shift={(0,\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2}
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard@{#1}
 }
 
 \tikztimingdef{LDU}{
-  coordinate [shift={(0,\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2}
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard{#1}
 }
@@ -6050,19 +6062,19 @@
 \tikztimingcpy{LUU}{LDD}
 
 \tikztimingdef{HD}{
-  coordinate [shift={(0,-\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,-\height/2}
   -- ++(\dslope/2, -\height/2)
   \tikztiming@chard{#1}
 }
 
 \tikztimingdef{HDD}{
-  coordinate [shift={(0,-\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,-\height/2}
   -- ++(\dslope/2, -\height/2)
   \tikztiming@chard@{#1}
 }
 
 \tikztimingdef{HDU}{
-  coordinate [shift={(0,-\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,-\height/2}
   -- ++(\dslope/2, -\height/2)
   \tikztiming@chard{#1}
 }
@@ -6218,13 +6230,13 @@
 \tikztimingcpy{{U@edge@}UU}{{D@edge@}DD}
 
 \tikztimingdef{H{D@edge@}}{
-  coordinate [shift={(0,-\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,-\height/2}
   -- ++(\dslope/2, -\height/2)
   \tikztiming@chard{#1}%
 }
 
 \tikztimingdef{L{D@edge@}}{
-  coordinate [shift={(0,\height/2)}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2}
   -- ++(\dslope/2, \height/2)
   \tikztiming@chard{#1}%
 }
@@ -6236,7 +6248,7 @@
 
 \tikztimingdef{T{D@edge@}}{
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  coordinate [shift={(0,\height/2 * \value{tikztimingtrans})}] (timing@ref)
+  \tikztiming@setref{timing@ref}{0,\height/2 * \value{tikztimingtrans}}
   -- ++(\dslope/2, \height/2 * \value{tikztimingtrans})
   \tikztiming@chard{#1}%
 }
@@ -6490,11 +6502,11 @@
 \tikztimingdef{HEE}{%
   \newdraw [\style,preaction={\bgstyle}]
   -- +(#1,0) coordinate (timing@refb) 
-      coordinate [shift={(0,-\height/2)}] (timing@ref)
+      \tikztiming@setref{timing@ref}{0,-\height/2}
   -- +($ (#1,-\height) + (\slope,0) $) coordinate (timing@refa)
   -- +(\slope,-\height)
   -- +(0,0)
-      coordinate [shift={(#1,-\height/2)}] (timing@ref)
+      \tikztiming@setref{timing@ref}{#1,-\height/2}
     ++($ (#1,-\height) + (\slope,0) $)%
   \code{\setcounter{tikztimingtranspos}{1}}%
   \code{\setcounter{tikztimingtrans}{-1}}%
@@ -6504,11 +6516,11 @@
 \tikztimingdef{LEE}{%
   \newdraw [\style,preaction={\bgstyle}]
   -- +(#1,0) coordinate (timing@refa)
-      coordinate [shift={(0,\height/2)}] (timing@ref)
+      \tikztiming@setref{timing@ref}{0,\height/2}
   -- +($ (#1,\height) + (\slope,0) $) coordinate (timing@refb)
   -- +(\slope,\height)
   -- +(0,0)
-    ++(#1,0) coordinate [shift={(0,\height/2)}] (timing@ref)
+    ++(#1,0) \tikztiming@setref{timing@ref}{0,\height/2}
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
   \newdraw
@@ -6527,7 +6539,7 @@
       +($ (#1,0) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, \height - \height/2 * \value{tikztimingtranspos}) $)
         coordinate (timing@refb)
      ++(#1,0) 
-      coordinate [shift={(0,-\height/2 * \value{tikztimingtrans})}] (timing@ref)
+      \tikztiming@setref{timing@ref}{0,-\height/2 * \value{tikztimingtrans}}
      ++(
           .5 * \slope  + .5 * \value{tikztimingtrans} * \slope,
          -.5 * \height - .5 * \value{tikztimingtrans} * \height
@@ -7011,7 +7023,7 @@
 }
 
 \tikztimingdef{@EH}{%
-  coordinate [shift={(0,\height/2)}] (timing/start)
+  \tikztiming@setref{timing/start}{0,\height/2}
   \newdraw [\bgstyle]
   -- +(0,\height)
   -- +($ (#1,\height) + (\slope,0) $)
@@ -7028,7 +7040,7 @@
 }
 
 \tikztimingdef{@ET}{%
-  coordinate [shift={(0,\height/2)}] (timing/start)
+  \tikztiming@setref{timing/start}{0,\height/2}
   \newdraw [\bgstyle]
   -- +(0,\height)
   {[\nstyle]
@@ -7058,7 +7070,7 @@
 }
 
 \tikztimingdef{@EL}{%
-  coordinate [shift={(0,\height/2)}] (timing/start)
+  \tikztiming@setref{timing/start}{0,\height/2}
   \newdraw [\bgstyle]
   -- +(0,\height)
   -- +(#1,\height)
@@ -7075,7 +7087,7 @@
 }
 
 \tikztimingdef{@ED}{%
-  coordinate [shift={(0,\height/2)}] (timing/start)
+  \tikztiming@setref{timing/start}{0,\height/2}
   \newdraw [\bgstyle]
   -- +(0,\height)
   -- +(#1,\height)
@@ -7093,7 +7105,7 @@
 }
 
 \tikztimingdef{@EZ}{%
-  coordinate [shift={(0,\height/2)}] (timing/start)
+  \tikztiming@setref{timing/start}{0,\height/2}
   \newdraw [\bgstyle]
   -- +(0,\height)
   -- +(#1,\height)
@@ -7112,7 +7124,7 @@
 
 
 \tikztimingdef{@EE}{%
-  coordinate [shift={(0,\height/2)}] (timing/start)
+  \tikztiming@setref{timing/start}{0,\height/2}
   \newdraw [\bgstyle]
   -- +(0,\height)
   -- +($ (#1,\height) + (\slope,0) $)
@@ -7123,7 +7135,8 @@
    -- +($ (#1,\height) + (\slope,0) $) coordinate (timing@refb)
    -- +(#1,0) coordinate (timing@refa)
    -- +(0,0)
-     ++(#1,0) coordinate [shift={(0,\height/2)}] (timing@ref)
+     ++(#1,0)
+     \tikztiming@setref{timing@ref}{0,\height/2}
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
 }
