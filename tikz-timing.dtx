@@ -3299,9 +3299,10 @@
 \let\tikztiming@back\empty
 \newlength\tikztiming@xunit
 \newlength\tikztiming@yunit
-\def\tikztiming@unit{1.6ex}%
-\setlength{\tikztiming@xunit}{\tikztiming@unit}%
-\setlength{\tikztiming@yunit}{\tikztiming@unit}%
+\def\tikztiming@@xunit{1.6ex}%
+\def\tikztiming@@yunit{1.6ex}%
+\setlength{\tikztiming@xunit}{\tikztiming@@xunit}%
+\setlength{\tikztiming@yunit}{\tikztiming@@yunit}%
 
 \def\tikztiming@setnum#1{%
   \pgfmathparse{#1}%
@@ -3330,7 +3331,7 @@
 % \section{TikZ Style Settings}
 %    \begin{macrocode}
 \tikzset{%
-  timing/.style={%
+  timing/.style={/tikz,
     line cap=round, line join=round,
     timing/adjust@xy
   },%
@@ -3340,23 +3341,41 @@
   adjust@xy/.style={%
     /utils/exec={%
       \tikz@textfont
-      \pgfmathsetlength{\tikztiming@xunit}{\tikztiming@unit}%
-      \pgfmathsetlength{\tikztiming@yunit}{\tikztiming@unit}%
+      \pgfmathsetlength{\tikztiming@xunit}{\tikztiming@@xunit}%
+      \pgfmathsetlength{\tikztiming@yunit}{\tikztiming@@yunit}%
     },%
     /tikz/x=\tikztiming@xunit, /tikz/y=\tikztiming@yunit,
   },
-  unit/.store in={\tikztiming@unit},
+  unit/.style={%
+    /utils/exec={%
+      \def\tikztiming@@xunit{#1}%
+      \def\@gtempa{fsize}%
+      \ifx\tikztiming@@xunit\@gtempa
+        \def\tikztiming@@xunit{\f@size}%
+      \fi
+      \let\tikztiming@@yunit\tikztiming@@xunit
+    },%
+    /tikz/timing/adjust@xy,%
+  },
   xunit/.style={%
     /utils/exec={%
-      \pgfmathsetlength{\tikztiming@xunit}{#1}%
+      \def\tikztiming@@xunit{#1}%
+      \def\@gtempa{fsize}%
+      \ifx\tikztiming@@xunit\@gtempa
+        \def\tikztiming@@xunit{\f@size}%
+      \fi
     },%
-    /tikz/x=\tikztiming@xunit,
+    /tikz/timing/adjust@xy,%
   },
   yunit/.style={%
     /utils/exec={%
-      \pgfmathsetlength{\tikztiming@yunit}{#1}%
+      \def\tikztiming@@yunit{#1}%
+      \def\@gtempa{fsize}%
+      \ifx\tikztiming@@yunit\@gtempa
+        \def\tikztiming@@yunit{\f@size}%
+      \fi
     },%
-    /tikz/y=\tikztiming@yunit,
+    /tikz/timing/adjust@xy,%
   },
   font/.style={%
     /tikz/font={#1},
