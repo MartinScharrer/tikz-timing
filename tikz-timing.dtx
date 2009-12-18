@@ -1639,7 +1639,8 @@
 % \eg the macros \cs{tableheader} and \cs{tablerules} are making use of them.
 % The headers added by \cs{tableheader} are rectangle nodes names "label header" and "row header"
 % and are placed between the x-coordinates of the inner and outer border of "all labels" and "all rows"
-% respectively. By default the TikZ setting "pos=0" is applied to place them in the inner border, but this
+% respectively. By default the TikZ settings "pos=0" and "anchor=base east"/"anchor=base west", respectively,
+% are applied to place them in the inner border, but this
 % can be changed using the styles "timing/table/header" and/or "timing/table/label header"/"timing/table/row header".
 % All nodes are shown in Figure~\ref{fig:distnodestable}.
 %
