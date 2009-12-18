@@ -1601,7 +1601,14 @@
 % |      \end{scope}|\\
 % |    \end{pgfonlayer}|
 %
-% \subsection*{Positions \& Scalings inside the Table}
+% \subsection*{Scaling the Table}
+% The standard "scale" setting of TikZ will not scale all parts of the table correctly,
+% \eg the line width and nodes will keep their original size. However there are scaled
+% relative to the font size. Alternatively the table can be scaled using the
+% \cs{scalebox}\marg{factor}\marg{content} macro from the \pkg{graphicx} package or 
+% be placed inside a scaled \cs{node} inside another \env{tikzpicture} environment.
+%
+% \subsection*{Positions \& Nodes inside the Table}
 %
 % \subsubsection*{Coordinates}
 % The first row starts at $y=0$ and the next rows are each
@@ -1618,10 +1625,11 @@
 % scaled using the period width. Example: |HHHh| has a width of 3.5.
 % The label column starts at $x=-$|\coldist| and the text is right align with 
 % the right border at this position.
+% See Figure~\ref{fig:distnodestable} for an illustration.
 %
 % \subsubsection*{Nodes}
 % Each timing line is a timing node (see section~\ref{sec:timingshape}) 
-% labeled as `|row|\meta{number}', where the first row has the number 1 and the last 
+% labeled (not fully correctly) as `|row|\meta{number}', where the first row has the number 1 and the last 
 % one the number provided in \cs{nrows}, but can also accessed using the alias "last row".
 % The corresponding labels are normal rectangle nodes named "label0", "label1", \dots,
 % `|label|\cs{nrows}'/"last label".
@@ -1629,10 +1637,16 @@
 % Both groups of `rows' and `labels' are enclosed in a rectangle node called "all rows" and
 % "all labels", respectively. These nodes can be used to draw material relative to the rows,
 % \eg the macros \cs{tableheader} and \cs{tablerules} are making use of them.
+% The headers added by \cs{tableheader} are rectangle nodes names "label header" and "row header"
+% and are placed between the x-coordinates of the inner and outer border of "all labels" and "all rows"
+% respectively. By default the TikZ setting "pos=0" is applied to place them in the inner border, but this
+% can be changed using the styles "timing/table/header" and/or "timing/table/label header"/"timing/table/row header".
+% All nodes are shown in Figure~\ref{fig:distnodestable}.
 %
 %
 % \begin{figure}
-%   \centering\Huge
+%   \centering
+%   \scalebox{1.15}{\Huge
 %   \begin{tikztimingtable}[semitransparent]
 %     First Row   &  H L H L H L \\
 %     Second Row  &  H L H L H L \\
@@ -1652,17 +1666,32 @@
 %       \node [right] at (last row.east) {row\cs{nrows}};
 %       \node [below right] at (last row.east) {last row\large\strut};
 %
+%       \path let \p1 = (label header.west), \p2 = (row header.east), \p3 = (all labels.west), \p4 = (all rows.east) in
+%           node [left]  at (\x3,\y1) {label header}
+%           node [right] at (\x4,\y2)   {row header}
+%         ;
+%       \begin{scope}[solid,semithick,black!80]\tiny
+%       \draw [|->] let \p1 = (label header.south east), \p2 = (all labels.west) in
+%           (\x1+.5\pgflinewidth,\y1-2pt) node [below left=-.4ex] {0}
+%           -- node [below=-.4ex,midway] {pos} (\x2,\y1-2pt) node [below right=-.4ex] {~\rlap{1}}
+%         ;
+%       \draw [|->] let \p1 = (row header.south west), \p2 = (all rows.east) in
+%           (\x1-.5\pgflinewidth,\y1-2pt) node [below right=-.4ex] {0}
+%           -- node [below=-.4ex,midway] {pos} (\x2,\y1-2pt) node [below left=-.4ex] {\llap{1}\,~}
+%         ;
+%       \end{scope}
+%
 %       \draw [dotted,color=green] (all rows.south west) rectangle (all rows.north east);
 %       \node [below right,green] at (all rows.east) {all rows};
 %
 %       \draw (label1.north west)   rectangle (label1.south east);
 %       \draw (label2.north west)   rectangle (label2.south east);
 %       \draw (last label.north west) rectangle (last label.south east);
-%       \path let \p1 = (label1.west), \p2 = (label2.west), \p3 = (last label.west) in
-%           node [left]  at (\x2,\y1)      {label1}
-%           node [left]  at (\x2,\y2)      {label2}
-%           node [left]  at (\x2,\y3)      {label\cs{nrows}}
-%           node [below left] at (\x2,\y3) {last label\large\strut}
+%       \path let \p1 = (label1.west), \p2 = (label2.west), \p3 = (last label.west), \p4 = (all labels.west) in
+%           node [left]  at (\x4,\y1)      {label1}
+%           node [left]  at (\x4,\y2)      {label2}
+%           node [left]  at (\x4,\y3)      {label\cs{nrows}}
+%           node [below left] at (\x4,\y3) {last label\large\strut}
 %         ;
 %
 %       \draw [dotted,color=green] (all labels.south west) rectangle (all labels.north east);
@@ -1703,8 +1732,9 @@
 %       \end{scope}
 %     \end{background}
 %    \end{extracode}
-%   \end{tikztimingtable}
-%   \caption{Nodes inside a \env{tikztimingtable}}
+%   \end{tikztimingtable}%^^A
+%   }%^^A
+%   \caption{Distances and Nodes inside a \env{tikztimingtable}}\label{fig:distnodestable}
 % \end{figure}
 %
 % \clearpage
@@ -1957,8 +1987,8 @@
 %     timing/table/rules                           & Used for \cs{tablerules} for top and bottom lines. \\
 %     timing/table/midrules                        & Used for \cs{tablerules} between table head and body.  \\
 %     timing/table/header                          & Used for \cs{tableheader}. \\
-%     timing/table/title header                    & Used for label@header in \cs{tableheader}. \\
-%     timing/table/diagram header                  & Used for diagram@header in \cs{tableheader}. \\
+%     timing/table/title header                    & Used for label header in \cs{tableheader}. \\
+%     timing/table/row header                      & Used for timing row header in \cs{tableheader}. \\
 %     timing/inline node                           & Used for nodes created by the \texttt{N} character. Defaults to \texttt{coordinate}.\\
 %     \midrule
 %     timing/outer sep=\meta{dim}                  & Sets outer separation around \cs{texttiming} macros. \\
@@ -3418,7 +3448,7 @@
   table/midrules/.style={line width=0.05em,line cap=butt},
   table/header/.style={timing/name},
   table/label header/.style={},
-  table/diagram header/.style={},
+  table/row header/.style={},
   slope/.code={%
     \tikztimingsetslope{#1}%
     \tikztimingsetdslope{2*#1}%
@@ -5109,8 +5139,8 @@
         \p5 = (all rows.west),
         \p6 = (all rows.east)
      in
-        (\x5,\y4) -- node [pos=0,anchor=base west,timing/table/header,timing/table/diagram header,#1,#4]
-          (diagram header) {\ignorespaces #5\unskip\strut} (\x6,\y4)
+        (\x5,\y4) -- node [pos=0,anchor=base west,timing/table/header,timing/table/row header,#1,#4]
+          (row header) {\ignorespaces #5\unskip\strut} (\x6,\y4)
      ;
   \tikztiming@tableheadtrue
 }
