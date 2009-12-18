@@ -1674,6 +1674,33 @@
 %         \draw (all labels.north west) -- +(0,3);
 %         \draw (all labels.north east) -- +(0,3);
 %       \end{scope}
+%
+%       \begin{scope}[solid,thick]
+%         \draw [fill] (0,0) circle (1pt) node [below right=-2pt] {\tiny origin};
+%         \draw [>=stealth,->] (-.25,0) -- (.4,0);
+%         \draw [>=stealth,->] (0,-.25) -- (0,.4);
+%       \end{scope}
+%
+%       \begin{scope}[dotted,gray]
+%         \draw (row1.south west) -- (label1.base west);
+%       \end{scope}
+%
+%       \begin{scope}[solid]
+%         \draw (row1.north east) -- ++(5em,0) coordinate (O) -- +(5pt,0);
+%         \draw (row1.south east) -- ++(5em,0) coordinate (A) -- +(5pt,0);
+%         \draw (row2.south east) -- ++(5em,0) coordinate (B) -- +(5pt,0);
+%         \draw [<->] (A) -- node[midway,right] {\cs{rowdist}} (B);
+%         \draw [<->] (O) -- node[midway,right] {\cs{yunit}} (A);
+%
+%         \draw (row1.south east)          -- ++(0,1.5) coordinate (A) -- +(0,5pt);
+%         \draw (row1.south east) ++(-1,1) -- ++(0,0.5) coordinate (B) -- +(0,5pt);
+%         \draw [<->] (B) -- (A) node[right] {\cs{xunit}};
+%
+%         \draw (row1.north west) -- ++(0,7em) coordinate (A) -- +(0,5pt);
+%         \draw let \p1 = (row1.north west), \p2 = (label1.north east) in
+%           (\x2,\y2) -- (\x2,\y1+7em) coordinate (B) -- +(0,5pt);
+%         \draw [<->] (B) -- (A) node[right] {\cs{coldist}};
+%       \end{scope}
 %     \end{background}
 %    \end{extracode}
 %   \end{tikztimingtable}
@@ -3632,6 +3659,13 @@
       \fi
       \tikzset{timing/before}%
       \tikztiming@str;%
+      \path let \p1 = (timing/end top), \p2 = (timing/end base),
+                \p3 = (timing/end), \p4 = (timing/start) in
+          [/utils/exec={%
+            \xdef\tikztiming@northeast{\noexpand\pgfpoint{.5*\pgf@pt@aa*\x1}{.5*\pgf@pt@bb*\y1}}%
+            \xdef\tikztiming@startpoint{\noexpand\pgfpoint{\pgf@pt@aa*(\x4-.5*\x1)}{\pgf@pt@bb*(\y4-.5*\y1)}}%
+            \xdef\tikztiming@endpoint{\noexpand\pgfpoint{\pgf@pt@aa*(\x3-.5*\x1)}{\pgf@pt@bb*(\y3-.5*\y1)}}%
+          }];
       \node [shape=tikztiming@shape,anchor=origin,#1] at (0,0) {};
       \tikzset{timing/after}%
     \end{scope}%
@@ -4077,9 +4111,9 @@
   \tikztiming@output@flush
   \global\let\tikztimingwidth\tikztimingwidth
   \tikztiming@addtostr{ coordinate (timing/end)
-    let \p1 = (timing/start base), \p2 = (timing/end) in
+    let \p1 = (timing/start base), \p2 = (timing/end), \p3 = (0,1) in
       coordinate (timing/end base) at (\x2,\y1)
-      coordinate (timing/end top)  at (\x2,1+\y1)
+      coordinate (timing/end top)  at (\x2,\y1+\y3)
   }%
   \endgroup
   \tikztiming@endhook%
@@ -5154,24 +5188,9 @@
 % \section{Shapes}
 %    \begin{macrocode}
 \pgfdeclareshape{tikztiming@shape}{%
-  \savedanchor\northeast{\pgfpointxy{.5*\tikztimingwidth}{.5}}%
-  \savedanchor\northeastborder{\pgfpointxy{.5*\tikztimingwidth+0.1}{.6}}%
-  \savedanchor\startpoint{%
-    \pgfpointanchor{timing/start}{center}%
-    \@tempdima=\pgf@x
-    \@tempdimb=\pgf@y
-    \pgfpointxy{-.5*\tikztimingwidth}{-.5}%
-    \advance\pgf@x by \@tempdima
-    \advance\pgf@y by \@tempdimb
-  }%
-  \savedanchor\endpoint{%
-    \pgfpointanchor{timing/end}{center}%
-    \@tempdima=\pgf@x
-    \@tempdimb=\pgf@y
-    \pgfpointxy{-.5*\tikztimingwidth}{-.5}%
-    \advance\pgf@x by \@tempdima
-    \advance\pgf@y by \@tempdimb
-  }%
+  \savedanchor\northeast{\tikztiming@northeast}%
+  \savedanchor\startpoint{\tikztiming@startpoint}%
+  \savedanchor\endpoint{\tikztiming@endpoint}%
   \anchor{center}{\pgfpointorigin}%
   \anchor{start}{\startpoint}%
   \anchor{end}{\endpoint}%
@@ -5202,7 +5221,7 @@
   \anchorborder{%
     \@tempdima=\pgf@x
     \@tempdimb=\pgf@y
-    \pgfpointborderrectangle{\pgfpoint{\@tempdima}{\@tempdimb}}{\northeastborder}%
+    \pgfpointborderrectangle{\pgfpoint{\@tempdima}{\@tempdimb}}{\northeast}%
   }%
 }
 %    \end{macrocode}
