@@ -1601,18 +1601,11 @@
 % |      \end{scope}|\\
 % |    \end{pgfonlayer}|
 %
-% \ifprintversion\else
-%   \clearpage
-% \fi
 % \subsection*{Positions \& Scalings inside the Table}
-% \textbf{Note:} The anchors provided by the timing shape 
-% (Section~\ref{sec:timingshape}) should now be used to position additional 
-% graphics.
 %
+% \subsubsection*{Coordinates}
 % The first row starts at $y=0$ and the next rows are each
 % |-1*\rowdist| lower than the previous one.
-% ^^A The very last one can be accessed by the tikz coordinate `\texttt{(last
-% ^^A row)}'.
 % The vertical unit is 1 \textsf{signal height} and the default row distance is 
 % `2' (=$2\times$\textsf{signal height}).  This means that a normal table with 
 % three rows goes from $y=+1$ (base line at 0 + 1 \textsf{signal height}) to 
@@ -1626,8 +1619,20 @@
 % The label column starts at $x=-$|\coldist| and the text is right align with 
 % the right border at this position.
 %
+% \subsubsection*{Nodes}
+% Each timing line is a timing node (see section~\ref{sec:timingshape}) 
+% labeled as `|row|\meta{number}', where the first row has the number 1 and the last 
+% one the number provided in \cs{nrows}, but can also accessed using the alias "last row".
+% The corresponding labels are normal rectangle nodes named "label0", "label1", \dots,
+% `|label|\cs{nrows}'/"last label".
+%
+% Both groups of `rows' and `labels' are enclosed in a rectangle node called "all rows" and
+% "all labels", respectively. These nodes can be used to draw material relative to the rows,
+% \eg the macros \cs{tableheader} and \cs{tablerules} are making use of them.
+%
+%
 % \begin{figure}
-%   \centering\LARGE
+%   \centering\Huge
 %   \begin{tikztimingtable}[semitransparent]
 %     First Row   &  H L H L H L \\
 %     Second Row  &  H L H L H L \\
