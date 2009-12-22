@@ -1309,17 +1309,17 @@
 % N\oarg{\tiny Settings}\parg{\tiny Name}\marg{\tiny Content} & Adds node at 
 % current position.  All three arguments are optional.  \Example{H N(a1) L}\\
 %   \midrule
-% {}[\meta{TikZ Settings}]  & Executes given TikZ settings during the drawing 
+% {}[\meta{TikZ Keys}]  & Executes given TikZ settings during the drawing 
 % process. This settings will be re-executed when the internal drawing path is renewed which 
 % can cause side-effects. \Example{H[blue]LH} \\
-% {}[|\meta{TikZ Settings}|]  & Executes given TikZ settings during the drawing 
+% {}[|\meta{TikZ Keys}|]  & Executes given TikZ settings during the drawing 
 % process like \texttt{[ ]} but does not re-executes them.
 % {\Example{D{.} [|/utils/exec={\def\m{...}}|] D{.} D{.}}} \\
-% {}[!\meta{TikZ Settings}!]  & Executes given TikZ settings during the 
+% {}[!\meta{TikZ Keys}!]  & Executes given TikZ settings during the 
 % \emph{parsing} process. Because this makes only sense for internal settings 
 % the default path is `\texttt{/tikz/timing}', not `\texttt{/tikz}' like in all  
 % other settings macros. \Example{H[!wscale=2.5!]LH} \\
-% {}[[\meta{TikZ Settings}]]  & Executes given TikZ settings first during the 
+% {}[[\meta{TikZ Keys}]]  & Executes given TikZ settings first during the 
 % parsing process and again during the drawing process. This is for settings 
 % which are needed for width calculations and again for the drawing code, \eg 
 % the slope values. \Example{H[[timing/slope=.5]]L $\slope$H} \\
@@ -1411,7 +1411,7 @@
 % \newpage
 % \section{Macro for use inside TikZ-Pictures}
 %
-% \DescribeMacro{timing}{\oarg{TikZ Settings}\ ^^A
+% \DescribeMacro{timing}{\oarg{TikZ Keys}\ ^^A
 % at \parg{TikZ Coordinate}\ \{\oarg{initial character}\meta{characters}\};}
 % This macro does the same as \cs{texttiming} but is designed to be used inside 
 % a \envv{tikzpicture} environment and only there. Like normal TikZ macros 
@@ -1485,7 +1485,7 @@
 % \clearpage
 % \section{Table for Timing Diagrams}
 % \DescribeEnv{tikztimingtable}{\oarg{TikZ settings for whole 
-% table}\\\meta{Signal Name}\ \ \&\ \ \oarg{\small Init.~Char./TikZ Settings for 
+% table}\\\meta{Signal Name}\ \ \&\ \ \oarg{\small Init.~Char./TikZ Keys for 
 % Row}\ \meta{Characters} \textbackslash\textbackslash\\\dots\\
 % \hspace*{-1em}\cs{extracode}\ \% Optional\\\meta{additional code}}
 % This environment can be used to typeset multi-line timing diagrams.  The 
@@ -1501,7 +1501,7 @@
 % names, respectively.  Additional \pkg{tikz} drawing code can be insert at the 
 % end of the table using \cs{extracode}.
 %
-% \DescribeMacro{extracode}{\oarg{TikZ Settings}}
+% \DescribeMacro{extracode}{\oarg{TikZ Keys}}
 % This macro is only defined inside a \env{tikztimingtable} environment. In earlier
 % versions of this package it could only be used after the last table line (\ie after a |\\|).
 % If used there all code between it and the |\end{tikztimingtable}| will be placed inside the same 
@@ -1520,7 +1520,7 @@
 % anywhere inside the table, including at the very start before any rows are processed. Early
 % insertion of extra code is necessary for \eg limiting the bounding box or setting up a clipping path.
 %
-% \DescribeEnv{extracode}{\oarg{TikZ Settings}\\\meta{extra drawing code}}
+% \DescribeEnv{extracode}{\oarg{TikZ Keys}\\\meta{extra drawing code}}
 % Instead\NewIn{v0.7} of using \cs{extracode} \dots \cs{endextracode}, which is actual plain\TeX\ syntax, this 
 % \LaTeX\ style environment can be used. Like any environment it creates a \TeX\ group around its 
 % content, but no TikZ |scope| is created to allow drawing code (\eg clipping paths) to affect the
@@ -1533,14 +1533,14 @@
 % The following macros are only defined inside a \env{tikztimingtable} after the 
 % macro \cs{extracode}. They are useful for drawing additional material.
 %
-% \DescribeMacro{tablegrid}{\meta{*}\oarg{TikZ Settings}}
+% \DescribeMacro{tablegrid}{\meta{*}\oarg{TikZ Keys}}
 % After \css{extracode} this macro draws a grid in the background of the table.
 % A separate grid is drawn for each row. The normal version draws all grids with 
 % the width of the widest row while the star version draws them with the width 
 % of the corresponding row. Because this macro draws material into the |background|
 % layer it must not be placed inside a |pgfonlayer| environment itself.
 %
-% \DescribeMacro{fulltablegrid}{\oarg{TikZ Settings}}
+% \DescribeMacro{fulltablegrid}{\oarg{TikZ Keys}}
 % After \css{extracode} this macro draws a big grid over all rows in the 
 % background of the table.
 %
@@ -1561,7 +1561,7 @@
 % diagram line in the table. Example: If the longest line would be
 % "H 2.3L z" than \cs{twidth} would be $1+2.3+0.5=3.8$.
 %
-% \DescribeMacro{horlines}{\oarg{TikZ Settings}\marg{list}}
+% \DescribeMacro{horlines}{\oarg{TikZ Keys}\marg{list}}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
 % line of the rows given by \meta{list}. The PGF macro 
 % \css{foreach}\footnote{See the \texttt{pgf} manual for more details.} is 
@@ -1572,18 +1572,18 @@
 % If the list is empty the default "1,2,...,\nrows" is used which draws lines 
 % for all rows.
 %
-% \DescribeMacro{vertlines}{\oarg{TikZ Settings}\marg{list}}
+% \DescribeMacro{vertlines}{\oarg{TikZ Keys}\marg{list}}
 % Like \cs{horlines} but draws vertical lines and the listed numbers a relative 
 % to the basic width.
 % If the list is empty the default "0,1,...,\twidth" is used which draws lines 
 % after every period width.
 %
-% \DescribeMacro{tableheader}{\oarg{TikZ Settings}\marg{Description 
+% \DescribeMacro{tableheader}{\oarg{TikZ Keys}\marg{Description 
 % Title}\marg{Signal Title}}
 % This macro adds a table head row on top of the table. The two mandatory 
 % arguments provide the header text for the description and signal columns.
 %
-% \DescribeMacro{tablerules}{\oarg{TikZ Settings}}
+% \DescribeMacro{tablerules}{\oarg{TikZ Keys}}
 % This macro adds top and bottom rules to the table in the same (or at least 
 % very similar) way as the \texttt{booktabs} package is doing it for normal 
 % \texttt{tabular}s. The current bounding box is used to calculate the needed 
@@ -1592,11 +1592,11 @@
 % also draws a thinner horizontal line (like \texttt{booktabs} \cs{midrule}) 
 % between the table head and body.
 %
-% \DescribeEnv{background}{\oarg{TikZ Settings}\\\meta{drawing commands}}
+% \DescribeEnv{background}{\oarg{TikZ Keys}\\\meta{drawing commands}}
 % This environment can be used to draw material on the |background| layer and is 
 % an abbreviation for:\\[\medskipamount]
 % |    \begin{pgfonlayer}{background}|\\
-% |      \begin{scope}|\oarg{TikZ Settings}\\
+% |      \begin{scope}|\oarg{TikZ Keys}\\
 % |        |\meta{drawing commands}\\
 % |      \end{scope}|\\
 % |    \end{pgfonlayer}|
@@ -1922,105 +1922,140 @@
 %  \texttiming{ HL .2w HLHLH 3w LH 1W LH }}
 %
 % \clearpage
-% \chapter{Styles}\label{sec:styles}
-% The generated logic signals are drawn using the style mechanism provided by 
-% \pkg{tikz}, which itself uses |pgfkeys| for this purpose. This styles are
-% defined and can be redefined using 
-% \css{tikzset}|{|\meta{style name}|/.style=|\meta{value}|,}|.  They can also be 
-% used in all places where \meta{TikZ Settings} is mentioned.  Please note that 
-% path/draw specific settings might not survive the transition to characters 
-% which have there own color, because these start a new drawing path.  For a 
-% more detailed explanation why this is necessary see the \pkg{tikz} manual.  
-% However, timing specific settings are saved and restored between internal 
-% paths.
-%
-% The package follows the directory structures approach used by TikZ/PGF and 
-% places all styles and other settings under the ``subdirectory'' "timing" in 
+% \chapter{TikZ Keys for Styles, Settings and Actions}\label{sec:styles}
+% TikZ itself uses the |pgfkeys| package to define and apply drawing styles and settings.
+% The same method is also used for |tikz-timing| which 
+% places all of the keys under the ``subdirectory'' "timing" in 
 % the main ``directory'' `tikz', which is the default when \css{tikzset} is 
-% used.\\
-% ^^AExample: The slope of the transitions can be changed using the key 
-% ^^A"timing/slope", which can also written in the absolute form 
-% ^^A"/tikz/timing/slope".
+% used.
+% This keys are simply called \emph{TikZ Keys} throughout this manual and
+% can be used in all places where \meta{TikZ Keys} is mentioned, while some only make sense at specific
+% places.
+% Three types of keys 
+% are used by this package: styles, settings and actions.
 %
-% ^^AThe Table~\ref{tab:styles} lists all styles defined by this package.
-% \begin{center}^^A{table}[b]
-%   \tablecaption{TikZ Styles and Settings provided and used by this Package.}
-%   \label{tab:styles}
-%   \def\en{\,\textsf{--}\,}
-%   \let\origtabular\tabular
-%   \let\endorigtabular\endtabular
-%   \def\tabular{\begingroup
-%     \setbox\mysb\hbox\bgroup
-%     \origtabular}%
-%   \def\endtabular{\endorigtabular\egroup\makebox[\textwidth][c]{\usebox\mysb}
-%   \endgroup}%
-%   \tablefirsthead{%
+% Styles simply define the style in which a certain element is drawn, \eg in which color or line width.
+% This styles are defined and can be redefined using 
+% \css{tikzset}|{|\meta{style name}|/.style=|\meta{value}|}|. However, while some styles
+% are initial empty, some hold internal settings and therefore user styles should only be added
+% using `|.append style=|\meta{value}'.
+%
+% Settings are TikZ keys which await an argument and set an internal macro or length. They are
+% like \cs{setlength} and \cs{renewcommand}. They should not be redefined by the user.
+%
+% Action are TikZ keys which perform a drawing or other action on the current element, either directly or
+% by en-/disable an internal setting which then in turn triggers the drawing process. Therefore some
+% actions can be globally and/or locally but others only make sense if used locally on a single |tikz-timing|
+% macro or environment or even a scope inside a \env{tikztimingtable}. 
+% Action can be very similar to settings but they always execute code instead of only setting/redefining it.
+%
+% \begingroup
+% \def\C{Action}
+% \def\S{Style}
+% \def\s{Setting}
+% \def\en{\,\textsf{--}\,}
+%
+% \section{General}
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
 %     \toprule
-%     \normalfont Style/Setting & Description \\
+%     \normalfont TikZ Key      & Type & Description \\
 %     \midrule
-%   }%
-%   \tablehead{%
-%     \multicolumn{2}{c}%
-%     {\raisebox{\belowcaptionskip}{\tablename\ \thetable{} --
-%     continued from previous page}} \\
+%     timing                                     & \S & Base settings like signal height and period width.\\
+%     timing/font=\meta{font commands}           & \s & Sets the normal \texttt{font} key and sets \texttt{x}/\texttt{y} keys to 1.6ex.\\
+%     timing/intext                              & \S & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
+%     timing/picture                             & \S & Usable for own \texttt{tikzpictures} to set timing settings.\\
+%     timing/inline node                         & \S & Used for nodes created by the \texttt{N} character. Defaults to \texttt{coordinate}.\\
+%     \midrule
+%     timing/initchar=\meta{char}                & \s & Sets initial character.  Only valid as first optional argument in table rows or in \cs{texttiming}.\\
+%     \midrule
+%     timing/metachar=\marg{C}\oarg{\#arg}\marg{G}& \C& Sets meta-character \meta{C} to character group \meta{G}.\\
+%     \bottomrule
+%   \end{tabularx}
+%
+% \section{Slopes}
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
 %     \toprule
-%     \normalfont Style/Setting & Description \\
+%     \normalfont TikZ Key      & Type & Description \\
 %     \midrule
-%   }%
-%   \tabletail{%
+%     timing/slope=\meta{0.0\en1.0}              & \s & Sets slope for logic transitions. \newline This also sets \texttt{dslope=2*slope}, \texttt{zslope=slope/2}.\\
+%     timing/lslope=\meta{0.0\en1.0}             & \s & Sets slope for logic transitions only. Default: 0.1\\
+%     timing/dslope=\meta{0.0\en1.0}             & \s & Sets slope for data transitions. Default: 0.2\\
+%     timing/zslope=\meta{0.0\en1.0}             & \s & Sets slope for Z transitions. Default: 0.05\\
 %     \bottomrule
-%     ^^A\multicolumn{2}{r}{Continued on next page}\\
-%   }
-%   \tablelasttail{%
+%   \end{tabularx}
+%
+% \section{Texttiming}
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont TikZ Key      & Type & Description \\
+%     \midrule
+%     timing/outer sep=\meta{dim}                & \s & Sets outer separation around \cs{texttiming} macros. \\
+%     timing/outer xsep=\meta{dim}               & \s & See above. Only X-Coordinate. (Default:~0pt) \\
+%     timing/outer ysep=\meta{dim}               & \s & See above. Only Y-Coordinate. (Default:~0pt) \\
 %     \bottomrule
-%   }
-%   \begin{supertabular}{>{\ttfamily}l>{\raggedright\arraybackslash}p{.675\textwidth}}
-%     timing                                       & Base settings like signal height and period width.\\
-%     timing/font                                  & Sets the normal \texttt{font} key and sets \texttt{x}/\texttt{y} keys to 1.6ex.\\
-%     timing/intext                                & Used for \cs{texttiming}. Depends on \texttt{timing}.\\
-%     timing/picture                               & Usable for own \texttt{tikzpictures} to set timing settings.\\
-%     timing/grid                                  & Used for grids. Depends on \texttt{help lines} and \texttt{timing}.  \\
-%     timing/draw grid                             & Enables background grids for \cs{timing} macros. \\
-%     timing/no grid                               & Disabled background grids for \cs{timing} macros. \\
-%     timing/table                                 & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
-%     timing/table/grid                            & Used for table grid. Depends on \texttt{timing/grid}.\\
-%     timing/table/lines                           & Used for \cs{horlines} and \cs{vertlines}. \\
-%     timing/table/rules                           & Used for \cs{tablerules} for top and bottom lines. \\
-%     timing/table/midrules                        & Used for \cs{tablerules} between table head and body.  \\
-%     timing/table/header                          & Used for \cs{tableheader}. \\
-%     timing/table/title header                    & Used for label header in \cs{tableheader}. \\
-%     timing/table/row header                      & Used for timing row header in \cs{tableheader}. \\
-%     timing/inline node                           & Used for nodes created by the \texttt{N} character. Defaults to \texttt{coordinate}.\\
+%   \end{tabularx}
+%
+% \section{Grid}
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont TikZ Key      & Type & Description \\
 %     \midrule
-%     timing/outer sep=\meta{dim}                  & Sets outer separation around \cs{texttiming} macros. \\
-%     timing/outer xsep=\meta{dim}                 & See above. Only X-Coordinate. (Default:~0pt) \\
-%     timing/outer ysep=\meta{dim}                 & See above. Only Y-Coordinate. (Default:~0pt) \\
+%     timing/grid                                & \S & Style used for drawing grids. Depends on \texttt{help lines} and \texttt{timing}.  \\
+%     timing/draw grid                           & \C & Enables background grids for \cs{timing} macros. \\
+%     timing/no grid                             & \C & Disabled background grids for \cs{timing} macros. \\
+%     \bottomrule
+%   \end{tabularx}
+%
+% \section{Table}
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont TikZ Key      & Type & Description \\
 %     \midrule
-%     timing/\meta{lowercase char}                 & Style for character \meta{char}. Not used for `\texttt{H}' and `\texttt{L}'. \\
-%     timing/\meta{lc char}/background             & Background style for characters `\texttt{D}' and `\texttt{U}'. \\
-%     timing/\meta{lc char}/text                   & Text style for character \meta{char}.  Only defined for `\texttt{D}'. \\
+%     timing/table                               & \S & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
+%     timing/table/grid                          & \S & Used for table grid. Depends on \texttt{timing/grid}.\\
+%     timing/table/lines                         & \S & Used for \cs{horlines} and \cs{vertlines}. \\
+%     timing/table/rules                         & \S & Used for \cs{tablerules} for top and bottom lines. \\
+%     timing/table/midrules                      & \S & Used for \cs{tablerules} between table head and body.  \\
+%     timing/table/header                        & \S & Used for \cs{tableheader}. \\
+%     timing/table/title header                  & \S & Used for label header in \cs{tableheader}. \\
+%     timing/table/row header                    & \S & Used for timing row header in \cs{tableheader}. \\
 %     \midrule
-%     timing/text format=\meta{macros}             & Define macros which are placed before the text of `\texttt{D\{text\}}'. The text is enclosed in braces to 
+%     timing/rowdist=\meta{distance}             & \s & Sets (baseline) distance between rows in a tikztimingtable. Default: 2 (=$2\times$signal height)\\
+%     timing/coldist=\meta{distance}             & \s & Sets distance between columns in a tikztimingtable. Default: 1 (=$1\times$period width)\\
+%     \bottomrule
+%   \end{tabularx}
+%
+% \section{Character Styles}
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont TikZ Key      & Type & Description \\
+%     \midrule
+%     timing/\meta{lowercase char}               & \s & Style for character \meta{char}. Not used for `\texttt{H}' and `\texttt{L}'. \\
+%     timing/\meta{lc char}/background           & \s & Background style for characters `\texttt{D}' and `\texttt{U}'. \\
+%     timing/\meta{lc char}/text                 & \s & Text style for character \meta{char}.  Only defined for `\texttt{D}'. \\
+%     \midrule
+%     timing/text format=\meta{macros}           & \s & Define macros which are placed before the text of `\texttt{D\{text\}}'. The text is enclosed in braces to 
 %                                                    allow the last macro to take it as an argument. A \cs{strut} is a good choice to ensure a common baseline.\\
-%     timing/initchar=\meta{char}                  & Sets initial character.  Only valid as first optional argument in table rows or \cs{texttiming}.\\
-%     timing/metachar=\marg{C}\oarg{\#arg}\marg{G} & Sets meta-character \meta{C} to character group \meta{G}.\\
-%     timing/slope=\meta{0.0\en1.0}                & Sets slope for logic transitions. \newline This also sets \texttt{dslope=2*slope}, \texttt{zslope=slope/2}.\\
-%     timing/lslope=\meta{0.0\en1.0}               & Sets slope for logic transitions only. Default: 0.1\\
-%     timing/dslope=\meta{0.0\en1.0}               & Sets slope for data transitions. Default: 0.2\\
-%     timing/zslope=\meta{0.0\en1.0}               & Sets slope for Z transitions. Default: 0.05\\
+%     \bottomrule
+%   \end{tabularx}
+%
+% \section{Debug}
+% Some debug settings for users (first group) and the package developer (last group).
+%
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont TikZ Key      & Type & Description \\
 %     \midrule
-%     timing/rowdist=\meta{distance}               & Sets (baseline) distance between rows in a tikztimingtable. Default: 2 (=$2\times$signal height)\\
-%     timing/coldist=\meta{distance}               & Sets distance between columns in a tikztimingtable. Default: 1 (=$1\times$period width)\\
+%     timing/debug/nodes                         & \C & Enables marking of named inline nodes. \\
+%     timing/debug/node                          & \S & Format style for inline node marker label, which itself is a TikZ node. \\
+%     timing/debug/markcmd=\meta{code}           & \s & TikZ drawing code to draw marker (except label). The code can access the node name as \cs{N}. \\
+%     timing/debug/scope                         & \S & Format for scope of node markers. \\
 %     \midrule
-%     timing/debug/nodes                           & Enables marking of named inline nodes. \\
-%     timing/debug/node                            & Format style for inline node marker label, which itself is a TikZ node. \\
-%     timing/debug/markcmd=\meta{code}             & TikZ drawing code to draw marker (except label). The code can access the node name as \cs{N}. \\
-%     timing/debug/scope                           & Format for scope of node markers. \\
-%     timing/debug/level=\meta{integer}            & Sets debug output level. This is only important for developers. \\
-%   \end{supertabular}
-%   ^^A\\[\smallskipamount]
-%   ^^A\emph{Note:} As a convention all style names are completely in lowercase.
-% \end{center}^^A{table}
+%     timing/debug/level=\meta{integer}          & \s & Sets debug output level. This is only important for developers. \\
+%     \bottomrule
+%   \end{tabularx}
+%
+% \endgroup
 %
 % \clearpage
 % \chapter{Libraries for Further Characters}
@@ -2215,7 +2250,7 @@
 %   \makebox[\textwidth][c]{%
 %   \begin{tabularx}{1\textwidth}{>{\ttfamily}l>{\raggedright\arraybackslash}X}
 %     \toprule
-%       \normalfont Style/Setting              & Description \\
+%       \normalfont TikZ Style                 & Description \\
 %     \midrule
 %       timing/c/rising arrows                 & Mark (only) rising edges with arrows.\\
 %       timing/c/falling arrows                & Mark (only) falling edges with arrows.\\
@@ -2967,7 +3002,7 @@
 %   \hbox{\thehexcount}%
 %   \addtocounter{hexcount}{+1}%
 % }
-% \caption{Initial Characters, Modifiers, TikZ Settings}\label{exa:adv}
+% \caption{Initial Characters, Modifiers, TikZ Keys}\label{exa:adv}
 % \def\somemacro{}%
 % \def\code{}%
 % \makebox[\textwidth][c]{%
@@ -3633,7 +3668,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikz@timing@}[1]{Optional TikZ Settings}
+% \begin{macro}{\tikz@timing@}[1]{Optional TikZ Keys}
 %    \begin{macrocode}
 \def\tikz@timing@[#1]{%
   \@ifnextchar{a}%
@@ -3653,7 +3688,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikz@timing@at}[1]{Optional TikZ Settings}
+% \begin{macro}{\tikz@timing@at}[1]{Optional TikZ Keys}
 %    \begin{macrocode}
 \def\tikz@timing@at#1at#2(#3){%
   \tikz@timing@@@{#1}{#2(#3)}%
@@ -3661,7 +3696,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikz@timing@@}[3]{Optional TikZ Settings}{Potential `+' or 
+% \begin{macro}{\tikz@timing@@}[3]{Optional TikZ Keys}{Potential `+' or 
 % empty}{Coordinate}
 %    \begin{macrocode}
 \def\tikz@timing@@#1#2(#3){%
@@ -3670,7 +3705,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\tikz@timing@@@}[3]{Optional TikZ Settings}{Coordinate}{Timing 
+% \begin{macro}{\tikz@timing@@@}[3]{Optional TikZ Keys}{Coordinate}{Timing 
 % Characters}
 %    \begin{macrocode}
 \def\tikz@timing@@@#1#2#3{%
@@ -4966,7 +5001,7 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@oset}
-% [1]{TikZ Settings}
+% [1]{TikZ Keys}
 % Handle optional TikZ settings. The \cs{tikz@options} must be used
 % to ensure that the settings apply for the following graphic paths.
 %    \begin{macrocode}
