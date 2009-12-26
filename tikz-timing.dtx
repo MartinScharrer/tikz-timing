@@ -1393,10 +1393,9 @@
 % TikZ styles "timing/before text" and "timing/after text". For backward 
 % compatibility these styles default to the two macros.
 %
+% {\small
 % (Deprecated) Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
-% background of the \cs{texttiming} diagram. A more \LaTeX-stylish way to do 
-% this is |\renewcommand*{\textttimingbefore}{\texttiminggrid}|. See below for an up-to-date way
-% to achieve this.
+% background of the \cs{texttiming} diagram.}
 %
 % \DescribeMacro{texttiminggrid}{\hspace{2.5em}\textbf{Deprecated!}}
 % This macro should only be used inside \cs{texttimingbefore} or 
@@ -2859,7 +2858,7 @@
 % \noindent
 % Examples:
 % \begingroup
-% \tikzset{timing/draw grid}\sffamily
+% \tikzset{timing/draw grid,timing/slope=0}\sffamily
 % \newcommand*\ttt[2][]{\texttiming[timing/interval={#1}]{#2}}
 % \newcommand*\extab[1]{%
 %     \begin{tabular}{rcc}
@@ -8581,14 +8580,14 @@
 \let\tikztiming@rinterval\relax
 
 \tikztimingdef{LZ}{
-  \tikztiming@linterval
+  \tikztiming@rinterval
   {\newdraw [\style]}
   {-- ++(\zslope,+\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 \tikztimingdef{HZ}{%
-  \tikztiming@linterval
+  \tikztiming@rinterval
   {\newdraw [\style]}
   {-- ++(\zslope,-\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
@@ -8596,21 +8595,21 @@
 
 \tikztimingdef{TZ}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \tikztiming@linterval
+  \tikztiming@rinterval
   {\newdraw [\style]}
   {-- ++(\zslope,\value{tikztimingtrans}*\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 \tikztimingdef{ZL}{%
-  \tikztiming@rinterval
+  \tikztiming@linterval
   {\newdraw}
   {-- ++(\zslope,-\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
 }
 
 \tikztimingdef{ZH}{%
-  \tikztiming@rinterval
+  \tikztiming@linterval
   {\newdraw}
   {-- ++(\zslope,\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
@@ -8618,7 +8617,7 @@
 
 \tikztimingdef{ZT}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \tikztiming@rinterval
+  \tikztiming@linterval
   {\newdraw [\style]}
   {-- ++(\zslope,\value{tikztimingtrans}*\height/2.)}
   -- ++($ (#1,0) - (\zslope,0) $)
@@ -8637,9 +8636,9 @@
    ro/.style={/tikz/timing/interval/right open},
    rc/.style={/tikz/timing/interval/right close},
    left close/.code={\let\tikztiming@linterval\tikztiming@onetwo},
-    left open/.code={\let\tikztiming@linterval\tikztiming@twoone},
+   left open/.code={\let\tikztiming@linterval\tikztiming@twoone},
    right open/.code={\let\tikztiming@rinterval\tikztiming@onetwo},
-  right close/.code={\let\tikztiming@rinterval\tikztiming@twoone},
+   right close/.code={\let\tikztiming@rinterval\tikztiming@twoone},
 }
 \tikzset{
   timing/interval/normal/.style={/tikz/timing/interval/left close,/tikz/timing/interval/right open},
