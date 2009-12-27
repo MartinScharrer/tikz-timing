@@ -1255,8 +1255,8 @@
 %   \sffamily\centering
 %   \makeatletter
 %
-%   \tablecaption{TikZ Styles and Settings provided and used by this Package.}
-%   \label{tab:styles}
+%   \tablecaption{Modifiers for Timing Characters.}
+%   \label{tab:modifiers}
 %   \def\en{\,\textsf{--}\,}
 %   \let\origtabular\tabular
 %   \let\endorigtabular\endtabular
@@ -1296,11 +1296,15 @@
 % D\{[\meta{\scriptsize 
 % \raisebox{-1ex}{\shortstack{TikZ\\Settings}}}]\meta{Text}\} & Adds \meta{text} 
 % using the given node \meta{settings}. \Example{D{[blue]A}} \\
-% \meta{\small integer}\{\meta{\small characters}\} &  Repeats the given 
-% characters \texttt{\meta{int}} times.  \Example{5{hl}}\\
 % \meta{\small number}\meta{\small character} & Sets width of next signal to 
 % given number.  Half of it if character is in lower case.
 % \Example{2.6H5.2l}\\
+% \meta{\small integer}\{\meta{\small characters}\} &  Repeats the given 
+% characters \texttt{\meta{int}} times.  \Example{5{hl}}\\
+% \{ \meta{\small characters} \} &  Encloses characters in a local scope. Options inside are only
+% local to the scope. This also applies to the effect of `\texttt{;}' and similar modifiers.
+% \Example{H {[blue] LH} L}\\
+% \midrules
 % \meta{\small number}B & Su\underline{b}tracts the given number from the width 
 % of the next character. ``\textit{\texttt{B}ackwards}''
 % \Example{H.5BL}\\
@@ -4221,8 +4225,13 @@
     \tikztiming@output{\tikztiming@lastchar}{\tikztiming@currentchar}%
     \global\let\tikztiming@lastchar\tikztiming@currentchar
     \@nameuse{tikztiming@aftercode@\tikztiming@currentchar}%
-    \expandafter
-    \tikztiming@testfortext
+    \expandafter\lowercase\expandafter{%
+      \expandafter\def\expandafter\@tempa
+      \expandafter{\tikztiming@currentchar}%
+    }%
+    \pgfkeysifdefined{/tikz/timing/\@tempa/text/.@cmd}%
+      {\expandafter\expandafter\expandafter\tikztiming@testfortext}%
+      {\expandafter\expandafter\expandafter\tikztiming@parser}%
   \fi
 }
 %    \end{macrocode}
@@ -4282,32 +4291,25 @@
     \expandafter\def\expandafter\@tempa
     \expandafter{\tikztiming@currentchar}%
   }%
-  \pgfkeysifdefined{/tikz/timing/\@tempa/text/.@cmd}%
-  {%
-    \edef\@tempa{node [timing/\@tempa/text,}%
-    \expandafter\tikztiming@output@addcode\expandafter{%
-      \@tempa
-      #1] at ($ (timing@dstart) !.5! (timing@dend) $)
-      {\tikztiming@textformat{#2}}
-    }%
-    \ifcase0%
-      \if @\tikztiming@output@bufchara
-        1%
-      \else
-        \ifx\tikztiming@output@bufchara\tikztiming@currentchar
-          1%
-        \fi
-      \fi
-    \relax
-    \else
-    \fi
-    \xdef\tikztiming@output@bufcharb{\tikztiming@currentchar @edge@}%
-    \xdef\tikztiming@lastchar{\tikztiming@currentchar @edge@}%
-  }{%
-    \endgroup
-    \PackageWarning{tikz-timing}{Ignoring text for character 
-    '\tikztiming@currentchar'!}{}{}{}%
+  \edef\@tempa{node [timing/\@tempa/text,}%
+  \expandafter\tikztiming@output@addcode\expandafter{%
+    \@tempa
+    #1] at ($ (timing@dstart) !.5! (timing@dend) $)
+    {\tikztiming@textformat{#2}}
   }%
+  \ifcase0%
+    \if @\tikztiming@output@bufchara
+      1%
+    \else
+      \ifx\tikztiming@output@bufchara\tikztiming@currentchar
+        1%
+      \fi
+    \fi
+  \relax
+  \else
+  \fi
+  \xdef\tikztiming@output@bufcharb{\tikztiming@currentchar @edge@}%
+  \xdef\tikztiming@lastchar{\tikztiming@currentchar @edge@}%
   \tikztiming@parser
 }
 \let\tikztiming@textformat\empty
@@ -4510,7 +4512,10 @@
 % \begin{macro}{\tikztiming@defcode bgroup}
 %    \begin{macrocode}
 \tikztiming@defcode{\bgroup}{%
-  \tikztiming@output@addcode{ [timing/pushoptions] }%
+  \tikztiming@output@eaddcode{%
+    [timing/pushoptions]
+    \newdraw
+  }%
   \tikztiming@parser
 }
 %    \end{macrocode}
