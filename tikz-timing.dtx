@@ -48,7 +48,7 @@
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.7a-dev
+  [v0.7a
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
@@ -861,7 +861,7 @@
 %<*doc>
 % \fi
 %
-% \CheckSum{5223}
+% \CheckSum{5702}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1304,7 +1304,7 @@
 % \{ \meta{\small characters} \} &  Encloses characters in a local scope. Options inside are only
 % local to the scope. This also applies to the effect of `\texttt{;}' and similar modifiers.
 % \Example{H {[blue] LH} L}\\
-% \midrules
+% \midrule
 % \meta{\small number}B & Su\underline{b}tracts the given number from the width 
 % of the next character. ``\textit{\texttt{B}ackwards}''
 % \Example{H.5BL}\\
@@ -2045,7 +2045,7 @@
 % \section*{Debug}
 % Some debug settings for users (first group) and the package developer (last group).
 %
-% \noindent
+% \medskip\noindent
 %   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
 %     \toprule
 %     \normalfont TikZ Key      & Type & Description \\
@@ -4252,7 +4252,7 @@
 % marker if so. 
 %
 % This seems outdated because |handletext@| does not flush the output any more.
-%     \begin{macrocode}
+%    \begin{macrocode}
 \def\tikztiming@handletext#1{%
   \@ifnextchar\relax
     {\def\tikztiming@output@nextchar{@}\tikztiming@handletext@{#1}}%
@@ -5482,7 +5482,7 @@
 % \begin{macro}{\tikztiming@chars}[1]{Comma to gobble}
 % Initial definition of character list. Will gobble the separation comma in 
 % front of the first character which is added to the list.
-% \begin{macrocode}
+%    \begin{macrocode}
 \def\tikztiming@chars#1{}
 %    \end{macrocode}
 % \end{macro}
@@ -7384,7 +7384,7 @@
 % saved and restored. The \cs{tikztiming@overlay@save} macro also includes an 
 % self-assignment to its old version, which implements a stack. The macros must 
 % be global because the overlay string can reopen a new TikZ path.
-% \begin{macrocode}
+%    \begin{macrocode}
 \def\tikztiming@overlay@begin{
     [/utils/exec={%
     \xdef\tikztiming@overlay@save{%
@@ -7959,6 +7959,8 @@
     \pgfmathtruncatemacro\N{\MAX - (\MIN-\N+1)}%
   \fi
 }
+%    \end{macrocode}
+% \end{macro}
 %
 % Use the \pkg{pgfopts} to handle the package options.
 %    \begin{macrocode}
