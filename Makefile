@@ -79,7 +79,7 @@ zip:
 	@${MAKE} --no-print-directory ${ZIPFILE}
 
 ${PACKAGE}%.zip: ${PACKFILES}
-	@test -n "${IGNORE_CHECKSUM}" || grep -q '\* Checksum passed \*' ${PACKAGE}.log
+	@test -n "${IGNORE_CHECKSUM}" || grep -q '^\\OnlyDescription' ${PACKAGE}.dtx || grep -q '\* Checksum passed \*' ${PACKAGE}.log
 	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
 	${RM} $@
 	zip $@ ${PACKFILES}
@@ -89,7 +89,7 @@ ${PACKAGE}%.zip: ${PACKFILES}
 tds: .tds
 
 .tds: ${PACKAGE_STY} ${PACKAGE_DOC} ${PACKAGE_SRC}
-	@test -n "${IGNORE_CHECKSUM}" || grep -q '\* Checksum passed \*' ${PACKAGE}.log
+	@test -n "${IGNORE_CHECKSUM}" || grep -q '^\\OnlyDescription' ${PACKAGE}.dtx || grep -q '\* Checksum passed \*' ${PACKAGE}.log
 	${RMDIR} tds
 	${MKDIR} tds/
 	${MKDIR} tds/tex/ tds/tex/latex/ tds/tex/latex/${PACKAGE}/
