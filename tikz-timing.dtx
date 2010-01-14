@@ -48,7 +48,7 @@
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.7a
+  [v0.7b
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
@@ -862,7 +862,7 @@
 %<*doc>
 % \fi
 %
-% \CheckSum{5702}
+% \CheckSum{5716}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -5253,7 +5253,7 @@
         \p1 = (all rows.south east),
         \p2 = (0,\rowdist)
       in
-        ($ (0,\y2) -  (0,\row * \y2 $) -- +(\x1,0);
+        ($ (0,\y2) -  (0,\row * \y2) $) -- +(\x1,0);
     }%
   \endgroup
 }
@@ -7557,8 +7557,9 @@
 \newcommand*\tikztiming@nicetabs@tableheader[1][]{%
   \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
   \path [timing/table/header,#1]
-    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa + \arraystretch * 
-            (\ht\strutbox + \extrarowheight) + \arraystretch\dp\strutbox)
+    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa 
+            + \arraystretch\ht\strutbox + \arraystretch*\extrarowheight 
+            + \arraystretch\dp\strutbox)
     in
       coordinate (diagram@header) at (0,\y1)
       coordinate (label@header)   at ($ -1*(\tikztiming@coldist,0) + (0,\y1) $)
@@ -7587,8 +7588,8 @@
      \iftikztiming@tablehead
       let
         \p5 = (diagram@header.base),
-        \p6 = ($ (0,\y5) + (0,\arraystretch * (\ht\strutbox + \extrarowheight 
-        ) + \belowrulesep + .5\pgflinewidth) $)
+        \p6 = ($ (0,\y5) + (0,\arraystretch\ht\strutbox + \arraystretch*\extrarowheight
+        + \belowrulesep + .5\pgflinewidth) $)
       in
         (\x1-\tabcolsep,\y6) -- (\x2+\tabcolsep,\y6)
      \fi
@@ -7598,7 +7599,7 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (0, \arraystretch * ( \ht\strutbox + \extrarowheight ) +
+      \p3 = (0, \arraystretch\ht\strutbox + \arraystretch*\extrarowheight +
         \belowrulesep + .5\pgflinewidth)
     in
       (\x1-\tabcolsep, \y3)
@@ -7629,7 +7630,8 @@
       \let\tikztiming@normal@rowdist\tikztiming@rowdist
     \fi
     \def\tikztiming@rowdist{%
-        \arraystretch * (\ht\strutbox+\extrarowheight)%
+       \arraystretch\ht\strutbox
+      +\arraystretch*\extrarowheight
       +\arraystretch\dp\strutbox
     }%
     \def\tikztiming@coldist{2\tabcolsep}%
