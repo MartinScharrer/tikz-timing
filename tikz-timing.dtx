@@ -3374,7 +3374,8 @@
 \tikzset{%
   timing/.style={/tikz,
     line cap=round, line join=round,
-    timing/adjust@xy
+    timing/adjust@xy,
+    every path/.append code={\tikz@expandcount=\tikztiming@expandcount\relax},
   },%
 }
 \tikzset{%
@@ -3391,6 +3392,8 @@
     },%
     /tikz/x=\tikztiming@xunit, /tikz/y=\tikztiming@yunit,
   },
+  expand count/.store in={\tikztiming@expandcount},
+  expand count=1000,
   unit/.style={%
     /utils/exec={%
       \def\tikztiming@@xunit{#1}%
