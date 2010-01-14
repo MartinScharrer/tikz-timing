@@ -106,6 +106,7 @@
     {\ttfamily(}\meta{#1}{\ttfamily)}}
 \fi
 
+\usepackage{atbegshi}
 \usepackage{tikz-timing}[\tikztiming@date]
 \usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype}
 \usetikztiminglibrary{nicetabs,counters,advnodes,interval,ifsym}
@@ -4904,10 +4905,10 @@
   \def\twidth{\tikztiming@maxwidth}%
   \tikzpicture[timing/table,#1]%
     \coordinate (@last row)  at (0,\rowdist);
-    \coordinate (label@header)   at (-1*{(\tikztiming@coldist)},1.5*{(\tikztiming@rowdist)});
-    \coordinate (diagram@header) at (0,1.5*{(\tikztiming@rowdist)});
+    \coordinate (label@header)   at ($ -1*(\tikztiming@coldist,0) + 1.5*(0,\tikztiming@rowdist) $);
+    \coordinate (diagram@header) at ($                              1.5*(0,\tikztiming@rowdist) $);
     \coordinate (timing@table@bottom right) at (0,0);
-    \coordinate (timing@table@bottom left)  at (-1*{(\tikztiming@coldist)},0);
+    \coordinate (timing@table@bottom left)  at ($ -1*(\tikztiming@coldist,0) $);
     \tikztiming@picinit
     \tikzset{timing/before table}%
     \tikztimingtable@checkrow
@@ -4927,7 +4928,8 @@
     let
       \p1 = (row1.north west),
       \p2 = (timing@table@bottom right),
-      \p3 = (\pgf@pt@aa * {(\x2-\x1)},\pgf@pt@bb * {(\y1-\y2)})
+      \p3 = (1,1)
+      %\p3 = ($ \pgf@pt@aa * (\x2-\x1,0) + \pgf@pt@bb * (0,\y1-\y2) $)
     in
       node [shape=rectangle,anchor=north west,
             minimum width=\x3,minimum height=\y3,
@@ -4936,10 +4938,11 @@
     ;
   \path
     let
-      \p0 = (-1*{(\tikztiming@coldist)},1),
+      \p0 = ($ -1*(\tikztiming@coldist,0) + (0,1) $),
       \p1 = (label1.north east),
       \p2 = (timing@table@bottom left),
-      \p3 = (\pgf@pt@aa * {(\x0-\x2)},\pgf@pt@bb * {(\y1-\y2)})
+      \p3 = (1,1)
+      %\p3 = ($ \pgf@pt@aa * (\x0-\x2,0) + \pgf@pt@bb * (0,\y1-\y2) $)
     in
       node [shape=rectangle,anchor=north east,
             minimum width=\x3,minimum height=\y3,
@@ -5212,12 +5215,13 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (@last row)
+      \p3 = (@last row),
+      \p4 = (0,\rowdist)
     in
-      ($ (\x1-\tabcolsep,\y3) - (0,.5*{(\rowdist)}) $) --
-      ($ (\x2+\tabcolsep,\y3) - (0,.5*{(\rowdist)}) $)
+      ($ (\x1-\tabcolsep,\y3) - (0,.5*\y4) $) --
+      ($ (\x2+\tabcolsep,\y3) - (0,.5*\y4) $)
      \iftikztiming@tablehead
-      (\x1-\tabcolsep,2.5*{(\rowdist)}) -- (\x2+\tabcolsep,2.5*{(\rowdist)})
+      (\x1-\tabcolsep,2.5*\y4) -- (\x2+\tabcolsep,2.5*\y4)
      \fi
     ;
     \draw
@@ -5243,9 +5247,10 @@
     \fi
     \foreach \row in \list {%
       \draw [timing/table/lines,#1] let
-        \p1 = (all rows.south east)
+        \p1 = (all rows.south east),
+        \p2 = (0,\rowdist)
       in
-        ($ (0,\rowdist) -  (0,\row * {(\rowdist)}) $) -- +(\x1,0);
+        ($ (0,\y2) -  (0,\row * \y2 $) -- +(\x1,0);
     }%
   \endgroup
 }
@@ -7550,10 +7555,10 @@
   \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
   \path [timing/table/header,#1]
     let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa + \arraystretch * 
-            {(\ht\strutbox + \extrarowheight)} + \arraystretch\dp\strutbox)
+            (\ht\strutbox + \extrarowheight) + \arraystretch\dp\strutbox)
     in
       coordinate (diagram@header) at (0,\y1)
-      coordinate (label@header)   at (-1*{(\tikztiming@coldist)},\y1)
+      coordinate (label@header)   at ($ -1*(\tikztiming@coldist,0) + (0,\y1) $)
     ;
   \tikztiming@normal@tableheader[#1]%
 }
@@ -7579,8 +7584,8 @@
      \iftikztiming@tablehead
       let
         \p5 = (diagram@header.base),
-        \p6 = ($ (0,\y5) + (0,\arraystretch * {(\ht\strutbox + \extrarowheight 
-        )} + \belowrulesep + .5\pgflinewidth) $)
+        \p6 = ($ (0,\y5) + (0,\arraystretch * (\ht\strutbox + \extrarowheight 
+        ) + \belowrulesep + .5\pgflinewidth) $)
       in
         (\x1-\tabcolsep,\y6) -- (\x2+\tabcolsep,\y6)
      \fi
@@ -7590,7 +7595,7 @@
     let
       \p1 = (NW),
       \p2 = (SE),
-      \p3 = (0, \arraystretch * {( \ht\strutbox + \extrarowheight )} +
+      \p3 = (0, \arraystretch * ( \ht\strutbox + \extrarowheight ) +
         \belowrulesep + .5\pgflinewidth)
     in
       (\x1-\tabcolsep, \y3)
@@ -7621,7 +7626,7 @@
       \let\tikztiming@normal@rowdist\tikztiming@rowdist
     \fi
     \def\tikztiming@rowdist{%
-        \arraystretch * {(\ht\strutbox+\extrarowheight)}%
+        \arraystretch * (\ht\strutbox+\extrarowheight)%
       +\arraystretch\dp\strutbox
     }%
     \def\tikztiming@coldist{2\tabcolsep}%
