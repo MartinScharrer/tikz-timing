@@ -4931,11 +4931,11 @@
     let
       \p1 = (row1.north west),
       \p2 = (timing@table@bottom right),
-      \p3 = (1,1)
-      %\p3 = ($ \pgf@pt@aa * (\x2-\x1,0) + \pgf@pt@bb * (0,\y1-\y2) $)
+      \p3 = (\x2-\x1,\y1-\y2),
+      \p4 = (\pgf@pt@aa * \x3, \pgf@pt@bb * \y3)
     in
       node [shape=rectangle,anchor=north west,
-            minimum width=\x3,minimum height=\y3,
+            minimum width=\x4,minimum height=\y4,
             inner sep=0pt,outer sep=0pt]
         at (\x1,\y1) (all rows) {}
     ;
@@ -4944,11 +4944,11 @@
       \p0 = ($ -1*(\tikztiming@coldist,0) + (0,1) $),
       \p1 = (label1.north east),
       \p2 = (timing@table@bottom left),
-      \p3 = (1,1)
-      %\p3 = ($ \pgf@pt@aa * (\x0-\x2,0) + \pgf@pt@bb * (0,\y1-\y2) $)
+      \p3 = (\x0-\x2,\y1-\y2),
+      \p4 = (\pgf@pt@aa * \x3, \pgf@pt@bb * \y3)
     in
       node [shape=rectangle,anchor=north east,
-            minimum width=\x3,minimum height=\y3,
+            minimum width=\x4,minimum height=\y4,
             inner sep=0pt,outer sep=0pt]
         at (\x1,\y1) (all labels) {}
     ;
