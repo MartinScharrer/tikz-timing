@@ -73,9 +73,6 @@
 \DefineFileInfoSVN[tikztiming]
 %</package|driver>
 %<!package>\DefineFileInfoSVN
-%<examplecode>\RequirePackage{tikz-timing}%
-%<examplecode>\RequirePackage{pgffor}%
-%<examplecode>\usetikzlibrary{calc}%
 %<*driver>
 \newif\ifprintversion % \fi
 \ifx\printversion\@undefined
@@ -90,23 +87,12 @@
   \let\subsection\subsubsection
 \else
   \documentclass[landscape,12pt]{scrreprt}
-
-  \usepackage{doc}
-  \marginparwidth=2.5cm\relax
-
-  \def\chapterheadstartvskip{\vspace*{0\baselineskip}}
-  \def\cmd#1{\cs{\expandafter\cmd@to@cs\string#1}}
-  \def\cmd@to@cs#1#2{\char\number`#2\relax}
-  \DeclareRobustCommand\cs[1]{\texttt{\char`\\#1}}
-  \providecommand\marg[1]{%
-    {\ttfamily\char`\{}\meta{#1}{\ttfamily\char`\}}}
-  \providecommand\oarg[1]{%
-    {\ttfamily[}\meta{#1}{\ttfamily]}}
-  \providecommand\parg[1]{%
-    {\ttfamily(}\meta{#1}{\ttfamily)}}
+  \usepackage{ydoc}
 \fi
 
+\usepackage{hyperref}
 \usepackage{atbegshi}
+\GetFileInfoSVN{tikz-timing.dtx}
 \usepackage{tikz-timing}[\tikztiming@date]
 \usetikztiminglibrary{arrows,either,overlays,clockarrows,columntype}
 \usetikztiminglibrary{nicetabs,counters,advnodes,interval,ifsym}
@@ -135,567 +121,59 @@
 \newsavebox{\mysb}
 \newsavebox{\sba}
 \newsavebox{\sbb}
-\makeatletter
-%</driver>
-%<*ydoc>
-\iffalse
-% Restore article settings:
-\textwidth 345.0pt
-\marginparwidth 65.0pt
-\oddsidemargin 62.0pt
-\evensidemargin 62.0pt\relax
-\fi
-
-% use hypdoc if you have it, hyperref else
-\IfFileExists{hypdoc.sty}
-  {\RequirePackage{hypdoc}}
-  {\RequirePackage{hyperref}}
-\RequirePackage{embedfile}
-\hypersetup{bookmarksopen=true,bookmarksopenlevel=2}
-\RequirePackage{xspace}
-\newcommand{\ie}{i.e.\@\xspace}
-\newcommand{\eg}{e.g.\@\xspace}
-
-\RequirePackage{xspace}
-\@namedef{seen@package@latex}{1} %^^A avoid footnotes for 'latex'
-\newcommand*{\pkgctanurl}[1]{%
-  CTAN: \url{http://www.ctan.org/pkg/#1}%
-}
-\newcommand*{\pkg}[2][\sndarg]{%
-  \begingroup
-  \def\sndarg{#2}%
-  \let\@tempb\empty
-  \ifx\sndarg#1%
-    \def\@tempb{}%
-  \else
-    \def\@tempb{Part of the \texttt{#1} package,\ }%
-  \fi
-  \href{http://www.ctan.org/pkg/#1}{\texttt{\sndarg}}%
-  % URL footnote (for print-out) on first appearance:
-  \@ifundefined{seen@package@#2}{%
-    \footnote{\@tempb\pkgctanurl{#1}}%
-    \expandafter\gdef\csname seen@package@#2\endcsname{}%
-  }{}%
-  \endgroup
-  \xspace
-}
-\newcommand*{\pkgnoctan}[3][]{%
-  \href{#3}{\texttt{#2}}%
-  % URL footnote (for print-out) on first appearance:
-  \@ifundefined{seen@package@#2@#3}{%
-    \footnote{#1\url{#3}}%
-    \@namedef{seen@package@#2@#3}{1}%
-  }{}%
-  \xspace
-}
-
-\newcommand*{\itempkg}[2][]{%
-  \item[\pkg{#2}#1]\footnotetext{\pkgctanurl{#2}}%
-}
-
-\newcommand*{\itempkgnoctan}[3][]{%
-  \item[\pkgnoctan{#2}{#3}#1]\footnotetext{Location: \url{#3}}%
-}
-
-\newcommand*{\library}[2]{%
-  \hypertarget{lib:#1}{\section{#2}}%
-  \label{lib:#1}%
-}
-\newcommand*{\lib}[1]{%
-  \hyperlink{lib:#1}{`\texttt{#1}'}%
-}
-
-% link \cs to macro definitions
-\let\ydoc@origmacro\macro
-\let\ydoc@origendmacro\endmacro
-\let\ydoc@origStopEventually\StopEventually
-\let\ydoc@origPrintDescribeMacro\PrintDescribeMacro
-\RequirePackage{xcolor}
-\definecolor{darkred}{rgb}{0.333,0.0,0.0}
-\hypersetup{colorlinks=true,linkcolor=darkred,urlcolor=darkred}
-\definecolor{macrodesccolor}{rgb}{0.0,0.0,0.8}
-\definecolor{macroimplcolor}{rgb}{0.0,0.0,0.4}
-\definecolor{metacolor}{rgb}{0.0,0.4,0.4}
-\definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
-\definecolor{optioncolor}{rgb}{0.3.0.2,0}
-
-\let\macroline\\
-\newlength{\macrosep}
-\setlength{\macrosep}{-3em}
-\renewcommand{\meta@font@select}{\color{metacolor}\itshape}
-\newcommand{\macroformat}[1]{\textbf{\ttfamily #1}}
-\newcommand{\optionformat}[1]{\textbf{\sffamily #1}}
-\newcommand{\scriptformat}[1]{\textbf{\ttfamily #1}}
-\newcommand{\macroargformat}[1]{\texttt{#1}}
-\newcommand{\scriptargformat}[1]{\textbf{#1}}
-\newcommand{\macrohlinkprefix}{desc}
-\newcommand{\macrolink}{}
-
-\RequirePackage[utf8]{inputenc}
-\RequirePackage[T1]{fontenc}
-\IfFileExists{lmodern.sty}{\RequirePackage{lmodern}}{}%
-
-\def\DescribeMacro{\@ifnextchar*{\DescribeMacroS}{\DescribeMacroN}}
-\def\DescribeMacroN{%
-  \bigskip\pagebreak[3]\par\noindent\DescribeMacroS*%
-}
-\def\DescribeMacroS*#1#2{%
-  \begingroup
-  \g@namedef{href@desc@#1}{}%
-  \immediate\write\@mainaux{%
-    \noexpand\g@namedef{href@desc@#1}{}%
-  }%
-  \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{impl@#1.3}}}%
-  \hypersetup{linkcolor=macrodesccolor}%
-  \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
-  #1}{desc@#1}}%
-  \macrolink{\macroformat{\textcolor{macrodesccolor}{\textbackslash #1}}}%
-  \noindent\mbox{}\macroargformat{#2}\nopagebreak
-  \macroline*[0.15\baselineskip]%
-  \endgroup
-  \nopagebreak
-  \ignorespaces
-}
-
-\def\DescribeEnv{\@ifnextchar*{\DescribeEnvS}{\DescribeEnvN}}
-\def\DescribeEnvN{%
-  \noindent\bigskip\pagebreak[3]\par\noindent\DescribeEnvS*%
-}
-\def\DescribeEnvS*#1#2{%
-  \begingroup
-  \g@namedef{href@desc@#1}{}%
-  \immediate\write\@mainaux{%
-    \noexpand\g@namedef{href@desc@#1}{}%
-  }%
-  \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{impl@#1.3}}}%
-  \hypersetup{linkcolor=macrodesccolor}%
-  \hspace*{\macrosep}%
-  \raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{desc@#1}}%
-  \css{begin}%
-  \{\macrolink{\macroformat{\textcolor{macrodesccolor}{#1}}}\}%
-  \noindent\mbox{}\macroargformat{#2}\\*\relax
-  \hspace*{\macrosep}%
-  \hspace*{-\parindent}%
-  \css{end}%
-  \{\macrolink{\macroformat{\textcolor{macrodesccolor}{#1}}}\}%
-  \nopagebreak
-  \macroline*[0.2\baselineskip]%
-  \endgroup
-  \nopagebreak
-  \ignorespaces
-}
-
-\def\DescribeScript{\@ifnextchar*{\DescribeScriptS}{\DescribeScriptN}}
-\def\DescribeScriptN{%
-  \bigskip\par\pagebreak[2]\noindent\DescribeScriptS*%
-}
-\def\DescribeScriptS*#1#2{%
-  \hspace*{\macrosep}%
-  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Script 
-  %#1}{script@#1}}%
-  \scriptformat{\textcolor{scriptcolor}{#1}}%
-  \noindent\mbox{}\scriptargformat{\ {#2}}\macroline*[0.2\baselineskip]%
-  \nopagebreak
-}
-\def\DescribeOption{\@ifnextchar*{\DescribeOptionS}{\DescribeOptionN}}
-\def\DescribeOptionN{%
-  \bigskip\par\noindent\DescribeOptionS*%
-}
-\def\DescribeOptionS*#1{%
-  \hspace*{\macrosep}%
-  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{Option 
-  %#1}{option@#1}}%
-  \optionformat{\textcolor{optioncolor}{#1}}%
-  \noindent\mbox{}\macroline*[0.2\baselineskip]%
-  \nopagebreak
-}
-\newcounter{macrolevel}
-\renewenvironment{macro}[1]{%
-  \addtocounter{macrolevel}{1}%
-  \expandafter\macroX\expandafter{\expandafter\@gobble\string#1}%
-}{%
-  \addtocounter{macrolevel}{-1}%
-}
-\providecommand*{\g@namedef}[1]{%
-  \expandafter\gdef\csname #1\endcsname
-}
-\newcommand*{\macroX}[1]{%
-  \ifnum\c@macrolevel<2
-    \smallskip
-  \fi
-  \par\noindent
-  \g@namedef{href@impl@#1}{}%
-  \immediate\write\@mainaux{%
-    \noexpand\g@namedef{href@impl@#1}{}%
-  }%
-  \@ifundefined{href@desc@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{desc@#1.3}}}%
-  \hspace*{\macrosep}%
-  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{\textbackslash 
-  %#1}{impl@#1}}%
-  \macrolink{\macroformat{%
-    \textcolor{macroimplcolor}{\textbackslash #1}}}%
-  \\*[\smallskipamount]%
-  \noindent
-  \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
-}
-
-\renewenvironment{environment}[1]{%
-  \addtocounter{macrolevel}{1}%
-  \environmentX{#1}%
-}{%
-  \addtocounter{macrolevel}{-1}%
-}
-\newcommand*{\environmentX}[1]{%
-  \ifnum\c@macrolevel<2
-    \smallskip
-  \fi
-  \par\noindent
-  \g@namedef{href@impl@#1}{}%
-  \immediate\write\@mainaux{%
-    \noexpand\g@namedef{href@impl@#1}{}%
-  }%
-  \@ifundefined{href@desc@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{desc@#1.3}}}%
-  \hspace*{\macrosep}%
-  %\raisebox{\baselineskip}[\baselineskip]{\pdfbookmark[3]{#1}{impl@#1}}%
-  \macrolink{\macroformat{%
-    \textcolor{macroimplcolor}{#1}}}%
-  \\*[\smallskipamount]%
-  \@ifnextchar\begin{\vspace*{-\baselineskip}}{\imacroarg}%
-}
-
-\newcounter{macroargs}
-\newcounter{nmacroarg}
-
-\newcommand*{\imacroarg}[1][0]{%
-  \setcounter{macroargs}{#1}%
-  \setcounter{nmacroarg}{1}%
-  \ifnum\c@macroargs>0
-    \expandafter\imacroargX
-  \fi
-}
-\newcommand*{\aftermacroargs}{%
-  \@ifnextchar\begin
-    {\\*[0ex]\noindent\ignorespaces}%
-    {\\*[\smallskipamount]\noindent\ignorespaces}%
-}
-\newcommand*{\imacroargX}[1]{%
-  \hspace*{-1em}\texttt{\#\thenmacroarg:} #1\relax
-  \ifnum\c@macroargs>1
-    \newline
-  \fi
-  \addtocounter{nmacroarg}{1}%
-  \addtocounter{macroargs}{-1}%
-  \ifnum\c@macroargs>0
-    \expandafter\imacroargX
-  \else
-    \expandafter\aftermacroargs
-  \fi
-}
-
-
-\def\karg#1{\{\$\textcolor{metacolor}{#1}\$\}}
-\def\kmarg#1{\{\$\meta{#1}\$\}}
-
-\DeclareRobustCommand{\csi}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=macroimplcolor}%
-  \renewcommand{\macrohlinkprefix}{impl}%
-  \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{impl@#1.3}}}%
-  \csX{#1}%
-  \endgroup
-}
-\DeclareRobustCommand{\csd}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=macrodesccolor}%
-  \renewcommand{\macrohlinkprefix}{macro}%
-  \@ifundefined{href@desc@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{desc@#1.3}}}%
-  \csX{#1}%
-  \endgroup
-}
-\DeclareRobustCommand{\csX}[1]{%
-  \begingroup
-  \macrolink{\texttt{\textbackslash#1}}%
-  \endgroup
-}
-
-\DeclareRobustCommand{\envi}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=macroimplcolor}%
-  \renewcommand{\macrohlinkprefix}{impl}%
-  \@ifundefined{href@impl@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{impl@#1.3}}}%
-  \envX{#1}%
-  \endgroup
-}
-\DeclareRobustCommand{\envd}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=macrodesccolor}%
-  \renewcommand{\macrohlinkprefix}{macro}%
-  \@ifundefined{href@desc@#1}%
-    {\let\macrolink\relax}%
-    {\def\macrolink{\hyperlink{desc@#1.3}}}%
-  \envX{#1}%
-  \endgroup
-}
-\DeclareRobustCommand{\envX}[1]{%
-  \begingroup
-  \macrolink{\texttt{\{#1\}}}%
-  \endgroup
-}
-\let\cs\csd
-\let\env\envd
-\DeclareRobustCommand{\css}[1]{\texttt{\textbackslash#1}}
-\DeclareRobustCommand{\envv}[1]{\texttt{\{#1\}}}
-\DeclareRobustCommand{\op}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=optioncolor}%
-  \hyperlink{option@#1.3}{\textbf{\sffamily #1}}%
-  \endgroup
-}
-\DeclareRobustCommand{\scr}[1]{%
-  \begingroup
-  \hypersetup{linkcolor=scriptcolor}%
-  \hyperlink{script@#1.3}{\scriptformat{#1}}%
-  \endgroup
-}
-
-\def\StopEventually#1{\ydoc@origStopEventually{#1}%
-\let\cs\csi
-\let\env\envi
-}
-
-%%% Macrocode %%%
-\iffalse
-\RequirePackage{listings}
-
-\def\macrocode@catcodes{%
-  \let\do\@makeother
-  \dospecials
-  \@makeother\ \relax
-  \@makeother\^^M\relax
-}
-
-\begingroup
-\endlinechar=-1\relax
-\@makeother\^^M\relax
-\gdef\macrocode{\begingroup\macrocode@catcodes\macrocode@}%
-\gdef\macrocode@#1^^M{\endgroup\begingroup\macrocode@catcodes\macrocode@@}%
-\endgroup%
-
-\begingroup%
-\endlinechar=-1\relax
-\catcode`\(=\catcode`\{
-\catcode`\)=\catcode`\}
-\catcode`\{=12
-\catcode`\}=12
-\catcode`\ =12
-\catcode`\|=0
-\@makeother\^^M\relax
-\catcode`\%=12
-\catcode`\\=12
-|long|gdef|macrocode@@#1^^M%    \end{macrocode}(|endgroup|handlemacrocode@(#1))
-|endgroup
-
-
-\def\handlemacrocode@#1{%
-  \handlemacrocode{#1}%
-  \end{macrocode}%
-}
-
-\newwrite\macrocode@write
-\newwrite\codeoutput@write
-\def\codeoutput@header{\@percentchar\@percentchar\space Code!}
-\def\codeoutput@footer{^^J\noexpand\endinput}
-
-\AtBeginDocument{%
-  \immediate\openout\codeoutput@write=\jobname.stv\relax
-  \immediate\write\codeoutput@write{\codeoutput@header}%
-}
-
-\lstset{%
-  numbers=left,
-  numberstyle=\tiny\sffamily,
-  basicstyle=\ttfamily\small,
-  stepnumber=1,
-  firstnumber=last,
-  language=[latex]tex,
-  breaklines,
-  name=macrocode
-}%
-
-\def\handlemacrocode#1{%
-  \immediate\openout\macrocode@write=\jobname.mcr\relax
-  \newlinechar=13\relax
-  \immediate\write\macrocode@write{#1}%
-  \immediate\write\codeoutput@write{#1}%
-  \immediate\closeout\macrocode@write
-  %\gdef\code{#1}%
-  \par\noindent\lstinputlisting{\jobname.mcr}%
-  %\gdef\code{\scantokens{#1}}%
-}
-
-\def\endmacrocode{}
-
-\AtEndDocument{%
-  \immediate\write\codeoutput@write{\codeoutput@footer}%
-  \immediate\closeout\codeoutput@write
-}
-\fi
-
-\RequirePackage{nofloat}
-
-%%% Examples %%%
-\RequirePackage{fancyvrb}
-\RequirePackage{listings}
-
-\RequirePackage{float}
-
-\belowcaptionskip=\abovecaptionskip
-%\floatstyle{plaintop}
-%\restylefloat{table}
-
-%\floatstyle{plain}
-\restylefloat{figure}
-
-\newfloat{example}{tbph}{loe}%{toc}
-\floatname{example}{Example}
-\let\l@example\l@section
-%\def\theexample{\thesection.\arabic{example}}%
-\let\toclevel@example\toclevel@section
-
-\newwrite\ydoc@exawrite
-\newread\ydoc@exaread
-
-\def\ydoc@exahead{%
-  \@percentchar\space
-  TikZ-Timing \tikztiming@version\space\tikztiming@date\space
-  Example \the\c@example:^^J^^J%
-  \string\documentclass{article}^^J%
-  \string\usepackage{tikz-timing}[\tikztiming@date]^^J%
-  \string\usepackage[active,tightpage]{preview}^^J%
-  \string\PreviewEnvironment{tikzpicture}^^J%
-  \string\pagestyle{empty}^^J%
-  \exampleextraheader^^J%
-  \string\begin{document}^^J\@percentchar
-}
-\def\ydoc@exafoot{%
-  \@percentchar^^J%
-  \string\end{document}^^J%
-  \@percentchar\space vim: ft=tex^^J%
-}
-\let\exampleextraheader\empty
-
-\def\writeexample{%
-  \begingroup
-    \advance\c@example by 1\relax%
-    \immediate\openout\ydoc@exawrite=\jobname\the\c@example.exb\relax
-    \openin\ydoc@exaread=\jobname.exa\relax
-    \let\do\@makeother\dospecials
-    \immediate\write\ydoc@exawrite{\ydoc@exahead}%
-    \endlinechar=-1%
-    \copylines
-    \immediate\write\ydoc@exawrite{\ydoc@exafoot}%
-    \immediate\closeout\ydoc@exawrite
-    \closein\ydoc@exaread
-    \tikztiming@embedexample
-  \endgroup
-}
-
-\def\copylines{%
-  \read\ydoc@exaread to \line%
-  \ifeof\ydoc@exaread\else
-    \immediate\write\ydoc@exawrite{\line}%
-    \expandafter\copylines
-  \fi
-}
-
-\newenvironment{exampletable}{%
-  \floatstyle{plaintop}%
-  \restylefloat{example}%
-  \example
-}{\endexample}
-
-\newenvironment{examplecode}
-  {\begingroup\VerbatimOut[gobble=4]{\jobname.exa}}
-  {\endVerbatimOut\endgroup\writeexample
-    {\setupexampleboxes\formatexample}
-  }
-
-\newsavebox{\examplecodebox}
-\newsavebox{\exampleresultbox}
-\usepackage{ifthen,calc}
-
-\def\formatexample{%
-  \par\noindent
-  \catcode`\%=14%
-  \makebox[\textwidth]{\null
-  \makebox%[0.5\textwidth]
-  {\lstinputlisting{\jobname.exa}}\hfill \makebox%[0.5\textwidth]
-  {\fbox{\input{\jobname.exa}}}%
-  }%
-}
-
-\def\setupexampleboxes{%
-  \savebox{\examplecodebox}{\lstinputlisting{\jobname.exa}}
-  \savebox{\exampleresultbox}{\catcode`\%=14\input{\jobname.exa}}%
-}
-
-\def\formatexample{%
-  \par\noindent
-  \parbox{\textwidth}{\noindent
-  \setlength{\@tempdima}{\wd\examplecodebox + \wd\exampleresultbox}%
-  \ifthenelse{\linewidth < \@tempdima}%
-    {%
-      \centerline{\usebox{\examplecodebox}} \\*[\bigskipamount]%
-      \centerline{\usebox{\exampleresultbox}}%
-    }%
-    {%
-      \minipage[c]{\wd\examplecodebox}\hbox{\usebox{\examplecodebox}}\endminipage%
-      \hfill
-      \minipage[c]{\wd\exampleresultbox}\hbox{\usebox{\exampleresultbox}}\endminipage%
-      \\%
-    }%
-  }%
-}
-
-\def\tikztiming@embedexample{%
-  \embedfile[filespec=example\arabic{example}.tex,mimetype=text/x-tex,
-    desc={Source Code to Example \arabic{example}}]{\jobname\the\c@example.exb}%
-}
-
-\lstset{%
-  %numbers=left,
-  numberstyle=\scriptsize\sffamily,
-  basicstyle=\ttfamily,
-  stepnumber=1,
-  language=[latex]tex,
-  breaklines,
-}%
-
-%%% %%%
-%</ydoc>
-%<*driver>
-\makeatother
 
 \def\topfraction{0.91}
 \def\bottomfraction{0.95}
 \def\floatpagefraction{0.98}
 \def\textfraction{0.05}
 \setcounter{bottomnumber}{2}
+
+\usepackage{shortvrb}
+\usepackage{newverbs}
+\MakeSpecialShortVerb{\qverb}{\"}
+
+\def\NewIn#1{
+  \marginpar{\strut\raggedleft\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
+}
+
+\def\ExtIn#1{
+  \marginpar{\strut\raggedleft\textcolor{black}{\emph{Extended in #1}}}%
+}
+
+\iffalse
+\def\thesection{\texorpdfstring{\LARGE\texttiming[X]{D{\arabic{section}}.1X[black]}}{\arabic{section}}}
+\def\thesubsection{\texorpdfstring{\Large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}.1X[black]}}{\arabic{section}.\arabic{subsection}}}
+\def\thesubsubsection{\texorpdfstring{\large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}D{\arabic{subsubsection}}.1X[black]}}
+{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}}
+
+ %\def\timingsectionformat#1{%
+ %  \sbox{\mysb}{\tikz \draw node [timing/d/text] {#1};}%
+ %  \texttiming{ $ \wd\mysb / \tikztiming@xunit $ DD{#1} }%
+ %}
+
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\normalfont\Large\bfseries\sffamily}}
+                                   %[#1]{\texorpdfstring{\larger\timingsectionformat{#2}}{#2}}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\large\bfseries\sffamily}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries\sffamily}}
+\fi
+
+\let\envv\env
+\let\css\cs
+\def\lib{\texttt}
+\def\library{\section}
+
+\usepackage{xspace}
+\def\ie{i.e.\xspace}
+\def\eg{e.g.\xspace}
 
 \makeatletter
 % The following code is only needed to produce package examples and therefor not 
@@ -783,64 +261,6 @@
 %<*driver>
 % \fi
 
-\makeatletter
-
-\def\scaleto#1#2{%
-  \begingroup
-    \sbox{\mysb}{#2}%
-    \pgfmathparse{(#1) / \wd\mysb}%
-    \scalebox{\pgfmathresult}{\usebox{\mysb}}%
-  \endgroup
-}
-
-\def\MakeShortVerbQuote{%
-  \def\@shortvrbdef{\qverb}\@MakeShortVerb
-}
-
-\let\verb@orig@egroup\verb@egroup %@
-
-\def\qverb{%
-  \begingroup
-  \def\verb@egroup{\verb@orig@egroup'\endgroup}%
-  `\verb%
-}
-\MakeShortVerbQuote{\"}
-
-
-\def\NewIn#1{
-  \marginpar{\strut\raggedleft\raisebox{.125ex}{\textcolor{black}{\emph{New in #1}}}}%
-}
-
-\def\ExtIn#1{
-  \marginpar{\strut\raggedleft\textcolor{black}{\emph{Extended in #1}}}%
-}
-
-\iffalse
-\def\thesection{\texorpdfstring{\LARGE\texttiming[X]{D{\arabic{section}}.1X[black]}}{\arabic{section}}}
-\def\thesubsection{\texorpdfstring{\Large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}.1X[black]}}{\arabic{section}.\arabic{subsection}}}
-\def\thesubsubsection{\texorpdfstring{\large\texttiming[X]{D{\arabic{section}}D{\arabic{subsection}}D{\arabic{subsubsection}}.1X[black]}}
-{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}}
-
- %\def\timingsectionformat#1{%
- %  \sbox{\mysb}{\tikz \draw node [timing/d/text] {#1};}%
- %  \texttiming{ $ \wd\mysb / \tikztiming@xunit $ DD{#1} }%
- %}
-
-\renewcommand\section{\@startsection {section}{1}{\z@}%
-                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
-                                   {2.3ex \@plus.2ex}%
-                                   {\normalfont\Large\bfseries\sffamily}}
-                                   %[#1]{\texorpdfstring{\larger\timingsectionformat{#2}}{#2}}}
-\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
-                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
-                                     {1.5ex \@plus .2ex}%
-                                     {\normalfont\large\bfseries\sffamily}}
-\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
-                                     {1.5ex \@plus .2ex}%
-                                     {\normalfont\normalsize\bfseries\sffamily}}
-\fi
-
 \makeatother
 \EnableCrossrefs
 %\CodelineIndex
@@ -920,7 +340,7 @@
 %   \parindent=0pt
 %   \centering
 %   \vspace*{2cm}
-%   \scaleto{.75\textwidth}{\Huge\@title}
+%   \resizebox{.75\textwidth}{!}{\Huge\@title}
 %   \par\vspace*{.75cm}
 %   \Large A \LaTeX\ Package for Timing Diagrams
 %   \par\vspace*{1.5cm}
@@ -1351,8 +771,7 @@
 % \clearpage
 % \section{Macro for use in Text Mode}
 % \vspace{-\bigskipamount}%
-% \DescribeMacro{texttiming}{\oarg{initial~character/TikZ 
-% Settings}\marg{characters}}
+% \DescribeMacro\texttiming[<initial~character/TikZ Settings>]{<characters>}
 % This macro places a single timing diagram line into the current text. The 
 % signals have the same height as a uppercase letter (like `X') of the current 
 % font, \ie they scale with the font size.
@@ -1384,10 +803,8 @@
 % \end{minipage}
 % \end{minipage}
 %
-% \DescribeMacro{texttimingbefore}{\hspace{2em}\textbf{Deprecated!}\hspace{8em}(\emph{defaults 
-% to}: \meta{empty})}
-% \DescribeMacro*{texttimingafter}{\hspace{2.5em}\textbf{Deprecated!}\hspace{8em}(\emph{defaults 
-% to}: \meta{empty})}
+% \DescribeMacro\texttimingbefore!{\hspace{2em}\textbf{Deprecated!}\hspace{8em}(\emph{defaults to}: \meta{empty})}!
+% \DescribeMacro\texttimingafter!{\hspace{2.5em}\textbf{Deprecated!}\hspace{8em}(\emph{defaults to}: \meta{empty})}!
 % This two macros are executed before and after every timing diagram line 
 % created by \cs{texttiming} macro inside the same \envv{tikzpicture} 
 % environment and can be used to add drawing macros. The argument of the 
@@ -1402,7 +819,7 @@
 % (Deprecated) Example: |\let\texttimingbefore\texttiminggrid| adds a grid into the 
 % background of the \cs{texttiming} diagram.}
 %
-% \DescribeMacro{texttiminggrid}{\hspace{2.5em}\textbf{Deprecated!}}
+% \DescribeMacro\texttiminggrid!\hspace{2.5em}\textbf{Deprecated!}!
 % This macro should only be used inside \cs{texttimingbefore} or 
 % \cs{texttimingafter} and draws a grid of the full size of the
 % \cs{texttiming} diagram.
@@ -1415,8 +832,7 @@
 % \newpage
 % \section{Macro for use inside TikZ-Pictures}
 %
-% \DescribeMacro{timing}{\oarg{TikZ Keys}\ ^^A
-% at \parg{TikZ Coordinate}\ \{\oarg{initial character}\meta{characters}\};}
+% \DescribeMacro\timing[<TikZ Keys>]~'at'~(<TikZ Coordinate>)~'{'[<initial character>]<characters>'};'
 % This macro does the same as \cs{texttiming} but is designed to be used inside 
 % a \envv{tikzpicture} environment and only there. Like normal TikZ macros 
 % (\css{path}, \css{drawn}, \css{node}) it allows an optional argument with TikZ 
@@ -1462,7 +878,7 @@
 %
 % \begin{figure}
 % \centering
-% \scaleto{\textwidth}{%^^A
+% \resizebox{\textwidth}{!}{%^^A
 % \begin{tikzpicture}[timing,y=1.5cm,x=1.5cm,timing/slope=0]
 %   \timing [y=1.5cm,x=1.5cm,gray,thick] at (0,0) {HLHLHL};
 %   \node[name=s,shape=tikztiming@shape,anchor=origin] at (0,0) {};
@@ -1488,10 +904,12 @@
 %
 % \clearpage
 % \section{Table for Timing Diagrams}
-% \DescribeEnv{tikztimingtable}{\oarg{TikZ settings for whole 
-% table}\\\meta{Signal Name}\ \ \&\ \ \oarg{\small Init.~Char./TikZ Keys for 
-% Row}\ \meta{Characters} \textbackslash\textbackslash\\\dots\\
-% \hspace*{-1em}\cs{extracode}\ \% Optional\\\meta{additional code}}
+% \begin{DescribeEnv}{tikztimingtable}[<TikZ settings for whole table>]\relax
+%   \MacroArgs {<Signal Name>}~~'&'~~[<{\small Init.~Char./TikZ Keys for Row}>] <Characters> ~~'\\' \\
+%   \dots\\
+%   \hspace*{-1em}\Macro\extracode~~'% Optional' \\
+%   <additional code>
+% \end{DescribeEnv}
 % This environment can be used to typeset multi-line timing diagrams.  The 
 % syntax is like the one for a \envv{tabular} environment with two columns.  The 
 % first column is for the signal name and the second one are the logic 
@@ -1505,7 +923,7 @@
 % names, respectively.  Additional \pkg{tikz} drawing code can be insert at the 
 % end of the table using \cs{extracode}.
 %
-% \DescribeMacro{extracode}{\oarg{TikZ Keys}}
+% \DescribeMacro\extracode[TikZ Keys]
 % This macro is only defined inside a \env{tikztimingtable} environment. In earlier
 % versions of this package it could only be used after the last table line (\ie after a |\\|).
 % If used there all code between it and the |\end{tikztimingtable}| will be placed inside the same 
@@ -1517,14 +935,14 @@
 % using using the \env{background} environment or the PGF background layer:\\[\smallskipamount]
 % |\begin{pgfonlayer}{background}|\ldots|\end{pgfonlayer}|
 %
-% \DescribeMacro{endextracode}{}
+% \DescribeMacro\endextracode
 % From\NewIn{v0.7} version 0.7 on it is possible to add further timing rows after an |extracode| section by using
 % \cs{endextracode}. Everything after this macro is taken as part of a new row. It is allowed to use
 % this macro direct before \cs{end}\env{tikztimingtable}. This makes it possible to use \cs{extracode} 
 % anywhere inside the table, including at the very start before any rows are processed. Early
 % insertion of extra code is necessary for \eg limiting the bounding box or setting up a clipping path.
 %
-% \DescribeEnv{extracode}{\oarg{TikZ Keys}\\\meta{extra drawing code}}
+% \DescribeEnv[<extra drawing code>]{extracode}[<TikZ Keys>]
 % Instead\NewIn{v0.7} of using \cs{extracode} \dots \cs{endextracode}, which is actual plain\TeX\ syntax, this 
 % \LaTeX\ style environment can be used. Like any environment it creates a \TeX\ group around its 
 % content, but no TikZ |scope| is created to allow drawing code (\eg clipping paths) to affect the
@@ -1537,35 +955,35 @@
 % The following macros are only defined inside a \env{tikztimingtable} after the 
 % macro \cs{extracode}. They are useful for drawing additional material.
 %
-% \DescribeMacro{tablegrid}{\meta{*}\oarg{TikZ Keys}}
+% \DescribeMacro\tablegrid*[<TikZ Keys>]
 % After \css{extracode} this macro draws a grid in the background of the table.
 % A separate grid is drawn for each row. The normal version draws all grids with 
 % the width of the widest row while the star version draws them with the width 
 % of the corresponding row. Because this macro draws material into the |background|
 % layer it must not be placed inside a |pgfonlayer| environment itself.
 %
-% \DescribeMacro{fulltablegrid}{\oarg{TikZ Keys}}
+% \DescribeMacro\fulltablegrid[<TikZ Keys>]
 % After \css{extracode} this macro draws a big grid over all rows in the 
 % background of the table.
 %
-% \DescribeMacro{nrows}{}
+% \DescribeMacro\nrows
 % Returns the number of rows in the current table. Useful for use in 
 % \cs{horlines}.
 %
-% \DescribeMacro{rowdist}{}
-% \DescribeMacro*{coldist}{}
+% \DescribeMacro\rowdist
+% \DescribeMacro\coldist
 % This macros return the row and column distance.  There are useful for drawing 
 % additional material relative to the rows and columns.  This values can be set 
 % (\eg in the optional argument of the table) using the \texttt{timing/rowdist} 
 % and \texttt{timing/coldist} settings which are explained in 
 % Section~\ref{sec:styles}.
 %
-% \DescribeMacro{twidth}{}
+% \DescribeMacro\twidth
 % Returns the width (as multiple of the `period width') of the longest timing 
 % diagram line in the table. Example: If the longest line would be
 % "H 2.3L z" than \cs{twidth} would be $1+2.3+0.5=3.8$.
 %
-% \DescribeMacro{horlines}{\oarg{TikZ Keys}\marg{list}}
+% \DescribeMacro\horlines[<TikZ Keys>]{<list>}
 % Draws horizontal lines, optionally with the given \meta{Settings}, at the base 
 % line of the rows given by \meta{list}. The PGF macro 
 % \css{foreach}\footnote{See the \texttt{pgf} manual for more details.} is 
@@ -1576,18 +994,17 @@
 % If the list is empty the default "1,2,...,\nrows" is used which draws lines 
 % for all rows.
 %
-% \DescribeMacro{vertlines}{\oarg{TikZ Keys}\marg{list}}
+% \DescribeMacro\vertlines[<TikZ Keys>]{<list>}
 % Like \cs{horlines} but draws vertical lines and the listed numbers a relative 
 % to the basic width.
 % If the list is empty the default "0,1,...,\twidth" is used which draws lines 
 % after every period width.
 %
-% \DescribeMacro{tableheader}{\oarg{TikZ Keys}\marg{Description 
-% Title}\marg{Signal Title}}
+% \DescribeMacro\tableheader[<TikZ Keys>]{<Description Title>}{<Signal Title>}
 % This macro adds a table head row on top of the table. The two mandatory 
 % arguments provide the header text for the description and signal columns.
 %
-% \DescribeMacro{tablerules}{\oarg{TikZ Keys}}
+% \DescribeMacro\tablerules[<TikZ Keys>]
 % This macro adds top and bottom rules to the table in the same (or at least 
 % very similar) way as the \texttt{booktabs} package is doing it for normal 
 % \texttt{tabular}s. The current bounding box is used to calculate the needed 
@@ -1596,7 +1013,7 @@
 % also draws a thinner horizontal line (like \texttt{booktabs} \cs{midrule}) 
 % between the table head and body.
 %
-% \DescribeEnv{background}{\oarg{TikZ Keys}\\\meta{drawing commands}}
+% \DescribeEnv[<drawing commands>]{background}[<TikZ Keys>]
 % This environment can be used to draw material on the |background| layer and is 
 % an abbreviation for:\\[\medskipamount]
 % |    \begin{pgfonlayer}{background}|\\
@@ -1753,8 +1170,8 @@
 %
 % The following macros are provided for the user.
 %
-% \DescribeMacro{tikztimingsetwscale}{\marg{math expression}}
-% \DescribeMacro*{setwscale}{\marg{math expression}}
+% \DescribeMacro\tikztimingsetwscale{<math expression>}
+% \DescribeMacro\setwscale{<math expression>}
 % This macro\NewIn{v0.7}, which can be called |\setwscale| for short inside modifier code, 
 % sets the |wscale| value. This value is used during the parsing process to 
 % scale the width of the characters, \eg |wscale=3.2| makes |1H| as long as 
@@ -1762,29 +1179,26 @@
 % meta-characters are. It can also be set with the |timing/wscale| TikZ setting.  
 % The current value can be accessed using \cs{wscale}.
 %
-% \DescribeMacro{wscale}{}
+% \DescribeMacro\wscale
 % Returns the current width scaling "wscale" value. 
 %
-% \begingroup
-% \def\macroline*[#1]{\hspace{5em}}
-% \DescribeMacro{xunit}{}
-% \DescribeMacro*{yunit}{}\\
+% \DescribeMacro\xunit
+% \DescribeMacro\yunit
 % This dimension registers can be used to access the x- and y-unitlength of the timing diagram.
 % Assignments to these registers do not change the scaling!
 %
-% \DescribeMacro{slope}{}
-% \DescribeMacro*{lslope}{\hspace{.6em}\small(alias)}\\
+% \DescribeMacro\slope
+% \DescribeMacro\lslope!\hspace{.6em}\small(alias)!
 % Returns the current logic slope, \ie the slope between |L| and |H| 
 % levels.
 % Set by the |timing/lslope| or indirectly by the |timing/slope| TikZ setting.  
 % See Table~\ref{tab:styles} for more information.
-% \endgroup
 %
-% \DescribeMacro{zslope}{}
+% \DescribeMacro\zslope
 % Returns the current Z slope. Set by the |timing/zslope| or indirectly by the 
 % |timing/slope| TikZ setting.
 %
-% \DescribeMacro{dslope}{}
+% \DescribeMacro\dslope
 % Returns the current Z slope. Set by the |timing/dslope| or indirectly by the 
 % |timing/slope| TikZ setting.
 %
@@ -1814,8 +1228,7 @@
 % suppresses its normal meaning. Using the meta-character in its own definition 
 % group causes a infinite loop which will lead to an \TeX\ error.
 % 
-% \DescribeMacro{tikztimingmetachar}{\marg{Meta-Character}\oarg{Number of 
-% arguments}\marg{Character Group}}
+% \DescribeMacro\tikztimingmetachar{<Meta-Character>}[<Number of arguments>]{<Character Group>}
 % This macro defines the given \meta{meta-character} to be identical to the 
 % given \meta{character group}. Alternatively this can also be done using the 
 % TikZ style `|timing/metachar=|\marg{Meta-Character}\oarg{Number of 
@@ -2475,8 +1888,8 @@
 % \par\medskip
 %
 % \subsubsection*{Additional Macros}
-% \DescribeMacro*{tikztimingcounter}{\marg{char}}
-% \DescribeMacro*{tikztimingsetcounter}{\marg{char}\marg{pgfmath expression}}
+% \DescribeMacro\tikztimingcounter{<char>}
+% \DescribeMacro\tikztimingsetcounter{<char>}{<pgfmath expression>}
 % The value of counter \meta{char} can be read or set using this macros.
 %
 % \begin{table}
@@ -2825,7 +2238,8 @@
 %
 % \else
 %
-% \begin{nofloat}{table}
+% \begingroup
+%   \expandafter\def\csname @captype\endcsname{table}%
 %   \makebox[\textwidth][c]{%^^A
 %     \let\tablecaption\caption
 %     \begin{minipage}{\wd\sba}
@@ -2840,7 +2254,7 @@
 %       \usebox{\sbb}%^^A
 %     \end{minipage}
 %   }%^^A
-% \end{nofloat}
+% \endgroup
 %
 % \fi
 %
