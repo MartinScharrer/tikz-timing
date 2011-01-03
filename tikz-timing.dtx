@@ -3180,7 +3180,7 @@
 \def\tikz@timing@@@end{%
   \@ifnextchar{;}%
     {\@gobble}%
-    {\PackageError{tikz-package}{Can not parse timing path}{}{}{}}%
+    {\PackageError{tikz-package}{Can not parse timing path}{}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -5847,8 +5847,7 @@
       \let\zap@space\tikztiming@orig@zap@space
     }%
     {\PackageError{tikz-timing}%
-      {No tikz-timing library `#1' found!}%
-      {}{}{}{}%
+      {No tikz-timing library `#1' found!}{}%
     }%
   \@ifnextchar\relax{}{\tikztiming@library@}%
 }
@@ -6661,7 +6660,7 @@
 \tikztiming@iftrans{CC}%
   {\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC}%
   {\PackageError{\@currname}{No 'CC' transition defined by the main tikz-timing 
-  package.}{}{}}%
+  package.}{}}%
 
 \tikztimingdef{CC}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
@@ -7151,7 +7150,7 @@
   \tikzset{timing/counter/opt/char/.get=\counterchar}%
   \ifx\counterchar\empty
     \PackageError{tikz-timing-counters}{Counter character must be given using 
-    the 'char' key!}{}{}{}%
+    the 'char' key!}{}%
     \endgroup
   \else
 %    \end{macrocode}
@@ -7166,7 +7165,7 @@
         \def\min{0}%
       \fi
       \ifx\max\empty
-        \PackageError{tikz-timing-counters}{The option 'wraps' needs the option 'max value' to be set!}{}{}{}%
+        \PackageError{tikz-timing-counters}{The option 'wraps' needs the option 'max value' to be set!}{}%
       \fi
       \def\@tempb{%
         \noexpand\tikztiming@counter@wrap%
@@ -7597,7 +7596,7 @@
   \anchorpoints
   \@ifundefined{#1}%
    {\PackageError{tikz-timing}%
-      {No such anchor '#1' defined for this transition!}%
+      {No such anchor '#1' defined for this transition!}{}%
     \pgfpointorigin
    }%
    {\@nameuse{#1}}%
