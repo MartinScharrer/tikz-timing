@@ -750,10 +750,6 @@
 % which are needed for width calculations and again for the drawing code, \eg 
 % the slope values. \Example{H[[timing/slope=.5]]L $\slope$H} \\
 %   \midrule
-% ;  & Renews the internal drawing path which ends the scope of all options 
-% given by \texttt{[\,]}. \Example{H;[blue]L;H} \\
-% ,  & Same as `\texttt{;}', but timing specific options (atm.: slopes and line 
-% width) are restored for the new path. \Example{[line width=1pt]L,H;L} \\
 % !\{\meta{code}\}  & Places given code into the internal \envv{tikzpicture}.
 % See Example~\ref{exa:adv}. \\
 % @\{\meta{code}\}  & Executes the given code immediately during the parsing 
@@ -765,6 +761,11 @@
 % the input string so it can be used as width for the next character. The macros  
 % \cs{slope}=\cs{lslope}, \cs{dslope}, \cs{zslope} and \cs{wscale} can be used 
 % to access the corresponding values.  \Example{D{} $ \dslope $ D{} D} \\
+%   \midrule
+% ;  & Renews the internal drawing path which ends the scope of all options 
+% given by \texttt{[\,]}. \Example{H;[blue]L;H} \\
+% ,  & Same as `\texttt{;}', but timing specific options (atm.: slopes and line 
+% width) are restored for the new path. \Example{[line width=1pt]L,H;L} \\
 % \end{supertabular}
 % \endgroup
 % \MakeShortVerb{\|}
