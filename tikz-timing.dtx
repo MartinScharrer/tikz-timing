@@ -48,7 +48,7 @@
 \ProvidesFileSVN
 %</driver>
   {$Id$}
-  [v0.7c
+  [v0.7d
 %<package>   Digital Timing Diagrams using TikZ]
 %<examplecode>   Macros to produce examples for the tikz-timing package]
 %<ydoc>   Documentation Macros for tikz-timing package]
@@ -583,6 +583,7 @@
 %             for debug purposes/orientation during the diagram creation.
 %     \end{itemize}
 % \end{Changes}
+% \changes{v0.7d}{2011/01/08}{Fix for end macro of extracode environment to support etoolbox's environment hooks.}
 %
 %
 % \endgroup
@@ -4320,6 +4321,7 @@
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
   \def\twidth{\tikztiming@maxwidth}%
+  \def\tikztimingtable@@row{\tikztimingtable@row}%
   \tikzpicture[timing/table,#1]%
     \coordinate (@last row)  at (0,\rowdist);
     \coordinate (label@header)   at ($ -1*(\tikztiming@coldist,0) + 1.5*(0,\tikztiming@rowdist) $);
@@ -4372,12 +4374,10 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@endextracode}
-% Checks if it is inside \cs{end} and calls \cs{tikztimingtable@checkrow} appropriately.
+% Now empty because \cs{tikztimingtable@handleend} handles the
+% continuation of the row scanning process.
 %    \begin{macrocode}
 \def\tikztiming@endextracode{%
-  \@ifnextchar\@checkend
-    {\aftergroup\expandafter\aftergroup\tikztimingtable@checkrow}%
-    {\tikztimingtable@checkrow}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -4389,7 +4389,7 @@
 %    \begin{macrocode}
 \def\tikztimingtable@checkrow{%
   \@ifnextchar\end
-    {}%
+    {\tikztimingtable@handleend}%
     {\ifx\@let@token\extracode
        \let\tikztiming@next\empty
      \else
@@ -4402,6 +4402,20 @@
      \tikztiming@next
     }%
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@handleend}
+% Places the row scan macro after the end of the environment.
+% Because this could be the table itself a wrapper macro is used
+% which is empty outside \env{tikztimingtable} but calls the
+% correct macro inside.
+%    \begin{macrocode}
+\def\tikztimingtable@handleend\end#1{%
+    \end{#1}%
+    \tikztimingtable@@row
+}
+\let\tikztimingtable@@row\empty
 %    \end{macrocode}
 % \end{macro}
 %
