@@ -128,6 +128,8 @@
 \def\textfraction{0.05}
 \setcounter{bottomnumber}{2}
 
+\lstset{basicstyle=\ttfamily}
+
 \usepackage{shortvrb}
 \usepackage{newverbs}
 \MakeSpecialShortVerb{\qverb}{\"}
@@ -1777,7 +1779,7 @@
 % \begin{figure}
 % \makeatletter
 % \let\tikztiming@embedexample\empty
-% \let\writeexample\empty
+% \let\PrintExample\empty
 % \makeatother
 % \centering
 % \begin{examplecode}
@@ -2414,7 +2416,7 @@
 % \centering
 % \makeatletter
 % \let\tikztiming@embedexample\empty
-% \let\writeexample\empty
+% \let\PrintExample\empty
 % \makeatother
 % \pgfmathsetbasenumberlength{2}
 % \newcounter{hexcount}
@@ -4322,7 +4324,6 @@
   \def\coldist{\tikztiming@coldist}%
   \def\nrows{\the\c@tikztiming@nrows}%
   \def\twidth{\tikztiming@maxwidth}%
-  \def\tikztimingtable@@row{\tikztimingtable@row}%
   \tikzpicture[timing/table,#1]%
     \coordinate (@last row)  at (0,\rowdist);
     \coordinate (label@header)   at ($ -1*(\tikztiming@coldist,0) + 1.5*(0,\tikztiming@rowdist) $);
@@ -4375,7 +4376,7 @@
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@endextracode}
-% Now empty because \cs{tikztimingtable@handleend} handles the
+% Now empty because \cs{tikztimingtable@chkendec} handles the
 % continuation of the row scanning process.
 %    \begin{macrocode}
 \def\tikztiming@endextracode{%
@@ -4390,7 +4391,7 @@
 %    \begin{macrocode}
 \def\tikztimingtable@checkrow{%
   \@ifnextchar\end
-    {\tikztimingtable@handleend}%
+    {\tikztimingtable@chkendec}%
     {\ifx\@let@token\extracode
        \let\tikztiming@next\empty
      \else
@@ -4403,20 +4404,6 @@
      \tikztiming@next
     }%
 }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\tikztimingtable@handleend}
-% Places the row scan macro after the end of the environment.
-% Because this could be the table itself a wrapper macro is used
-% which is empty outside \env{tikztimingtable} but calls the
-% correct macro inside.
-%    \begin{macrocode}
-\def\tikztimingtable@handleend\end#1{%
-    \end{#1}%
-    \tikztimingtable@@row
-}
-\let\tikztimingtable@@row\empty
 %    \end{macrocode}
 % \end{macro}
 %
@@ -4435,6 +4422,27 @@
   \else
     \endgroup
     \def\tikztiming@next{\tikztimingtable@row\begin{#1}}%
+  \fi
+  \tikztiming@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztimingtable@chkendec}
+% Checks if value of \cs{end} is |{extracode}|. If so
+% it is executed, otherwise it is taken as normal row and so
+% \cs{tikztimingtable@row} is called.
+%    \begin{macrocode}
+\def\tikztimingtable@chkendec\end#1{
+  \begingroup
+  \def\@tempa{#1}%
+  \def\@tempb{extracode}%
+  \ifx\@tempa\@tempb
+    \endgroup
+    \def\tikztiming@next{\end{extracode}\tikztimingtable@row}%
+  \else
+    \endgroup
+    \def\tikztiming@next{\end{#1}}%
   \fi
   \tikztiming@next
 }
