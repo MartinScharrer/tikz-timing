@@ -2857,15 +2857,16 @@
   after table/.code={},
   coord/.style={coordinate},
   save/.style={coordinate},
-  restore/.style={/utils/exec={\expandafter\tikzset\expandafter{\tikztiming@saved@options}},timing/every char},
+  restore/.style={/utils/exec={\expandafter\tikzset\expandafter{\tikztiming@saved@options}}},
   option/.style={/utils/exec={\g@addto@macro\tikztiming@saved@options{#1,}},#1},
-  nooptions/.style={/utils/exec={\gdef\tikztiming@saved@options{}},timing/every char},
+  nooptions/.style={/utils/exec={\gdef\tikztiming@saved@options{}}},
   popoptions/.style={/utils/exec={\tikztiming@popoptions}},
   pushoptions/.style={/utils/exec={\tikztiming@pushoptions}},
   name/.style={inner sep=0pt,outer sep=0pt,minimum size=0pt},
   text format/.store in=\tikztiming@textformat,
   @/.style={},
   every char/.style={},
+  every bg/.style={},
   D/.style={timing/d},
   D/text/.style={timing/d/text},
   D/background/.style={timing/d/background},
@@ -3784,7 +3785,7 @@
 %    \begin{macrocode}
 \tikztiming@defcode{,}{%
   \tikztiming@output@eaddcode{%
-    \newdraw
+    \newdraw [timing/every char]
   }%
   \tikztiming@parser
 }
@@ -3796,7 +3797,7 @@
 \tikztiming@defcode{;}{%
   \endgroup\begingroup
   \tikztiming@output@eaddcode{%
-    \newdrawns
+    \newdrawns [timing/every char]
   }%
   \tikztiming@parser
 }
@@ -3935,7 +3936,7 @@
 \tikztiming@defcode{\bgroup}{%
   \tikztiming@output@eaddcode{%
     [timing/pushoptions]
-    \newdraw
+    \newdraw [timing/every char]
   }%
   \tikztiming@parser
 }
@@ -3947,7 +3948,7 @@
 \tikztiming@defcode{\egroup}{%
   \tikztiming@output@eaddcode{%
     [timing/popoptions]
-    \newdraw
+    \newdraw [timing/every char]
   }%
   \tikztiming@parser
 }
@@ -4811,9 +4812,9 @@
   \def\zslope{\noexpand\timingzslope}%
   \def\dslope{\noexpand\timingdslope}%
   \def\gslope{0}%
-  \def\style{timing/####3}%
-  \def\bgstyle{draw=none,timing/####3/background}%
-  \def\nstyle{timing/####4}%
+  \def\style{timing/every char,timing/####3}%
+  \def\bgstyle{draw=none,timing/every bg,timing/####3/background}%
+  \def\nstyle{timing/every char,timing/####4}%
   \def\newdraw{\tikztiming@newdraw}%
   \def\newdrawns{\tikztiming@newdraw@nosave}%
   \def\code##1{ [/utils/exec={\unexpanded{##1}}] }%
@@ -5094,7 +5095,7 @@
 %
 % \subsection{Character `H'}
 %    \begin{macrocode}
-\tikztimingchar{H}{++(0,\height)}{-- ++(#1,0)}
+\tikztimingchar{H}{++(0,\height)}{[\style] -- ++(#1,0)}
 
 \tikztimingdef{HH}{
   -- ++(#1,0)
@@ -5106,7 +5107,7 @@
 }
 
 \tikztimingdef{ZH}{
-    \newdraw
+    \newdraw [\style]
   -- ++(\zslope,+\height/2.)
   -- ++($ (#1,0) - (\zslope,0) $)
 }
@@ -5134,7 +5135,7 @@
 % \subsection{Character `'}
 %    \begin{macrocode}
 
-\tikztimingchar{L}{++(0,0)}{-- ++(#1,0)}
+\tikztimingchar{L}{++(0,0)}{[\style] -- ++(#1,0)}
 
 \tikztimingchar{Z}{++(0,\height/2.)}{%
   \newdraw [\style]
@@ -5198,7 +5199,7 @@
   -- ++($ (#1,0) - (\zslope,0) $)
 }
 \tikztimingdef{ZL}{%
-  \newdraw
+  \newdraw [\style]
   -- ++(\zslope,-\height/2.)
   -- ++($ (#1,0) - (\zslope,0) $)
 }
@@ -5225,7 +5226,7 @@
   \tikztiming@oldnodecenter{%
     (-\dslope/2,-\height/2)
   }%
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \def\tikztiming@chard@#1{%
@@ -5248,7 +5249,7 @@
   \tikztiming@oldnodecenter{%
     (0,-\height/2)
   }%
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \def\tikztiming@@chard#1{%
@@ -5277,7 +5278,7 @@
   \tikztiming@oldnodecenter{%
     (-\dslope/2,-\height/2)
   }%
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \def\tikztiming@@chard@#1{%
@@ -5303,7 +5304,7 @@
   \tikztiming@oldnodecenter{%
     (0,-\height/2)
   }%
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \def\tikztiming@dchardu#1{%
@@ -5328,7 +5329,7 @@
   \tikztiming@oldnodecenter{%
     (-\dslope/2,-\height/2)
   }%
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \def\tikztiming@uchardd#1{%
@@ -5352,7 +5353,7 @@
   \tikztiming@oldnodecenter{%
       ($ (0,0) - (0,\height/2) $)
   }%
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{DD}{%
@@ -5382,7 +5383,7 @@
   \tikztiming@oldnodecenter{%
     (0,-\height/2)
   }%
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{DD@}{
@@ -5895,7 +5896,7 @@
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
   \tikztiminguse{D}{#1}%
-  \newdraw
+  \newdraw [\style]
 }
 \def\tikztiming@triple@E{}%
 
@@ -5911,7 +5912,7 @@
      ++($ -1*(#1,\height) $)%
   -- ++($  1*(#1,0) $)%
      ++(0,.5\height)%
-  \newdraw
+  \newdraw [\nstyle]
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
 }%
@@ -5928,7 +5929,7 @@
      ++($ -1*(#1,-\height) $)%
   -- ++($  1*(#1,0) $)%
      ++(0,-.5\height)%
-  \newdraw
+  \newdraw [\nstyle]
   \code{\setcounter{tikztimingtranspos}{1}}%
   \code{\setcounter{tikztimingtrans}{-1}}%
 }%
@@ -5945,7 +5946,7 @@
      ++($ -1*(#1,-\height * \value{tikztimingtrans}) $)%
   -- ++($  1*(#1,0) $)%
      ++(0,-1*\value{tikztimingtrans}*.5*\height)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{LEL}{%
@@ -5956,7 +5957,7 @@
   -- +(0,0)
     ++(#1,\height/2) coordinate (timing@ref)
     ++(\slope,-\height/2)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{LEH}{%
@@ -5967,7 +5968,7 @@
   -- +(0,0)
     ++(#1,\height/2) coordinate (timing@ref)
     ++(\slope,\height/2)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{HEH}{%
@@ -5978,7 +5979,7 @@
   -- +(0,0)
     ++(#1,-\height/2) coordinate (timing@ref)
     ++(\slope,\height/2)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{HEL}{%
@@ -5989,7 +5990,7 @@
   -- +(0,0)
     ++(#1,-\height/2) coordinate (timing@ref)
     ++(\slope,-\height/2)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{HET}{
@@ -6004,7 +6005,7 @@
     ++(#1,-\height/2) coordinate (timing@ref)
     ++(\slope,-\height/2)%
   }
-  \newdraw
+  \newdraw [\nstyle]
   \code{\setcounter{tikztimingtrans}{-1}}%
 }
 
@@ -6021,7 +6022,7 @@
       coordinate (timing@ref)
     ++(\slope,\height/2)%
   }
-  \newdraw
+  \newdraw [\nstyle]
   \code{\setcounter{tikztimingtrans}{1}}%
 }
 
@@ -6036,7 +6037,7 @@
     ++($ (#1,-\height) + (\slope,0) $)%
   \code{\setcounter{tikztimingtranspos}{1}}%
   \code{\setcounter{tikztimingtrans}{-1}}%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{LEE}{%
@@ -6049,7 +6050,7 @@
     ++(#1,0) \tikztiming@setref{timing@ref}{0,\height/2}
   \code{\setcounter{tikztimingtranspos}{0}}%
   \code{\setcounter{tikztimingtrans}{1}}%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{TEE}{%
@@ -6071,7 +6072,7 @@
          -.5 * \height - .5 * \value{tikztimingtrans} * \height
        )
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 
@@ -6084,7 +6085,7 @@
   -- ++($ -1*(#1,0) - (\slope/2 + \slope/2 * \value{tikztimingtrans},0) $)
      ++($ (#1,-\height/2 * \value{tikztimingtrans}) $) coordinate (timing@ref)
      ++(\slope,\height/2)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{TEL}{%
@@ -6096,7 +6097,7 @@
   -- ++($ -1*(#1,0) - (\slope/2 + -\slope/2 * \value{tikztimingtrans},0) $)
      ++($ (#1,-\height/2 * \value{tikztimingtrans}) $) coordinate (timing@ref)
      ++(\slope,-\height/2)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{TEZ}{%
@@ -6111,7 +6112,7 @@
      ++($ (#1,0) + (0,-\height/2 * \value{tikztimingtrans}) $)
        coordinate (timing@ref)
      ++(\zslope,0)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{TED}{%
@@ -6126,7 +6127,7 @@
      ++($ (#1,0) + (0,-\height/2 * \value{tikztimingtrans}) $)
        coordinate (timing@ref)
      ++(\dslope/2,0)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{TET}{%
@@ -6143,7 +6144,7 @@
      ++(\slope, -\height/2 * \value{tikztimingtrans})%
    }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{EEZ}{%
@@ -6155,7 +6156,7 @@
    --   (timing@refa)
         ($ (timing@ref)  + (#1,0) + (\zslope,0) $)
       coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{EED}{%
@@ -6167,7 +6168,7 @@
    --   (timing@refa)
         ($ (timing@ref)  + (#1,0) + (\dslope/2,0) $)
       coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 
@@ -6180,7 +6181,7 @@
   -- +(0,0)
     ++(#1,-\height/2) coordinate (timing@ref)
     ++(\zslope,0)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 
@@ -6193,7 +6194,7 @@
   -- +(0,0)
     ++(#1,\height/2) coordinate (timing@ref)
     ++(\zslope,0)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 
@@ -6206,7 +6207,7 @@
   -- +(0,0)
     ++(#1,\height/2) coordinate (timing@ref)
     ++(\dslope/2,0)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{HED}{%
@@ -6218,7 +6219,7 @@
   -- +(0,0)
     ++(#1,-\height/2) coordinate (timing@ref)
     ++(\dslope/2,0)%
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 
@@ -6290,7 +6291,7 @@
       ++(#1,0) coordinate (timing@refa)
         coordinate (timing@refb) at ($ (timing@refb) + (#1,0) $)
         coordinate (timing@ref)  at ($ (timing@ref)  + (#1,0) $)
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{EET}{%
@@ -6305,7 +6306,7 @@
       ($ (timing@ref)  + (#1,\height/2 * \value{tikztimingtrans}) + (\slope,0) $)
    }
       coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{EEL}{%
@@ -6316,7 +6317,7 @@
    --   (timing@refa)
         ($ (timing@ref)  + (#1,-\height/2) + (\slope,0) $)
       coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{EEH}{%
@@ -6327,7 +6328,7 @@
    --   (timing@refa)
         ($ (timing@ref)  + (#1,+\height/2) + (\slope,0) $)
       coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 
@@ -6345,7 +6346,7 @@
      +(0,\y1-\y2)
   --  (\p1)
       ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
-  \newdraw
+  \newdraw [\nstyle]
 }%
 
 \tikztimingdef{ZE@}{
@@ -6373,7 +6374,7 @@
   -- +(0,0)
     ++(#1,0) coordinate (timing@ref)
     ++(\slope, \height/2)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{ZEL}{%
@@ -6385,7 +6386,7 @@
   -- +(0,0)
     ++(#1,0) coordinate (timing@ref)
     ++(\slope, -\height/2)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{ZET}{%
@@ -6402,7 +6403,7 @@
      ++(\slope,-\height/2 * \value{tikztimingtrans})
   }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{DET}{%
@@ -6420,7 +6421,7 @@
      ++(\slope,-\height/2 * \value{tikztimingtrans})
   }
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{ZEZ}{%
@@ -6433,7 +6434,7 @@
   -- +(0,0)
     ++(#1,0) coordinate (timing@ref)
     ++(\zslope, 0)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{ZEE}{%
@@ -6476,7 +6477,7 @@
       ($ (timing@ref) + (#1,0) $)
       coordinate (timing@ref)
     ++(\dslope/2,0)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{ZED}{%
@@ -6489,7 +6490,7 @@
   -- +(0,0)
     ++(#1,0) coordinate (timing@ref)
     ++(\dslope/2, 0)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{DEZ}{%
@@ -6504,7 +6505,7 @@
       ($ (timing@ref) + (#1,0) $)
       coordinate (timing@ref)
     ++(\zslope, 0)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 
@@ -6518,7 +6519,7 @@
   --  (timing@save)
       ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
     ++(\slope, \height/2)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{DEL}{%
@@ -6531,7 +6532,7 @@
   --  (timing@save)
       ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
     ++(\slope, -\height/2)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 
@@ -6562,7 +6563,7 @@
    -- +(0,0)
      ++(#1,\height/2) coordinate (timing@ref)
      ++(\slope,\height/2)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{@ET}{%
@@ -6585,7 +6586,7 @@
       ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
     ++(\slope,\height/2)
   }
-  \newdraw
+  \newdraw [\nstyle]
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
 }
 
@@ -6609,7 +6610,7 @@
    -- +(0,0)
      ++(#1,\height/2) coordinate (timing@ref)
      ++(\slope,-\height/2)
-  \newdraw
+  \newdraw [\nstyle]
 }
 
 \tikztimingdef{@ED}{%
@@ -6687,8 +6688,7 @@
 \tikztimingdef{CC}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   [timing/c/save]
-  \newdraw 
-  [\style,timing/c/restore,>=\noexpand\tikztiming@c@arrow@tip,timing/c/arrow@style]
+  \newdraw [\style,timing/c/restore,>=\noexpand\tikztiming@c@arrow@tip,timing/c/arrow@style]
   -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
   ; \draw [timing/restore,timing/c/restore] (timing@save) ++(0,0) [\style]
   -- ++(\slope,\value{tikztimingtrans}*\height)
@@ -6764,7 +6764,7 @@
 
 \tikztimingchar{A}{++(0,0)}{%
   \newdraw [\style] -- ++(0,\height)
-  \newdraw ++(#1,-\height)
+  \newdraw [timing/every char] ++(#1,-\height)
 }
 \def\tikztiming@nocombine@A{}%
 
