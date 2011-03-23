@@ -3051,7 +3051,7 @@
     \def\tikztimingwidth{0.0}%
     \setcounter{tikztimingtrans}{-1}%
     \setcounter{tikztimingtranspos}{0}%
-    \def\tikztiming@str{%
+    \tikztiming@initstr{%
       \useasboundingbox (0,0) rectangle (\tikztimingwidth,\timingheight);
       \draw (0,0)
         coordinate (timing@refa)
@@ -3144,23 +3144,6 @@
         {\tikz@timing@@@init}%
         {\tikz@timing@@@init[]}%
       #3\relax
-      \ifnum\tikztiming@debug>1
-      \message{^^J\meaning\tikztiming@str^^J}%
-      \ifnum\tikztiming@debug>2
-      {%
-      \def\@protect##1{\def##1{\noexpand##1}}%
-      \@protect\useasboundingbox
-      \@protect\draw
-      \@protect\p
-      \@protect\n
-      \@protect\x
-      \@protect\y
-      \@protect\tikztiming@overlay@save
-      \edef\@tempa{\tikztiming@str}%
-      \message{^^J\meaning\@tempa^^J}%
-      }%
-      \fi
-      \fi
       \tikzset{timing/before}%
       \tikztiming@str;%
       \path let \p1 = (timing/end top), \p2 = (timing/end base),
@@ -3216,7 +3199,7 @@
 % \begin{macro}{\tikztiming@trans@}
 %    \begin{macrocode}
 \def\tikztiming@trans@#1#2#3#4{%
-  \csname\tikztiming@prefix #2#3#4\endcsname{#1}{#2}{#3}{#4}%
+    \unexpanded\expandafter\expandafter\expandafter{\csname\tikztiming@prefix #2#3#4\endcsname{#1}{#2}{#3}{#4}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3293,18 +3276,51 @@
 % \end{macro}
 %
 %
+% \begin{macro}{\tikztiming@str}
+%    \begin{macrocode}
+\def\tikztiming@file{\jobname.ttg}
+\newwrite\tikztiming@fh
+\def\tikztiming@str{%
+    \tikztiming@addtostr{;}%
+    \immediate\closeout\tikztiming@fh
+    \begingroup
+    \makeatletter
+    \@@input\tikztiming@file\relax
+    \endgroup
+    \@ifnextchar;{\@gobble}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@initstr}
+%    \begin{macrocode}
+\long\def\tikztiming@initstr{%
+    \immediate\openout\tikztiming@fh= \tikztiming@file\relax
+    \tikztiming@addtostr
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\tikztiming@eaddtostr}
 %    \begin{macrocode}
-\def\tikztiming@eaddtostr{%
-  \tikztiming@eaddto\tikztiming@str
+\long\def\tikztiming@eaddtostr#1{%
+  \begingroup
+    \tikztiming@internaldefs
+    \let\par\empty
+    \immediate\write\tikztiming@fh{#1}%
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\tikztiming@addtostr}
 %    \begin{macrocode}
-\def\tikztiming@addtostr{%
-  \g@addto@macro\tikztiming@str
+\long\def\tikztiming@addtostr#1{%
+  \begingroup
+    \tikztiming@internaldefs
+    \let\par\empty
+    \immediate\write\tikztiming@fh{\unexpanded{#1}}%
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3418,10 +3434,12 @@
 \def\tikztiming@nameaddtostr#1#2#3{%
   \tikztiming@iftrans{{#1}{#2}{#3}}%
    {%
+     %\edef\@tempa{\noexpand\tikztiming@trans@{\tikztiming@num}\tikztiming@trans}%
+     %\expandafter\tikztiming@addtostr
+     %\expandafter{\@tempa}%
      \edef\@tempa{\noexpand\tikztiming@trans@{\tikztiming@num}\tikztiming@trans}%
-     \expandafter\g@addto@macro
-     \expandafter\tikztiming@str
-     \expandafter{\@tempa}%
+     \tikztiming@eaddtostr{\@tempa}%
+     %\tikztiming@eaddtostr{\tikztiming@trans@{\tikztiming@num}\tikztiming@trans}%
    }%
    {\PackageWarning{tikz-timing}{No transitions '#1#2' (or '#1#2#3') defined!}}%
 }
