@@ -3199,7 +3199,9 @@
 % \begin{macro}{\tikztiming@trans@}
 %    \begin{macrocode}
 \def\tikztiming@trans@#1#2#3#4{%
-    \unexpanded\expandafter\expandafter\expandafter{\csname\tikztiming@prefix #2#3#4\endcsname{#1}{#2}{#3}{#4}}%
+    \unexpanded\expandafter\expandafter\expandafter{%
+        \csname\tikztiming@prefix #2#3#4\endcsname{#1}{#2}{#3}{#4}
+    }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -3552,8 +3554,10 @@
 % \begin{macro}{\tikztiming@output@codeflush}
 %    \begin{macrocode}
 \def\tikztiming@output@codeflush{%
-  \tikztiming@eaddtostr{\tikztiming@output@bufcode}%
-  \global\let\tikztiming@output@bufcode\empty%
+  \ifx\tikztiming@output@bufcode\empty\else
+    \tikztiming@eaddtostr{\tikztiming@output@bufcode}%
+    \global\let\tikztiming@output@bufcode\empty%
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
