@@ -3440,6 +3440,7 @@
      %\expandafter\tikztiming@addtostr
      %\expandafter{\@tempa}%
      \edef\@tempa{\noexpand\tikztiming@trans@{\tikztiming@num}\tikztiming@trans}%
+     %\tikztiming@eaddtostr{\@percentchar\space {#1}{#2}{#3}}%
      \tikztiming@eaddtostr{\@tempa}%
      %\tikztiming@eaddtostr{\tikztiming@trans@{\tikztiming@num}\tikztiming@trans}%
    }%
@@ -5679,6 +5680,7 @@
 \newcounter{tikztimingtranspos}
 
 \tikztimingchar{T}{++(0,0)}{
+    [\style]
   -- ++(#1,0)
 }
 \def\tikztiming@nocombine@T{}%
@@ -6178,7 +6180,7 @@
    --   (timing@refa)
         ($ (timing@ref)  + (#1,0) + (\zslope,0) $)
       coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
-  \newdraw [\nstyle]
+  \newdraw
 }%
 
 \tikztimingdef{EED}{%
@@ -6190,7 +6192,7 @@
    --   (timing@refa)
         ($ (timing@ref)  + (#1,0) + (\dslope/2,0) $)
       coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
-  \newdraw [\nstyle]
+  \newdraw
 }%
 
 
@@ -6203,7 +6205,7 @@
   -- +(0,0)
     ++(#1,-\height/2) coordinate (timing@ref)
     ++(\zslope,0)%
-  \newdraw [\nstyle]
+  \newdraw
 }%
 
 
@@ -6216,7 +6218,7 @@
   -- +(0,0)
     ++(#1,\height/2) coordinate (timing@ref)
     ++(\zslope,0)%
-  \newdraw [\nstyle]
+  \newdraw 
 }%
 
 
@@ -6229,7 +6231,7 @@
   -- +(0,0)
     ++(#1,\height/2) coordinate (timing@ref)
     ++(\dslope/2,0)%
-  \newdraw [\nstyle]
+  \newdraw
 }%
 
 \tikztimingdef{HED}{%
@@ -6241,7 +6243,7 @@
   -- +(0,0)
     ++(#1,-\height/2) coordinate (timing@ref)
     ++(\dslope/2,0)%
-  \newdraw [\nstyle]
+  \newdraw
 }%
 
 
@@ -6568,6 +6570,10 @@
   \tikztiming@@chard{#1}%
 }
 \tikztimingdef{DDE}{
+    ++(0,-\height/2)
+  \tikztiming@oldnodecenter{%
+    (0,+\height/2)
+  }%
   \tikztiming@@chard{#1}%
 }
 
