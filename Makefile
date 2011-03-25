@@ -169,3 +169,12 @@ compare: ${PACKAGE}.sty test.tex
 		compare -density 500 -metric MAE old.pdf[$$N] new.pdf[$$N] diff-$$N.png; \
 	done
 
+TESTS='test-N(a).tex' 'test-[].tex' 'test-\;.tex' 'test-H.tex' 'test-L.tex' 'test-Z.tex' 'test-X.tex' 'test-M.tex' 'test-U.tex' 'test-U{A}.tex' 'test-D.tex' 'test-D{A}.tex' 'test-G.tex' 'test-T.tex' 'test-tt.tex' 'test-C.tex' 'test-cc.tex'
+
+tests: ${TESTS}
+
+${TESTS}:
+	pdflatex -interaction=batchmode $@
+
+
+
