@@ -5680,7 +5680,6 @@
 \newcounter{tikztimingtranspos}
 
 \tikztimingchar{T}{++(0,0)}{
-    [\style]
   -- ++(#1,0)
 }
 \def\tikztiming@nocombine@T{}%
@@ -5719,7 +5718,7 @@
 }
 
 \tikztimingdef{ZT}{%
-  \newdraw [\style]{
+  \newdraw [timing/every char] {[\style]
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\zslope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\zslope,0) $)
@@ -5737,7 +5736,7 @@
 \tikztimingdef{DT}{
   \code{\setcounter{tikztimingtrans}{-1}}
   \tikztiming@oldnodecenter@%
-  \newdraw [\style]{
+  \newdraw [timing/every char] {[\style]
   --  +(\dslope/2.,-\height/2)
   --   ($ (timing@ref) + (#1,-\height/2) $)
   }
