@@ -3053,7 +3053,7 @@
     \setcounter{tikztimingtranspos}{0}%
     \tikztiming@initstr{%
       \useasboundingbox (0,0) rectangle (\tikztimingwidth,\timingheight);
-      \draw (0,0)
+      \draw [timing/every char] (0,0)
         coordinate (timing@refa)
         coordinate (timing@ref)  at (0,\timingheight/2)
         coordinate (timing@refb) at (0,\timingheight)
@@ -5110,7 +5110,7 @@
 }
 
 \def\tikztiming@glitch{%
-  {[timing/g] let \p1 = +(0,0) in (\x1,0) -- (\x1,\timingheight)
+  {[timing/every char,timing/g] let \p1 = +(0,0) in (\x1,0) -- (\x1,\timingheight)
    coordinate (timing@dstart) at (\x1,\timingheight/2) (\x1,\y1) 
   }%
 }
@@ -5719,7 +5719,7 @@
 }
 
 \tikztimingdef{ZT}{%
-  \newdraw {[\style]
+  \newdraw [\style]{
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
   -- ++(\zslope,\value{tikztimingtrans}*\height/2.)
   -- ++($ (#1,0) - (\zslope,0) $)
@@ -5737,7 +5737,7 @@
 \tikztimingdef{DT}{
   \code{\setcounter{tikztimingtrans}{-1}}
   \tikztiming@oldnodecenter@%
-  \newdraw {[\style]
+  \newdraw [\style]{
   --  +(\dslope/2.,-\height/2)
   --   ($ (timing@ref) + (#1,-\height/2) $)
   }
