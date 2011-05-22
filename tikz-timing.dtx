@@ -6711,6 +6711,14 @@
   {\let\tikztiming@trans@C@normal@C\tikztiming@trans@CC}%
   {\PackageError{\@currname}{No 'CC' transition defined by the main tikz-timing 
   package.}{}}%
+\tikztiming@iftrans{HC}%
+  {\let\tikztiming@trans@H@normal@C\tikztiming@trans@HC}%
+  {\PackageError{\@currname}{No 'HC' transition defined by the main tikz-timing 
+  package.}{}}%
+\tikztiming@iftrans{LC}%
+  {\let\tikztiming@trans@L@normal@C\tikztiming@trans@LC}%
+  {\PackageError{\@currname}{No 'LC' transition defined by the main tikz-timing 
+  package.}{}}%
 
 \tikztimingdef{CC}{%
   \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
@@ -6723,21 +6731,52 @@
 }
 \let\tikztiming@trans@C@arrow@C\tikztiming@trans@CC
 
+\tikztimingdef{HC}{%
+  \code{\setcounter{tikztimingtrans}{-1}}
+  [timing/c/save]
+  \newdraw [\style,timing/c/restore,>=\noexpand\tikztiming@c@arrow@tip,timing/c/arrow@style]
+  -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
+  ; \draw [timing/restore,timing/c/restore] (timing@save) ++(0,0) [\style]
+  -- ++(\slope,\value{tikztimingtrans}*\height)
+  -- ++($ (#1,0) - (\slope,0) $)
+}
+\let\tikztiming@trans@H@arrow@C\tikztiming@trans@HC
+
+\tikztimingdef{LC}{%
+  \code{\setcounter{tikztimingtrans}{+1}}
+  [timing/c/save]
+  \newdraw [\style,timing/c/restore,>=\noexpand\tikztiming@c@arrow@tip,timing/c/arrow@style]
+  -- ++(\slope*\noexpand\tikztiming@c@arrow@pos,\value{tikztimingtrans}*\height*\noexpand\tikztiming@c@arrow@pos)
+  ; \draw [timing/restore,timing/c/restore] (timing@save) ++(0,0) [\style]
+  -- ++(\slope,\value{tikztimingtrans}*\height)
+  -- ++($ (#1,0) - (\slope,0) $)
+}
+\let\tikztiming@trans@L@arrow@C\tikztiming@trans@LC
+
+
 \tikzset{timing/c/.cd,
   rising arrows/.code={%
-    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
+    \let\tikztiming@trans@CC\tikztiming@trans@C@arrow@C%
+    \let\tikztiming@trans@LC\tikztiming@trans@L@arrow@C%
+    \let\tikztiming@trans@HC\tikztiming@trans@H@arrow@C%
     \def\tikztiming@clockarrow@style{\ifnum1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
   },%
   falling arrows/.code={%
-    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
+    \let\tikztiming@trans@CC\tikztiming@trans@C@arrow@C%
+    \let\tikztiming@trans@LC\tikztiming@trans@L@arrow@C%
+    \let\tikztiming@trans@HC\tikztiming@trans@H@arrow@C%
     \def\tikztiming@clockarrow@style{\ifnum-1=\c@tikztimingtrans\tikzset{->,timing/c/arrow}\fi}%
   },%
   dual arrows/.code={%
-    \def\tikztiming@trans@CC{\tikztiming@trans@C@arrow@C}%
+    \let\tikztiming@trans@CC\tikztiming@trans@C@arrow@C%
+    \let\tikztiming@trans@LC\tikztiming@trans@L@arrow@C%
+    \let\tikztiming@trans@HC\tikztiming@trans@H@arrow@C%
     \def\tikztiming@clockarrow@style{\tikzset{->,timing/c/arrow}}%
   },%
   no arrows/.code={%
-    \def\tikztiming@trans@CC{\tikztiming@trans@C@normal@C}%
+    \let\tikztiming@trans@CC\tikztiming@trans@C@normal@C%
+    \let\tikztiming@trans@LC\tikztiming@trans@L@normal@C%
+    \let\tikztiming@trans@HC\tikztiming@trans@H@normal@C%
     \def\tikztiming@clockarrow@style{}%
   },%
   arrow@style/.code={\tikztiming@clockarrow@style},%
