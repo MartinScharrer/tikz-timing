@@ -3369,17 +3369,17 @@
     % If both do not exist, search for aliases:
     \ifx\tikztiming@trans\relax
       \@ifundefined{tikztiming@alias@#1}%
-        {\edef\chara{#1}}%
-        {\edef\chara{#1,\csname tikztiming@alias@#1\endcsname}}%
+        {\edef\chara{{#1}}}%
+        {\edef\chara{{#1},{\csname tikztiming@alias@#1\endcsname}}}%
       \@ifundefined{tikztiming@alias@#2}%
-        {\edef\charb{#2}}%
-        {\edef\charb{#2,\csname tikztiming@alias@#2\endcsname}}%
+        {\edef\charb{{#2}}}%
+        {\edef\charb{{#2},{\csname tikztiming@alias@#2\endcsname}}}%
       \@ifundefined{tikztiming@triple@#2}%
         {\def\charc{\empty}}%
         {%
          \@ifundefined{tikztiming@alias@#3}%
-           {\edef\charc{#3,}}%
-           {\edef\charc{#3,\csname tikztiming@alias@#3\endcsname,}}%
+           {\edef\charc{{#3},}}%
+           {\edef\charc{{#3},{\csname tikztiming@alias@#3\endcsname},}}%
         }%
       \ifx\charb\empty
         \def\charb{\empty}%
