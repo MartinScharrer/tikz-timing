@@ -559,6 +559,37 @@
 %    \end{macrocode}
 % \end{macro}
 %
+%    \begin{macrocode}
+\iftrue
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@initstr}
+%    \begin{macrocode}
+\long\def\tikztiming@initstr{%
+    \def\tikztiming@str
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@eaddtostr}
+%    \begin{macrocode}
+\def\tikztiming@eaddtostr{%
+  \tikztiming@eaddto\tikztiming@str
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@addtostr}
+%    \begin{macrocode}
+\def\tikztiming@addtostr{%
+  \g@addto@macro\tikztiming@str
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
 %
 % \begin{macro}{\tikztiming@str}
 %    \begin{macrocode}
@@ -608,6 +639,11 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
 %
 % \begin{macro}{\tikztiming@makeglobal}
 %    \begin{macrocode}
