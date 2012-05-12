@@ -1,4 +1,6 @@
-* Better support for `beamber` package. Dynamical tables etc.
+* Better support for `beamer` class. Dynamical tables etc.
 * Left align support for label in tikztimingtable:
   Ideas: Write maximum label width into .aux file and reuse it.
          Maybe allow tabular style column settings
+* PGF port?
+* Check compatibility issues with TikZ external library
