@@ -1,0 +1,121 @@
+%    \begin{macrocode}
+%<!COPYRIGHT>
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{tikz-timing-nicetabs}[%
+%<!DATE>
+%<!VERSION>
+%<*DRIVER>
+    2099/01/01 develop
+%</DRIVER>
+    tikz-timing library for nice timing tables]
+%    \end{macrocode}
+%
+% The dimensions of the following packages are used.
+%    \begin{macrocode}
+\RequirePackage{array}
+\RequirePackage{booktabs}
+%    \end{macrocode}
+
+%
+% \begin{macro}{\tikztiming@nicetabs@tableheader}[1]{Optional Settings}
+% Calculate separator heights and set nodes appropriately, then call
+% the normal table header macro.
+%    \begin{macrocode}
+\newcommand*\tikztiming@nicetabs@tableheader[1][]{%
+  \path [timing/table/midrules] [/utils/exec=\xdef\@gtempa{\the\pgflinewidth}];
+  \path [timing/table/header,#1]
+    let \p1 = (0,\belowrulesep + \aboverulesep + \@gtempa 
+            + \arraystretch\ht\strutbox + \arraystretch*\extrarowheight 
+            + \arraystretch\dp\strutbox)
+    in
+      coordinate (diagram@header) at (0,\y1)
+      coordinate (label@header)   at ($ -1*(\tikztiming@coldist,0) + (0,\y1) $)
+    ;
+  \tikztiming@normal@tableheader[#1]%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@nicetabs@tablerules}[1]{Optional Settings}
+%    \begin{macrocode}
+\newcommand*\tikztiming@nicetabs@tablerules[1][]{%
+  \begin{scope}[#1]
+    \coordinate (NW) at (current bounding box.north west);
+    \coordinate (SE) at (current bounding box.south east);
+    %
+    \draw [timing/table/rules]
+    let
+      \p1 = (NW),
+      \p2 = (SE),
+      \p3 = (last label.base),
+      \p4 = ($ (0,\y3) - (0,\arraystretch\dp\strutbox + \aboverulesep +
+        .5\pgflinewidth) $)
+    in
+      (\x1-\tabcolsep,\y4) -- (\x2+\tabcolsep,\y4)
+     \iftikztiming@tablehead
+      let
+        \p5 = (diagram@header.base),
+        \p6 = ($ (0,\y5) + (0,\arraystretch\ht\strutbox + \arraystretch*\extrarowheight
+        + \belowrulesep + .5\pgflinewidth) $)
+      in
+        (\x1-\tabcolsep,\y6) -- (\x2+\tabcolsep,\y6)
+     \fi
+    ;
+    \draw
+     \iftikztiming@tablehead [timing/table/midrules] \else [timing/table/rules] \fi
+    let
+      \p1 = (NW),
+      \p2 = (SE),
+      \p3 = (0, \arraystretch\ht\strutbox + \arraystretch*\extrarowheight +
+        \belowrulesep + .5\pgflinewidth)
+    in
+      (\x1-\tabcolsep, \y3)
+       --
+      (\x2+\tabcolsep, \y3)
+    ;
+  \end{scope}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\let\tikztiming@normal@tableheader\tikztiming@tableheader
+\let\tikztiming@normal@tablerules\tikztiming@tablerules
+\let\tikztiming@normal@coldist\tikztiming@coldist
+\let\tikztiming@normal@rowdist\tikztiming@rowdist
+
+\tikzset{%
+  timing/no nice tabs/.code={%
+    \let\tikztiming@coldist\tikztiming@normal@coldist
+    \let\tikztiming@rowdist\tikztiming@normal@rowdist
+    \let\tikztiming@tableheader\tikztiming@normal@tableheader
+    \let\tikztiming@tablerules\tikztiming@normal@tablerules
+  },
+  timing/nice tabs/.code={%
+    \ifx\tikztiming@tableheader\tikztiming@nicetabs@tableheader\else
+      \let\tikztiming@normal@coldist\tikztiming@coldist
+      \let\tikztiming@normal@rowdist\tikztiming@rowdist
+    \fi
+    \def\tikztiming@rowdist{%
+       \arraystretch\ht\strutbox
+      +\arraystretch*\extrarowheight
+      +\arraystretch\dp\strutbox
+    }%
+    \def\tikztiming@coldist{2\tabcolsep}%
+    \let\tikztiming@tableheader\tikztiming@nicetabs@tableheader
+    \let\tikztiming@tablerules\tikztiming@nicetabs@tablerules
+  },
+  timing/nicetabs/no nice tabs/.style={/tikz/timing/no nice tabs},
+  timing/nicetabs/off/.style={/tikz/timing/no nice tabs},
+  timing/nicetabs/nice tabs/.style={/tikz/timing/nice tabs},
+  timing/nicetabs/on/.style={/tikz/timing/nice tabs},
+}
+%
+\tikzset{timing/nice tabs}%
+%    \end{macrocode}
+%
+% Use the \pkg{pgfopts} to handle the package options.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\ProcessPgfOptions{/tikz/timing/nicetabs}
+%    \end{macrocode}

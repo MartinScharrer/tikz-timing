@@ -1,0 +1,84 @@
+%    \begin{macrocode}
+%<!COPYRIGHT>
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{tikz-timing-interval}[%
+%<!DATE>
+%<!VERSION>
+%<*DRIVER>
+    2099/01/01 develop
+%</DRIVER>
+    tikz-timing library for alternative Z transitions]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\tikztiming@linterval\relax
+\let\tikztiming@rinterval\relax
+
+\tikztimingdef{LZ}{
+  \tikztiming@rinterval
+  {\newdraw [\style]}
+  {-- ++(\zslope,+\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\tikztimingdef{HZ}{%
+  \tikztiming@rinterval
+  {\newdraw [\style]}
+  {-- ++(\zslope,-\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\tikztimingdef{TZ}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \tikztiming@rinterval
+  {\newdraw [\style]}
+  {-- ++(\zslope,\value{tikztimingtrans}*\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\tikztimingdef{ZL}{%
+  \tikztiming@linterval
+  {\newdraw}
+  {-- ++(\zslope,-\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\tikztimingdef{ZH}{%
+  \tikztiming@linterval
+  {\newdraw}
+  {-- ++(\zslope,\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\tikztimingdef{ZT}{%
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \tikztiming@linterval
+  {\newdraw [\style]}
+  {-- ++(\zslope,\value{tikztimingtrans}*\height/2.)}
+  -- ++($ (#1,0) - (\zslope,0) $)
+}
+
+\def\tikztiming@onetwo#1#2{#1#2}
+\def\tikztiming@twoone#1#2{#2#1}
+
+\let\tikztiming@linterval\tikztiming@onetwo
+\let\tikztiming@rinterval\tikztiming@onetwo
+
+\tikzset{timing/interval/.code={\pgfqkeys{/tikz/timing/interval}{#1}}}
+\tikzset{timing/interval/.cd,
+   lo/.style={/tikz/timing/interval/left open},
+   lc/.style={/tikz/timing/interval/left close},
+   ro/.style={/tikz/timing/interval/right open},
+   rc/.style={/tikz/timing/interval/right close},
+   left close/.code={\let\tikztiming@linterval\tikztiming@onetwo},
+   left open/.code={\let\tikztiming@linterval\tikztiming@twoone},
+   right open/.code={\let\tikztiming@rinterval\tikztiming@onetwo},
+   right close/.code={\let\tikztiming@rinterval\tikztiming@twoone},
+}
+\tikzset{
+  timing/interval/normal/.style={/tikz/timing/interval/left close,/tikz/timing/interval/right open},
+  timing/interval/verilog/.style={/tikz/timing/interval/normal},
+  timing/interval/metachar/.style={/tikz/timing/metachar={#1}[2]{[timing/interval={##2}]}},
+}
+
+%    \end{macrocode}

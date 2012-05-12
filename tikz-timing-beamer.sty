@@ -1,0 +1,26 @@
+%    \begin{macrocode}
+%<!COPYRIGHT>
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{tikz-timing-beamer}[%
+%<!DATE>
+%<!VERSION>
+%<*DRIVER>
+    2099/01/01 develop
+%</DRIVER>
+    tikz-timing library for beamer overlay support]
+%    \end{macrocode}
+%
+% Experimental library for marginal beamer overlay support. It will change in future versions. Use at own risk!
+%    \begin{macrocode}
+
+\PackageWarning{\@currname}{This library is experimental and will change in future versions!}{}{}
+
+\tikztiming@defcode<#1>{
+  \tikztiming@output@addcode{
+    node [timing/save] (timing@save) {};%
+    \onslide<#1>
+    \draw [timing/restore] (timing@save) ++(0,0)
+  }
+  \tikztiming@parser
+}
+%    \end{macrocode}

@@ -1,0 +1,112 @@
+%    \begin{macrocode}
+%<!COPYRIGHT>
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{tikz-timing-columntype}[%
+%<!DATE>
+%<!VERSION>
+%<*DRIVER>
+    2099/01/01 develop
+%</DRIVER>
+    tikz-timing library for timing cell types]
+%    \end{macrocode}
+%
+% The \pkg{array} package is needed to define the column type.
+%    \begin{macrocode}
+\RequirePackage{array}
+
+\tikzset{timing/columntype/.code 2 args =
+  \newcolumntype{#1}{>{\celltiming}#2<{\endcelltiming}}%
+}%
+%    \end{macrocode}
+% 
+% The options |type| (calls |timing/columntype|) and |notype| are defined.
+%    \begin{macrocode}
+\RequirePackage{pgfopts}
+\tikzset{timing/columntype/.cd,
+  type/.style 2 args={/tikz/timing/columntype={#1}{#2}},%
+  notype/.code={},
+  notype/.value forbidden={},
+}
+
+\ProcessPgfOptions{/tikz/timing/columntype}
+%    \end{macrocode}
+% Use default settings if no options where given. This works because all options 
+% so far will change the default type.
+%    \begin{macrocode}
+\expandafter\ifx\csname opt@\@currname.\@currext\endcsname\empty
+  \tikzset{timing/columntype={T}{l}}%
+\fi
+%    \end{macrocode}
+%
+% \begin{macro}{\celltiming}[1]{Some ignored tokens}
+% The macro first reads everything to the |\ignorespaces| placed by the 
+% |tabular|. After placing the tokens except |\ignorespaces| back a 
+% |tikzpicture| is started. The \cs{tikztiming@endhook} is defined to call 
+% \cs{end@celltiming}.
+% After the usual init process the input is tested for an optional argument and 
+% \cs{tikztiming@celltiming} is called accordantly.
+%    \begin{macrocode}
+\def\celltiming#1\ignorespaces{%
+  #1%
+  \begin{tikzpicture}[timing/picture,baseline={(0,0)}]
+    \def\tikztiming@endhook{\end@celltiming}
+    \tikztiming@init
+    \let\tikztiming@settings\empty
+    \@ifnextchar{[}%
+      {\tikztiming@celltiming}%
+      {\tikztiming@celltiming[]}%
+}
+\let\endcelltiming\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@celltiming}[1]{Optional Initial Character or 
+% Settings}
+% First the optional argument is tested to see if it is a single initial 
+% character or some settings. The \cs{tikztiming@testoptarg} macro sets the 
+% \cs{lastchar} and \cs{settings} macros to the appropriate values.
+%
+% If the \cs{lastchar} is empty it is set to the normal start value.
+%
+% Then a \pkg{pgf} scope with the potential user settings is started. The macros  
+% |\unskip| and |\\| which are used internally by the |tabular| environment are 
+% |\let| to |\relax| to work as end marker for the \cs{tikztiming@parser}.  This 
+% will not influence the table because they will revert to their original 
+% definition at the end of the |tikzpicture| environment.
+%
+% Finally the \cs{tikztiming@parser} is called.
+%    \begin{macrocode}
+\def\tikztiming@celltiming[#1]{%
+  \ifx\relax#1\relax\else
+    \tikztiming@testoptarg#1\relax\relax
+  \fi
+  \ifx\tikztiming@lastchar\empty
+    \def\tikztiming@lastchar{@}%
+  \fi
+  \expandafter\scope\expandafter[\tikztiming@settings]%
+    \begingroup
+    \let\unskip\relax
+    \let\\\relax
+    \tikztiming@parser
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\end@celltiming}
+% This macro is called from the \cs{tikztiming@endhook} which is located in 
+% \cs{tikztiming@parser@end} when the end marker (|\relax| or alias) is 
+% encountered. It executes the accumulated \cs{tikztiming@str} and places the 
+% timing shape. Finally the |scope| and |tikzpicture| is closed.
+%    \begin{macrocode}
+\def\end@celltiming{%
+    \tikzset{timing/before}%
+    \tikztiming@str;
+    \expandafter\node 
+    \expandafter[\tikztiming@settings,shape=tikztiming@shape,anchor=origin] at (0,0) {};
+    \tikzset{timing/after}%
+  \endscope
+  \end{tikzpicture}%
+}
+%    \end{macrocode}
+% \end{macro}
+%

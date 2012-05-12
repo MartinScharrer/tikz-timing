@@ -1,0 +1,801 @@
+%    \begin{macrocode}
+%<!COPYRIGHT>
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{tikz-timing-either}[%
+%<!DATE>
+%<!VERSION>
+%<*DRIVER>
+    2099/01/01 develop
+%</DRIVER>
+    tikz-timing library for uncertain transitions]
+%    \end{macrocode}
+%
+% Provides character "E".
+%    \begin{macrocode}
+\tikztimingchar{E}{
+  ++(0,0)
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+}{
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+  \tikztiminguse{D}{#1}%
+  \newdraw [\style]
+}
+\def\tikztiming@triple@E{}%
+
+\tikztimingdef{LE@}{%
+  \newdraw [\bgstyle]
+  -- ++(\slope,\height)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+  -- ++(0,-\height)%
+  -- ++($ -1*(#1,0) $)%
+  \newdraw [\style]
+  -- ++(\slope,\height)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+     ++($ -1*(#1,\height) $)%
+  -- ++($  1*(#1,0) $)%
+     ++(0,.5\height)%
+  \newdraw [\nstyle]
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+}%
+
+\tikztimingdef{HE@}{%
+  \newdraw [\bgstyle]
+  -- ++(\slope,-\height)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+  -- ++(0,\height)%
+  -- ++($ -1*(#1,0) $)%
+  \newdraw [\style]
+  -- ++(\slope,-\height)%
+  -- ++($ (#1,0) - (\slope,0) $)%
+     ++($ -1*(#1,-\height) $)%
+  -- ++($  1*(#1,0) $)%
+     ++(0,-.5\height)%
+  \newdraw [\nstyle]
+  \code{\setcounter{tikztimingtranspos}{1}}%
+  \code{\setcounter{tikztimingtrans}{-1}}%
+}%
+
+\tikztimingdef{TE@}{%
+  \newdraw [\bgstyle]
+  -- ++(\slope,-\height * \value{tikztimingtrans})%
+  -- ++($ (#1,0) - (\slope,0) $)%
+  -- ++(0,\height * \value{tikztimingtrans})%
+  -- ++($ -1*(#1,0) $)%
+  \newdraw [\style]
+  -- ++(\slope,-\height * \value{tikztimingtrans})%
+  -- ++($ (#1,0) - (\slope,0) $)%
+     ++($ -1*(#1,-\height * \value{tikztimingtrans}) $)%
+  -- ++($  1*(#1,0) $)%
+     ++(0,-1*\value{tikztimingtrans}*.5*\height)%
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{LEL}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\slope,\height)%
+  -- +(#1,\height)%
+  -- +($ (#1,0) + (\slope,0) $)%
+  -- +(0,0)
+    ++(#1,\height/2) coordinate (timing@ref)
+    ++(\slope,-\height/2)%
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{LEH}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\slope,\height)%
+  -- +($ (#1,\height) + (\slope,0) $)%
+  -- +(#1,0)%
+  -- +(0,0)
+    ++(#1,\height/2) coordinate (timing@ref)
+    ++(\slope,\height/2)%
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{HEH}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +($ (#1,0) + (\slope,0) $)%
+  -- +(#1,-\height)%
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++(#1,-\height/2) coordinate (timing@ref)
+    ++(\slope,\height/2)%
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{HEL}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(#1,0)
+  -- +($ (#1,-\height) + (\slope,0) $)%
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++(#1,-\height/2) coordinate (timing@ref)
+    ++(\slope,-\height/2)%
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{HET}{
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(#1,0)
+  {[\nstyle]
+  -- +($ (#1,-\height) + (\slope,0) $)%
+  }
+  -- +(\slope,-\height)
+  -- +(0,0)
+  {[\nstyle]
+    ++(#1,-\height/2) coordinate (timing@ref)
+    ++(\slope,-\height/2)%
+  }
+  \newdraw [\nstyle]
+  \code{\setcounter{tikztimingtrans}{-1}}%
+}
+
+\tikztimingdef{LET}{
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\slope,\height)%
+  {[\nstyle]
+  -- +($ (#1,\height) + (\slope,0) $)%
+  }
+  -- +(#1,0)%
+  -- +(0,0)
+  {[\nstyle]
+    ++(#1,\height/2)%
+      coordinate (timing@ref)
+    ++(\slope,\height/2)%
+  }
+  \newdraw [\nstyle]
+  \code{\setcounter{tikztimingtrans}{1}}%
+}
+
+\tikztimingdef{HEE}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(#1,0) coordinate (timing@refb) 
+      \tikztiming@setref{timing@ref}{0,-\height/2}
+  -- +($ (#1,-\height) + (\slope,0) $) coordinate (timing@refa)
+  -- +(\slope,-\height)
+  -- +(0,0)
+      \tikztiming@setref{timing@ref}{#1,-\height/2}
+    ++($ (#1,-\height) + (\slope,0) $)%
+  \code{\setcounter{tikztimingtranspos}{1}}%
+  \code{\setcounter{tikztimingtrans}{-1}}%
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{LEE}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(#1,0) coordinate (timing@refa)
+      \tikztiming@setref{timing@ref}{0,\height/2}
+  -- +($ (#1,\height) + (\slope,0) $) coordinate (timing@refb)
+  -- +(\slope,\height)
+  -- +(0,0)
+    ++(#1,0) \tikztiming@setref{timing@ref}{0,\height/2}
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{TEE}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   -- +(\slope, -\height * \value{tikztimingtrans})%
+   -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)
+   -- +(#1,0)
+   -- +(0,0)%
+      \code{\setcounter{tikztimingtranspos}{\value{tikztimingtrans}}%
+      \addtocounter{tikztimingtranspos}{+1}}
+      +($ (#1,0) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, -\height/2 * \value{tikztimingtranspos}) $)
+        coordinate (timing@refa)
+      +($ (#1,0) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, \height - \height/2 * \value{tikztimingtranspos}) $)
+        coordinate (timing@refb)
+     ++(#1,0) 
+      \tikztiming@setref{timing@ref}{0,-\height/2 * \value{tikztimingtrans}}
+     ++(
+          .5 * \slope  + .5 * \value{tikztimingtrans} * \slope,
+         -.5 * \height - .5 * \value{tikztimingtrans} * \height
+       )
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \newdraw [\nstyle]
+}%
+
+
+\tikztimingdef{TEH}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++(\slope,-\height * \value{tikztimingtrans})
+  -- ++($ (#1,0) - (\slope/2 + \slope/2 * \value{tikztimingtrans},0) $)
+  -- ++(\slope * \value{tikztimingtrans},
+        \height * \value{tikztimingtrans})
+  -- ++($ -1*(#1,0) - (\slope/2 + \slope/2 * \value{tikztimingtrans},0) $)
+     ++($ (#1,-\height/2 * \value{tikztimingtrans}) $) coordinate (timing@ref)
+     ++(\slope,\height/2)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{TEL}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++(\slope,-\height * \value{tikztimingtrans})
+  -- ++($ (#1,0) - (\slope/2 - \slope/2 * \value{tikztimingtrans},0) $)
+  -- ++(-\slope * \value{tikztimingtrans},
+        \height * \value{tikztimingtrans})
+  -- ++($ -1*(#1,0) - (\slope/2 + -\slope/2 * \value{tikztimingtrans},0) $)
+     ++($ (#1,-\height/2 * \value{tikztimingtrans}) $) coordinate (timing@ref)
+     ++(\slope,-\height/2)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{TEZ}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++(\slope,-\height * \value{tikztimingtrans})
+  -- ++($ (#1,0) - (\slope,0) $)
+  -- ++(\zslope,
+        \height/2 * \value{tikztimingtrans})
+  -- ++(-\zslope,
+        \height/2 * \value{tikztimingtrans})
+  -- ++($ -1*(#1,0) $)
+     ++($ (#1,0) + (0,-\height/2 * \value{tikztimingtrans}) $)
+       coordinate (timing@ref)
+     ++(\zslope,0)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{TED}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- ++(\slope,-\height * \value{tikztimingtrans})
+  -- ++($ (#1,0) - (\slope,0) $)
+  -- ++(\dslope/2,
+        \height/2 * \value{tikztimingtrans})
+  -- ++(-\dslope/2,
+        \height/2 * \value{tikztimingtrans})
+  -- ++($ -1*(#1,0) $)
+     ++($ (#1,0) + (0,-\height/2 * \value{tikztimingtrans}) $)
+       coordinate (timing@ref)
+     ++(\dslope/2,0)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{TET}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   -- +(\slope, -\height * \value{tikztimingtrans})%
+   {[\nstyle]
+   -- +($ (#1,0) + (\slope, -\height * \value{tikztimingtrans}) $)%
+   }
+   -- +(#1,0)%
+   -- +(0,0)%
+   {[\nstyle]
+     ++($ (#1,0) + (0, -\height/2 * \value{tikztimingtrans}) $)%
+       coordinate (timing@ref)
+     ++(\slope, -\height/2 * \value{tikztimingtrans})%
+   }
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{EEZ}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   --   (timing@refb)
+   --   ($ (timing@ref)  + (#1,+\height/2) $)
+   --   ($ (timing@ref)  + (#1,0) + (\zslope,0) $)
+   --   ($ (timing@ref)  + (#1,-\height/2) $)
+   --   (timing@refa)
+        ($ (timing@ref)  + (#1,0) + (\zslope,0) $)
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+  \newdraw
+}%
+
+\tikztimingdef{EED}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   --   (timing@refb)
+   --   ($ (timing@ref)  + (#1,+\height/2) $)
+   --   ($ (timing@ref)  + (#1,0) + (\dslope/2,0) $)
+   --   ($ (timing@ref)  + (#1,-\height/2) $)
+   --   (timing@refa)
+        ($ (timing@ref)  + (#1,0) + (\dslope/2,0) $)
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+  \newdraw
+}%
+
+
+\tikztimingdef{HEZ}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(#1,0)
+  -- +($ (#1,-\height/2) + (\zslope,0) $)%
+  -- +(#1,-\height)
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++(#1,-\height/2) coordinate (timing@ref)
+    ++(\zslope,0)%
+  \newdraw
+}%
+
+
+\tikztimingdef{LEZ}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\slope,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\zslope,0) $)%
+  -- +(#1,0)
+  -- +(0,0)
+    ++(#1,\height/2) coordinate (timing@ref)
+    ++(\zslope,0)%
+  \newdraw 
+}%
+
+
+\tikztimingdef{LED}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\slope,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\dslope/2,0) $)%
+  -- +(#1,0)
+  -- +(0,0)
+    ++(#1,\height/2) coordinate (timing@ref)
+    ++(\dslope/2,0)%
+  \newdraw
+}%
+
+\tikztimingdef{HED}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(#1,0)
+  -- +($ (#1,-\height/2) + (\dslope/2,0) $)%
+  -- +(#1,-\height)
+  -- +(\slope,-\height)
+  -- +(0,0)
+    ++(#1,-\height/2) coordinate (timing@ref)
+    ++(\dslope/2,0)%
+  \newdraw
+}%
+
+
+\tikztimingdef{EZ}{%
+  \newdraw [\style]
+  --   ($ (timing@ref) + (#1,0) $)%
+}
+
+\tikztimingdef{EM}{%
+  \newdraw [\style]
+  --   ($ (timing@ref) + (#1,0) $)%
+  \newdraw [\style/base]
+}
+
+\tikztimingdef{EL}{%
+  --   ($ (timing@ref) + (#1,-\height/2) $)%
+}%
+\tikztimingdef{EH}{%
+  --   ($ (timing@ref) + (#1,+\height/2) $)%
+}%
+
+\tikztimingdef{ED@}{%
+  \tikztiming@chard@{#1}%
+}
+\tikztimingcpy{E{D@edge@}@}{ED@}
+
+\tikztimingdef{ED}{%
+  \tikztiming@chard{#1}%
+}
+\tikztimingcpy{E{D@edge@}}{ED}
+\tikztimingdef{EDD}{%
+  \tikztiming@chard@{#1}%
+}
+\tikztimingdef{EUU}{%
+  \tikztiming@chard@{#1}%
+}
+\tikztimingdef{EDU}{%
+  \tikztiming@chard{#1}%
+}
+\tikztimingdef{EUD}{%
+  \tikztiming@chard{#1}%
+}
+
+
+\tikztimingdef{DE@}{%
+  \tikztiming@oldnodecenter@%
+  \newdraw [\bgstyle]
+  -- +(\dslope/2,\height/2)
+  --  ($ (timing@ref) + (#1,\height/2) $)%
+  --  ($ (timing@ref) + (#1,-\height/2) $)%
+  --  ($ (timing@save) + (\dslope/2,-\height/2) $)
+  --  (timing@save)
+  \newdraw [\style]
+  -- +(\dslope/2,\height/2)
+  --  ($ (timing@ref) + (#1,\height/2) $)%
+      ($ (timing@ref) + (#1,-\height/2) $)%
+  --  ($ (timing@save) + (\dslope/2,-\height/2) $)
+  --  (timing@save)
+      ($ (timing@ref) + (#1,0) $)%
+      coordinate (timing@ref)
+}
+
+\tikztimingdef{EEE}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   --   (timing@refb)
+   --   ($ (timing@refb)  + (#1,0) $)
+   --   ($ (timing@refa)  + (#1,0) $)
+   --   (timing@refa)
+      ++(#1,0) coordinate (timing@refa)
+        coordinate (timing@refb) at ($ (timing@refb) + (#1,0) $)
+        coordinate (timing@ref)  at ($ (timing@ref)  + (#1,0) $)
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{EET}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   --   (timing@refb)
+   {[\nstyle]
+   --   ($ (timing@ref)  + (#1,+\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans},0) $)
+   --   ($ (timing@ref)  + (#1,-\height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans},0) $)
+   }
+   --   (timing@refa)
+   {[\nstyle]
+      ($ (timing@ref)  + (#1,\height/2 * \value{tikztimingtrans}) + (\slope,0) $)
+   }
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{EEL}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   --   (timing@refb)
+   --   ($ (timing@ref)  + (#1,+\height/2) $)
+   --   ($ (timing@ref)  + (#1,-\height/2) + (\slope,0) $)
+   --   (timing@refa)
+        ($ (timing@ref)  + (#1,-\height/2) + (\slope,0) $)
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{EEH}{%
+  \newdraw [\style,preaction={\bgstyle}]
+   --   (timing@refb)
+   --   ($ (timing@ref)  + (#1,+\height/2) + (\slope,0) $)
+   --   ($ (timing@ref)  + (#1,-\height/2) $)
+   --   (timing@refa)
+        ($ (timing@ref)  + (#1,+\height/2) + (\slope,0) $)
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+  \newdraw [\nstyle]
+}%
+
+
+\tikztimingdef{EE@}{%
+  \newdraw [\bgstyle]
+      let \p0 = (timing@ref), \p1 = (timing@refa), \p2 = (timing@refb) in
+  --  (\p2)
+  --  ($ (\x0,\y2) + (#1,0) $)
+  -- +(0,\y1-\y2)
+  --  (\p1)
+  \newdraw [\style]
+      let \p0 = (timing@ref), \p1 = (timing@refa), \p2 = (timing@refb) in
+  --  (\p2)
+  --  ($ (\x0,\y2) + (#1,0) $)
+     +(0,\y1-\y2)
+  --  (\p1)
+      ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
+  \newdraw [\nstyle]
+}%
+
+\tikztimingdef{ZE@}{
+  \newdraw [\bgstyle]
+  -- +(\zslope,\height/2)
+  -- +(#1,\height/2)%
+  -- +(#1,-\height/2)%
+  -- +(\zslope,-\height/2)
+  -- +(0,0)
+  \newdraw [\style]
+  -- +(\zslope,\height/2)
+  -- +(#1,\height/2)%
+     +(#1,-\height/2)%
+  -- +(\zslope,-\height/2)
+  -- +(0,0)
+    ++(#1,0) coordinate (timing@ref)
+}
+
+\tikztimingdef{ZEH}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\zslope, \height/2)
+  -- +($ (#1,0) + (\slope, \height/2) $)
+  -- +(#1,-\height/2)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+    ++(#1,0) coordinate (timing@ref)
+    ++(\slope, \height/2)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{ZEL}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\zslope, \height/2)
+  -- +(#1,\height/2)
+  -- +($ (#1,0) + (\slope, -\height/2) $)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+    ++(#1,0) coordinate (timing@ref)
+    ++(\slope, -\height/2)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{ZET}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\zslope, \height/2)
+  {[\nstyle]
+  -- +($ (#1, \height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)
+  -- +($ (#1,-\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)
+  }
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+  {[\nstyle]
+     ++(#1,0) coordinate (timing@ref)
+     ++(\slope,-\height/2 * \value{tikztimingtrans})
+  }
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{DET}{%
+  \tikztiming@oldnodecenter@%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\dslope/2, \height/2)
+  {[\nstyle]
+  --  ($ (timing@ref) + (#1, \height/2) + (\slope/2 - \slope/2 * \value{tikztimingtrans}, 0) $)
+  --  ($ (timing@ref) + (#1,-\height/2) + (\slope/2 + \slope/2 * \value{tikztimingtrans}, 0) $)
+  }
+  --  ($ (timing@save) + (\dslope/2, -\height/2) $)
+  --  (timing@save)
+  {[\nstyle]
+       ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
+     ++(\slope,-\height/2 * \value{tikztimingtrans})
+  }
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{ZEZ}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\zslope, \height/2)
+  -- +(#1,\height/2)
+  -- +($ (#1,0) + (\zslope, 0) $)
+  -- +(#1,-\height/2)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+    ++(#1,0) coordinate (timing@ref)
+    ++(\zslope, 0)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{ZEE}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\zslope, \height/2)
+  -- +($ (#1,0) + (\slope, \height/2) $) coordinate (timing@refb)
+  -- +(#1,-\height/2) coordinate (timing@refa)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+     +(#1,0) coordinate (timing@ref)
+    ++(#1,-\height/2)
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+}
+
+\tikztimingdef{DEE}{%
+  \tikztiming@oldnodecenter@
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\dslope/2, \height/2)
+  --  ($ (timing@ref) + (#1,0) + (\slope, \height/2) $) coordinate (timing@refb)
+  --  ($ (timing@ref) + (#1,-\height/2) $) coordinate (timing@refa)
+  --  ($ (timing@save) + (\dslope/2, -\height/2) $)
+  --  (timing@save)
+      coordinate (timing@ref) at ($ (timing@ref) + (#1,0) $)
+      (timing@refa)
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+}
+
+
+\tikztimingdef{DED}{%
+  \tikztiming@oldnodecenter@%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\dslope/2, \height/2)
+  --  ($ (timing@ref) + (#1,\height/2) $)
+  --  ($ (timing@ref) + (#1,0) + (\dslope/2,0) $)
+  --  ($ (timing@ref) + (#1,-\height/2) $)
+  --  ($ (timing@save) + (\dslope/2, -\height/2) $)
+  --  (timing@save)
+      ($ (timing@ref) + (#1,0) $)
+      coordinate (timing@ref)
+    ++(\dslope/2,0)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{ZED}{%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\zslope, \height/2)
+  -- +(#1,\height/2)
+  -- +($ (#1,0) + (\dslope/2, 0) $)
+  -- +(#1,-\height/2)
+  -- +(\zslope, -\height/2)
+  -- +(0,0)
+    ++(#1,0) coordinate (timing@ref)
+    ++(\dslope/2, 0)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{DEZ}{%
+  \tikztiming@oldnodecenter@
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\dslope/2, \height/2)
+  --  ($ (timing@ref) + (#1,\height/2) $)
+  --  ($ (timing@ref) + (#1,0) + (\zslope, 0) $)
+  --  ($ (timing@ref) + (#1,-\height/2) $)
+  --  ($ (timing@save) + (\dslope/2, -\height/2) $)
+  --  (timing@save)
+      ($ (timing@ref) + (#1,0) $)
+      coordinate (timing@ref)
+    ++(\zslope, 0)
+  \newdraw [\nstyle]
+}
+
+
+\tikztimingdef{DEH}{%
+  \tikztiming@oldnodecenter@%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\dslope/2, \height/2)
+  --  ($ (timing@ref) + (#1,0) + (\slope, \height/2) $) 
+  --  ($ (timing@ref) + (#1,-\height/2) $)
+  --  ($ (timing@save) + (\dslope/2, -\height/2) $)
+  --  (timing@save)
+      ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
+    ++(\slope, \height/2)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{DEL}{%
+  \tikztiming@oldnodecenter@%
+  \newdraw [\style,preaction={\bgstyle}]
+  -- +(\dslope/2, \height/2)
+  --  ($ (timing@ref) + (#1,\height/2) $)
+  --  ($ (timing@ref) + (#1,0) + (\slope, -\height/2) $) 
+  --  ($ (timing@save) + (\dslope/2, -\height/2) $)
+  --  (timing@save)
+      ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
+    ++(\slope, -\height/2)
+  \newdraw [\nstyle]
+}
+
+
+\tikztimingdef{@E}{%
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+  \tikztiminguse{@D}{#1}
+}
+
+\tikztimingdef{@DE}{%
+  \tikztiming@@chard{#1}%
+}
+\tikztimingdef{DDE}{
+    ++(0,-\height/2)
+  \tikztiming@oldnodecenter{%
+    (0,+\height/2)
+  }%
+  \tikztiming@@chard{#1}%
+}
+
+\tikztimingdef{@EH}{%
+  \tikztiming@setref{timing/start}{0,\height/2}
+  \newdraw [\bgstyle]
+  -- +(0,\height)
+  -- +($ (#1,\height) + (\slope,0) $)
+  -- +(#1,0)
+  -- +(0,0)
+  \newdraw [\style]
+      +(0,\height)
+   -- +($ (#1,\height) + (\slope,0) $)
+   -- +(#1,0)
+   -- +(0,0)
+     ++(#1,\height/2) coordinate (timing@ref)
+     ++(\slope,\height/2)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{@ET}{%
+  \tikztiming@setref{timing/start}{0,\height/2}
+  \newdraw [\bgstyle]
+  -- +(0,\height)
+  {[\nstyle]
+  --  ($ (timing@ref) + (#1,\height/2) + (\slope,0) $)
+  }
+  --  ($ (timing@ref) + (#1,-\height/2) $)
+  --  (timing@save)
+  \newdraw [\style]
+     +(0,\height)
+  {[\nstyle]
+  --  ($ (timing@ref) + (#1,\height/2) + (\slope,0) $)
+  }
+  --  ($ (timing@ref) + (#1,-\height/2) $)
+  --  (timing@save)
+  {[\nstyle]
+      ($ (timing@ref) + (#1,0) $) coordinate (timing@ref)
+    ++(\slope,\height/2)
+  }
+  \newdraw [\nstyle]
+  \code{\setcounter{tikztimingtrans}{-\value{tikztimingtrans}}}
+}
+
+\tikztimingdef{ET}{%
+  {[\style]
+  --   ($ (timing@ref) + (#1,\height/2 * \value{tikztimingtrans}) $)
+  }
+}
+
+\tikztimingdef{@EL}{%
+  \tikztiming@setref{timing/start}{0,\height/2}
+  \newdraw [\bgstyle]
+  -- +(0,\height)
+  -- +(#1,\height)
+  -- +($ (#1,0) + (\slope,0) $)
+  -- +(0,0)
+  \newdraw [\style]
+      +(0,\height)
+   -- +(#1,\height)
+   -- +($ (#1,0) + (\slope,0) $)
+   -- +(0,0)
+     ++(#1,\height/2) coordinate (timing@ref)
+     ++(\slope,-\height/2)
+  \newdraw [\nstyle]
+}
+
+\tikztimingdef{@ED}{%
+  \tikztiming@setref{timing/start}{0,\height/2}
+  \newdraw [\bgstyle]
+  -- +(0,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\dslope/2,0) $)
+  -- +(#1,0)
+  -- +(0,0)
+  \newdraw [\style]
+      +(0,\height)
+   -- +(#1,\height)
+   -- +($ (#1,\height/2) + (\dslope/2,0) $)
+   -- +(#1,0)
+   -- +(0,0)
+     ++(#1,\height/2) coordinate (timing@ref)
+     ++(\dslope/2,0)
+}
+
+\tikztimingdef{@EZ}{%
+  \tikztiming@setref{timing/start}{0,\height/2}
+  \newdraw [\bgstyle]
+  -- +(0,\height)
+  -- +(#1,\height)
+  -- +($ (#1,\height/2) + (\zslope,0) $)
+  -- +(#1,0)
+  -- +(0,0)
+  \newdraw [\style]
+      +(0,\height)
+   -- +(#1,\height)
+   -- +($ (#1,\height/2) + (\zslope,0) $)
+   -- +(#1,0)
+   -- +(0,0)
+     ++(#1,\height/2) coordinate (timing@ref)
+     ++(\zslope,0)
+}
+
+
+\tikztimingdef{@EE}{%
+  \tikztiming@setref{timing/start}{0,\height/2}
+  \newdraw [\bgstyle]
+  -- +(0,\height)
+  -- +($ (#1,\height) + (\slope,0) $)
+  -- +(#1,0)
+  -- +(0,0)
+  \newdraw [\style]
+      +(0,\height)
+   -- +($ (#1,\height) + (\slope,0) $) coordinate (timing@refb)
+   -- +(#1,0) coordinate (timing@refa)
+   -- +(0,0)
+     ++(#1,0)
+     \tikztiming@setref{timing@ref}{0,\height/2}
+  \code{\setcounter{tikztimingtranspos}{0}}%
+  \code{\setcounter{tikztimingtrans}{1}}%
+}
+
+\def\tikztiming@nocombine@E{}%%
+%    \end{macrocode}
+%

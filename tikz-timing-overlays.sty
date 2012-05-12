@@ -1,0 +1,95 @@
+%    \begin{macrocode}
+%<!COPYRIGHT>
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{tikz-timing-overlays}[%
+%<!DATE>
+%<!VERSION>
+%<*DRIVER>
+    2099/01/01 develop
+%</DRIVER>
+    tikz-timing library for timing overlays]
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@defcode{O}}
+% The last character before the "O" is saved and restored. Also the drawing 
+% state is saved and restored by the \cs{tikztiming@overlay@begin} and 
+% \cs{tikztiming@overlay@end} macros. The parser end macro 
+% \cs{tikztiming@parser@end} which is triggered at the end of the overlay string 
+% is redefined to avoid problems. The double \TeX\ group is necessary because 
+% the overlay string can close and reopen the inner \TeX\ 
+% group.
+%    \begin{macrocode}
+\tikztiming@defcode{O}#1{%
+  \ifx\relax#1\empty
+    \def\tikztiming@next{\tikztiming@parser#1}%
+  \else
+    \let\tikztiming@overlay@lastchar\tikztiming@lastchar
+    \let\tikztiming@overlay@width\tikztimingwidth
+    \tikztiming@output@addcode{\tikztiming@overlay@begin}%
+    \begingroup
+      \def\tikztiming@parser@end{%
+        \def\tikztiming@output@nextchar{@}%
+        \tikztiming@output@flush
+      }
+      \begingroup
+        \tikztiming@parser #1\relax
+      \endgroup
+    \endgroup
+    \tikztiming@output@addcode{\tikztiming@overlay@end}%
+    \global\let\tikztiming@lastchar\tikztiming@overlay@lastchar
+    \global\let\tikztimingwidth\tikztiming@overlay@width
+    \def\tikztiming@next{\expandafter\tikztiming@parser\@firstofone}%
+  \fi
+  \tikztiming@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% Set the later expanded macros to some sane initial value.
+%    \begin{macrocode}
+\let\tikztiming@overlay@save\empty
+\let\pgf@sh@nt@tikztiming@overlay@node\empty
+%    \end{macrocode}
+%
+% \begin{macro}{\tikztiming@overlay@begin}
+% The drawing transition state (for "T", etc.) is saved and restored.
+% In order to be able to include an "O" inside the argument of another one the 
+% overlay save node coordinates (\cs{pfg@sh@nt@tikztiming@overlay@node}) is also 
+% saved and restored. The \cs{tikztiming@overlay@save} macro also includes an 
+% self-assignment to its old version, which implements a stack. The macros must 
+% be global because the overlay string can reopen a new TikZ path.
+%    \begin{macrocode}
+\def\tikztiming@overlay@begin{
+    [/utils/exec={%
+    \xdef\tikztiming@overlay@save{%
+      \noexpand\global\noexpand\c@tikztimingtrans\the\c@tikztimingtrans\relax%
+      \noexpand\global\noexpand\c@tikztimingtranspos\the\c@tikztimingtranspos\relax%
+      \noexpand\gdef\noexpand\pgf@sh@nt@tikztiming@overlay@node
+        {\csname pgf@sh@nt@tikztiming@overlay@node\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@refa
+        {\csname pgf@sh@nt@timing@refa\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@refb
+        {\csname pgf@sh@nt@timing@refb\endcsname}%
+      \noexpand\gdef\noexpand\pgf@sh@nt@timing@ref
+        {\csname pgf@sh@nt@timing@ref\endcsname}%
+      \noexpand\gdef\noexpand\tikztiming@overlay@save{%
+        \expandafter\unexpanded\expandafter{\tikztiming@overlay@save}%
+      }%
+    }%
+    }]%
+    node [timing/save] (tikztiming@overlay@node) {}
+  }%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tikztiming@overlay@end}
+% Start new drawing path, restore position and saved drawing state.
+%    \begin{macrocode}
+\def\tikztiming@overlay@end{%
+  \tikztiming@newdraw (tikztiming@overlay@node)
+  [/utils/exec={\tikztiming@overlay@save}]
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+%
