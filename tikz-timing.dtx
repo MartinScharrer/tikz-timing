@@ -35,6 +35,11 @@
   \printversiontrue
 \fi
 
+\RequirePackage{filecontents}
+\begin{filecontents}{ydoc.cfg}
+  % Intensionally empty
+\end{filecontents}
+
 \ifprintversion
   \documentclass{ltxdoc}
   \let\chapter\section
