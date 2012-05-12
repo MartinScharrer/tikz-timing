@@ -31,11 +31,9 @@
 %<=/VERSION>
     DTX-File of 'tikz-timing' package.]
 \newif\ifprintversion % \fi
-\ifx\printversion\@undefined
-\else
+\ifdefined\printversion
   \printversiontrue
 \fi
-\printversionfalse
 
 \ifprintversion
   \documentclass{ltxdoc}
@@ -1978,18 +1976,19 @@
 % The settings can be used as library options with the "timing/nodes/" part removed.
 %
 % \vfill\noindent
-% \begin{tabularx}{\textwidth}{lX}
+% \begin{tabularx}{\textwidth}{>{\ttfamily}lX}
 %  \toprule
-%   TikZ Setting              &  Description \\
+%   \normalfont
+%   TikZ Setting            &  Description \\
 %  \midrule
-%   |timing/nodes/advanced|   &  Selects advanced in-line nodes. (library default) \\
-%   |timing/nodes/simple|     &  Selects simple coordinate-style in-line nodes. (package default) \\
+%   timing/nodes/advanced   &  Selects advanced in-line nodes. (library default) \\
+%   timing/nodes/simple     &  Selects simple coordinate-style in-line nodes. (package default) \\
 %  \midrule
-%   |timing/nodes/new center| &  Center of in-line nodes is in the new position. (default for |advanced|) \\
-%   |timing/nodes/old center| &  Center of in-line nodes is in the old position. (always on for |simple|) \\
+%   timing/nodes/new center &  Center of in-line nodes is in the new position. (default for \texttt{advanced}) \\
+%   timing/nodes/old center &  Center of in-line nodes is in the old position. (always on for \texttt{simple}) \\
 %  \midrule
-%   |timing/nodes/offset|     &  Sets offset for |TOP| and |BOTTOM| anchors.
-%                                Can be a dimension with unit or a factor to the current |y| unit. (default: 0.25) \\
+%   timing/nodes/offset     &  Sets offset for \texttt{TOP} and \texttt{BOTTOM} anchors.
+%                                Can be a dimension with unit or a factor to the current \texttt{y} unit. (default: 0.25) \\
 %  \bottomrule
 % \end{tabularx}
 %
