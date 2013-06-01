@@ -1183,7 +1183,7 @@
 % \clearpage
 % \section{Meta-Characters}
 % It is possible to define recurring groups of characters and modifiers as so 
-% called meta-characters. These characters are than expanded to the group 
+% called \emph{meta-characters}. These characters are than expanded to the group 
 % whenever they appear inside the character list. Please note that like for 
 % groups a numeric factor before such a meta-character is taken as a repetition 
 % factor not as a width. The meta-character is case sensitive and the other case 
@@ -1202,6 +1202,12 @@
 % An empty group deletes the meta-character, which  might be necessary in cases 
 % when normal characters are temporary redefined as meta-characters. However, if 
 % the group only contains spaces the meta-character is practically ignored.
+%
+% Because the meta-character is simply expanded to its character list, the first
+% character of this list might be combined with identical characters placed before the meta-character.
+% For example, after a meta-character "Y" got defined as "2D{A} 2D{B}" the characters "DY" will first be expanded to
+% "D2D{A} 2D{B}" and then combined to "3D{A} 2D{B}". This might not be the wanted behaviour and can be avoided by terminating the leading "D" with
+% its own braces: "D{}Y".
 %
 % \subsection*{Meta-Characters with Arguments}
 % The\NewIn{v0.7}
