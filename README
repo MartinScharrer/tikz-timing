@@ -8,7 +8,7 @@ produce the graphics.  The diagrams may be inserted into text (paragraphs,
 \hbox, etc.) and into tikzpictures.  A tabular-like environment is provided to
 produce larger timing diagrams.
 
-Copyright (C) 2009 Martin Scharrer
+Copyright (C) 2009-2016 Martin Scharrer
 E-mail: martin@scharrer-online.de
 WWW: http://latex.scharrer-online.de/tikz-timing/
 
