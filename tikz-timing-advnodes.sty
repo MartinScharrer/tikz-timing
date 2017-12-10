@@ -39,8 +39,8 @@
 
 \def\anchoralias#1#2{%
   \expandafter\def
-  \csname pgf@anchor@\shape@name @#1\expandafter\endcsname
-  \expandafter{\csname pgf@anchor@\shape@name @#2\endcsname}%
+  \csname pgf@anchor@\pgf@sm@shape@name @#1\expandafter\endcsname
+  \expandafter{\csname pgf@anchor@\pgf@sm@shape@name @#2\endcsname}%
 }
 
 \def\tikztiming@anchorpoint#1#2#3{%
@@ -172,7 +172,7 @@
   \anchor{low2}{\tikztiming@useanchor{low2}}%
   \anchor{high2}{\tikztiming@useanchor{high2}}%
   %
-  \expandafter\anchorborder\expandafter{\csname pgf@anchor@\shape@name @center\endcsname}%
+  \expandafter\anchorborder\expandafter{\csname pgf@anchor@\pgf@sm@shape@name @center\endcsname}%
   %
   \nodeparts{}%
 }
