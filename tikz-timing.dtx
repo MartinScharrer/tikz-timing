@@ -1310,6 +1310,33 @@
 %  \texttiming{ HL .2w HLHLH 3w LH 1W LH }}
 %
 % \clearpage
+% \section{Floating timing diagrams with captions}
+% The timing diagrams can also be typeset as floats with (or without) a caption like a |figure|. 
+% This can be easily achieved by using the \pkg{caption} package as shown in the following example document.
+%
+% \par\vspace{3\baselineskip}\par
+%
+% \begin{lstlisting}[gobble=4,language={[latex]tex},frame=single]
+%   \documentclass{article}
+%   \usepackage{tikz-timing}
+%   \usepackage{caption}
+%
+%   \DeclareCaptionType{timingdiag}[Timing diagram][List of Timing Diagrams]
+%
+%   \begin{document}
+%   \listoftimingdiags
+% 
+%   \begin{timingdiag}[!ht]
+%     \centering
+%     (timing code)
+%     \caption{Some timing diagram caption}
+%     \label{tim:foobar}
+%   \end{timingdiag}
+%
+%   \end{document}
+% \end{lstlisting}
+%
+%
 % \chapter{TikZ Keys for Styles, Settings and Actions}\label{sec:styles}
 % TikZ itself uses the |pgfkeys| package to define and apply drawing styles and settings.
 % The same method is also used for |tikz-timing| which 
