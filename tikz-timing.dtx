@@ -1386,6 +1386,11 @@
 %     timing/initchar=\meta{char}                & \s & Sets initial character.  Only valid as first optional argument in table rows or in \cs{texttiming}.\\
 %     \midrule
 %     timing/metachar=\marg{C}\oarg{\#arg}\marg{G}& \C& Sets meta-character \meta{C} to character group \meta{G}.\\
+%     \midrule
+%     timing/before                              & \C & Code executed direct before the timing TikZ code inside the internal
+%     \cs{tikzpicture}. \\
+%     timing/after                               & \C & Code executed direct after the timing TikZ code inside the internal
+%     \cs{tikzpicture}.\\
 %     \bottomrule
 %   \end{tabularx}
 %
@@ -1423,6 +1428,13 @@
 %     timing/outer sep=\meta{dim}                & \s & Sets outer separation around \cs{texttiming} macros. \\
 %     timing/outer xsep=\meta{dim}               & \s & See above. Only X-Coordinate. (Default:~0pt) \\
 %     timing/outer ysep=\meta{dim}               & \s & See above. Only Y-Coordinate. (Default:~0pt) \\
+%     \midrule
+%     timing/before text                         & \C & Code executed direct before the timing TikZ code inside the internal
+%     \cs{tikzpicture} for \cs{texttiming}. This code is executed just after the \texttt{timing/before} code. Defaults
+%     to \cs{texttimingbefore}.\\
+%     timing/after text                          & \C & Code executed direct after the timing TikZ code inside the internal
+%     \cs{tikzpicture}. This code is executed just before the \texttt{timing/after} code. Defaults to
+%     \cs{texttimingafter}.\\
 %     \bottomrule
 %   \end{tabularx}
 %
@@ -1454,6 +1466,11 @@
 %     \midrule
 %     timing/rowdist=\meta{distance}             & \s & Sets (baseline) distance between rows in a tikztimingtable. Default: 2 (=$2\times$signal height)\\
 %     timing/coldist=\meta{distance}             & \s & Sets distance between columns in a tikztimingtable. Default: 1 (=$1\times$period width)\\
+%     \midrule
+%     timing/before table                         & \C & Code placed before the tables TikZ code inside the internal
+%     \texttt{tikzpicture}.\\
+%     timing/after table                         & \C & Code placed after the tables TikZ code at the end of the
+%     internal \texttt{tikzpicture}.\\
 %     \bottomrule
 %   \end{tabularx}
 %
