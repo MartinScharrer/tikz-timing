@@ -1358,13 +1358,16 @@
 % using `|.append style=|\meta{value}'.
 %
 % Settings are TikZ keys which await an argument and set an internal macro or length. They are
-% like \cs{setlength} and \cs{renewcommand}. They should not be redefined by the user.
+% like \cs{setlength} and \cs{renewcommand}. They should only by used as stated and not be redefined like styles as
+% shown above.
 %
 % Action are TikZ keys which perform a drawing or other action on the current element, either directly or
 % by en-/disable an internal setting which then in turn triggers the drawing process. Therefore some
 % actions can be globally and/or locally but others only make sense if used locally on a single |tikz-timing|
 % macro or environment or even a scope inside a \env{tikztimingtable}. 
 % Action can be very similar to settings but they always execute code instead of only setting/redefining it.
+% The actions are defined and can be redefined using 
+% \css{tikzset}|{|\meta{action name}|/.code=|\meta{code}|}|%
 %
 % \begingroup
 % \def\C{Action}
@@ -1385,7 +1388,7 @@
 %     \midrule
 %     timing/initchar=\meta{char}                & \s & Sets initial character.  Only valid as first optional argument in table rows or in \cs{texttiming}.\\
 %     \midrule
-%     timing/metachar=\marg{C}\oarg{\#arg}\marg{G}& \C& Sets meta-character \meta{C} to character group \meta{G}.\\
+%     timing/metachar=\marg{C}\oarg{\#arg}\marg{G}& \s& Sets meta-character \meta{C} to character group \meta{G}.\\
 %     \midrule
 %     timing/before                              & \C & Code executed direct before the timing TikZ code inside the internal
 %     \cs{tikzpicture}. \\
