@@ -548,6 +548,7 @@
 % \end{Changes}
 % \changes{v0.7d}{2011/01/09}{Fix for end macro of extracode environment to support etoolbox's environment hooks.}
 % \changes{v0.7e}{2017/12/10}{Documentation update: added usage as float with caption due to user request.}
+% \changes{v0.8}{2017/12/20}{}
 %
 %
 % \endgroup
@@ -1126,7 +1127,7 @@
 % \end{figure}
 %
 % \clearpage
-% \section{Macros for use inside the Character String}
+% \section{Macros for use inside the Character String}\label{sec:maccharstr}
 % The modifiers "@" and `\texttt{\$}' allow the user to include macros.  These 
 % macros are evaluated when the |tikz-timing| parser encounters them in the 
 % input character string, \ie before any diagram element is drawn or any single 
@@ -1388,6 +1389,20 @@
 %     \bottomrule
 %   \end{tabularx}
 %
+% \section*{Scaling}
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont TikZ Key      & Type & Description \\
+%     \midrule
+%     timing/unit=\meta{length expression}        & \s & Sets both the x- and y-unitlength. \\
+%     timing/xunit=\meta{length expression}        & \s & Sets the x-unitlength (\texttt{\textbackslash xunit}) for the timing diagrams.  \\
+%     timing/yunit=\meta{length expression}        & \s & Sets the y-unitlength (\texttt{\textbackslash yunit}) for the timing diagrams.  \\
+%     timing/font=\meta{code}         & \s & Can be used to set font macros. Needs to be used instead of the normal TikZ \texttt{font} as it resets \texttt{unit}
+%     etc.\ if it is font sized dependent.\\
+%     timing/wscale=\meta{math expression} & \s & Sets the width-scale \texttt{\textbackslash wscale} by calling \texttt{\textbackslash tikztimingsetwscale}. See section~\ref{sec:maccharstr} for further details. \\
+%     \bottomrule
+%   \end{tabularx}
+%
 % \section*{Slopes}
 %   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
 %     \toprule
@@ -1427,13 +1442,14 @@
 %     \toprule
 %     \normalfont TikZ Key      & Type & Description \\
 %     \midrule
+%     timing/name                                & \S & Used for the signal name column in \env{tikztimingtable}.\\
 %     timing/table                               & \S & Used for \env{tikztimingtable}. Depends on \texttt{timing}.\\
 %     timing/table/grid                          & \S & Used for table grid. Depends on \texttt{timing/grid}.\\
 %     timing/table/lines                         & \S & Used for \cs{horlines} and \cs{vertlines}. \\
 %     timing/table/rules                         & \S & Used for \cs{tablerules} for top and bottom lines. \\
 %     timing/table/midrules                      & \S & Used for \cs{tablerules} between table head and body.  \\
-%     timing/table/header                        & \S & Used for \cs{tableheader}. \\
-%     timing/table/title header                  & \S & Used for label header in \cs{tableheader}. \\
+%     timing/table/header                        & \S & Used for \cs{tableheader}. Defaults to \texttt{timing/name}.\\
+%     timing/table/label header                  & \S & Used for label header in \cs{tableheader}. \\
 %     timing/table/row header                    & \S & Used for timing row header in \cs{tableheader}. \\
 %     \midrule
 %     timing/rowdist=\meta{distance}             & \s & Sets (baseline) distance between rows in a tikztimingtable. Default: 2 (=$2\times$signal height)\\
@@ -1469,6 +1485,18 @@
 %     timing/debug/scope                         & \S & Format for scope of node markers. \\
 %     \midrule
 %     timing/debug/level=\meta{integer}          & \s & Sets debug output level. This is only important for developers. \\
+%     \bottomrule
+%   \end{tabularx}
+%
+% \section*{Other}
+%   \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright\arraybackslash}X}
+%     \toprule
+%     \normalfont TikZ Key      & Type & Description \\
+%     \midrule
+%     timing/expand count=\meta{integer}         & \s & Sets the maximum expand count for the underlying
+%     \texttt{tikzpicture}.  TikZ only expands the content this number of times. The TikZ default value 
+%     of 100 is to small for timing diagrams and is changed to 1000 by default. This should be raised 
+%     (only) if TikZ throws an to-many-expands error.\\
 %     \bottomrule
 %   \end{tabularx}
 %
