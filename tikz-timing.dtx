@@ -24,10 +24,10 @@
 %<*driver>
 \ProvidesFile{tikz-timing.dtx}[%
 %<=*DATE>
-    2017/12/10
+    2017/12/20
 %<=/DATE>
 %<=*VERSION>
-    v0.7e
+    v0.7f
 %<=/VERSION>
     DTX-File of 'tikz-timing' package.]
 \newif\ifprintversion % \fi
@@ -547,8 +547,9 @@
 %     \end{itemize}
 % \end{Changes}
 % \changes{v0.7d}{2011/01/09}{Fix for end macro of extracode environment to support etoolbox's environment hooks.}
+% \changes{v0.7e}{2017/12/10}{Fixed advnodes library to support current PGF version.}
 % \changes{v0.7e}{2017/12/10}{Documentation update: added usage as float with caption due to user request.}
-% \changes{v0.8}{2017/12/20}{}
+% \changes{v0.7f}{2017/12/20}{Documentation update: added description of several existing styles.}
 %
 %
 % \endgroup
@@ -992,7 +993,11 @@
 % \subsection*{Scaling the Table}
 % The standard "scale" setting of TikZ will not scale all parts of the table correctly,
 % \eg the line width and nodes will keep their original size. However there are scaled
-% relative to the font size. Alternatively the table can be scaled using the
+% relative to the font size (which needs to be set using \texttt{timing/font}). 
+% If the timing diagrams should be scaled the keys \texttt{timing/unit}, \texttt{timing/xunit} and/or
+% \texttt{timing/yunit} can be used.
+%
+% Alternatively the table can be scaled using the
 % \cs{scalebox}\marg{factor}\marg{content} macro from the \pkg{graphicx} package or 
 % be placed inside a scaled \cs{node} inside another \env{tikzpicture} environment.
 %
