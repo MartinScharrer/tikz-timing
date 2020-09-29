@@ -1,6 +1,6 @@
 CONTRIBUTION  = tikz-timing
 NAME          = Martin Scharrer
-EMAIL         = martin@scharrer-scharrer.de
+EMAIL         = martin@scharrer-online.de
 DIRECTORY     = /macros/latex/contrib/${CONTRIBUTION}
 LICENSE       = free
 FREEVERSION   = lppl
@@ -11,7 +11,7 @@ export CONTRIBUTION VERSION NAME EMAIL SUMMARY DIRECTORY DONOTANNOUNCE ANNOUNCE 
 MAINDTXS      = ${CONTRIBUTION}.dtx
 DTXFILES      = ${MAINDTXS}
 INSFILES      = ${CONTRIBUTION}.ins
-LTXFILES      = $(wildcard ${CONTRIBUTION}*.sty)
+LTXFILES      = ${CONTRIBUTION}.sty
 MAINPDFS      = ${CONTRIBUTION}.pdf
 LTXDOCFILES   = ${MAINPDFS} README
 LTXSRCFILES   = ${DTXFILES} ${INSFILES}
@@ -56,7 +56,7 @@ BUILDDIR = build
 LATEXMK  = latexmk -pdf -quiet
 ZIP      = zip -r
 WEBBROWSER = firefox
-GETVERSION = $(strip $(shell grep '=\*VERSION' -A1 ${MAINDTXS} | tail -n1))
+GETVERSION = $(strip $(shell grep '=\*VERSION' -A1 $(firstword ${MAINDTXS}) | tail -n1))
 
 AUXEXTS  = .aux .bbl .blg .cod .exa .fdb_latexmk .glo .gls .lof .log .lot .out .pdf .que .run.xml .sta .stp .svn .svt .toc
 CLEANFILES = $(addprefix ${CONTRIBUTION}, ${AUXEXTS})
@@ -75,7 +75,7 @@ ifneq (${BUILDDIR},build)
 build: ${BUILDDIR}
 endif
 
-${BUILDDIR}: ${MAINFILES}
+${BUILDDIR}: ${MAINFILES} README
 	-mkdir ${BUILDDIR} 2>/dev/null || true
 	cp ${INSFILES} README ${BUILDDIR}/
 	$(foreach DTX,${MAINDTXS}, tex '\input ydocincl\relax\includefiles{${DTX}}{${BUILDDIR}/${DTX}}' && rm -f ydocincl.log;)
@@ -174,9 +174,12 @@ ${TDSZIP}: ${TDSDIR}
 
 zip: ${CTAN_FILE}
 
-${CTAN_FILE}: $(addprefix ${BUILDDIR}/,${CTANFILES}) ${TDSZIP}
+${CTAN_FILE}: $(addprefix ${BUILDDIR}/,${CTANFILES})
+	-rm -rf ${CONTRIBUTION}/
+	mkdir ${CONTRIBUTION}/
+	cp $(addprefix ${BUILDDIR}/,${CTANFILES}) ${CONTRIBUTION}/
 	-${RM} $@
-	${ZIP} -j $@ $^
+	${ZIP} $@ ${CONTRIBUTION}
 
 upload: VERSION = ${GETVERSION}
 
