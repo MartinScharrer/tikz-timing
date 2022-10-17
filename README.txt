@@ -8,9 +8,9 @@ produce the graphics.  The diagrams may be inserted into text (paragraphs,
 \hbox, etc.) and into tikzpictures.  A tabular-like environment is provided to
 produce larger timing diagrams.
 
-Copyright (C) 2009-2017 Martin Scharrer
-E-mail: martin@scharrer-online.de
-WWW: https://bitbucket.org/martin_scharrer/tikz-timing/
+Copyright (c) 2009-2022 Martin Scharrer
+E-mail: martin.scharrer@web.de
+WWW: https://github.com/MartinScharrer/tikz-timing/
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License, either version 1.3c
